@@ -25,8 +25,8 @@
 #' @return A character vector holding all std output of BeeDataSetDownloader at
 #' the specified verbosity level.
 #' 
-fetch_obis <- function(username,
-                       password,
+fetch_obis <- function(username = rdgr2014,
+                       password = IXPubReview,
                        data_type,
                        data_id = NULL,
                        plate_id = NULL,
@@ -44,17 +44,14 @@ fetch_obis <- function(username,
   verbosity <- as.integer(verbosity)
   stopifnot(verbosity <= 25 & verbosity >= 0)
 
-  # get openBIS credentials
-  credentials <- getCredentials("openBIS")
-
-  jarloc <- system.file("java", "BeeDataSetDownloader.jar",
+  jarloc <- system.file("java", "openBisDownloader.jar",
                         package = packageName())
 
   arguments <- c(
     "-jar", jarloc,
     "--verbose", paste0("'", verbosity, "'"),
-    "--user", paste0("'", credentials$username, "'"),
-    "--password", paste0("'", credentials$password, "'"),
+    "--user", paste0("'", username, "'"),
+    "--password", paste0("'", password, "'"),
     "--type", paste0("'", data_type, "'"),
     if (!is.null(result_class))
       c("--result-class", paste0("'", result_class, "'")),
