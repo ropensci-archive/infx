@@ -12,7 +12,7 @@ fetch_openbis(username = "rdgr2014", password = "IXPubReview",
 \arguments{
 \item{username, password}{OpneBis login credentials}
 
-\item{data_type}{Sepcify the type of dataset to be downloaded}
+\item{data_type}{Specify the type of dataset to be downloaded}
 
 \item{data_id}{If applicable, for example for a single aggregate file,
 directly select the single dataset to download (optional)}
@@ -20,7 +20,7 @@ directly select the single dataset to download (optional)}
 \item{plate_regex}{If datasets corresponding to one or several plates are
 targeted, they can be selected via a regular expression (optional)}
 
-\item{file_regex}{A regular expression appled to filenames can be used to
+\item{file_regex}{A regular expression applied to filenames can be used to
 filter the selection (optional)}
 
 \item{out_dir}{Directory used to save the downloaded data to (default: the
@@ -30,7 +30,7 @@ current working dir)}
 NULL to skip.}
 
 \item{newest}{Logical, indicating whether to only return the newest
-version af a matched dataset per plate (default is TRUE).}
+version as a matched dataset per plate (default is TRUE).}
 
 \item{verbosity}{The verbosity level of BeeDataSetDownloader (an integer in
 [0-25])}
