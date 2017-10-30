@@ -3,6 +3,7 @@ context("openbis downloader")
 test_that("openbis system call works", {
   expect_error(fetch_obis())
   dir <- tempfile()
+  unlink(dir, recursive = TRUE)
   expect_true(dir.create(dir))
   tmp <- fetch_openbis(data_id = "20150421161324410-3129549", out_dir = dir)
   expect_match(tmp, "^Successfully downloaded 2 files", all = FALSE)
@@ -16,6 +17,7 @@ test_that("openbis system call works", {
 
 test_that("plates can be fetched", {
   dir <- tempfile()
+  unlink(dir, recursive = TRUE)
   expect_error(fetch_plate("BB02-2E", plate_regex = "foo", out_dir = dir))
   expect_warning(fetch_plate("BB02-2E", data_type = "foo",
                  file_regex = ".*Children_[A-z]+_Count.mat$", out_dir = dir))
