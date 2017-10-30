@@ -38,6 +38,22 @@ fetch_openbis <- function(username = "rdgr2014",
                           newest = TRUE,
                           verbosity = 6) {
 
+  success <- function(x) {
+    x[4] == "Login successful" &&
+      x[length(x)] == paste0("Module BeeDataSetDownloader ",
+                             "finished successfully")
+  }
+
+  try_call <- function(x) {
+    ret <- suppressWarnings(system2(command = "java", args = x,
+                                    stdout = TRUE, stderr = TRUE))
+    if (!is.null(attr(ret, "status")) && attr(ret, "status") != 0) {
+      message("")
+      stop(paste(ret, collapse = "\n"))
+    }
+    ret
+  }
+
   # input validation
   if (!is.null(result_class) && !result_class %in% c("stable"))
     warning("currently the only supported result class is \"stable\".")
@@ -66,12 +82,11 @@ fetch_openbis <- function(username = "rdgr2014",
     "--outputdir", paste0("'", out_dir, "'"))
 
   message("Fetching data from openBIS...", appendLF = FALSE)
-  ret <- suppressWarnings(system2(command = "java", args = arguments,
-                                  stdout = TRUE, stderr = TRUE))
+  ret <- try_call(arguments)
+  if (!success(ret))
+    ret <- try_call(arguments)
+  stopifnot(success(ret))
   message(" done.")
-
-  if (!is.null(attr(ret, "status")) && attr(ret, "status") != 0)
-    stop(paste(ret, collapse = "\n"))
 
   ret
 }
@@ -128,9 +143,6 @@ fetch_plate <- function(plate_name,
 
   out <- do.call(fetch_openbis, dots)
 
-  stopifnot(out[4] == "Login successful")
-  stopifnot(out[length(out)] == paste0("Module BeeDataSetDownloader ",
-                                       "finished successfully"))
   files <- out[grepl("^The download '.+' does not exist, will download.$",
                      out)]
   stopifnot(length(files) >= 1)
