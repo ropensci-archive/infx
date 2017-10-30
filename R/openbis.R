@@ -9,7 +9,7 @@
 #' @param data_type Sepcify the type of dataset to be downloaded
 #' @param data_id If applicable, for example for a single aggregate file,
 #' directly select the single dataset to download (optional)
-#' @param plate_id If datasets corresponding to one or several plates are
+#' @param plate_regex If datasets corresponding to one or several plates are
 #' targeted, they can be selected via a regular expression (optional)
 #' @param file_regex A regular expression appled to filenames can be used to
 #' filter the selection (optional)
@@ -25,22 +25,22 @@
 #' @return A character vector holding all std output of BeeDataSetDownloader at
 #' the specified verbosity level.
 #' 
-fetch_obis <- function(username = rdgr2014,
-                       password = IXPubReview,
-                       data_type,
-                       data_id = NULL,
-                       plate_id = NULL,
-                       file_regex = ".*",
-                       out_dir = getwd(),
-                       result_class = "stable",
-                       newest = TRUE,
-                       verbosity = 6) {
+#' @export
+#' 
+fetch_openbis <- function(username = "rdgr2014",
+                          password = "IXPubReview",
+                          data_type = NULL,
+                          data_id = NULL,
+                          plate_regex = NULL,
+                          file_regex = ".*",
+                          out_dir = getwd(),
+                          result_class = "stable",
+                          newest = TRUE,
+                          verbosity = 6) {
 
   # input validation
   if (!is.null(result_class) && !result_class %in% c("stable"))
     warning("currently the only supported result class is \"stable\".")
-  if (is.null(data_id) & is.null(plate_id))
-    stop("either \"data_id\" or \"plate_id\" have to be not NULL")
   verbosity <- as.integer(verbosity)
   stopifnot(verbosity <= 25 & verbosity >= 0)
 
@@ -52,18 +52,23 @@ fetch_obis <- function(username = rdgr2014,
     "--verbose", paste0("'", verbosity, "'"),
     "--user", paste0("'", username, "'"),
     "--password", paste0("'", password, "'"),
-    "--type", paste0("'", data_type, "'"),
+    if (!is.null(data_type))
+      "--type", paste0("'", data_type, "'"),
     if (!is.null(result_class))
       c("--result-class", paste0("'", result_class, "'")),
     if (!is.null(data_id)) c("--datasetid", paste0("'", data_id, "'")),
-    if (!is.null(plate_id)) c("--plateid", paste0("'", plate_id, "'")),
+    if (!is.null(plate_regex)) c("--plateid", paste0("'", plate_regex, "'")),
     if (newest) "--newest",
     "--files", paste0("'", file_regex, "'"),
     "--outputdir", paste0("'", out_dir, "'"))
 
   message("Fetching data from openBIS...", appendLF = FALSE)
-  ret <- system2(command = "java", args = arguments, stdout = TRUE,
-                 stderr = TRUE)
+  ret <- suppressWarnings(system2(command = "java", args = arguments,
+                                  stdout = TRUE, stderr = TRUE))
   message(" done.")
+
+  if (!is.null(attr(ret, "status")) && attr(ret, "status") != 0)
+    stop(paste(ret, collapse = "\n"))
+
   ret
 }
