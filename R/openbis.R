@@ -45,7 +45,7 @@ fetch_openbis <- function(username = "rdgr2014",
   stopifnot(verbosity <= 25 & verbosity >= 0)
 
   jarloc <- system.file("java", "openBisDownloader.jar",
-                        package = packageName())
+                        package = utils::packageName())
 
   arguments <- c(
     "-jar", jarloc,
