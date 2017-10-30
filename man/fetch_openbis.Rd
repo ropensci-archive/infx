@@ -2,7 +2,7 @@
 % Please edit documentation in R/openbis.R
 \name{fetch_openbis}
 \alias{fetch_openbis}
-\title{Fetch datasets from an openBis instance}
+\title{Download datasets from an openBis instance}
 \usage{
 fetch_openbis(username = "rdgr2014", password = "IXPubReview",
   data_type = NULL, data_id = NULL, plate_regex = NULL,

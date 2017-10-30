@@ -4,22 +4,18 @@
 \alias{fetch_plate}
 \title{Fetch single cell data}
 \usage{
-fetch_plate(plate_name, auto_rm = TRUE, ...)
+fetch_plate(plate_name, ...)
 }
 \arguments{
 \item{plate_name}{The plate barcode of interest.}
 
-\item{auto_rm}{A logical switch; if TRUE, all downloaded files will be
-removed upon garbage collection of the returned character vector.}
-
-\item{...}{Arguments passed to [fetch_openbis()]}
+\item{...}{Arguments passed to [fetch_data()]}
 }
 \value{
 A vector of downloaded filenames.
 }
 \description{
-Using [fetch_openbis()], this function downloads single cell
+Calling [fetch_openbis()], this function downloads single cell
 datasets corresponding to a plate barcode and filtered by an optional file
-name regular expression. The downloaded data is either saved to a user
-specified directory or to a temporary location which can be auto removed.
+name regular expression.
 }

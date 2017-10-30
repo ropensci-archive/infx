@@ -1,5 +1,5 @@
 
-#' @title Fetch datasets from an openBis instance
+#' @title Download datasets from an openBis instance
 #'
 #' @description This is a wrapper for the BeeDataSetDownloader.jar application
 #' supplied by the package, responsible for downloading data from the InfectX
@@ -25,8 +25,6 @@
 #' @return A character vector holding all std output of BeeDataSetDownloader at
 #' the specified verbosity level.
 #' 
-#' @export
-#' 
 fetch_openbis <- function(username = "rdgr2014",
                           password = "IXPubReview",
                           data_type = NULL,
@@ -39,9 +37,9 @@ fetch_openbis <- function(username = "rdgr2014",
                           verbosity = 6) {
 
   success <- function(x) {
-    x[4] == "Login successful" &&
-      x[length(x)] == paste0("Module BeeDataSetDownloader ",
-                             "finished successfully")
+    sum(grepl("Login successful", x, fixed = TRUE)) == 1L &&
+      sum(grepl("Module BeeDataSetDownloader finished successfully", x,
+                fixed = TRUE)) == 1L
   }
 
   try_call <- function(x) {
@@ -91,14 +89,12 @@ fetch_openbis <- function(username = "rdgr2014",
   ret
 }
 
-#' @title Fetch single cell data
+#' @title Fetch data from openBis.
 #'
-#' @description Using [fetch_openbis()], this function downloads single cell
-#' datasets corresponding to a plate barcode and filtered by an optional file
-#' name regular expression. The downloaded data is either saved to a user
-#' specified directory or to a temporary location which can be auto removed.
+#' @description Calling [fetch_openbis()], this function downloads data and
+#' returns the downloaded filenames. It optionally makes sure the data is
+#' removed again upon garbage collection of the returned filename reference.
 #' 
-#' @param plate_name The plate barcode of interest.
 #' @param auto_rm A logical switch; if TRUE, all downloaded files will be
 #' removed upon garbage collection of the returned character vector.
 #' @param ... Arguments passed to [fetch_openbis()]
@@ -107,27 +103,20 @@ fetch_openbis <- function(username = "rdgr2014",
 #' 
 #' @export
 #' 
-fetch_plate <- function(plate_name,
-                        auto_rm = TRUE,
-                        ...) {
+fetch_data <- function(auto_rm = TRUE,
+                       ...) {
 
   dots <- list(...)
 
-  stopifnot(is.null(dots$plate_regex))
-  dots$plate_regex <- paste0("^/.*/.*/.*/", plate_name, "$")
+  if (!is.null(dots$verbosity))
+    warning("ignoring the argument \"verbosity\".")
+  dots$verbosity <- 6
 
-  if (!is.null(dots$data_type))
-    warning("ignoring the argument \"data_type\".")
-  dots$data_type <- "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"
-
-  if (is.null(dots$file_regex))
-    dots$file_regex <- ".*\\.mat$"
   if (is.null(dots$out_dir))
     dots$out_dir <- tempfile()
 
   if (dir.exists(dots$out_dir)) {
-    files <- list.files(dots$out_dir, pattern = dots$file_regex,
-                        recursive = TRUE)
+    files <- list.files(dots$out_dir, recursive = TRUE)
     if (length(files) > 1) {
       message("found ", length(files), " files under\n  ",
               normalizePath(dots$out_dir), "\n  ",
@@ -141,15 +130,11 @@ fetch_plate <- function(plate_name,
 
   dir.create(dots$out_dir)
 
-  out <- do.call(fetch_openbis, dots)
+  do.call(fetch_openbis, dots)
 
-  files <- out[grepl("^The download '.+' does not exist, will download.$",
-                     out)]
+  files <- list.files(dots$out_dir, recursive = TRUE, full.names = TRUE)
+
   stopifnot(length(files) >= 1)
-  files <- gsub("The download '", "",
-                gsub("' does not exist, will download.$", "", files))
-
-  stopifnot(all(sapply(files, file.exists)))
 
   if (auto_rm) {
     attr(files, "finaliser") <- (function(dir) {
@@ -162,4 +147,82 @@ fetch_plate <- function(plate_name,
   }
 
   files
+}
+
+
+#' @title Fetch single cell data
+#'
+#' @description Calling [fetch_openbis()], this function downloads single cell
+#' datasets corresponding to a plate barcode and filtered by an optional file
+#' name regular expression.
+#' 
+#' @param plate_name The plate barcode of interest.
+#' @param ... Arguments passed to [fetch_data()]
+#' 
+#' @return A vector of downloaded filenames.
+#' 
+#' @export
+#' 
+fetch_plate <- function(plate_name,
+                        ...) {
+
+  dots <- list(...)
+
+  if (!is.null(dots$plate_regex))
+    warning("ignoring the argument \"plate_regex\".")
+  dots$plate_regex <- paste0("^/.*/.*/.*/", plate_name, "$")
+
+  if (!is.null(dots$data_type))
+    warning("ignoring the argument \"data_type\".")
+  dots$data_type <- "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"
+
+  if (is.null(dots$file_regex))
+    dots$file_regex <- ".*\\.mat$"
+
+  do.call(fetch_data, dots)
+}
+
+#' @title Fetch InfectX meta data
+#'
+#' @description A wrapper around [fetch_data()], this function essentially
+#' provides default values for downloading meta data from openBis. Two formats
+#' of meta data are currently available: dumps of SQLite databased holding the
+#' entire set of experimental meta data, as well as a CSV sheet, containing
+#' only the published subset.
+#' 
+#' @param type A switch for the type of meta data to be downloaded.
+#' @param ... Passed to [fetch_data()].
+#' 
+#' @return A vector of downloaded filenames
+#' 
+#' @export
+#' 
+fetch_meta <- function(type = c("db", "public"),
+                       ...) {
+
+  type <- match.arg(type)
+  dots <- list(...)
+
+  if (!is.null(dots$data_type))
+    warning("ignoring the argument \"data_type\".")
+  dots$data_type <- "HCS_ANALYSIS_WELL_REPORT_CSV"
+
+  if (type == "db") {
+
+    if (!is.null(dots$file_regex))
+      warning("ignoring the argument \"file_regex\".")
+    dots$file_regex <- ".*.tsv.gz$"
+
+    if (!is.null(dots$plate_regex))
+      warning("ignoring the argument \"plate_regex\".")
+    dots$plate_regex <- "/INFECTX/_COMMON/REPORTS/DUMMYSTORAGEFORREPORTS"
+
+  } else {
+
+    if (!is.null(dots$data_id))
+      warning("ignoring the argument \"data_id\".")
+    dots$data_id <- "20140609103658114-3045667"
+  }
+
+  do.call(fetch_data, dots)
 }
