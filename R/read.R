@@ -57,3 +57,28 @@ read_data <- function(file) {
 
   res
 }
+
+#' @title Read meta data
+#'
+#' @description Read meta data downloaded from openBis using
+#' [readr::read_delim]. The delimiting character is either ";" for public meta
+#' data or "\t" for dumped compound database files.
+#' 
+#' @param file The filename of the file to be read.
+#' @param col_types A column specification to be passed to [readr::read_delim].
+#' @param ... All further arguments are passed to [readr::read_delim].
+#' 
+#' @return A tibble holding all read meta data or a subset thereof, depending
+#' on the column specification.
+#' 
+#' @export
+#' 
+read_meta <- function(file,
+                      col_types = readr::cols(
+                        .default = readr::col_character()),
+                      ...) {
+
+  readr::read_delim(file,
+                    if (grepl("\\.csv", file)) ";" else "\t",
+                    col_types = col_types, ...)
+}

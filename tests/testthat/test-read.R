@@ -23,3 +23,11 @@ test_that("matlab data files can be read", {
   expect_equal(length(tmp),
                sum(attr(tmp, "lengths")))
 })
+
+test_that("metadata data files can be read", {
+  public <- fetch_meta(type = "public")
+  dat <- read_meta(public)
+  expect_is(dat, "tbl")
+  expect_named(dat)
+  expect_true(nrow(dat) > 0)
+})
