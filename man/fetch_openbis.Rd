@@ -4,10 +4,10 @@
 \alias{fetch_openbis}
 \title{Download datasets from an openBis instance}
 \usage{
-fetch_openbis(username = "rdgr2014", password = "IXPubReview",
-  data_type = NULL, data_id = NULL, plate_regex = NULL,
-  file_regex = ".*", out_dir = getwd(), result_class = "stable",
-  newest = TRUE, verbosity = 6)
+fetch_openbis(username = NULL, password = NULL, data_type = NULL,
+  data_id = NULL, plate_regex = NULL, file_regex = ".*",
+  out_dir = getwd(), result_class = "stable", newest = TRUE,
+  verbosity = 6)
 }
 \arguments{
 \item{username, password}{OpneBis login credentials}
