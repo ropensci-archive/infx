@@ -21,5 +21,5 @@ on the column specification.
 \description{
 Read meta data downloaded from openBis using
 [readr::read_delim]. The delimiting character is either ";" for public meta
-data or "\t" for dumped compound database files.
+data or "\\t" for dumped compound database files.
 }

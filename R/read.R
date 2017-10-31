@@ -62,7 +62,7 @@ read_data <- function(file) {
 #'
 #' @description Read meta data downloaded from openBis using
 #' [readr::read_delim]. The delimiting character is either ";" for public meta
-#' data or "\t" for dumped compound database files.
+#' data or "\\t" for dumped compound database files.
 #' 
 #' @param file The filename of the file to be read.
 #' @param col_types A column specification to be passed to [readr::read_delim].

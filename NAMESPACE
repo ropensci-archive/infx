@@ -3,5 +3,6 @@
 export(fetch_data)
 export(fetch_meta)
 export(fetch_plate)
+export(load_config)
 export(read_data)
 export(read_meta)
