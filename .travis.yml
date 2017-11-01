@@ -7,5 +7,15 @@ cache: packages
 r_packages:
   - covr
 
+script: 
+  - |
+    R CMD build .
+    travis_wait  20 R CMD check *tar.gz --as-cran --no-manual
+
+after_failure:
+  - find *Rcheck -name '*fail' -print -exec cat '{}' \;
+  - find *Rcheck -name '*log' -print -exec cat '{}' \;
+  - find *Rcheck -name '*out' -print -exec cat '{}' \;
+
 after_success:
   - Rscript -e 'covr::codecov()'
