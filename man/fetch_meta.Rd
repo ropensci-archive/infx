@@ -4,7 +4,7 @@
 \alias{fetch_meta}
 \title{Fetch InfectX meta data}
 \usage{
-fetch_meta(type = c("db", "public"), ...)
+fetch_meta(type = c("full", "public"), ...)
 }
 \arguments{
 \item{type}{A switch for the type of meta data to be downloaded.}

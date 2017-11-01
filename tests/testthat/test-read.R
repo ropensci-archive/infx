@@ -1,7 +1,10 @@
 context("test readers")
 
+cred <- load_config(section = "openbis")
+
 test_that("matlab data files can be read", {
-  files <- fetch_plate("BB02-2E",
+  files <- fetch_plate(username = cred$username, password = cred$password,
+                       plate_name = "BB02-2E",
                        file_regex = paste(".*handles.mat$",
                                           ".*.xml$",
                                           ".*Cells.Parent_Nuclei.mat$",
@@ -25,7 +28,8 @@ test_that("matlab data files can be read", {
 })
 
 test_that("metadata data files can be read", {
-  public <- fetch_meta(type = "public")
+  public <- fetch_meta(username = cred$username, password = cred$password,
+                       type = "public")
   dat <- read_meta(public)
   expect_is(dat, "tbl")
   expect_named(dat)

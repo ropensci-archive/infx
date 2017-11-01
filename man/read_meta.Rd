@@ -4,11 +4,13 @@
 \alias{read_meta}
 \title{Read meta data}
 \usage{
-read_meta(file, col_types = readr::cols(.default = readr::col_character()),
-  ...)
+read_meta(file, type = c("full", "public"), col_types = readr::cols(.default
+  = readr::col_character()), ...)
 }
 \arguments{
 \item{file}{The filename of the file to be read.}
+
+\item{type}{A switch for the type of meta data to be downloaded.}
 
 \item{col_types}{A column specification to be passed to [readr::read_delim].}
 

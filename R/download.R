@@ -53,13 +53,12 @@ fetch_openbis <- function(username = NULL,
   }
 
   # input validation
+  stopifnot(is.character(username), length(username) == 1,
+            is.character(password), length(password) == 1)
   if (!is.null(result_class) && !result_class %in% c("stable"))
-    warning("currently the only supported result class is \"stable\".")
+    stop("currently the only supported result class is \"stable\".")
   verbosity <- as.integer(verbosity)
   stopifnot(verbosity <= 25 & verbosity >= 0)
-
-  if (is.null(username) || is.null(password))
-    credentials <- load_config(section = "openbis")
 
   jarloc <- system.file("java", "openBisDownloader.jar",
                         package = utils::packageName())
@@ -67,8 +66,8 @@ fetch_openbis <- function(username = NULL,
   arguments <- c(
     "-jar", jarloc,
     "--verbose", paste0("'", verbosity, "'"),
-    "--user", paste0("'", credentials$username, "'"),
-    "--password", paste0("'", credentials$password, "'"),
+    "--user", paste0("'", username, "'"),
+    "--password", paste0("'", password, "'"),
     if (!is.null(data_type))
       "--type", paste0("'", data_type, "'"),
     if (!is.null(result_class))
@@ -202,7 +201,7 @@ fetch_plate <- function(plate_name,
 #' 
 #' @export
 #' 
-fetch_meta <- function(type = c("db", "public"),
+fetch_meta <- function(type = c("full", "public"),
                        ...) {
 
   type <- match.arg(type)
@@ -212,7 +211,7 @@ fetch_meta <- function(type = c("db", "public"),
     warning("ignoring the argument \"data_type\".")
   dots$data_type <- "HCS_ANALYSIS_WELL_REPORT_CSV"
 
-  if (type == "db") {
+  if (type == "full") {
 
     if (!is.null(dots$file_regex))
       warning("ignoring the argument \"file_regex\".")

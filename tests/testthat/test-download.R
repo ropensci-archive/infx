@@ -1,12 +1,18 @@
 context("openbis downloader")
 
+cred <- load_config(section = "openbis")
+
 test_that("openbis system call works", {
   expect_error(fetch_openbis())
+  expect_error(fetch_openbis(cred$username))
+  expect_error(fetch_openbis(cred$username, cred$password))
   dir <- tempfile()
   expect_true(dir.create(dir))
-  tmp <- fetch_openbis(data_id = "20150421161324410-3129549", out_dir = dir)
+  tmp <- fetch_openbis(cred$username, cred$password,
+                       data_id = "20150421161324410-3129549", out_dir = dir)
   expect_match(tmp, "^Successfully downloaded 2 files", all = FALSE)
-  tmp <- fetch_openbis(plate_regex = "^/.*/BB02-2E$",
+  tmp <- fetch_openbis(cred$username, cred$password,
+                       plate_regex = "^/.*/BB02-2E$",
                        data_type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
                        file_regex = ".*Children_[A-z]+_Count.mat$",
                        out_dir = dir)
@@ -17,17 +23,20 @@ test_that("openbis system call works", {
 test_that("data can be fetched", {
   dir <- tempfile()
   expect_true(dir.create(dir))
-  expect_error(fetch_data(plate_regex = "^/.*/BB02-2E$",
+  expect_error(fetch_data(username = cred$username, password = cred$password,
+                          plate_regex = "^/.*/BB02-2E$",
                           data_type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
                           file_regex = ".*Children_[A-z]+_Count.mat$",
                           out_dir = dir))
   unlink(dir, recursive = TRUE)
-  expect_warning(fetch_data(plate_regex = "^/.*/BB02-2E$",
+  expect_warning(fetch_data(username = cred$username, password = cred$password,
+                            plate_regex = "^/.*/BB02-2E$",
                             data_type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
                             file_regex = ".*Children_[A-z]+_Count.mat$",
                             out_dir = dir, verbosity = 12))
   unlink(dir, recursive = TRUE)
-  dat <- fetch_data(plate_regex = "^/.*/BB02-2E$",
+  dat <- fetch_data(username = cred$username, password = cred$password,
+                    plate_regex = "^/.*/BB02-2E$",
                     data_type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
                     file_regex = ".*Children_[A-z]+_Count.mat$",
                     out_dir = dir)
@@ -35,7 +44,9 @@ test_that("data can be fetched", {
   expect_match(dat, ".*Children_[A-z]+_Count.mat$", all = TRUE)
   expect_match(list.files(dir, recursive = TRUE),
                ".*Children_[A-z]+_Count.mat$", all = TRUE)
-  expect_message(fetch_plate("BB02-2E", out_dir = dir),
+  expect_message(fetch_plate(username = cred$username,
+                             password = cred$password,
+                             plate_name = "BB02-2E", out_dir = dir),
                  "^found 4 files under")
   rm(dat)
   gc()
@@ -44,13 +55,18 @@ test_that("data can be fetched", {
 
 test_that("plates can be fetched", {
   dir <- tempfile()
-  expect_warning(fetch_plate("BB02-2E", data_type = "foo",
+  expect_warning(fetch_plate(username = cred$username,
+                             password = cred$password,
+                             plate_name = "BB02-2E", data_type = "foo",
                  file_regex = ".*Children_[A-z]+_Count.mat$", out_dir = dir))
   unlink(dir, recursive = TRUE)
-  expect_warning(fetch_plate("BB02-2E", plate_regex = "foo",
+  expect_warning(fetch_plate(username = cred$username,
+                             password = cred$password,
+                             plate_name = "BB02-2E", plate_regex = "foo",
                  file_regex = ".*Children_[A-z]+_Count.mat$", out_dir = dir))
   unlink(dir, recursive = TRUE)
-  dat <- fetch_plate("BB02-2E",
+  dat <- fetch_plate(username = cred$username, password = cred$password,
+                     plate_name = "BB02-2E",
                      file_regex = ".*Children_[A-z]+_Count.mat$",
                      out_dir = dir)
   expect_length(dat, 4L)
@@ -61,10 +77,13 @@ test_that("plates can be fetched", {
 
 test_that("metadata can be fetched", {
   dir <- tempfile()
-  expect_error(fetch_meta(out_dir = dir))
+  expect_error(fetch_meta(username = cred$username, password = cred$password,
+                          out_dir = dir))
   unlink(dir, recursive = TRUE)
-  expect_error(fetch_meta(type = "foo", out_dir = dir))
-  meta <- fetch_meta(type = "public", out_dir = dir)
+  expect_error(fetch_meta(username = cred$username, password = cred$password,
+                          type = "foo", out_dir = dir))
+  meta <- fetch_meta(username = cred$username, password = cred$password,
+                     type = "public", out_dir = dir)
   expect_length(meta, 1L)
   expect_match(meta, ".*aggregate.csv.zip$", all = TRUE)
 })
