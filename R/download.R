@@ -1,4 +1,111 @@
 
+#' @title Helper querying openBis API
+#'
+#' @description Issues a POST request to the JSON-RPC based openBis API v1.
+#' Documentation is available at \code{https://wiki-bsse.ethz.ch/display/
+#' openBISDoc/openBIS+JSON+API}.
+#' 
+#' @param method The method name
+#' @param params A list structure holding the arguments which, converted to
+#' JSON, will be used to call the supplied method.
+#' @param api The location of the JS libraries handling the request. Is
+#' appended to the supplied url.
+#' @param url The base url, the request is sent to.
+#' 
+#' @return A list/data.frame holding the response from openBis.
+#' 
+do_openbis <- function(method,
+                       params,
+                       api = "openbis/openbis/rmi-general-information-v1.json",
+                       url = "https://infectx.biozentrum.unibas.ch") {
+
+  req <- list(id = "1",
+              jsonrpc = "2.0",
+              method = method,
+              params = params)
+
+  res <- httr::POST(paste(url, api, sep = "/"), body = req, encode = "json")
+
+  assert_that(res$status_code == 200)
+
+  res$content <- jsonlite::fromJSON(rawToChar(res$content))
+
+  if (!is.null(res$content$error))
+    stop("Error:\n", paste(names(res$content$error), res$content$error,
+                           sep = ": ", collapse = "\n"))
+  else
+    res$content$result
+}
+
+#' @title Generate a login token
+#'
+#' @description Create a login token for openBis API calls. Upon garbage
+#' collection of the token, the user is logged out.
+#' 
+#' @param user,pwd Login credentials for an openBis instance.
+#' @param auto_disconnect Logical switch for automatically closing the
+#' connection upon garbage collection of the token.
+#' @param ... Further arguments are passed to [do_openbis].
+#' 
+#' @return The login token to be used for further API interactions.
+#' 
+#' @export
+#' 
+login_openbis <- function(user,
+                          pwd,
+                          auto_disconnect = TRUE,
+                          ...) {
+
+  disco <- function(tok, ...) {
+    dots <- list(...)
+    reg.finalizer(environment(),
+                  function(...) do.call(logout_openbis, c(tok, dots)),
+                  onexit = TRUE)
+    environment()
+  }
+
+  token <- do_openbis("tryToAuthenticateForAllServices", list(user, pwd), ...)
+
+  assert_that(!is.null(token), msg = "Login failed.")
+
+  if (auto_disconnect)  {
+    attr(token, "finaliser") <- disco(token, ...)
+  }
+
+  token
+}
+
+#' @title Logout from openBis
+#'
+#' @description Using a token as created by [login_openbis], the corresponding
+#' session is closed and the token is rendered invalid.
+#' 
+#' @param token Login token as created by [login_openbis].
+#' @param ... Further arguments are passed to [do_openbis].
+#' 
+#' @return NULL (invisibly)
+#' 
+#' @export
+#' 
+logout_openbis <- function(token, ...)
+  invisible(do_openbis("logout", list(token), ...))
+
+#' @title Check validity of token
+#'
+#' @description A token as created by [login_openbis] is tested for its
+#' validity.
+#' 
+#' @param token Login token as created by [login_openbis].
+#' @param ... Further arguments are passed to [do_openbis].
+#' 
+#' @return Scalar logical.
+#' 
+#' @export
+#' 
+is_token_valid <- function(token, ...)
+  do_openbis("isSessionActive", list(token), ...)
+
+
 #' @title Download datasets from an openBis instance
 #'
 #' @description This is a wrapper for the BeeDataSetDownloader.jar application
