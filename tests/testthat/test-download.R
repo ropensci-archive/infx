@@ -6,8 +6,15 @@ test_that("openbis system call works", {
   expect_error(fetch_openbis())
   expect_error(fetch_openbis(cred$username))
   expect_error(fetch_openbis(cred$username, cred$password))
+  expect_error(fetch_openbis(cred$username, cred$password, verbosity = -1))
+  expect_error(fetch_openbis(cred$username, cred$password,
+                             result_class = "foo"))
+  expect_error(fetch_openbis(cred$username, cred$password,
+                             out_dir = "foo"))
   dir <- tempfile()
   expect_true(dir.create(dir))
+  expect_error(fetch_openbis(cred$username, cred$password,
+               data_id = "foobar", out_dir = dir))
   tmp <- fetch_openbis(cred$username, cred$password,
                        data_id = "20150421161324410-3129549", out_dir = dir)
   expect_match(tmp, "^Successfully downloaded 2 files", all = FALSE)

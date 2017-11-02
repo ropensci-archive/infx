@@ -25,8 +25,7 @@
 #' @return A character vector holding all std output of BeeDataSetDownloader at
 #' the specified verbosity level.
 #' 
-fetch_openbis <- function(username = NULL,
-                          password = NULL,
+fetch_openbis <- function(username, password,
                           data_type = NULL,
                           data_id = NULL,
                           plate_regex = NULL,
@@ -36,29 +35,16 @@ fetch_openbis <- function(username = NULL,
                           newest = TRUE,
                           verbosity = 6) {
 
-  success <- function(x) {
-    sum(grepl("Login successful", x, fixed = TRUE)) == 1L &&
-      sum(grepl("Module BeeDataSetDownloader finished successfully", x,
-                fixed = TRUE)) == 1L
-  }
-
-  try_call <- function(x) {
-    ret <- suppressWarnings(system2(command = "java", args = x,
-                                    stdout = TRUE, stderr = TRUE))
-    if (!is.null(attr(ret, "status")) && attr(ret, "status") != 0) {
-      message("")
-      stop(paste(ret, collapse = "\n"))
-    }
-    ret
-  }
-
   # input validation
+  verbosity <- as.integer(verbosity)
   stopifnot(is.character(username), length(username) == 1,
-            is.character(password), length(password) == 1)
+            is.character(password), length(password) == 1,
+            is.character(file_regex), length(file_regex) == 1,
+            length(out_dir) == 1, dir.exists(out_dir),
+            is.logical(newest), length(newest) == 1,
+            length(verbosity) == 1, verbosity <= 25 & verbosity >= 0)
   if (!is.null(result_class) && !result_class %in% c("stable"))
     stop("currently the only supported result class is \"stable\".")
-  verbosity <- as.integer(verbosity)
-  stopifnot(verbosity <= 25 & verbosity >= 0)
 
   jarloc <- system.file("java", "openBisDownloader.jar",
                         package = utils::packageName())
@@ -82,12 +68,18 @@ fetch_openbis <- function(username = NULL,
     "--outputdir", paste0("'", out_dir, "'"))
 
   message("Fetching data from openBIS...", appendLF = FALSE)
-  ret <- try_call(arguments)
-  if (!success(ret)) {
-    Sys.sleep(10)
-    ret <- try_call(arguments)
+
+  ret <- suppressWarnings(system2(command = "java", args = arguments,
+                                  stdout = TRUE, stderr = TRUE))
+
+  if ( (!is.null(attr(ret, "status")) && attr(ret, "status") != 0) ||
+       sum(grepl("Login successful", ret, fixed = TRUE)) != 1L ||
+       sum(grepl("Module BeeDataSetDownloader finished successfully", ret,
+                 fixed = TRUE)) != 1L) {
+    message("")
+    stop(paste(ret, collapse = "\n"))
   }
-  stopifnot(success(ret))
+
   message(" done.")
 
   ret
