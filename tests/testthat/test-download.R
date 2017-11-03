@@ -37,7 +37,7 @@ test_that("openbis downloads can be created", {
                     "retrievedFetchOptions") %in% names(samp)))
   expect_equal(length(samp[["permId"]]), 1L)
 
-  expect_is(ds <- list_datasets(tok, "BB02-2E"), "data.frame")
+  expect_is(ds <- list_plate_datasets(tok, "BB02-2E"), "data.frame")
   expect_gte(nrow(ds), 1L)
   expect_named(ds)
   expect_true(all(c("code", "dataSetTypeCode") %in% names(ds)))

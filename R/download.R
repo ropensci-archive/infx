@@ -162,9 +162,9 @@ get_plate_sample <- function(token,
 #' 
 #' @export
 #' 
-list_datasets <- function(token,
-                          plate_id,
-                          ...) {
+list_plate_datasets <- function(token,
+                                plate_id,
+                                ...) {
 
   sample <- get_plate_sample(token, plate_id, ...)
   stopifnot(length(sample$id) == 1L)
