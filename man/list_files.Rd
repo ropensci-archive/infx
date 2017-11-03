@@ -4,7 +4,7 @@
 \alias{list_files}
 \title{Get files for a data set}
 \usage{
-list_files(token, data_id, folder = "original/data", ...)
+list_files(token, data_id, folder = "original", ...)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}

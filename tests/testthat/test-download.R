@@ -115,6 +115,16 @@ test_that("openbis downloads can be executed", {
   expect_true(all(sapply(dat, is.raw)))
 })
 
+test_that("metadata can be fetched", {
+  expect_error(fetch_meta(tok))
+  expect_type(dat <- fetch_meta(tok, "public"), "list")
+  expect_named(dat)
+  expect_equal(length(dat), 1L)
+  expect_type(dat[[1]], "raw")
+  expect_true(grepl("\\.csv\\.zip$", names(dat)))
+})
+
+
 test_that("openbis system call works", {
   expect_error(fetch_openbis())
   expect_error(fetch_openbis(cred$username))
@@ -195,15 +205,3 @@ test_that("plates can be fetched", {
                ".*Children_[A-z]+_Count.mat$", all = TRUE)
 })
 
-test_that("metadata can be fetched", {
-  dir <- tempfile()
-  expect_error(fetch_meta(username = cred$username, password = cred$password,
-                          out_dir = dir))
-  unlink(dir, recursive = TRUE)
-  expect_error(fetch_meta(username = cred$username, password = cred$password,
-                          type = "foo", out_dir = dir))
-  meta <- fetch_meta(username = cred$username, password = cred$password,
-                     type = "public", out_dir = dir)
-  expect_length(meta, 1L)
-  expect_match(meta, ".*aggregate.csv.zip$", all = TRUE)
-})

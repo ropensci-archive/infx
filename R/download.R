@@ -174,7 +174,7 @@ list_experiments <- function(token,
     assert_that(is.character(exp_type),
                 length(exp_type) >= 1L)
   else
-    exp_type <- list_experiment_types(tok, ...)[["code"]]
+    exp_type <- list_experiment_types(token, ...)[["code"]]
 
   proj <- mapply(function(x, y) list(`@type` = "Project", spaceCode = x,
                                      code = y),
@@ -182,7 +182,7 @@ list_experiments <- function(token,
                  USE.NAMES = FALSE)
 
   res <- lapply(exp_type, function(type)
-    do_openbis("listExperiments", list(tok, proj, type), ...))
+    do_openbis("listExperiments", list(token, proj, type), ...))
 
   do.call(rbind, res)
 }
@@ -289,7 +289,7 @@ list_exp_datasets <- function(token,
 #' 
 list_files <- function(token,
                        data_id,
-                       folder = "original/data",
+                       folder = "original",
                        ...) {
 
   do_openbis("listFilesForDataSet",
@@ -336,17 +336,18 @@ get_download <- function(token,
 do_download <- function(token,
                         data_id,
                         files,
-                        rep = 1) {
+                        rep = 1,
+                        ...) {
 
   assert_that(is.data.frame(files),
               all(c("pathInDataSet", "pathInListing", "isDirectory",
                     "crc32Checksum", "fileSize") %in% names(files)),
-              all(!files[["isDirectory"]]),
               nrow(files) <= 10L)
 
-  res <- apply(files, 1, function(x) list(path  = x[["pathInDataSet"]],
-                                          size = x[["fileSize"]],
-                                          download = NULL))
+  res <- apply(files[!files[["isDirectory"]], ], 1, function(x)
+    list(path  = x[["pathInDataSet"]], size = x[["fileSize"]],
+         download = NULL))
+
   repeat {
 
     indexes <- which(sapply(res, function(x) is.null(x$download)))
@@ -357,7 +358,7 @@ do_download <- function(token,
     if (length(indexes) == 1) {
 
       res[[indexes]]$download <- curl::curl_fetch_memory(
-        get_download(token, data_id, res[[indexes]]$path))
+        get_download(token, data_id, res[[indexes]]$path, ...))
 
     } else {
 
@@ -365,7 +366,7 @@ do_download <- function(token,
 
       lapply(indexes, function(x) {
         curl::curl_fetch_multi(
-          url    = get_download(token, data_id, res[[x]]$path),
+          url    = get_download(token, data_id, res[[x]]$path, ...),
           handle = curl::new_handle(),
           pool   = pool,
           done   = function(res) res[[x]]$download <<- res,
@@ -587,45 +588,46 @@ fetch_plate <- function(plate_name,
 
 #' @title Fetch InfectX meta data
 #'
-#' @description A wrapper around [fetch_data()], this function essentially
-#' provides default values for downloading meta data from openBis. Two formats
-#' of meta data are currently available: dumps of SQLite databased holding the
-#' entire set of experimental meta data, as well as a CSV sheet, containing
-#' only the published subset.
+#' @description This function essentially provides default values for
+#' downloading meta data from openBis. Two formats of meta data are currently
+#' available: dumps of SQLite databased holding the entire set of experimental
+#' meta data, as well as a CSV sheet, containing only the published subset.
 #' 
 #' @param type A switch for the type of meta data to be downloaded.
-#' @param ... Passed to [fetch_data()].
+#' @inheritParams logout_openbis
 #' 
-#' @return A vector of downloaded filenames
+#' @return A list of downloaded files (raw).
 #' 
 #' @export
 #' 
-fetch_meta <- function(type = c("full", "public"),
+fetch_meta <- function(token,
+                       type = c("full", "public"),
                        ...) {
 
   type <- match.arg(type)
-  dots <- list(...)
 
-  if (!is.null(dots$data_type))
-    warning("ignoring the argument \"data_type\".")
-  dots$data_type <- "HCS_ANALYSIS_WELL_REPORT_CSV"
+  exp <- list_experiments(token,
+                          data.frame(spaceCode = ifelse(type == "full",
+                                                        "INFECTX",
+                                                        "INFECTX_PUBLISHED"),
+                                     code = "_COMMON"), ...)
+  exp <- exp[exp[["code"]] == ifelse(type == "full",
+                                     "REPORTS", "AGGREGATEFILES"), ]
+  assert_that(nrow(exp) == 1L)
 
-  if (type == "full") {
+  ds <- list_exp_datasets(token, exp, ...)
 
-    if (!is.null(dots$file_regex))
-      warning("ignoring the argument \"file_regex\".")
-    dots$file_regex <- ".*.tsv.gz$"
+  if (type == "full")
+    ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_WELL_REPORT_CSV" &
+             grepl("CompoundDatabaseDump", ds[["properties"]][["NAME"]]), ]
+  else
+    ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_WELL_REPORT_CSV", ]
 
-    if (!is.null(dots$plate_regex))
-      warning("ignoring the argument \"plate_regex\".")
-    dots$plate_regex <- "/INFECTX/_COMMON/REPORTS/DUMMYSTORAGEFORREPORTS"
+  ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
+  assert_that(nrow(ds) == 1L)
 
-  } else {
+  file <- list_files(token, ds[["code"]], ...)
+  assert_that(nrow(file) >= 1L)
 
-    if (!is.null(dots$data_id))
-      warning("ignoring the argument \"data_id\".")
-    dots$data_id <- "20140609103658114-3045667"
-  }
-
-  do.call(fetch_data, dots)
+  do_download(token, ds[["code"]], file, ...)
 }

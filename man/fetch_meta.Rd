@@ -4,20 +4,21 @@
 \alias{fetch_meta}
 \title{Fetch InfectX meta data}
 \usage{
-fetch_meta(type = c("full", "public"), ...)
+fetch_meta(token, type = c("full", "public"), ...)
 }
 \arguments{
+\item{token}{Login token as created by [login_openbis].}
+
 \item{type}{A switch for the type of meta data to be downloaded.}
 
-\item{...}{Passed to [fetch_data()].}
+\item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{
-A vector of downloaded filenames
+A list of downloaded files (raw).
 }
 \description{
-A wrapper around [fetch_data()], this function essentially
-provides default values for downloading meta data from openBis. Two formats
-of meta data are currently available: dumps of SQLite databased holding the
-entire set of experimental meta data, as well as a CSV sheet, containing
-only the published subset.
+This function essentially provides default values for
+downloading meta data from openBis. Two formats of meta data are currently
+available: dumps of SQLite databased holding the entire set of experimental
+meta data, as well as a CSV sheet, containing only the published subset.
 }
