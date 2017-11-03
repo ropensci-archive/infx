@@ -119,6 +119,74 @@ list_plates <- function(token, ...)
   do_openbis("listPlates", list(token),
              "openbis/openbis/rmi-screening-api-v1.json", ...)
 
+#' @title List projects
+#'
+#' @description For a login token, list all available projects.
+#' 
+#' @inheritParams logout_openbis
+#' 
+#' @return List/data.frame, containing (among others), columns \"plateCode\"
+#' and \"spaceCodeOrNull\".
+#' 
+#' @export
+#' 
+list_projects <- function(token, ...)
+  do_openbis("listProjects", list(token), ...)
+
+#' @title List experiment types
+#'
+#' @description For a login token, list all available experiment types.
+#' 
+#' @inheritParams logout_openbis
+#' 
+#' @return List/data.frame, containing (among others), columns \"plateCode\"
+#' and \"spaceCodeOrNull\".
+#' 
+#' @export
+#' 
+list_experiment_types <- function(token, ...)
+  do_openbis("listExperimentTypes", list(token), ...)
+
+#' @title List plates
+#'
+#' @description For a login token, list all available plates.
+#' 
+#' @inheritParams logout_openbis
+#' 
+#' @return List/data.frame, containing (among others), columns \"plateCode\"
+#' and \"spaceCodeOrNull\".
+#' 
+#' @export
+#' 
+list_experiments <- function(token,
+                             projects = NULL,
+                             exp_type = NULL,
+                             ...) {
+
+  if (!is.null(projects))
+    assert_that(is.data.frame(projects),
+                all(c("spaceCode", "code") %in% names(projects)),
+                nrow(projects) >= 1L)
+  else
+    projects <- list_projects(token, ...)
+
+  if (!is.null(exp_type))
+    assert_that(is.character(exp_type),
+                length(exp_type) >= 1L)
+  else
+    exp_type <- list_experiment_types(tok, ...)[["code"]]
+
+  proj <- mapply(function(x, y) list(`@type` = "Project", spaceCode = x,
+                                     code = y),
+                 projects[["spaceCode"]], projects[["code"]], SIMPLIFY = FALSE,
+                 USE.NAMES = FALSE)
+
+  res <- lapply(exp_type, function(type)
+    do_openbis("listExperiments", list(tok, proj, type), ...))
+
+  do.call(rbind, res)
+}
+
 #' @title Get sample object of plate
 #'
 #' @description Given a plate id (barcode), the corresponding plate space is

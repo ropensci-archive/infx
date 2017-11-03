@@ -24,8 +24,41 @@ test_that("openbis login is possible", {
   expect_false(is_token_valid(tok_chr))
 })
 
+tok <- login_openbis(cred$username, cred$password)
+
+test_that("openbis experiment listing works", {
+  expect_is(proj <- list_projects(tok), "data.frame")
+  expect_gte(nrow(proj), 1L)
+  expect_named(proj)
+  expect_true(all(c("spaceCode", "code") %in% names(proj)))
+
+  expect_is(et <- list_experiment_types(tok), "data.frame")
+  expect_gte(nrow(et), 1L)
+  expect_named(et)
+  expect_true(all(c("code", "description") %in% names(et)))
+
+  expect_is(exp <- list_experiments(tok), "data.frame")
+  expect_gte(nrow(exp), 1L)
+  expect_named(exp)
+  expect_true(all(c("permId", "code") %in% names(exp)))
+
+  expect_is(exp <- list_experiments(tok, exp_type = "SIRNA_HCS"), "data.frame")
+  expect_gte(nrow(exp), 1L)
+  expect_named(exp)
+  expect_true(all(c("permId", "code") %in% names(exp)))
+
+  expect_is(exp <- list_experiments(tok, projects = proj[1, ]), "data.frame")
+  expect_gte(nrow(exp), 1L)
+  expect_named(exp)
+  expect_true(all(c("permId", "code") %in% names(exp)))
+
+  expect_is(exp <- list_experiments(tok, projects = proj[1:2, ]), "data.frame")
+  expect_gte(nrow(exp), 1L)
+  expect_named(exp)
+  expect_true(all(c("permId", "code") %in% names(exp)))
+})
+
 test_that("openbis downloads can be created", {
-  tok <- login_openbis(cred$username, cred$password)
   expect_is(plates <- list_plates(tok), "data.frame")
   expect_gte(nrow(plates), 1L)
   expect_named(plates)
@@ -55,7 +88,6 @@ test_that("openbis downloads can be created", {
 })
 
 test_that("openbis downloads can be executed", {
-  tok <- login_openbis(cred$username, cred$password)
   files <- list_files(tok, "20160921085125038-3519900")
 
   expect_error(do_download(tok, "20160921085125038-3519900", "foo"))
