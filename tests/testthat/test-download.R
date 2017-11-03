@@ -75,6 +75,13 @@ test_that("openbis downloads can be created", {
   expect_named(ds)
   expect_true(all(c("code", "dataSetTypeCode") %in% names(ds)))
 
+  pro <- data.frame(spaceCode = "INFECTX_PUBLISHED", code = "_COMMON")
+  exp <- list_experiments(tok, pro)
+  expect_is(ds <- list_exp_datasets(tok, exp[1, ]), "data.frame")
+  expect_gte(nrow(ds), 1L)
+  expect_named(ds)
+  expect_true(all(c("code", "dataSetTypeCode") %in% names(ds)))
+
   expect_is(files <- list_files(tok, "20160921085125038-3519900"),
             "data.frame")
   expect_gte(nrow(files), 1L)

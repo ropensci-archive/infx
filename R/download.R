@@ -244,6 +244,36 @@ list_plate_datasets <- function(token,
                   TRUE), ...)
 }
 
+#' @title Get data sets for a set of experiments
+#'
+#' @description Given a set of experiments as a data.frame, the corresponding
+#' data sets are queried. Can be slow if several experiments are included in
+#' the query.
+#' 
+#' @inheritParams logout_openbis
+#' @param experiment A data.frame representing a set of experiments.
+#' 
+#' @return List/data.frame, containing (among others), columns \"code\",
+#' \"dataSetTypeCode\".
+#' 
+#' @export
+#' 
+list_exp_datasets <- function(token,
+                              experiment,
+                              ...) {
+
+  assert_that(is.data.frame(experiment),
+              all(c("id", "permId", "identifier", "properties",
+                    "experimentTypeCode") %in% names(experiment)),
+              nrow(experiment) >= 1L)
+
+  do_openbis("listDataSetsForExperiments",
+             list(token,
+                  experiment[c("id", "permId", "identifier", "properties",
+                               "experimentTypeCode")],
+                  list("CHILDREN")), ...)
+}
+
 #' @title Get files for a data set
 #'
 #' @description Given a data set code, the corresponding files are queried.
