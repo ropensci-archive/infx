@@ -222,6 +222,92 @@ get_download <- function(token,
              "datastore_server/rmi-dss-api-v1.json", ...)
 }
 
+#' @title Download files
+#'
+#' @description Given a data set code and a set of file paths (as returned
+#' from [list_files]), a download link is generated for each file by
+#' [get_download]. The downloads are preformed asynchronously.
+#' 
+#' @inheritParams get_download
+#' @param rep The number of times failed downloads are repeated.
+#' 
+#' @return A list of raw vectors holding the downloaded data.
+#' 
+#' @export
+#' 
+do_download <- function(token,
+                        data_id,
+                        files,
+                        rep = 1) {
+
+  assert_that(is.data.frame(files),
+              all(c("pathInDataSet", "pathInListing", "isDirectory",
+                    "crc32Checksum", "fileSize") %in% names(files)),
+              all(!files[["isDirectory"]]),
+              nrow(files) <= 10L)
+
+  res <- apply(files, 1, function(x) list(path  = x[["pathInDataSet"]],
+                                          size = x[["fileSize"]],
+                                          download = NULL))
+  repeat {
+
+    indexes <- which(sapply(res, function(x) is.null(x$download)))
+    if (length(indexes) == 0) break
+    if (rep < 0) stop("data could not be fetched successfully.")
+    rep <- rep - 1
+
+    if (length(indexes) == 1) {
+
+      res[[indexes]]$download <- curl::curl_fetch_memory(
+        get_download(token, data_id, res[[indexes]]$path))
+
+    } else {
+
+      pool <- curl::new_pool()
+
+      lapply(indexes, function(x) {
+        curl::curl_fetch_multi(
+          url    = get_download(token, data_id, res[[x]]$path),
+          handle = curl::new_handle(),
+          pool   = pool,
+          done   = function(res) res[[x]]$download <<- res,
+          fail   = function(msg) {
+            warning("request to ", res[[x]]$path, " failed:\n", msg)
+            res[[x]]$download <<- NULL
+          })
+        invisible(NULL)
+      })
+
+      out <- curl::multi_run(pool = pool)
+      if (out$success != length(indexes)) {
+        warning(out$error, " download(s) failed; retrying.")
+      }
+    }
+
+    res[indexes] <- lapply(res[indexes], function(x) {
+
+      if (is.null(x$download))
+        warning("request to ", x$path, " failed completely; retrying.")
+      else if (x$download$status_code != 200) {
+
+        warning("request to ", x$path, " failed with code ",
+                x$download$status_code, "; retrying.")
+        x$download <- NULL
+
+      } else if (length(x$download$content) != as.integer(x$size)) {
+
+        warning("request to ", x$path, " did not complete; retrying.")
+        x$download <- NULL
+      }
+
+      x
+    })
+  }
+
+  setNames(lapply(res, function(x) x$download$content),
+           basename(sapply(res, `[[`, "path")))
+}
+
 #' @title Download datasets from an openBis instance
 #'
 #' @description This is a wrapper for the BeeDataSetDownloader.jar application
