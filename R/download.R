@@ -556,34 +556,41 @@ fetch_data <- function(auto_rm = TRUE,
 
 #' @title Fetch single cell data
 #'
-#' @description Calling [fetch_openbis()], this function downloads single cell
-#' datasets corresponding to a plate barcode and filtered by an optional file
-#' name regular expression.
+#' @description Download single cell datasets corresponding to a plate barcode
+#' and filtered by a regular expression applied to file names. 
 #' 
-#' @param plate_name The plate barcode of interest.
-#' @param ... Arguments passed to [fetch_data()]
+#' @param file_regex The plate barcode of interest.
+#' @inheritParams get_plate_sample
 #' 
-#' @return A vector of downloaded filenames.
+#' @return A list of downloaded file data (raw).
 #' 
 #' @export
-#' 
-fetch_plate <- function(plate_name,
+#'
+fetch_plate <- function(token,
+                        plate_id,
+                        file_regex,
                         ...) {
 
-  dots <- list(...)
+  ds <- list_plate_datasets(token, plate_id, ...)
+  ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_CELL_FEATURES_CC_MAT", ]
+  ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
+  assert_that(nrow(ds) == 1L)
 
-  if (!is.null(dots$plate_regex))
-    warning("ignoring the argument \"plate_regex\".")
-  dots$plate_regex <- paste0("^/.*/.*/.*/", plate_name, "$")
+  files <- list_files(token, ds[["code"]], ...)
+  files <- files[!files[["isDirectory"]] &
+                 grepl(file_regex, basename(files[["pathInDataSet"]])), ]
+  assert_that(nrow(files) >= 1L)
 
-  if (!is.null(dots$data_type))
-    warning("ignoring the argument \"data_type\".")
-  dots$data_type <- "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"
+  n_bins <- ceiling(nrow(files) / 10)
+  bin_size <- ceiling(nrow(files) / n_bins)
 
-  if (is.null(dots$file_regex))
-    dots$file_regex <- ".*\\.mat$"
+  cut <- rep(1:n_bins, each = bin_size)[seq_len(nrow(files))]
 
-  do.call(fetch_data, dots)
+  res <- lapply(split(files, cut), function(x, ...)
+    do_download(token, ds[["code"]], x, ...), ...)
+
+  setNames(unlist(res, recursive = FALSE),
+           unlist(sapply(res, names), recursive = FALSE))
 }
 
 #' @title Fetch InfectX meta data
@@ -626,8 +633,8 @@ fetch_meta <- function(token,
   ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
   assert_that(nrow(ds) == 1L)
 
-  file <- list_files(token, ds[["code"]], ...)
-  assert_that(nrow(file) >= 1L)
+  files <- list_files(token, ds[["code"]], ...)
+  assert_that(nrow(files) >= 1L)
 
-  do_download(token, ds[["code"]], file, ...)
+  do_download(token, ds[["code"]], files, ...)
 }
