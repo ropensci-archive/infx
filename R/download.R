@@ -95,8 +95,7 @@ logout_openbis <- function(token, ...)
 #' @description A token as created by [login_openbis] is tested for its
 #' validity.
 #' 
-#' @param token Login token as created by [login_openbis].
-#' @param ... Further arguments are passed to [do_openbis].
+#' @inheritParams logout_openbis
 #' 
 #' @return Scalar logical.
 #' 
@@ -105,6 +104,123 @@ logout_openbis <- function(token, ...)
 is_token_valid <- function(token, ...)
   do_openbis("isSessionActive", list(token), ...)
 
+#' @title List plates
+#'
+#' @description For a login token, list all available plates.
+#' 
+#' @inheritParams logout_openbis
+#' 
+#' @return List/data.frame, containing (among others), columns \"plateCode\"
+#' and \"spaceCodeOrNull\".
+#' 
+#' @export
+#' 
+list_plates <- function(token, ...)
+  do_openbis("listPlates", list(token),
+             "openbis/openbis/rmi-screening-api-v1.json", ...)
+
+#' @title Get sample object of plate
+#'
+#' @description Given a plate id (barcode), the corresponding plate space is
+#' determined using [list_plates] and the sample object representing the given
+#' plate is queried.
+#' 
+#' @inheritParams logout_openbis
+#' @param plate_id Plate barcode.
+#' 
+#' @return List/data.frame, containing (among others), columns \"id\",
+#' \"permId\", \"identifier\", \"properties\", \"retrievedFetchOptions\".
+#' 
+#' @export
+#' 
+get_plate_sample <- function(token,
+                             plate_id,
+                             ...) {
+
+  plates <- list_plates(token, ...)
+  stopifnot(sum(plates[["plateCode"]] == plate_id) == 1L)
+
+  space_code <- plates[plates[["plateCode"]] == plate_id, "spaceCodeOrNull"]
+
+  do_openbis("getPlateSample",
+             list(token, list(`@type` = "PlateIdentifier",
+                              plateCode = plate_id,
+                              spaceCodeOrNull = space_code)),
+             "openbis/openbis/rmi-screening-api-v1.json", ...)
+}
+
+#' @title Get data sets for a plate
+#'
+#' @description Given a plate id (barcode), the corresponding sample object is
+#' fetched using [get_plate_sample] and all available datasets for this sample
+#' are queried.
+#' 
+#' @inheritParams get_plate_sample
+#' 
+#' @return List/data.frame, containing (among others), columns \"code\",
+#' \"dataSetTypeCode\".
+#' 
+#' @export
+#' 
+list_datasets <- function(token,
+                          plate_id,
+                          ...) {
+
+  sample <- get_plate_sample(token, plate_id, ...)
+  stopifnot(length(sample$id) == 1L)
+
+  do_openbis("listDataSetsForSample",
+             list(token,
+                  sample[c("id", "permId", "identifier", "properties",
+                           "retrievedFetchOptions")],
+                  TRUE), ...)
+}
+
+#' @title Get files for a data set
+#'
+#' @description Given a data set code, the corresponding files are queried.
+#' 
+#' @inheritParams logout_openbis
+#' @param data_id Data set code.
+#' @param folder Folder to which the file search is restricted.
+#' 
+#' @return List/data.frame, containing (among others), columns
+#' \"pathInDataSet\", \"pathInListing\".
+#' 
+#' @export
+#' 
+list_files <- function(token,
+                       data_id,
+                       folder = "original/data",
+                       ...) {
+
+  do_openbis("listFilesForDataSet",
+             list(token, data_id, folder, TRUE),
+             "datastore_server/rmi-dss-api-v1.json", ...)
+}
+
+#' @title Get download link for file
+#'
+#' @description Given a data set code and a file path, a download link is
+#' generated, which has to be consumed immediately.
+#' 
+#' @inheritParams logout_openbis
+#' @param data_id Data set code.
+#' @param file File path for which the link is generated.
+#' 
+#' @return Url linking to file (expires immediately).
+#' 
+#' @export
+#' 
+get_download <- function(token,
+                         data_id,
+                         file,
+                         ...) {
+
+  do_openbis("getDownloadUrlForFileForDataSet",
+             list(token, data_id, file),
+             "datastore_server/rmi-dss-api-v1.json", ...)
+}
 
 #' @title Download datasets from an openBis instance
 #'

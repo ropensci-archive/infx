@@ -24,6 +24,36 @@ test_that("openbis login is possible", {
   expect_false(is_token_valid(tok_chr))
 })
 
+test_that("openbis download is possible", {
+  tok <- login_openbis(cred$username, cred$password)
+  expect_is(plates <- list_plates(tok), "data.frame")
+  expect_gte(nrow(plates), 1L)
+  expect_named(plates)
+  expect_true(all(c("plateCode", "spaceCodeOrNull") %in% names(plates)))
+
+  expect_type(samp <- get_plate_sample(tok, "BB02-2E"), "list")
+  expect_named(samp)
+  expect_true(all(c("id", "permId", "identifier", "properties",
+                    "retrievedFetchOptions") %in% names(samp)))
+  expect_equal(length(samp[["permId"]]), 1L)
+
+  expect_is(ds <- list_datasets(tok, "BB02-2E"), "data.frame")
+  expect_gte(nrow(ds), 1L)
+  expect_named(ds)
+  expect_true(all(c("code", "dataSetTypeCode") %in% names(ds)))
+
+  expect_is(files <- list_files(tok, "20160921085125038-3519900"),
+            "data.frame")
+  expect_gte(nrow(files), 1L)
+  expect_named(files)
+  expect_true(all(c("pathInDataSet", "pathInListing") %in% names(files)))
+
+  expect_type(link <- get_download(tok, "20160921085125038-3519900",
+                                   files[["pathInDataSet"]][2]),
+              "character")
+  expect_true(grepl("^https://", link))
+})
+
 test_that("openbis system call works", {
   expect_error(fetch_openbis())
   expect_error(fetch_openbis(cred$username))
