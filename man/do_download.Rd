@@ -11,6 +11,9 @@ do_download(token, data_id, files, rep = 1, ...)
 
 \item{data_id}{Data set code.}
 
+\item{files}{Files objects as produced by [list_files] describing the files
+to be downloaded.}
+
 \item{rep}{The number of times failed downloads are repeated.}
 
 \item{...}{Further arguments are passed to [do_openbis].}

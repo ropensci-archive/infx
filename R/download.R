@@ -152,6 +152,10 @@ list_experiment_types <- function(token, ...)
 #' @description For a login token, list all available plates.
 #' 
 #' @inheritParams logout_openbis
+#' @param projects Data.frame holding objects for which experiments are to be
+#' listed. If NULL, all experiments are returned.
+#' @param exp_type Character vector, specifying the desired experiment type.
+#' If NULL, all experiments are returned.
 #' 
 #' @return List/data.frame, containing (among others), columns \"plateCode\"
 #' and \"spaceCodeOrNull\".
@@ -327,6 +331,8 @@ get_download <- function(token,
 #' [get_download]. The downloads are preformed asynchronously.
 #' 
 #' @inheritParams get_download
+#' @param files Files objects as produced by [list_files] describing the files
+#' to be downloaded.
 #' @param rep The number of times failed downloads are repeated.
 #' 
 #' @return A list of raw vectors holding the downloaded data.
@@ -403,156 +409,9 @@ do_download <- function(token,
     })
   }
 
-  setNames(lapply(res, function(x) x$download$content),
-           basename(sapply(res, `[[`, "path")))
+  stats::setNames(lapply(res, function(x) x$download$content),
+                  basename(sapply(res, `[[`, "path")))
 }
-
-#' @title Download datasets from an openBis instance
-#'
-#' @description This is a wrapper for the BeeDataSetDownloader.jar application
-#' supplied by the package, responsible for downloading data from the InfectX
-#' openBis instance.
-#' 
-#' @param username,password OpneBis login credentials
-#' @param data_type Specify the type of dataset to be downloaded
-#' @param data_id If applicable, for example for a single aggregate file,
-#' directly select the single dataset to download (optional)
-#' @param plate_regex If datasets corresponding to one or several plates are
-#' targeted, they can be selected via a regular expression (optional)
-#' @param file_regex A regular expression applied to filenames can be used to
-#' filter the selection (optional)
-#' @param out_dir Directory used to save the downloaded data to (default: the
-#' current working dir)
-#' @param result_class A string, indicating the result class to restrict to.
-#' NULL to skip.
-#' @param newest Logical, indicating whether to only return the newest
-#' version as a matched dataset per plate (default is TRUE).
-#' @param verbosity The verbosity level of BeeDataSetDownloader (an integer in
-#' [0-25]) 
-#' 
-#' @return A character vector holding all std output of BeeDataSetDownloader at
-#' the specified verbosity level.
-#' 
-fetch_openbis <- function(username, password,
-                          data_type = NULL,
-                          data_id = NULL,
-                          plate_regex = NULL,
-                          file_regex = ".*",
-                          out_dir = getwd(),
-                          result_class = "stable",
-                          newest = TRUE,
-                          verbosity = 6) {
-
-  # input validation
-  verbosity <- as.integer(verbosity)
-  stopifnot(is.character(username), length(username) == 1,
-            is.character(password), length(password) == 1,
-            is.character(file_regex), length(file_regex) == 1,
-            length(out_dir) == 1, dir.exists(out_dir),
-            is.logical(newest), length(newest) == 1,
-            length(verbosity) == 1, verbosity <= 25 & verbosity >= 0)
-  if (!is.null(result_class) && !result_class %in% c("stable"))
-    stop("currently the only supported result class is \"stable\".")
-
-  jarloc <- system.file("java", "openBisDownloader.jar",
-                        package = utils::packageName())
-
-  arguments <- c(
-    "-jar", jarloc,
-    "--verbose", paste0("'", verbosity, "'"),
-    "--user", paste0("'", username, "'"),
-    "--password", paste0("'", password, "'"),
-    if (!is.null(data_type))
-      "--type", paste0("'", data_type, "'"),
-    if (!is.null(result_class))
-      c("--result-class", paste0("'", result_class, "'")),
-    if (!is.null(data_id))
-      c("--datasetid", paste0("'", data_id, "'")),
-    if (!is.null(plate_regex))
-      c("--plateid", paste0("'", plate_regex, "'")),
-    if (newest)
-      "--newest",
-    "--files", paste0("'", file_regex, "'"),
-    "--outputdir", paste0("'", out_dir, "'"))
-
-  message("Fetching data from openBIS...", appendLF = FALSE)
-
-  ret <- suppressWarnings(system2(command = "java", args = arguments,
-                                  stdout = TRUE, stderr = TRUE))
-
-  if ( (!is.null(attr(ret, "status")) && attr(ret, "status") != 0) ||
-       sum(grepl("Login successful", ret, fixed = TRUE)) != 1L ||
-       sum(grepl("Module BeeDataSetDownloader finished successfully", ret,
-                 fixed = TRUE)) != 1L) {
-    message("")
-    stop(paste(ret, collapse = "\n"))
-  }
-
-  message(" done.")
-
-  ret
-}
-
-#' @title Fetch data from openBis.
-#'
-#' @description Calling [fetch_openbis()], this function downloads data and
-#' returns the downloaded filenames. It optionally makes sure the data is
-#' removed again upon garbage collection of the returned filename reference.
-#' 
-#' @param auto_rm A logical switch; if TRUE, all downloaded files will be
-#' removed upon garbage collection of the returned character vector.
-#' @param ... Arguments passed to [fetch_openbis()]
-#' 
-#' @return A vector of downloaded filenames.
-#' 
-#' @export
-#' 
-fetch_data <- function(auto_rm = TRUE,
-                       ...) {
-
-  dots <- list(...)
-
-  if (!is.null(dots$verbosity))
-    warning("ignoring the argument \"verbosity\".")
-  dots$verbosity <- 6
-
-  if (is.null(dots$out_dir))
-    dots$out_dir <- tempfile()
-
-  if (dir.exists(dots$out_dir)) {
-    files <- list.files(dots$out_dir, recursive = TRUE)
-    if (length(files) > 1) {
-      message("found ", length(files), " files under\n  ",
-              normalizePath(dots$out_dir), "\n  ",
-              "please remove/change cacheDir if this is not what is desired.")
-      return(files)
-    } else {
-      stop("could not find any files under\n  ", normalizePath(dots$out_dir),
-           "\n  please remove/change cacheDir.")
-    }
-  }
-
-  dir.create(dots$out_dir)
-
-  do.call(fetch_openbis, dots)
-
-  files <- list.files(dots$out_dir, recursive = TRUE, full.names = TRUE)
-
-  stopifnot(length(files) >= 1)
-
-  if (auto_rm) {
-    attr(files, "finaliser") <- (function(dir) {
-      reg.finalizer(environment(), function(...) {
-        message("Auto-removing downloaded files from\n", dir)
-        unlink(dir, recursive = TRUE)
-      }, onexit = TRUE)
-      environment()
-    })(dots$out_dir)
-  }
-
-  files
-}
-
 
 #' @title Fetch single cell data
 #'
@@ -589,8 +448,8 @@ fetch_plate <- function(token,
   res <- lapply(split(files, cut), function(x, ...)
     do_download(token, ds[["code"]], x, ...), ...)
 
-  setNames(unlist(res, recursive = FALSE),
-           unlist(sapply(res, names), recursive = FALSE))
+  stats::setNames(unlist(res, recursive = FALSE),
+                  unlist(sapply(res, names), recursive = FALSE))
 }
 
 #' @title Fetch InfectX meta data

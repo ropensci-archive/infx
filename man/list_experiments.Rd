@@ -9,6 +9,12 @@ list_experiments(token, projects = NULL, exp_type = NULL, ...)
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
+\item{projects}{Data.frame holding objects for which experiments are to be
+listed. If NULL, all experiments are returned.}
+
+\item{exp_type}{Character vector, specifying the desired experiment type.
+If NULL, all experiments are returned.}
+
 \item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{

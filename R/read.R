@@ -21,28 +21,28 @@ read_data <- function(file) {
                      check.attributes = FALSE))
   }
 
-  stopifnot(length(file) == 1,
-            file.exists(file),
-            grepl(".mat$", file))
+  assert_that(is.list(file),
+              length(file) == 1,
+              is.raw(file[[1]]))
 
-  dat <- R.matlab::readMat(file)
+  dat <- R.matlab::readMat(file[[1]])
 
-  object <- unlist(strsplit(basename(file), "\\."))[1]
-  feature <- unlist(strsplit(basename(file), "\\."))[2]
+  object <- unlist(strsplit(names(file), "\\."))[1]
+  feature <- unlist(strsplit(names(file), "\\."))[2]
 
   # test first 4 levels of .mat file
   for (test in c("handles", "Measurements", object, gsub("_", ".", feature))) {
     hits <- c(attributes(dat)$names, attributes(dat)$dimnames) %in% test
-    stopifnot(sum(hits) == 1)
+    assert_that(sum(hits) == 1)
     dat <- dat[[which(hits)]]
   }
 
   dat <- unlist(dat, recursive = FALSE)
-  stopifnot(is.list(dat),
+  assert_that(is.list(dat),
             !any(sapply(dat, is.list)))
 
   dims <- t(sapply(dat, dim))
-  stopifnot(!any(dims[, 2] > 1))
+  assert_that(!any(dims[, 2] > 1))
 
   res <- unlist(dat, recursive = FALSE)
 
@@ -80,7 +80,17 @@ read_meta <- function(file,
                         .default = readr::col_character()),
                       ...) {
 
-  readr::read_delim(file,
+  assert_that(is.list(file),
+              length(file) == 1,
+              is.raw(file[[1]]))
+
+  fn <- tempfile()
+  dir.create(fn)
+  on.exit(unlink(fn, recursive = TRUE))
+
+  writeBin(file[[1]], file.path(fn, names(file)))
+
+  readr::read_delim(file.path(fn, names(file)),
                     if (type == "public") ";" else "\t",
                     col_types = col_types, ...)
 }
