@@ -21,8 +21,7 @@
 do_download <- function(token,
                         data_id,
                         files,
-                        rep = 1,
-                        ...) {
+                        rep = 1) {
 
   assert_that(is.data.frame(files),
               all(c("pathInDataSet", "pathInListing", "isDirectory",
@@ -40,55 +39,40 @@ do_download <- function(token,
     if (rep < 0) stop("data could not be fetched successfully.")
     rep <- rep - 1
 
-    if (length(indexes) == 1) {
+    pool <- curl::new_pool()
 
-      res[[indexes]]$download <- curl::curl_fetch_memory(
-        get_download(token, data_id, res[[indexes]]$path, ...))
-
-    } else {
-
-      pool <- curl::new_pool()
-
-      lapply(indexes, function(x) {
-        curl::curl_fetch_multi(
-          url    = get_download(token, data_id, res[[x]]$path, ...),
-          handle = curl::new_handle(),
-          pool   = pool,
-          done   = function(res) res[[x]]$download <<- res,
-          fail   = function(msg) {
-            warning("request to ", res[[x]]$path, " failed:\n", msg)
+    lapply(indexes, function(x) {
+      curl::curl_fetch_multi(
+        url    = get_download(token, data_id, res[[x]]$path),
+        handle = curl::new_handle(),
+        pool   = pool,
+        done   = function(dld) {
+          if (dld$status_code != 200) {
+            warning("request to ", basename(res[[x]]$path),
+                    " failed with code ", dld$status_code, "; retrying.")
             res[[x]]$download <<- NULL
-          })
-        invisible(NULL)
-      })
-
-      out <- curl::multi_run(pool = pool)
-      if (out$success != length(indexes)) {
-        warning(out$error, " download(s) failed; retrying.")
-      }
-    }
-
-    res[indexes] <- lapply(res[indexes], function(x) {
-
-      if (is.null(x$download))
-        warning("request to ", x$path, " failed completely; retrying.")
-      else if (x$download$status_code != 200) {
-
-        warning("request to ", x$path, " failed with code ",
-                x$download$status_code, "; retrying.")
-        x$download <- NULL
-
-      } else if (length(x$download$content) != as.integer(x$size)) {
-
-        warning("request to ", x$path, " did not complete; retrying.")
-        x$download <- NULL
-      }
-
-      x
+          } else if (length(dld$content) != as.integer(res[[x]]$size)) {
+            warning("request to ", basename(res[[x]]$path),
+                    " did not complete; retrying.")
+            res[[x]]$download <<- NULL
+          } else {
+            res[[x]]$download <<- dld$content
+          }
+        },
+        fail   = function(msg) {
+          warning("request to ", basename(res[[x]]$path), " failed:\n", msg)
+          res[[x]]$download <<- NULL
+        })
+      invisible(NULL)
     })
+
+    out <- curl::multi_run(pool = pool)
+    if (out$success != length(indexes)) {
+      warning(out$error, " download(s) failed; retrying.")
+    }
   }
 
-  stats::setNames(lapply(res, function(x) x$download$content),
+  stats::setNames(lapply(res, `[[`, "download"),
                   basename(sapply(res, `[[`, "path")))
 }
 
@@ -106,15 +90,14 @@ do_download <- function(token,
 #'
 fetch_plate <- function(token,
                         plate_id,
-                        file_regex,
-                        ...) {
+                        file_regex) {
 
-  ds <- list_plate_datasets(token, plate_id, ...)
+  ds <- list_plate_datasets(token, plate_id)
   ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_CELL_FEATURES_CC_MAT", ]
   ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
   assert_that(nrow(ds) == 1L)
 
-  files <- list_files(token, ds[["code"]], ...)
+  files <- list_files(token, ds[["code"]])
   files <- files[!files[["isDirectory"]] &
                  grepl(file_regex, basename(files[["pathInDataSet"]])), ]
   assert_that(nrow(files) >= 1L)
@@ -124,8 +107,8 @@ fetch_plate <- function(token,
 
   cut <- rep(1:n_bins, each = bin_size)[seq_len(nrow(files))]
 
-  res <- lapply(split(files, cut), function(x, ...)
-    do_download(token, ds[["code"]], x, ...), ...)
+  res <- lapply(split(files, cut), function(x)
+    do_download(token, ds[["code"]], x))
 
   stats::setNames(unlist(res, recursive = FALSE),
                   unlist(sapply(res, names), recursive = FALSE))

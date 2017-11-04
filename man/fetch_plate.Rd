@@ -4,7 +4,7 @@
 \alias{fetch_plate}
 \title{Fetch single cell data}
 \usage{
-fetch_plate(token, plate_id, file_regex, ...)
+fetch_plate(token, plate_id, file_regex)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -12,8 +12,6 @@ fetch_plate(token, plate_id, file_regex, ...)
 \item{plate_id}{Plate barcode.}
 
 \item{file_regex}{The plate barcode of interest.}
-
-\item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{
 A list of downloaded file data (raw).

@@ -4,7 +4,7 @@
 \alias{do_download}
 \title{Download files}
 \usage{
-do_download(token, data_id, files, rep = 1, ...)
+do_download(token, data_id, files, rep = 1)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -15,8 +15,6 @@ do_download(token, data_id, files, rep = 1, ...)
 to be downloaded.}
 
 \item{rep}{The number of times failed downloads are repeated.}
-
-\item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{
 A list of raw vectors holding the downloaded data.
