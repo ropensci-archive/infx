@@ -7,53 +7,51 @@
 #' where each node corresponds to an image and contains a list which is either
 #' holding a single value or a vector of values.  
 #' 
-#' @param file The filename of the file to be read.
+#' @param data The data to be read.
 #' 
 #' @return A vector holding all data. The attribute \code{length} can be used
-#' to split the linearized data into bind corresponding to images.
+#' to split the linearized data into bins corresponding to images.
 #' 
 #' @export
 #' 
-read_data <- function(file) {
+read_data <- function(data) {
 
   is_int <- function(x) {
     isTRUE(all.equal(x, suppressWarnings(as.integer(x)),
                      check.attributes = FALSE))
   }
 
-  assert_that(is.list(file),
-              length(file) == 1,
-              is.raw(file[[1]]))
+  assert_that(is.raw(data))
 
-  dat <- R.matlab::readMat(file[[1]])
+  data <- R.matlab::readMat(data)
 
-  object <- unlist(strsplit(names(file), "\\."))[1]
-  feature <- unlist(strsplit(names(file), "\\."))[2]
-
-  # test first 4 levels of .mat file
-  for (test in c("handles", "Measurements", object, gsub("_", ".", feature))) {
-    hits <- c(attributes(dat)$names, attributes(dat)$dimnames) %in% test
-    assert_that(sum(hits) == 1)
-    dat <- dat[[which(hits)]]
+  assert_that(is.list(data), length(data) == 1L)
+  data <- data[["handles"]]
+  info <- character()
+  repeat {
+    if (length(data) > 1L) break
+    info <- c(info, unlist(attr(data, "dimnames")))
+    assert_that(is.list(data), all(attr(data, "dim") == c(rep(1L, 3))))
+    data <- data[[1]]
   }
+  assert_that(length(info) == 3L, info[1] == "Measurements")
 
-  dat <- unlist(dat, recursive = FALSE)
-  assert_that(is.list(dat),
-            !any(sapply(dat, is.list)))
+  data <- unlist(data, recursive = FALSE)
+  assert_that(is.list(data), !any(sapply(data, is.list)))
 
-  dims <- t(sapply(dat, dim))
-  assert_that(!any(dims[, 2] > 1))
+  dims <- t(sapply(data, dim))
+  assert_that(!any(dims[, 2] > 1L))
 
-  res <- unlist(dat, recursive = FALSE)
+  res <- unlist(data, recursive = FALSE)
 
   if (is.numeric(res)) {
     if (is_int(res)) res <- as.integer(res)
-    else if (all(sapply(dat, attr, "Csingle"))) attr(res, "Csingle") <- TRUE
+    else if (all(sapply(data, attr, "Csingle"))) attr(res, "Csingle") <- TRUE
   }
 
   attr(res, "lengths") <- as.integer(dims[, 1])
-  attr(res, "object") <- tolower(object)
-  attr(res, "feature") <- gsub("(_[1-9])?$", "", feature)
+  attr(res, "object") <- info[2]
+  attr(res, "feature") <- info[3]
 
   res
 }

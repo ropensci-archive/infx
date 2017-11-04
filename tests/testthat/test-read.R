@@ -4,27 +4,26 @@ cred <- load_config(section = "openbis")
 tok <- login_openbis(cred$username, cred$password)
 
 test_that("matlab data files can be read", {
-  files <- fetch_plate(tok, plate_id = "BB02-2E",
-                       file_regex = paste(".*handles.mat$",
-                                          ".*.xml$",
-                                          ".*Cells.Parent_Nuclei.mat$",
-                                          ".*Count_Bacteria.mat$",
-                                          ".*RobustMax_CorrDNA.mat$",
-                                          ".*PathName_OrigActin.mat$",
-                                          sep = "|"))
-  expect_error(read_data(files))
-  expect_error(read_data(files[grepl("handles", names(files))]))
-  expect_error(read_data(files[grepl("xml$", names(files))]))
-  expect_type(read_data(files[grepl("Parent_Nuclei", names(files))]),
+  files <- list_files(tok, "20160921085125038-3519900")
+  sel <- grepl(paste(".*handles.mat$", ".*.xml$", ".*Cells.Parent_Nuclei.mat$",
+                     ".*Count_Bacteria.mat$", ".*RobustMax_CorrDNA.mat$",
+                     ".*PathName_OrigActin.mat$", sep = "|"),
+               files[["pathInDataSet"]])
+  dat <- do_download(tok, "20160921085125038-3519900", files[sel, ])
+
+  expect_error(read_data(dat))
+  expect_error(read_data(dat[[grep("handles", names(dat))]]))
+  expect_error(read_data(dat[[grep("xml$", names(dat))]]))
+  expect_type(read_data(dat[[grep("Parent_Nuclei", names(dat))]]),
                         "integer")
-  expect_is(read_data(files[grepl("RobustMax", names(files))]), "numeric")
-  expect_true(attr(read_data(files[grepl("RobustMax", names(files))]),
+  expect_is(read_data(dat[[grep("RobustMax", names(dat))]]), "numeric")
+  expect_true(attr(read_data(dat[[grep("RobustMax", names(dat))]]),
                    "Csingle"))
-  expect_type(read_data(files[grepl("PathName", names(files))]), "character")
-  expect_length(read_data(files[grepl("Count", names(files))]), 2304L)
-  expect_true(all(attr(read_data(files[grepl("Count", names(files))]),
+  expect_type(read_data(dat[[grep("PathName", names(dat))]]), "character")
+  expect_length(read_data(dat[[grep("Count", names(dat))]]), 2304L)
+  expect_true(all(attr(read_data(dat[[grep("Count", names(dat))]]),
                        "lengths") == 1))
-  tmp <- read_data(files[grepl("Parent_Nuclei", names(files))])
+  tmp <- read_data(dat[[grep("Parent_Nuclei", names(dat))]])
   expect_equal(length(tmp),
                sum(attr(tmp, "lengths")))
 })

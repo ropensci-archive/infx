@@ -102,16 +102,31 @@ fetch_plate <- function(token,
                  grepl(file_regex, basename(files[["pathInDataSet"]])), ]
   assert_that(nrow(files) >= 1L)
 
-  n_bins <- ceiling(nrow(files) / 10)
+  n_bins <- ceiling(nrow(files) / 5)
   bin_size <- ceiling(nrow(files) / n_bins)
 
   cut <- rep(1:n_bins, each = bin_size)[seq_len(nrow(files))]
 
-  res <- lapply(split(files, cut), function(x)
-    do_download(token, ds[["code"]], x))
+  if (n_bins > 1) {
+    tot <- sum(as.integer(files[["fileSize"]]))
+    pb <- progress::progress_bar$new(
+      format = paste("downloading [:bar] :percent in :elapsed (:bytes of ",
+                     format(structure(tot, class = "object_size"),
+                            units = "auto"), ")"),
+      total = tot)
+    pb$tick(0)
+  } else pb <- NULL
+
+  res <- lapply(split(files, cut), function(x) {
+    dat <- lapply(do_download(token, ds[["code"]], x), function(y) {
+      tryCatch(read_data(y), error = function(e) NULL)
+    })
+    if (!is.null(pb)) pb$tick(sum(as.integer(x[["fileSize"]])))
+    dat[!sapply(dat, is.null)]
+  })
 
   stats::setNames(unlist(res, recursive = FALSE),
-                  unlist(sapply(res, names), recursive = FALSE))
+                  unlist(lapply(res, names), recursive = FALSE))
 }
 
 #' @title Fetch InfectX meta data

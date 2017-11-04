@@ -26,12 +26,22 @@ test_that("openbis downloads can be executed", {
 
 test_that("plate data can be fetched", {
   expect_type(dat <- fetch_plate(tok, "BB02-2E",
-                                 file_regex = "^Image\\.Intensity_"), "list")
+                                 file_regex = "^Image\\.Count_"), "list")
   expect_named(dat)
   expect_gte(length(dat), 1L)
-  expect_true(all(sapply(dat, is.raw)))
+  expect_true(all(sapply(dat, is.numeric)))
+  expect_named(attributes(dat[[1]]), c("lengths", "object", "feature"))
   expect_error(fetch_plate(tok, "foobar", file_regex = "^Image\\.Count_"))
   expect_error(fetch_plate(tok, "BB02-2E", file_regex = "^foobar$"))
+  dat <- fetch_plate(tok, plate_id = "BB02-2E",
+                     file_regex = paste(".*handles.mat$",
+                                        ".*.xml$",
+                                        ".*Cells.Parent_Nuclei.mat$",
+                                        ".*Count_Bacteria.mat$",
+                                        ".*RobustMax_CorrDNA.mat$",
+                                        ".*PathName_OrigActin.mat$",
+                                        sep = "|"))
+  expect_equal(length(dat), 4L)
 })
 
 test_that("metadata can be fetched", {

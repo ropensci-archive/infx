@@ -4,14 +4,14 @@
 \alias{read_data}
 \title{Read single cell data}
 \usage{
-read_data(file)
+read_data(data)
 }
 \arguments{
-\item{file}{The filename of the file to be read.}
+\item{data}{The data to be read.}
 }
 \value{
 A vector holding all data. The attribute \code{length} can be used
-to split the linearized data into bind corresponding to images.
+to split the linearized data into bins corresponding to images.
 }
 \description{
 Calling [R.matlab::readMat] single cell feature files in
