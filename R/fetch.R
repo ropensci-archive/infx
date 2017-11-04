@@ -1,3 +1,4 @@
+
 #' @title Download files
 #'
 #' @description Given a data set code and a set of file paths (as returned
@@ -10,6 +11,10 @@
 #' @param rep The number of times failed downloads are repeated.
 #' 
 #' @return A list of raw vectors holding the downloaded data.
+#' 
+#' @section TODO: use file checksums instead of length for checking file
+#' integrity; see https://goo.gl/4w7PMV, can't rawToChar, might have to write
+#' to disk?
 #' 
 #' @export
 #' 

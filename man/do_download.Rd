@@ -26,3 +26,9 @@ Given a data set code and a set of file paths (as returned
 from [list_files]), a download link is generated for each file by
 [get_download]. The downloads are preformed asynchronously.
 }
+\section{TODO}{
+ use file checksums instead of length for checking file
+integrity; see https://goo.gl/4w7PMV, can't rawToChar, might have to write
+to disk?
+}
+
