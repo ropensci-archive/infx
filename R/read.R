@@ -98,8 +98,8 @@ read_pub_meta <- function(dat,
 #' [readr::read_delim].
 #' 
 #' @inheritParams read_pub_meta
-#' @param ... All further arguments are passed to [readr::read_delim]. If a
-#' parameter should behave differently for each table, a named list is expected
+#' @param ... All further arguments are passed to [readr::read_delim]. If an
+#' argument should behave differently for each table, a named list is expected
 #' with names
 #' \enumerate{
 #'   \item \code{\"well_annotation\"}
@@ -109,6 +109,7 @@ read_pub_meta <- function(dat,
 #'   \item \code{\"sequence_information_compound\"}
 #'   \item \code{\"pool_contained_compound_lookup\"}
 #' }
+#' for this argument in order to match to the respective table.
 #' 
 #' @return List of tibbles holding all read meta data or a subset thereof,
 #' depending on the column specification.
@@ -132,8 +133,6 @@ read_full_meta <- function(dat,
             "sequence_information_compound", "pool_contained_compound_lookup")
 
   assert_that(setequal(names(dat), tbls))
-
-  dat <- dat[tbls]
 
   args <- lapply(dat, function(x) list(file = gzcon(rawConnection(x)),
                                        delim = "\t",

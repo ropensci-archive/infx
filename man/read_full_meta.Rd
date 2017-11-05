@@ -12,8 +12,8 @@ read_full_meta(dat, col_types = readr::cols(.default =
 
 \item{col_types}{A column specification to be passed to [readr::read_delim].}
 
-\item{...}{All further arguments are passed to [readr::read_delim]. If a
-parameter should behave differently for each table, a named list is expected
+\item{...}{All further arguments are passed to [readr::read_delim]. If an
+argument should behave differently for each table, a named list is expected
 with names
 \enumerate{
   \item \code{\"well_annotation\"}
@@ -22,7 +22,8 @@ with names
   \item \code{\"sequence_information_esirna\"}
   \item \code{\"sequence_information_compound\"}
   \item \code{\"pool_contained_compound_lookup\"}
-}}
+}
+for this argument in order to match to the respective table.}
 }
 \value{
 List of tibbles holding all read meta data or a subset thereof,
