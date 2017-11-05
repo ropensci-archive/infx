@@ -26,7 +26,7 @@ from [list_files]), a download link is generated for each file by
 }
 \section{TODO}{
  use file checksums instead of length for checking file
-integrity; see https://goo.gl/4w7PMV, can't rawToChar, might have to write
-to disk?
+integrity; see https://stackoverflow.com/q/21558777, can't rawToChar, might
+have to write to disk?
 }
 

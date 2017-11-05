@@ -13,8 +13,8 @@
 #' @return A list of raw vectors holding the downloaded data.
 #' 
 #' @section TODO: use file checksums instead of length for checking file
-#' integrity; see https://goo.gl/4w7PMV, can't rawToChar, might have to write
-#' to disk?
+#' integrity; see https://stackoverflow.com/q/21558777, can't rawToChar, might
+#' have to write to disk?
 #' 
 #' @export
 #' 
@@ -153,12 +153,12 @@ fetch_meta <- function(token,
                           data.frame(spaceCode = ifelse(type == "full",
                                                         "INFECTX",
                                                         "INFECTX_PUBLISHED"),
-                                     code = "_COMMON"), ...)
+                                     code = "_COMMON"))
   exp <- exp[exp[["code"]] == ifelse(type == "full",
                                      "REPORTS", "AGGREGATEFILES"), ]
   assert_that(nrow(exp) == 1L)
 
-  ds <- list_exp_datasets(token, exp, ...)
+  ds <- list_exp_datasets(token, exp)
 
   if (type == "full")
     ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_WELL_REPORT_CSV" &
@@ -169,8 +169,13 @@ fetch_meta <- function(token,
   ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
   assert_that(nrow(ds) == 1L)
 
-  files <- list_files(token, ds[["code"]], ...)
+  files <- list_files(token, ds[["code"]])
   assert_that(nrow(files) >= 1L)
 
-  do_download(token, ds[["code"]], files, ...)
+  res <- do_download(token, ds[["code"]], files)
+
+  if (type == "full")
+    read_full_meta(res, ...)
+  else
+    read_pub_meta(res, ...)
 }

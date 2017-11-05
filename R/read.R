@@ -56,14 +56,12 @@ read_data <- function(data) {
   res
 }
 
-#' @title Read meta data
+#' @title Read public meta data
 #'
-#' @description Read meta data downloaded from openBis using
-#' [readr::read_delim]. The delimiting character is either ";" for public meta
-#' data or "\\t" for dumped compound database files.
+#' @description Read public meta data downloaded from openBis using
+#' [readr::read_delim].
 #' 
-#' @param file The filename of the file to be read.
-#' @param type A switch for the type of meta data to be downloaded.
+#' @param dat The data (raw vector) to be read.
 #' @param col_types A column specification to be passed to [readr::read_delim].
 #' @param ... All further arguments are passed to [readr::read_delim].
 #' 
@@ -72,23 +70,85 @@ read_data <- function(data) {
 #' 
 #' @export
 #' 
-read_meta <- function(file,
-                      type = c("full", "public"),
-                      col_types = readr::cols(
-                        .default = readr::col_character()),
-                      ...) {
+read_pub_meta <- function(dat,
+                          col_types = readr::cols(
+                            .default = readr::col_character()),
+                          ...) {
 
-  assert_that(is.list(file),
-              length(file) == 1,
-              is.raw(file[[1]]))
+  assert_that(is.list(dat),
+              length(dat) == 1L,
+              is.raw(dat[[1]]),
+              grepl("\\.csv\\.zip$", names(dat)))
 
-  fn <- tempfile()
-  dir.create(fn)
-  on.exit(unlink(fn, recursive = TRUE))
+  # as per https://stackoverflow.com/a/3053883, need to write zip to disk
+  dir <- tempfile()
+  dir.create(dir)
+  on.exit(unlink(dir, recursive = TRUE))
 
-  writeBin(file[[1]], file.path(fn, names(file)))
+  writeBin(dat[[1]], file.path(dir, names(dat)))
 
-  readr::read_delim(file.path(fn, names(file)),
-                    if (type == "public") ";" else "\t",
+  readr::read_delim(file.path(dir, names(dat)),
+                    delim = ";",
                     col_types = col_types, ...)
+}
+
+#' @title Read full meta data
+#'
+#' @description Read full meta data downloaded from openBis using
+#' [readr::read_delim].
+#' 
+#' @inheritParams read_pub_meta
+#' @param ... All further arguments are passed to [readr::read_delim]. If a
+#' parameter should behave differently for each table, a named list is expected
+#' with names
+#' \enumerate{
+#'   \item \code{\"well_annotation\"}
+#'   \item \code{\"sequence_information_sirna\"}
+#'   \item \code{\"sequence_information_mirna\"}
+#'   \item \code{\"sequence_information_esirna\"}
+#'   \item \code{\"sequence_information_compound\"}
+#'   \item \code{\"pool_contained_compound_lookup\"}
+#' }
+#' 
+#' @return List of tibbles holding all read meta data or a subset thereof,
+#' depending on the column specification.
+#' 
+#' @export
+#' 
+read_full_meta <- function(dat,
+                           col_types = readr::cols(
+                             .default = readr::col_character()),
+                           ...) {
+
+  assert_that(is.list(dat),
+              length(dat) == 6L,
+              all(sapply(dat, is.raw)),
+              all(grepl("\\.tsv\\.gz$", names(dat))))
+
+  names(dat) <- tolower(sub("\\..+$", "", names(dat)))
+
+  tbls <- c("well_annotation", "sequence_information_sirna",
+            "sequence_information_mirna", "sequence_information_esirna",
+            "sequence_information_compound", "pool_contained_compound_lookup")
+
+  assert_that(setequal(names(dat), tbls))
+
+  dat <- dat[tbls]
+
+  args <- lapply(dat, function(x) list(file = gzcon(rawConnection(x)),
+                                       delim = "\t",
+                                       col_types = col_types))
+
+  dots <- list(...)
+
+  if (length(dots) > 0L) {
+
+    indiv <- sapply(dots, length) > 1L
+    assert_that(all(sapply(dots[indiv], function(x) setequal(names(x), tbls))))
+
+    args <- lapply(names(args), function(x)
+      c(args[[x]], dots[!indiv], lapply(dots[indiv], `[[`, x)))
+  }
+
+  lapply(args, function(x) do.call(readr::read_delim, x))
 }
