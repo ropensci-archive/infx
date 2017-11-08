@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Sub-setting the full meta data for testing"
+author: "Nicolas Bennett"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,50 +9,107 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
-
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
-
-## Vignette Info
-
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
-
-## Styles
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r, include = FALSE}
+library(magrittr)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+In order to run tests for the full meta data, we need to supply the subset of published data (or at least a part of it) with this package. The format in which the public meta data is stored varies significantly from that of the published data and there is no way via OpenBis to access any of the published meta data in this new format.
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+First we create a login token for a user that has access to the full data set and download both the public and the unpublished meta data.
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+```{r}
+user <- keyring::key_list()
+user <- user[user$service == "openbis", ]$username
+pass <- keyring::key_get("openbis")
 
-## More Examples
+tok <- login_openbis(user, pass)
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+full <- fetch_meta(tok)
+publ <- fetch_meta(tok, type = "public")
 ```
 
-Also a quote using `>`:
+The full public meta data exceeds the 1 MB recommendation from CRAN for data
+sets as shown below by a significant margin.
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r}
+readr::format_tsv(full$well_annotation[full$well_annotation$PLATE %in%
+                                         unique(publ$Barcode), ]) %>%
+  charToRaw %>%
+  memCompress("gzip") %>%
+  length %>%
+  structure(class = "object_size") %>%
+  format(units = "MB")
+```
+
+As it is not needed in its entirety for testing purposes, only a subset of plates is included:
+
+```{r}
+(plates <- sample(unique(publ$Barcode), 50))
+```
+
+The chosen plates are written to a bzip compressed tab separated text file.
+
+```{r}
+well <- full$well_annotation[full$well_annotation$PLATE %in%
+                                          plates, ]
+readr::write_tsv(well,
+                 gzfile("../inst/extdata/well_annotation.tsv.gz",
+                        compression = 9))
+```
+
+For all selected plates, we now subset compound information. Also, due of potential confidentiality of sequence information, this is removed for all compounds.
+
+```{r}
+well_catnos <- unique(well$MANUFACTURER_CATALOG_NUMBER)
+
+pools <- full$pool_contained_compound_lookup
+pools <- pools[pools$MANUFACTURER_CATALOG_NUMBER %in% well_catnos, ]
+
+sirna <- full$sequence_information_sirna
+sirna <- sirna[sirna$MANUFACTURER_CATALOG_NUMBER %in%
+                 unique(c(well_catnos,
+                          pools$CONTAINED_MANUFACTURER_CATALOG_NUMBER)), ]
+
+pools$CONTAINED_COMPOUND_UNIQUE_IDENTIFIER <- NA
+sirna[, grepl("^(SEQUENCE|SEED)_", names(sirna))] <- NA
+
+readr::write_tsv(sirna,
+                 gzfile("../inst/extdata/sequence_information_sirna.tsv.gz",
+                        compression = 9))
+readr::write_tsv(pools,
+                 gzfile(paste("../inst/extdata",
+                              "pool_contained_compound_lookup.tsv.gz",
+                              sep = "/"),
+                        compression = 9))
+```
+
+In all now available wells, there is a total of `r length(well_catnos)` unique compound IDs. Of these, `r sum(!well_catnos %in% unique(c(sirna$MANUFACTURER_CATALOG_NUMBER, pools$MANUFACTURER_CATALOG_NUMBER)))
+` currently cannot be associated with compounds, mostly due to different naming schemes ("-00_[A, B, C]$" vs "-[0-9]{2}$"). The remaining compound tables (miRNA, esiRNA and small molecule compounds) are included for completeness sake, even though they do not appear in any of the publicly available screens.
+
+```{r}
+readr::write_tsv(full$sequence_information_compound,
+                 gzfile(paste("../inst/extdata",
+                              "sequence_information_compound.tsv.gz",
+                              sep = "/"),
+                        compression = 9))
+
+esirna <- full$sequence_information_esirna
+esirna[, grepl("^(SEQUENCE|SEED)_", names(esirna))] <- NA
+
+readr::write_tsv(esirna,
+                 gzfile(paste("../inst/extdata",
+                              "sequence_information_esirna.tsv.gz",
+                              sep = "/"),
+                        compression = 9))
+
+mirna <- full$sequence_information_mirna
+mirna[, grepl("^(SEQUENCE|SEED)_", names(mirna))] <- NA
+
+readr::write_tsv(mirna,
+                 gzfile(paste("../inst/extdata",
+                              "sequence_information_mirna.tsv.gz",
+                              sep = "/"),
+                        compression = 9))
+```
+
+For the small molecule compounds, no information has to be removed due to confidentiality. The same theoretically holds for esiRNA compounds, as what we store as `SEQUENCE_TARGET_SENSE_FIVE_TO_THREE_PRIME`, is publicly available from the Sigma web page, e.g. [here for `HU-13437-1`](http://www.sigmaaldrich.com/catalog/product/sigma/ehu134371?lang=de&region=CH), as esiRNA cDNA target sequence. Finally, also for miRNA compounds, no parts of our meta data is confidential. All sequence information is available at the [mirBase](http://www.mirbase.org) database, e.g. [here for `MIMAT0004902`](http://www.mirbase.org/cgi-bin/mature.pl?mature_acc=MIMAT0004902). Just to be sure though, all sequence information is removed from both sets of compounds.
