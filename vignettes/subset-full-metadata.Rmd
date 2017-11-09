@@ -10,7 +10,9 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
+library(infx)
 library(magrittr)
+library(keyring)
 ```
 
 In order to run tests for the full meta data, we need to supply the subset of published data (or at least a part of it) with this package. The format in which the public meta data is stored varies significantly from that of the published data and there is no way via OpenBis to access any of the published meta data in this new format.
@@ -18,9 +20,9 @@ In order to run tests for the full meta data, we need to supply the subset of pu
 First we create a login token for a user that has access to the full data set and download both the public and the unpublished meta data.
 
 ```{r}
-user <- keyring::key_list()
+user <- key_list()
 user <- user[user$service == "openbis", ]$username
-pass <- keyring::key_get("openbis")
+pass <- key_get("openbis")
 
 tok <- login_openbis(user, pass)
 
@@ -44,7 +46,8 @@ readr::format_tsv(full$well_annotation[full$well_annotation$PLATE %in%
 As it is not needed in its entirety for testing purposes, only a subset of plates is included:
 
 ```{r}
-(plates <- sample(unique(publ$Barcode), 50))
+set.seed(2017)
+(plates <- sample(unique(publ$Barcode), 30))
 ```
 
 The chosen plates are written to a bzip compressed tab separated text file.
@@ -94,6 +97,7 @@ readr::write_tsv(full$sequence_information_compound,
                         compression = 9))
 
 esirna <- full$sequence_information_esirna
+esirna <- esirna[sample.int(nrow(esirna), 200), ]
 esirna[, grepl("^(SEQUENCE|SEED)_", names(esirna))] <- NA
 
 readr::write_tsv(esirna,
@@ -103,6 +107,7 @@ readr::write_tsv(esirna,
                         compression = 9))
 
 mirna <- full$sequence_information_mirna
+mirna <- mirna[sample.int(nrow(mirna), 200), ]
 mirna[, grepl("^(SEQUENCE|SEED)_", names(mirna))] <- NA
 
 readr::write_tsv(mirna,

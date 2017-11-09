@@ -28,11 +28,23 @@ test_that("matlab data files can be read", {
                sum(attr(tmp, "lengths")))
 })
 
-test_that("metadata data files can be read", {
+test_that("public metadata data files can be read", {
   public <- do_download(tok, "20140609103658114-3045667",
                      list_files(tok, "20140609103658114-3045667"))
   dat <- read_pub_meta(public)
   expect_is(dat, "tbl")
   expect_named(dat)
   expect_true(nrow(dat) > 0)
+})
+
+test_that("full metadata data files can be read", {
+  files <- list.files(system.file("extdata", package = "infx"),
+                      pattern = "\\.tsv\\.gz$", full.names = TRUE)
+  files <- setNames(lapply(files, function(x)
+                      readBin(x, "raw", file.info(x)$size)),
+                    basename(files))
+  dat <- read_full_meta(files)
+  for (i in seq_along(dat)) expect_is(dat[[i]], "tbl")
+  for (i in seq_along(dat)) expect_named(dat[[i]])
+  for (i in seq_along(dat)) expect_true(nrow(dat[[i]]) > 0)
 })

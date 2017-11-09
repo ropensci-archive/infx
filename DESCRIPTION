@@ -18,8 +18,11 @@ Imports:
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests: testthat,
+Suggests:
+    testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    magrittr,
+    keyring
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
