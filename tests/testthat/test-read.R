@@ -32,12 +32,25 @@ test_that("public metadata data files can be read", {
   public <- do_download(tok, "20140609103658114-3045667",
                      list_files(tok, "20140609103658114-3045667"))
   expect_is(dat <- read_pub_meta(public), "tbl")
-  expect_named(dat)
   expect_gt(nrow(dat), 0L)
+  expect_equal(ncol(dat), 39L)
+  expect_true(all(sapply(dat, is.character)))
+  expect_false(anyNA(dat[["PlateQualityStatus"]]))
+
+  expect_warning(dat <- read_pub_meta(public, col_types = NULL))
+  expect_equal(ncol(dat), 39L)
+  expect_false(all(sapply(dat, is.character)))
+
+  expect_is(dat <- read_pub_meta(public, na = c("", "NA", "NaN", "unknown",
+                                                "UNKNOWN")), "tbl")
+  expect_equal(ncol(dat), 39L)
+  expect_true(all(sapply(dat, is.character)))
+  expect_true(anyNA(dat[["PlateQualityStatus"]]))
+
   spec <- load_config(section = "metadata")$public
   expect_is(dat <- do.call(read_pub_meta, c(dat = list(public), spec)), "tbl")
-  expect_equal(ncol(dat), length(spec$col_types) - 1)
-  expect_named(dat, names(spec$col_types)[-18], ignore.order = TRUE)
+  expect_equal(ncol(dat), length(spec$col_spec))
+  expect_false(all(sapply(dat, is.character)))
 })
 
 test_that("full metadata data files can be read", {
@@ -49,5 +62,5 @@ test_that("full metadata data files can be read", {
   expect_is(dat <- read_full_meta(files), "list")
   for (i in seq_along(dat)) expect_is(dat[[i]], "tbl")
   for (i in seq_along(dat)) expect_named(dat[[i]])
-  for (i in seq_along(dat)) expect_equal(nrow(dat[[i]]), 0L)
+  for (i in seq_along(dat)) expect_gte(nrow(dat[[i]]), 0L)
 })

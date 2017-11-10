@@ -14,7 +14,8 @@ Imports:
   httr,
   assertthat,
   curl,
-  progress
+  progress,
+  tibble
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true

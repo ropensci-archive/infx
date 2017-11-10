@@ -4,23 +4,51 @@ openbis:
 
 metadata:
   public:
-    col_types:
-      Barcode: !expr readr::col_character()
-      WellRow: !expr readr::col_factor(levels = NULL)
-      WellColumn: !expr readr::col_integer()
-      PlateType: !expr readr::col_factor(levels = NULL)
-      GeneID: !expr readr::col_integer()
-      WellType: !expr readr::col_factor(levels = NULL)
-      ControlType: !expr readr::col_factor(levels = NULL)
-      GeneName: !expr readr::col_character()
-      GeneRefSeq: !expr readr::col_character()
-      Experiment: !expr readr::col_factor(levels = NULL)
-      siRNAManufacturer: !expr readr::col_factor(levels = NULL)
-      GeneIDManufacturer: !expr readr::col_integer()
-      siRNAMaterialCode: !expr readr::col_character()
-      PlateQualityStatus: !expr readr::col_factor(levels = NULL)
-      WellQualityStatus: !expr readr::col_factor(levels = NULL)
-      dInfectionThresholded_eIndex_nRaw: !expr readr::col_double()
-      eCount_oCells_nRaw: !expr readr::col_integer()
-      .default: !expr readr::col_skip()
-    na: ["", " ", "NA", "NaN", "unknown"]
+    na: ["", " ", "NA", "NaN", "unknown", "UNKNOWN"]
+    col_spec:
+      Barcode:
+        name: PlateName
+        allow_na: FALSE
+      WellRow:
+        collector: !expr readr::col_factor(levels = NULL)
+        allow_na: FALSE
+      WellColumn:
+        collector: !expr readr::col_integer()
+        allow_na: FALSE
+      Experiment:
+        name: ScreenName
+        collector: !expr readr::col_factor(levels = NULL)
+        allow_na: FALSE
+        processor: !expr function(x) sub("^.+/", "", x)
+      WellType:
+        collector: !expr readr::col_factor(levels = NULL)
+      ControlType:
+        collector: !expr readr::col_factor(levels = NULL)
+        na: none
+      PlateQualityStatus:
+        name: PlateQuality
+        collector: !expr readr::col_factor(levels = NULL)
+      WellQualityStatus:
+        name: WellQuality
+        collector: !expr readr::col_factor(levels = NULL)
+      siRNAManufacturer:
+        name: Manufacturer
+        collector: !expr readr::col_factor(levels = NULL)
+      siRNAMaterialCode:
+        name: CompoundName
+      GeneID:
+        name: InfxEntrez
+        collector: !expr readr::col_integer()
+        na: "0"
+      GeneName: 
+        name: InfxHgnc
+      GeneIDManufacturer:
+        name: ManufacturerEntrez
+        collector: !expr readr::col_integer()
+        na: "0"
+      dInfectionThresholded_eIndex_nRaw:
+        name: InfectionScore
+        collector: !expr readr::col_double()
+      eCount_oCells_nRaw:
+        name: CellCount
+        collector: !expr readr::col_integer()

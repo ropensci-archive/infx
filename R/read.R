@@ -59,20 +59,17 @@ read_data <- function(data) {
 #' @title Read public meta data
 #'
 #' @description Read public meta data downloaded from openBis using
-#' [readr::read_delim].
+#' [read_delim].
 #' 
 #' @param dat The data (raw vector) to be read.
-#' @param col_types A column specification to be passed to [readr::read_delim].
-#' @param ... All further arguments are passed to [readr::read_delim].
+#' @param ... All further arguments are passed to [read_delim].
 #' 
 #' @return A tibble holding all read meta data or a subset thereof, depending
 #' on the column specification.
 #' 
 #' @export
 #' 
-read_pub_meta <- function(dat,
-                          col_types = list(.default = readr::col_character()),
-                          ...) {
+read_pub_meta <- function(dat, ...) {
 
   assert_that(is.list(dat),
               length(dat) == 1L,
@@ -86,9 +83,7 @@ read_pub_meta <- function(dat,
 
   writeBin(dat[[1]], file.path(dir, names(dat)))
 
-  readr::read_delim(file.path(dir, names(dat)),
-                    delim = ";",
-                    col_types = col_types, ...)
+  read_delim(file.path(dir, names(dat)), delim = ";", ...)
 }
 
 #' @title Read full meta data
@@ -97,6 +92,7 @@ read_pub_meta <- function(dat,
 #' [readr::read_delim].
 #' 
 #' @inheritParams read_pub_meta
+#' @param col_types Column types, passed to [readr::read_delim].
 #' @param ... All further arguments are passed to [readr::read_delim]. If an
 #' argument should behave differently for each table, a named list is expected
 #' with names
@@ -140,8 +136,83 @@ read_full_meta <- function(dat,
   indiv <- sapply(rest, length) > 1L & !sapply(rest, inherits, "col_spec")
   assert_that(all(sapply(rest[indiv], function(x) setequal(names(x), tbls))))
 
-  args <- lapply(names(args), function(x)
-    c(args[[x]], rest[!indiv], lapply(rest[indiv], `[[`, x)))
+  args <- stats::setNames(
+    lapply(names(args), function(x)
+      c(args[[x]], rest[!indiv], lapply(rest[indiv], `[[`, x))),
+    names(args)
+  )
 
   lapply(args, function(x) do.call(readr::read_delim, x))
+}
+
+#' @title Read a delimited text file
+#'
+#' @description Read tabular data structured as delimited text file, using
+#' [readr::read_delim()]. All arguments except \code{col_spec} are passed to
+#' [readr::read_delim()], while \code{col_spec} provides some additional
+#' options for controlling input parsing.
+#' 
+#' @param file,delim,col_types,... All are passed to [readr::read_delim()].
+#' @param col_spec Expects a named list with names corresponding to column
+#' names of the input. Each node may contain a list with zero or more of
+#' entries
+#' \describe{
+#'   \item{\code{name}}{The new column name in case it is to be renamed.}
+#'   \item{\code{collector},\code{na},\code{locale}}{All passed to
+#'     [readr::parse_vector()].}
+#'   \item{\code{allow_na}}{Logical switch specifying whether NA is allowed.}
+#'   \item{\code{processor}}{A function that is applied to the column after
+#'     reading/parsing for further transformations.}
+#' }
+#' 
+#' @return A tibble holding all read meta data or a subset thereof, depending
+#' on the column specification.
+#' 
+#' @export
+#' 
+read_delim <- function(file,
+                       delim,
+                       col_types = readr::cols(
+                         .default = readr::col_character()
+                       ),
+                       ...,
+                       col_spec = NULL) {
+
+  dat <- readr::read_delim(file, delim, col_types = col_types, ...)
+
+  if (!is.null(col_spec)) {
+
+    assert_that(is.list(col_spec),
+                !is.null(names(col_spec)),
+                all(names(col_spec) %in% names(dat)))
+
+    dat <- lapply(names(col_spec), function(col) {
+
+      spec <- col_spec[[col]]
+
+      if (!is.null(spec$allow_na) && !spec$allow_na)
+        assert_that(!anyNA(dat[[col]]))
+
+      parse_args <- names(spec) %in% methods::formalArgs(readr::parse_vector)
+
+      if (any(parse_args))
+        res <- do.call(readr::parse_vector,
+                       c(list(x = dat[[col]]), spec[parse_args]))
+      else
+        res <- dat[[col]]
+
+      if (!is.null(spec$processor))
+        res <- spec$processor(res)
+
+      res
+    })
+
+    nms <- sapply(col_spec, `[[`, "name")
+    nms[sapply(nms, is.null)] <- names(nms)[sapply(nms, is.null)]
+    names(dat) <- nms
+
+    dat <- tibble::as_tibble(dat)
+  }
+
+  dat
 }
