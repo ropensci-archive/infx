@@ -4,14 +4,12 @@
 \alias{read_full_meta}
 \title{Read full meta data}
 \usage{
-read_full_meta(dat, col_types = list(.default = readr::col_character()), ...)
+read_full_meta(dat, ...)
 }
 \arguments{
 \item{dat}{The data (raw vector) to be read.}
 
-\item{col_types}{Column types, passed to [readr::read_delim].}
-
-\item{...}{All further arguments are passed to [readr::read_delim]. If an
+\item{...}{All further arguments are passed to [read_delim]. If an
 argument should behave differently for each table, a named list is expected
 with names
 \enumerate{
@@ -30,5 +28,5 @@ depending on the column specification.
 }
 \description{
 Read full meta data downloaded from openBis using
-[readr::read_delim].
+[read_delim].
 }

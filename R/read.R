@@ -89,11 +89,10 @@ read_pub_meta <- function(dat, ...) {
 #' @title Read full meta data
 #'
 #' @description Read full meta data downloaded from openBis using
-#' [readr::read_delim].
+#' [read_delim].
 #' 
 #' @inheritParams read_pub_meta
-#' @param col_types Column types, passed to [readr::read_delim].
-#' @param ... All further arguments are passed to [readr::read_delim]. If an
+#' @param ... All further arguments are passed to [read_delim]. If an
 #' argument should behave differently for each table, a named list is expected
 #' with names
 #' \enumerate{
@@ -111,9 +110,7 @@ read_pub_meta <- function(dat, ...) {
 #' 
 #' @export
 #' 
-read_full_meta <- function(dat,
-                           col_types = list(.default = readr::col_character()),
-                           ...) {
+read_full_meta <- function(dat, ...) {
 
   assert_that(is.list(dat),
               length(dat) == 6L,
@@ -130,19 +127,17 @@ read_full_meta <- function(dat,
 
   args <- lapply(dat, function(x) list(file = gzcon(rawConnection(x))))
 
-  rest <- c(list(...),
-            list(delim = "\t", col_types = col_types))
+  rest <- c(list(delim = "\t"), list(...))
 
-  indiv <- sapply(rest, length) > 1L & !sapply(rest, inherits, "col_spec")
+  indiv <- sapply(rest, length) > 1L &
+    sapply(rest, is.list) &
+    !sapply(rest, inherits, "col_spec")
   assert_that(all(sapply(rest[indiv], function(x) setequal(names(x), tbls))))
 
-  args <- stats::setNames(
-    lapply(names(args), function(x)
-      c(args[[x]], rest[!indiv], lapply(rest[indiv], `[[`, x))),
-    names(args)
-  )
+  args <- lapply(stats::setNames(names(args), names(args)), function(x)
+      c(args[[x]], rest[!indiv], lapply(rest[indiv], `[[`, x)))
 
-  lapply(args, function(x) do.call(readr::read_delim, x))
+  lapply(args, function(x) do.call(read_delim, x))
 }
 
 #' @title Read a delimited text file

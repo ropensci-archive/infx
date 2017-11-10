@@ -35,7 +35,6 @@ test_that("plate data can be fetched", {
   expect_error(fetch_plate(tok, "BB02-2E", file_regex = "^foobar$"))
   dat <- fetch_plate(tok, plate_id = "BB02-2E",
                      file_regex = paste(".*handles.mat$",
-                                        ".*.xml$",
                                         ".*Cells.Parent_Nuclei.mat$",
                                         ".*Count_Bacteria.mat$",
                                         ".*RobustMax_CorrDNA.mat$",

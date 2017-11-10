@@ -5,7 +5,7 @@ tok <- login_openbis(cred$username, cred$password)
 
 test_that("matlab data files can be read", {
   files <- list_files(tok, "20160921085125038-3519900")
-  sel <- grepl(paste(".*handles.mat$", ".*.xml$", ".*Cells.Parent_Nuclei.mat$",
+  sel <- grepl(paste(".*handles.mat$", ".*Cells.Parent_Nuclei.mat$",
                      ".*Count_Bacteria.mat$", ".*RobustMax_CorrDNA.mat$",
                      ".*PathName_OrigActin.mat$", sep = "|"),
                files[["pathInDataSet"]])
@@ -63,4 +63,8 @@ test_that("full metadata data files can be read", {
   for (i in seq_along(dat)) expect_is(dat[[i]], "tbl")
   for (i in seq_along(dat)) expect_named(dat[[i]])
   for (i in seq_along(dat)) expect_gte(nrow(dat[[i]]), 0L)
+  for (i in seq_along(dat)) expect_true(all(sapply(dat[[i]], is.character)))
+
+  spec <- load_config(section = "metadata")$full
+  expect_is(dat <- do.call(read_full_meta, c(dat = list(files), spec)), "list")
 })

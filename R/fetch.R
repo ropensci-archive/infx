@@ -110,9 +110,9 @@ fetch_plate <- function(token,
   if (n_bins > 1) {
     tot <- sum(as.integer(files[["fileSize"]]))
     pb <- progress::progress_bar$new(
-      format = paste("downloading [:bar] :percent in :elapsed (:bytes of ",
-                     format(structure(tot, class = "object_size"),
-                            units = "auto"), ")"),
+      format = paste0("downloading [:bar] :percent in :elapsed (:bytes of ",
+                      format(structure(tot, class = "object_size"),
+                             units = "auto"), ")"),
       total = tot)
     pb$tick(0)
   } else pb <- NULL
