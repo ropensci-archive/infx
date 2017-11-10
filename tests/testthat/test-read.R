@@ -31,10 +31,13 @@ test_that("matlab data files can be read", {
 test_that("public metadata data files can be read", {
   public <- do_download(tok, "20140609103658114-3045667",
                      list_files(tok, "20140609103658114-3045667"))
-  dat <- read_pub_meta(public)
-  expect_is(dat, "tbl")
+  expect_is(dat <- read_pub_meta(public), "tbl")
   expect_named(dat)
-  expect_true(nrow(dat) > 0)
+  expect_gt(nrow(dat), 0L)
+  spec <- load_config(section = "metadata")$public
+  expect_is(dat <- do.call(read_pub_meta, c(dat = list(public), spec)), "tbl")
+  expect_equal(ncol(dat), length(spec$col_types) - 1)
+  expect_named(dat, names(spec$col_types)[-18], ignore.order = TRUE)
 })
 
 test_that("full metadata data files can be read", {
@@ -43,8 +46,8 @@ test_that("full metadata data files can be read", {
   files <- setNames(lapply(files, function(x)
                       readBin(x, "raw", file.info(x)$size)),
                     basename(files))
-  dat <- read_full_meta(files)
+  expect_is(dat <- read_full_meta(files), "list")
   for (i in seq_along(dat)) expect_is(dat[[i]], "tbl")
   for (i in seq_along(dat)) expect_named(dat[[i]])
-  for (i in seq_along(dat)) expect_true(nrow(dat[[i]]) > 0)
+  for (i in seq_along(dat)) expect_equal(nrow(dat[[i]]), 0L)
 })

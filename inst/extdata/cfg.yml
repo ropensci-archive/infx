@@ -2,3 +2,25 @@ openbis:
   username: rdgr2014
   password: IXPubReview
 
+metadata:
+  public:
+    col_types:
+      Barcode: !expr readr::col_character()
+      WellRow: !expr readr::col_factor(levels = NULL)
+      WellColumn: !expr readr::col_integer()
+      PlateType: !expr readr::col_factor(levels = NULL)
+      GeneID: !expr readr::col_integer()
+      WellType: !expr readr::col_factor(levels = NULL)
+      ControlType: !expr readr::col_factor(levels = NULL)
+      GeneName: !expr readr::col_character()
+      GeneRefSeq: !expr readr::col_character()
+      Experiment: !expr readr::col_factor(levels = NULL)
+      siRNAManufacturer: !expr readr::col_factor(levels = NULL)
+      GeneIDManufacturer: !expr readr::col_integer()
+      siRNAMaterialCode: !expr readr::col_character()
+      PlateQualityStatus: !expr readr::col_factor(levels = NULL)
+      WellQualityStatus: !expr readr::col_factor(levels = NULL)
+      dInfectionThresholded_eIndex_nRaw: !expr readr::col_double()
+      eCount_oCells_nRaw: !expr readr::col_integer()
+      .default: !expr readr::col_skip()
+    na: ["", " ", "NA", "NaN", "unknown"]

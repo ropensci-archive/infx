@@ -71,8 +71,7 @@ read_data <- function(data) {
 #' @export
 #' 
 read_pub_meta <- function(dat,
-                          col_types = readr::cols(
-                            .default = readr::col_character()),
+                          col_types = list(.default = readr::col_character()),
                           ...) {
 
   assert_that(is.list(dat),
@@ -117,8 +116,7 @@ read_pub_meta <- function(dat,
 #' @export
 #' 
 read_full_meta <- function(dat,
-                           col_types = readr::cols(
-                             .default = readr::col_character()),
+                           col_types = list(.default = readr::col_character()),
                            ...) {
 
   assert_that(is.list(dat),
@@ -134,20 +132,16 @@ read_full_meta <- function(dat,
 
   assert_that(setequal(names(dat), tbls))
 
-  args <- lapply(dat, function(x) list(file = gzcon(rawConnection(x)),
-                                       delim = "\t",
-                                       col_types = col_types))
+  args <- lapply(dat, function(x) list(file = gzcon(rawConnection(x))))
 
-  dots <- list(...)
+  rest <- c(list(...),
+            list(delim = "\t", col_types = col_types))
 
-  if (length(dots) > 0L) {
+  indiv <- sapply(rest, length) > 1L & !sapply(rest, inherits, "col_spec")
+  assert_that(all(sapply(rest[indiv], function(x) setequal(names(x), tbls))))
 
-    indiv <- sapply(dots, length) > 1L
-    assert_that(all(sapply(dots[indiv], function(x) setequal(names(x), tbls))))
-
-    args <- lapply(names(args), function(x)
-      c(args[[x]], dots[!indiv], lapply(dots[indiv], `[[`, x)))
-  }
+  args <- lapply(names(args), function(x)
+    c(args[[x]], rest[!indiv], lapply(rest[indiv], `[[`, x)))
 
   lapply(args, function(x) do.call(readr::read_delim, x))
 }

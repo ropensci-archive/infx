@@ -4,8 +4,7 @@
 \alias{read_full_meta}
 \title{Read full meta data}
 \usage{
-read_full_meta(dat, col_types = readr::cols(.default =
-  readr::col_character()), ...)
+read_full_meta(dat, col_types = list(.default = readr::col_character()), ...)
 }
 \arguments{
 \item{dat}{The data (raw vector) to be read.}

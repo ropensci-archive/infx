@@ -4,8 +4,7 @@
 \alias{read_pub_meta}
 \title{Read public meta data}
 \usage{
-read_pub_meta(dat, col_types = readr::cols(.default = readr::col_character()),
-  ...)
+read_pub_meta(dat, col_types = list(.default = readr::col_character()), ...)
 }
 \arguments{
 \item{dat}{The data (raw vector) to be read.}
