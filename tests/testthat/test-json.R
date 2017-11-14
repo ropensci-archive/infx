@@ -49,3 +49,28 @@ test_that("json objects can be converted", {
   expect_true(all(sapply(json_class(lst), attr, "json_class") == "foobar"))
   expect_equal(lst, rm_json_class(add_json_class(lst)))
 })
+
+test_that("json objects can be tested", {
+  expect_false(has_json_class(list(`@type` = "foo", "a", "b")))
+  expect_true(has_json_class(json_class(list(`@type` = "foo", "a", "b"))))
+  expect_false(has_json_class(list(`@type` = "foo", "a", "b"), "foo"))
+  expect_true(has_json_class(json_class(list(`@type` = "foo", "a", "b")),
+                             "foo"))
+  expect_false(is_json_class(list(`@type` = "foo", "a", "b")))
+  expect_true(is_json_class(json_class(list(`@type` = "foo", "a", "b"))))
+})
+
+test_that("json objects can be subsetted", {
+  lst <- list(foo = list(`@type` = "foobar",
+                         a = "c",
+                         b = "d"),
+              bar = list(`@type` = "foobar",
+                         a = "e",
+                         b = "f"))
+  expect_true(all(sapply(lapply(json_class(lst), `[`, "b"), attr,
+                         "json_class") == "foobar"))
+  lst <- lapply(json_class(lst), `class<-`, NULL)
+  expect_true(all(sapply(lst, attr, "json_class") == "foobar"))
+  expect_true(all(sapply(lapply(lst, `[`, "b"), attr,
+                         "json_class") == NULL))
+})

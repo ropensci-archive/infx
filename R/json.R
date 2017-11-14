@@ -62,6 +62,8 @@ rm_json_class <- function(x) json_class(x, "rm")
 #' @description Either tests whether an object has any JSON class attached or
 #' a specific one.
 #' 
+#' @rdname json_class
+#' 
 #' @param x Object to test.
 #' @param class (Optional) class name to test.
 #' 
@@ -76,4 +78,41 @@ has_json_class <- function(x, class = NULL) {
     if (is.null(attr(x, "json_class"))) FALSE
     else attr(x, "json_class") == class
   }
+}
+
+#' @title Test if object represents a JSON class
+#'
+#' @description Tests whether an object inherits from "json_class".
+#' 
+#' @rdname json_class
+#' 
+#' @param x Object to test.
+#' 
+#' @return A single logical.
+#' 
+#' @export
+#' 
+is_json_class <- function(x) inherits(x, "json_class")
+
+#' @title Subset a JSON object
+#'
+#' @description Custom sub-setting of JSON objects that preserve class and
+#' "json_class" attributes. This is useful when objects are created from
+#' openBIS results which are subsequently used in further queries, but the
+#' constructors they are passed to require only a subset of the fetched fields.
+#' 
+#' @rdname json_class
+#' 
+#' @param x Object to subset.
+#' @param i Sub-setting information.
+#' 
+#' @return The subsetted object.
+#' 
+#' @export
+#' 
+`[.json_class` <- function(x, i, ...) {
+  r <- NextMethod("[")
+  attr(r, "json_class") <- attr(x, "json_class")
+  class(r) <- class(x)
+  r
 }

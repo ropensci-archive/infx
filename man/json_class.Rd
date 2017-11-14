@@ -4,6 +4,9 @@
 \alias{json_class}
 \alias{add_json_class}
 \alias{rm_json_class}
+\alias{has_json_class}
+\alias{is_json_class}
+\alias{[.json_class}
 \title{Create/destroy JSON class}
 \usage{
 json_class(x, mode = c("add", "rm"))
@@ -11,15 +14,37 @@ json_class(x, mode = c("add", "rm"))
 add_json_class(x)
 
 rm_json_class(x)
+
+has_json_class(x, class = NULL)
+
+is_json_class(x)
+
+\method{[}{json_class}(x, i, ...)
 }
 \arguments{
 \item{x}{Object to process.}
 
 \item{mode}{Whether to move the type information from "@type" field to
 "json_class" attribute ("add") of the other way around ("rm").}
+
+\item{class}{(Optional) class name to test.}
+
+\item{i}{Sub-setting information.}
+
+\item{x}{Object to test.}
+
+\item{x}{Object to test.}
+
+\item{x}{Object to subset.}
 }
 \value{
 The modified object used as input.
+
+A single logical.
+
+A single logical.
+
+The subsetted object.
 }
 \description{
 To communicate object type information via JSON to the
@@ -31,4 +56,14 @@ objects also have the class "json_class" added. The opposite action removes
 both the "json_class" class and the "json_class" attribute and writes the
 "json_class" information to an "@type" filed. Both actions are recursively
 applied to lists.
+
+Either tests whether an object has any JSON class attached or
+a specific one.
+
+Tests whether an object inherits from "json_class".
+
+Custom sub-setting of JSON objects that preserve class and
+"json_class" attributes. This is useful when objects are created from
+openBIS results which are subsequently used in further queries, but the
+constructors they are passed to require only a subset of the fetched fields.
 }
