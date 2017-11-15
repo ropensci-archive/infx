@@ -7,17 +7,16 @@ test_that("openbis downloads can be executed", {
   files <- list_files(tok, "20160921085125038-3519900")
 
   expect_error(do_download(tok, "20160921085125038-3519900", "foo"))
-  expect_error(do_download(tok, "20160921085125038-3519900", files[254, 1:3]))
   expect_error(do_download(tok, "20160921085125038-3519900", files))
 
-  dat <- do_download(tok, "20160921085125038-3519900", files[254, ])
+  dat <- do_download(tok, "20160921085125038-3519900", files[254])
   expect_type(dat, "list")
   expect_named(dat)
   expect_equal(length(dat), 1L)
   expect_type(dat[[1]], "raw")
-  expect_true(grepl(names(dat), files[254, "pathInDataSet"]))
+  expect_true(grepl(names(dat), files[[254]][["pathInDataSet"]]))
 
-  dat <- do_download(tok, "20160921085125038-3519900", files[254:260, ])
+  dat <- do_download(tok, "20160921085125038-3519900", files[254:260])
   expect_type(dat, "list")
   expect_named(dat)
   expect_equal(length(dat), length(254:260))

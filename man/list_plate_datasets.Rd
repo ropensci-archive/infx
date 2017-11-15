@@ -14,7 +14,7 @@ list_plate_datasets(token, plate_id, ...)
 \item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{
-List/data.frame, containing (among others), columns \"code\",
+List, containing (among others), fields \"code\", and
 \"dataSetTypeCode\".
 }
 \description{

@@ -31,11 +31,7 @@ is_json_class(x)
 
 \item{i}{Sub-setting information.}
 
-\item{x}{Object to test.}
-
-\item{x}{Object to test.}
-
-\item{x}{Object to subset.}
+\item{...}{Generic compatibility.}
 }
 \value{
 The modified object used as input.

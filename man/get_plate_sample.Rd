@@ -4,18 +4,21 @@
 \alias{get_plate_sample}
 \title{Get sample object of plate}
 \usage{
-get_plate_sample(token, plate_id, ...)
+get_plate_sample(token, plate_id, space_code = NULL, ...)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
 \item{plate_id}{Plate barcode.}
 
+\item{space_code}{The space code of the plate; it NULL, it is determined
+automatically.}
+
 \item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{
-List/data.frame, containing (among others), columns \"id\",
-\"permId\", \"identifier\", \"properties\", \"retrievedFetchOptions\".
+List, containing (among others), entries \"id\", \"permId\",
+\"identifier\", \"properties\", \"retrievedFetchOptions\".
 }
 \description{
 Given a plate id (barcode), the corresponding plate space is

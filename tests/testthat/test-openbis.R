@@ -27,69 +27,89 @@ test_that("openbis login is possible", {
 tok <- login_openbis(cred$username, cred$password)
 
 test_that("openbis experiment listing works", {
-  expect_is(proj <- list_projects(tok), "data.frame")
-  expect_gte(nrow(proj), 1L)
-  expect_named(proj)
-  expect_true(all(c("spaceCode", "code") %in% names(proj)))
+  expect_is(proj <- list_projects(tok), "list")
+  expect_true(all(sapply(proj, has_json_class, "Project")))
+  expect_gte(length(proj), 1L)
+  expect_equal(2 * length(proj),
+               length(unlist(lapply(proj, `[`, c("spaceCode", "code")))))
 
-  expect_is(et <- list_experiment_types(tok), "data.frame")
-  expect_gte(nrow(et), 1L)
-  expect_named(et)
-  expect_true(all(c("code", "description") %in% names(et)))
+  expect_is(et <- list_experiment_types(tok), "list")
+  expect_true(all(sapply(et, has_json_class, "ExperimentType")))
+  expect_gte(length(et), 1L)
+  expect_equal(2 * length(et),
+               length(unlist(lapply(et, `[`, c("code", "description")))))
 
-  expect_is(exp <- list_experiments(tok), "data.frame")
-  expect_gte(nrow(exp), 1L)
-  expect_named(exp)
-  expect_true(all(c("permId", "code") %in% names(exp)))
+  expect_is(exp <- list_experiments(tok), "list")
+  expect_true(all(sapply(exp, has_json_class, "Experiment")))
+  expect_gte(length(exp), 1L)
+  expect_equal(2 * length(exp),
+               length(unlist(lapply(exp, `[`, c("permId", "code")))))
 
-  expect_is(exp <- list_experiments(tok, exp_type = "SIRNA_HCS"), "data.frame")
-  expect_gte(nrow(exp), 1L)
-  expect_named(exp)
-  expect_true(all(c("permId", "code") %in% names(exp)))
+  expect_is(exp <- list_experiments(tok, exp_type = "SIRNA_HCS"), "list")
+  expect_true(all(sapply(exp, has_json_class, "Experiment")))
+  expect_gte(length(exp), 1L)
+  expect_equal(2 * length(exp),
+               length(unlist(lapply(exp, `[`, c("permId", "code")))))
 
-  expect_is(exp <- list_experiments(tok, projects = proj[1, ]), "data.frame")
-  expect_gte(nrow(exp), 1L)
-  expect_named(exp)
-  expect_true(all(c("permId", "code") %in% names(exp)))
+  expect_is(exp <- list_experiments(tok, projects = proj[1]), "list")
+  expect_true(all(sapply(exp, has_json_class, "Experiment")))
+  expect_gte(length(exp), 1L)
+  expect_equal(2 * length(exp),
+               length(unlist(lapply(exp, `[`, c("permId", "code")))))
 
-  expect_is(exp <- list_experiments(tok, projects = proj[1:2, ]), "data.frame")
-  expect_gte(nrow(exp), 1L)
-  expect_named(exp)
-  expect_true(all(c("permId", "code") %in% names(exp)))
+  expect_equal(list_experiments(tok, projects = proj[1]),
+               list_experiments(tok, projects = proj[[1]]))
+
+  expect_is(exp <- list_experiments(tok, projects = proj[1:2]), "list")
+  expect_true(all(sapply(exp, has_json_class, "Experiment")))
+  expect_gte(length(exp), 1L)
+  expect_equal(2 * length(exp),
+               length(unlist(lapply(exp, `[`, c("permId", "code")))))
 })
 
 test_that("openbis downloads can be created", {
-  expect_is(plates <- list_plates(tok), "data.frame")
-  expect_gte(nrow(plates), 1L)
-  expect_named(plates)
-  expect_true(all(c("plateCode", "spaceCodeOrNull") %in% names(plates)))
+  expect_is(plates <- list_plates(tok), "list")
+  expect_gte(length(plates), 1L)
+  expect_true(all(sapply(plates, is_json_class)))
+  expect_true(all(sapply(plates, has_json_class, "Plate")))
+  expect_equal(2 * length(plates),
+               length(unlist(lapply(plates, `[`,
+                                    c("plateCode", "spaceCodeOrNull")))))
 
   expect_type(samp <- get_plate_sample(tok, "BB02-2E"), "list")
-  expect_named(samp)
+  expect_s3_class(samp, "json_class")
+  expect_true(has_json_class(samp, "Sample"))
   expect_true(all(c("id", "permId", "identifier", "properties",
                     "retrievedFetchOptions") %in% names(samp)))
   expect_equal(length(samp[["permId"]]), 1L)
 
-  expect_is(ds <- list_plate_datasets(tok, "BB02-2E"), "data.frame")
-  expect_gte(nrow(ds), 1L)
-  expect_named(ds)
-  expect_true(all(c("code", "dataSetTypeCode") %in% names(ds)))
+  expect_is(ds <- list_plate_datasets(tok, "BB02-2E"), "list")
+  expect_true(all(sapply(ds, is_json_class)))
+  expect_true(all(sapply(ds, has_json_class, "DataSet")))
+  expect_gte(length(ds), 1L)
+  expect_equal(2 * length(ds),
+               length(unlist(lapply(ds, `[`, c("code", "dataSetTypeCode")))))
 
-  pro <- data.frame(spaceCode = "INFECTX_PUBLISHED", code = "_COMMON")
+  pro <- structure(list(spaceCode = "INFECTX_PUBLISHED", code = "_COMMON"),
+                   class = "json_class", json_class = "Project")
   exp <- list_experiments(tok, pro)
-  expect_is(ds <- list_exp_datasets(tok, exp[1, ]), "data.frame")
-  expect_gte(nrow(ds), 1L)
-  expect_named(ds)
-  expect_true(all(c("code", "dataSetTypeCode") %in% names(ds)))
+  expect_is(ds <- list_exp_datasets(tok, exp[[1]]), "list")
+  expect_true(all(sapply(ds, is_json_class)))
+  expect_true(all(sapply(ds, has_json_class, "DataSet")))
+  expect_gte(length(ds), 1L)
+  expect_equal(2 * length(ds),
+               length(unlist(lapply(ds, `[`, c("code", "dataSetTypeCode")))))
 
-  expect_is(files <- list_files(tok, "20160921085125038-3519900"),
-            "data.frame")
-  expect_gte(nrow(files), 1L)
-  expect_named(files)
-  expect_true(all(c("pathInDataSet", "pathInListing") %in% names(files)))
+  expect_is(files <- list_files(tok, "20160921085125038-3519900"), "list")
+  expect_true(all(sapply(files, is_json_class)))
+  expect_true(all(sapply(files, has_json_class, "FileInfoDssDTO")))
+  expect_gte(length(files), 1L)
+  expect_equal(2 * length(files),
+               length(unlist(lapply(files, `[`,
+                             c("pathInDataSet", "pathInListing")))))
 
   expect_type(link <- get_download(tok, "20160921085125038-3519900",
-                                   files[["pathInDataSet"]][2]),
+                                   files[[2]][["pathInDataSet"]]),
               "character")
   expect_true(grepl("^https://", link))
 })

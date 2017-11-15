@@ -27,7 +27,7 @@ json_class <- function(x, mode = c("add", "rm")) {
 
   if (mode == "add" && "@type" %in% names(x)) {
 
-    assert_that(sum("@type" %in% names(x)) == 1L)
+    assert_that(sum("@type" == names(x)) == 1L)
 
     x <- structure(x[!names(x) %in% c("@type", "@id")],
                    class = c(class(x), "json_class"),
@@ -64,7 +64,6 @@ rm_json_class <- function(x) json_class(x, "rm")
 #' 
 #' @rdname json_class
 #' 
-#' @param x Object to test.
 #' @param class (Optional) class name to test.
 #' 
 #' @return A single logical.
@@ -86,8 +85,6 @@ has_json_class <- function(x, class = NULL) {
 #' 
 #' @rdname json_class
 #' 
-#' @param x Object to test.
-#' 
 #' @return A single logical.
 #' 
 #' @export
@@ -103,8 +100,8 @@ is_json_class <- function(x) inherits(x, "json_class")
 #' 
 #' @rdname json_class
 #' 
-#' @param x Object to subset.
 #' @param i Sub-setting information.
+#' @param ... Generic compatibility.
 #' 
 #' @return The subsetted object.
 #' 

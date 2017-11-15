@@ -14,7 +14,7 @@ list_exp_datasets(token, experiment, ...)
 \item{...}{Further arguments are passed to [do_openbis].}
 }
 \value{
-List/data.frame, containing (among others), columns \"code\",
+List, containing (among others), entries \"code\" and
 \"dataSetTypeCode\".
 }
 \description{

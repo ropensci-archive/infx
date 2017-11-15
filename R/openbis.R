@@ -7,7 +7,8 @@
 #' 
 #' @param method The method name
 #' @param params A list structure holding the arguments which, converted to
-#' JSON, will be used to call the supplied method.
+#' JSON, will be used to call the supplied method. The "@type" entries will be
+#' generated from "json_class" attributes.
 #' @param api The location of the JS libraries handling the request. Is
 #' appended to the supplied url.
 #' @param url The base url, the request is sent to.
@@ -19,22 +20,24 @@ do_openbis <- function(method,
                        api = "openbis/openbis/rmi-general-information-v1.json",
                        url = "https://infectx.biozentrum.unibas.ch") {
 
+
   req <- list(id = "1",
               jsonrpc = "2.0",
               method = method,
-              params = params)
+              params = rm_json_class(params))
 
   res <- httr::POST(paste(url, api, sep = "/"), body = req, encode = "json")
 
   assert_that(res$status_code == 200)
 
-  res$content <- jsonlite::fromJSON(rawToChar(res$content))
+  res$content <- jsonlite::fromJSON(rawToChar(res$content),
+                                    simplifyVector = FALSE)
 
   if (!is.null(res$content$error))
     stop("Error:\n", paste(names(res$content$error), res$content$error,
                            sep = ": ", collapse = "\n"))
-  else
-    res$content$result
+
+  add_json_class(res$content$result)
 }
 
 #' @title Generate a login token
@@ -64,9 +67,10 @@ login_openbis <- function(user,
     environment()
   }
 
-  token <- do_openbis("tryToAuthenticateForAllServices", list(user, pwd), ...)
+  token <- unlist(do_openbis("tryToAuthenticateForAllServices",
+                             list(user, pwd), ...))
 
-  assert_that(!is.null(token), msg = "Login failed.")
+  assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
   if (auto_disconnect)  {
     attr(token, "finaliser") <- disco(token, ...)
@@ -88,7 +92,7 @@ login_openbis <- function(user,
 #' @export
 #' 
 logout_openbis <- function(token, ...)
-  invisible(do_openbis("logout", list(token), ...))
+  invisible(unlist(do_openbis("logout", list(token), ...)))
 
 #' @title Check validity of token
 #'
@@ -102,7 +106,7 @@ logout_openbis <- function(token, ...)
 #' @export
 #' 
 is_token_valid <- function(token, ...)
-  do_openbis("isSessionActive", list(token), ...)
+  unlist(do_openbis("isSessionActive", list(token), ...))
 
 #' @title List plates
 #'
@@ -152,7 +156,7 @@ list_experiment_types <- function(token, ...)
 #' @description For a login token, list all available plates.
 #' 
 #' @inheritParams logout_openbis
-#' @param projects Data.frame holding objects for which experiments are to be
+#' @param projects List holding Project objects for which experiments are to be
 #' listed. If NULL, all experiments are returned.
 #' @param exp_type Character vector, specifying the desired experiment type.
 #' If NULL, all experiments are returned.
@@ -167,28 +171,28 @@ list_experiments <- function(token,
                              exp_type = NULL,
                              ...) {
 
-  if (!is.null(projects))
-    assert_that(is.data.frame(projects),
-                all(c("spaceCode", "code") %in% names(projects)),
-                nrow(projects) >= 1L)
-  else
+  if (!is.null(projects)) {
+    if (has_json_class(projects, "Project")) projects <- list(projects)
+    assert_that(is.list(projects),
+                all(sapply(projects, has_json_class, "Project")),
+                length(projects) >= 1L)
+  } else
     projects <- list_projects(token, ...)
 
-  if (!is.null(exp_type))
+  if (!is.null(exp_type)) {
+    if (is.list(exp_type))
+      exp_type <- sapply(exp_type, `[[`, "code")
     assert_that(is.character(exp_type),
                 length(exp_type) >= 1L)
-  else
-    exp_type <- list_experiment_types(token, ...)[["code"]]
+  } else
+    exp_type <- sapply(list_experiment_types(token, ...), `[[`, "code")
 
-  proj <- mapply(function(x, y) list(`@type` = "Project", spaceCode = x,
-                                     code = y),
-                 projects[["spaceCode"]], projects[["code"]], SIMPLIFY = FALSE,
-                 USE.NAMES = FALSE)
+  proj <- lapply(projects, `[`, c("spaceCode", "code"))
 
   res <- lapply(exp_type, function(type)
     do_openbis("listExperiments", list(token, proj, type), ...))
 
-  do.call(rbind, res)
+  do.call(c, res)
 }
 
 #' @title Get sample object of plate
@@ -199,25 +203,36 @@ list_experiments <- function(token,
 #' 
 #' @inheritParams logout_openbis
 #' @param plate_id Plate barcode.
+#' @param space_code The space code of the plate; it NULL, it is determined
+#' automatically.
 #' 
-#' @return List/data.frame, containing (among others), columns \"id\",
-#' \"permId\", \"identifier\", \"properties\", \"retrievedFetchOptions\".
+#' @return List, containing (among others), entries \"id\", \"permId\",
+#' \"identifier\", \"properties\", \"retrievedFetchOptions\".
 #' 
 #' @export
 #' 
 get_plate_sample <- function(token,
                              plate_id,
+                             space_code = NULL,
                              ...) {
 
-  plates <- list_plates(token, ...)
-  stopifnot(sum(plates[["plateCode"]] == plate_id) == 1L)
+  assert_that(is.character(plate_id), length(plate_id) == 1L)
 
-  space_code <- plates[plates[["plateCode"]] == plate_id, "spaceCodeOrNull"]
+  if (is.null(space_code)) {
+    plates <- list_plates(token, ...)
+    plate_match <- sapply(plates, `[[`, "plateCode") == plate_id
+    assert_that(sum(plate_match) == 1L)
 
-  do_openbis("getPlateSample",
-             list(token, list(`@type` = "PlateIdentifier",
-                              plateCode = plate_id,
-                              spaceCodeOrNull = space_code)),
+    space_code <- plates[[which(plate_match)]][["spaceCodeOrNull"]]
+  }
+
+  assert_that(is.character(space_code), length(space_code) == 1L)
+
+  plate_id <- structure(list(plateCode = plate_id,
+                             spaceCodeOrNull = space_code),
+                        class = "json_class", json_class = "PlateIdentifier")
+
+  do_openbis("getPlateSample", list(token, plate_id),
              "openbis/openbis/rmi-screening-api-v1.json", ...)
 }
 
@@ -229,7 +244,7 @@ get_plate_sample <- function(token,
 #' 
 #' @inheritParams get_plate_sample
 #' 
-#' @return List/data.frame, containing (among others), columns \"code\",
+#' @return List, containing (among others), fields \"code\", and
 #' \"dataSetTypeCode\".
 #' 
 #' @export
@@ -239,7 +254,9 @@ list_plate_datasets <- function(token,
                                 ...) {
 
   sample <- get_plate_sample(token, plate_id, ...)
-  stopifnot(length(sample$id) == 1L)
+
+  assert_that(has_json_class(sample, "Sample"),
+              length(sample[["id"]]) == 1L)
 
   do_openbis("listDataSetsForSample",
              list(token,
@@ -257,7 +274,7 @@ list_plate_datasets <- function(token,
 #' @inheritParams logout_openbis
 #' @param experiment A data.frame representing a set of experiments.
 #' 
-#' @return List/data.frame, containing (among others), columns \"code\",
+#' @return List, containing (among others), entries \"code\" and
 #' \"dataSetTypeCode\".
 #' 
 #' @export
@@ -266,15 +283,16 @@ list_exp_datasets <- function(token,
                               experiment,
                               ...) {
 
-  assert_that(is.data.frame(experiment),
-              all(c("id", "permId", "identifier", "properties",
-                    "experimentTypeCode") %in% names(experiment)),
-              nrow(experiment) >= 1L)
+  if (has_json_class(experiment, "Experiment")) experiment <- list(experiment)
+
+  assert_that(all(sapply(experiment, has_json_class, "Experiment")),
+              length(experiment) >= 1L)
 
   do_openbis("listDataSetsForExperiments",
              list(token,
-                  experiment[c("id", "permId", "identifier", "properties",
-                               "experimentTypeCode")],
+                  lapply(experiment, `[`,
+                         c("id", "permId", "identifier", "properties",
+                           "experimentTypeCode")),
                   list("CHILDREN")), ...)
 }
 

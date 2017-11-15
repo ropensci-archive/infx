@@ -8,8 +8,8 @@ test_that("matlab data files can be read", {
   sel <- grepl(paste(".*handles.mat$", ".*Cells.Parent_Nuclei.mat$",
                      ".*Count_Bacteria.mat$", ".*RobustMax_CorrDNA.mat$",
                      ".*PathName_OrigActin.mat$", sep = "|"),
-               files[["pathInDataSet"]])
-  dat <- do_download(tok, "20160921085125038-3519900", files[sel, ])
+               sapply(files, `[[`, "pathInDataSet"))
+  dat <- do_download(tok, "20160921085125038-3519900", files[sel])
 
   expect_error(read_data(dat))
   expect_error(read_data(dat[[grep("handles", names(dat))]]))

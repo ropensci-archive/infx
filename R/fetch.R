@@ -23,14 +23,13 @@ do_download <- function(token,
                         files,
                         rep = 1) {
 
-  assert_that(is.data.frame(files),
-              all(c("pathInDataSet", "pathInListing", "isDirectory",
-                    "crc32Checksum", "fileSize") %in% names(files)),
-              nrow(files) <= 10L)
+  if (is_json_class(files)) files <- list(files)
 
-  res <- apply(files[!files[["isDirectory"]], ], 1, function(x)
-    list(path  = x[["pathInDataSet"]], size = x[["fileSize"]],
-         download = NULL))
+  assert_that(all(sapply(files, has_json_class, "FileInfoDssDTO")),
+              length(files) <= 10L)
+
+  res <- lapply(files[!sapply(files, `[[`, "isDirectory")], `[`,
+                c("pathInDataSet", "fileSize"))
 
   repeat {
 
@@ -43,16 +42,17 @@ do_download <- function(token,
 
     lapply(indexes, function(x) {
       curl::curl_fetch_multi(
-        url    = get_download(token, data_id, res[[x]]$path),
+        url    = get_download(token, data_id, res[[x]][["pathInDataSet"]]),
         handle = curl::new_handle(),
         pool   = pool,
         done   = function(dld) {
           if (dld$status_code != 200) {
-            warning("request to ", basename(res[[x]]$path),
+            warning("request to ", basename(res[[x]][["pathInDataSet"]]),
                     " failed with code ", dld$status_code, "; retrying.")
             res[[x]]$download <<- NULL
-          } else if (length(dld$content) != as.integer(res[[x]]$size)) {
-            warning("request to ", basename(res[[x]]$path),
+          } else if (length(dld$content) !=
+                       as.integer(res[[x]][["fileSize"]])) {
+            warning("request to ", basename(res[[x]][["pathInDataSet"]]),
                     " did not complete; retrying.")
             res[[x]]$download <<- NULL
           } else {
@@ -60,7 +60,8 @@ do_download <- function(token,
           }
         },
         fail   = function(msg) {
-          warning("request to ", basename(res[[x]]$path), " failed:\n", msg)
+          warning("request to ", basename(res[[x]][["pathInDataSet"]]),
+                  " failed:\n", msg)
           res[[x]]$download <<- NULL
         })
       invisible(NULL)
@@ -73,7 +74,7 @@ do_download <- function(token,
   }
 
   stats::setNames(lapply(res, `[[`, "download"),
-                  basename(sapply(res, `[[`, "path")))
+                  basename(sapply(res, `[[`, "pathInDataSet")))
 }
 
 #' @title Fetch single cell data
@@ -93,22 +94,24 @@ fetch_plate <- function(token,
                         file_regex) {
 
   ds <- list_plate_datasets(token, plate_id)
-  ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_CELL_FEATURES_CC_MAT", ]
-  ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
-  assert_that(nrow(ds) == 1L)
+
+  ds <- extract_dataset(ds, type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
+                        most_recent = TRUE)[[1]]
 
   files <- list_files(token, ds[["code"]])
-  files <- files[!files[["isDirectory"]] &
-                 grepl(file_regex, basename(files[["pathInDataSet"]])), ]
-  assert_that(nrow(files) >= 1L)
+  sapply(files, `[[`, "isDirectory")
+  files <- files[!sapply(files, `[[`, "isDirectory") &
+                 grepl(file_regex,
+                       basename(sapply(files, `[[`, "pathInDataSet")))]
+  assert_that(length(files) >= 1L)
 
-  n_bins <- ceiling(nrow(files) / 5)
-  bin_size <- ceiling(nrow(files) / n_bins)
+  n_bins <- ceiling(length(files) / 5)
+  bin_size <- ceiling(length(files) / n_bins)
 
-  cut <- rep(1:n_bins, each = bin_size)[seq_len(nrow(files))]
+  cut <- rep(1:n_bins, each = bin_size)[seq_len(length(files))]
 
   if (n_bins > 1) {
-    tot <- sum(as.integer(files[["fileSize"]]))
+    tot <- sum(as.integer(sapply(files, `[[`, "fileSize")))
     pb <- progress::progress_bar$new(
       format = paste0("downloading [:bar] :percent in :elapsed (:bytes of ",
                       format(structure(tot, class = "object_size"),
@@ -121,7 +124,7 @@ fetch_plate <- function(token,
     dat <- lapply(do_download(token, ds[["code"]], x), function(y) {
       tryCatch(read_data(y), error = function(e) NULL)
     })
-    if (!is.null(pb)) pb$tick(sum(as.integer(x[["fileSize"]])))
+    if (!is.null(pb)) pb$tick(sum(as.integer(sapply(files, `[[`, "fileSize"))))
     dat[!sapply(dat, is.null)]
   })
 
@@ -150,27 +153,28 @@ fetch_meta <- function(token,
   type <- match.arg(type)
 
   exp <- list_experiments(token,
-                          data.frame(spaceCode = ifelse(type == "full",
-                                                        "INFECTX",
-                                                        "INFECTX_PUBLISHED"),
-                                     code = "_COMMON"))
-  exp <- exp[exp[["code"]] == ifelse(type == "full",
-                                     "REPORTS", "AGGREGATEFILES"), ]
-  assert_that(nrow(exp) == 1L)
+                          structure(list(
+                            spaceCode = ifelse(type == "full", "INFECTX",
+                                               "INFECTX_PUBLISHED"),
+                            code = "_COMMON"),
+                            class = "json_class", json_class = "Project"))
+
+  exp <- exp[sapply(exp, `[[`, "code") == ifelse(type == "full",
+                                                 "REPORTS", "AGGREGATEFILES")]
+  assert_that(length(exp) == 1L)
 
   ds <- list_exp_datasets(token, exp)
 
-  if (type == "full")
-    ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_WELL_REPORT_CSV" &
-             grepl("CompoundDatabaseDump", ds[["properties"]][["NAME"]]), ]
-  else
-    ds <- ds[ds[["dataSetTypeCode"]] == "HCS_ANALYSIS_WELL_REPORT_CSV", ]
+  ds <- extract_dataset(ds, type = "HCS_ANALYSIS_WELL_REPORT_CSV")
 
-  ds <- ds[which.max(ds[["registrationDetails"]][["registrationDate"]]), ]
-  assert_that(nrow(ds) == 1L)
+  if (type == "full")
+    ds <- ds[sapply(lapply(ds, `[[`, "properties"), `[[`, "NAME") ==
+               "CompoundDatabaseDump"]
+
+  ds <- extract_dataset(ds, most_recent = TRUE)[[1]]
 
   files <- list_files(token, ds[["code"]])
-  assert_that(nrow(files) >= 1L)
+  assert_that(length(files) >= 1L)
 
   res <- do_download(token, ds[["code"]], files)
 
@@ -178,4 +182,37 @@ fetch_meta <- function(token,
     read_full_meta(res, ...)
   else
     read_pub_meta(res, ...)
+}
+
+#' @title Extract DataSets from a list
+#'
+#' @description Finds and extracts the DataSets from a list of DataSets that
+#' match the argument type and/or are the most recent available.
+#' 
+#' @param ds The list of DataSets to operate on.
+#' @param type A string holding the type to be matched.
+#' @param most_recent Logical switch whether to select the most recent DataSet.
+#' 
+#' @return A (subsetted) list of DataSets.
+#' 
+extract_dataset <- function(ds, type = NULL, most_recent = FALSE) {
+
+  if (is_json_class(ds)) ds <- list(ds)
+
+  assert_that(all(sapply(ds, has_json_class, "DataSet")),
+              length(ds) >= 1L)
+
+  if (!is.null(type)) {
+    assert_that(is.character(type), length(type) == 1L)
+    ds <- ds[sapply(ds, `[[`, "dataSetTypeCode") == type]
+    assert_that(length(ds) >= 1L)
+  }
+
+  if (most_recent) {
+    ds <- ds[which.max(sapply(lapply(ds, `[[`, "registrationDetails"), `[[`,
+                              "registrationDate"))]
+    assert_that(length(ds) == 1L)
+  }
+
+  ds
 }

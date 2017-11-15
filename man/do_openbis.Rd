@@ -12,7 +12,8 @@ do_openbis(method, params,
 \item{method}{The method name}
 
 \item{params}{A list structure holding the arguments which, converted to
-JSON, will be used to call the supplied method.}
+JSON, will be used to call the supplied method. The "@type" entries will be
+generated from "json_class" attributes.}
 
 \item{api}{The location of the JS libraries handling the request. Is
 appended to the supplied url.}
