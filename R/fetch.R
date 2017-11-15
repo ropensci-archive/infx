@@ -1,4 +1,21 @@
 
+#' @title Get download link for file
+#'
+#' @description Given a data set code and a file path, a download link is
+#' generated, which has to be consumed immediately.
+#' 
+#' @inheritParams logout_openbis
+#' @param data_id Data set code.
+#' @param file File path for which the link is generated.
+#' 
+#' @return Url linking to file (expires immediately).
+#' 
+#' @export
+#' 
+get_download <- function(token, data_id, file, ...)
+  query_openbis("getDownloadUrlForFileForDataSet", list(token, data_id, file),
+                "IDssServiceRpcGeneric", ...)
+
 #' @title Download files
 #'
 #' @description Given a data set code and a set of file paths (as returned
