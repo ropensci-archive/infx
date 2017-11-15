@@ -14,7 +14,7 @@ get_plate_sample(token, plate_id, space_code = NULL, ...)
 \item{space_code}{The space code of the plate; it NULL, it is determined
 automatically.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List, containing (among others), entries \"id\", \"permId\",

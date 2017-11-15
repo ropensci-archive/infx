@@ -15,7 +15,7 @@ listed. If NULL, all experiments are returned.}
 \item{exp_type}{Character vector, specifying the desired experiment type.
 If NULL, all experiments are returned.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List/data.frame, containing (among others), columns \"plateCode\"

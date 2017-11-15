@@ -13,7 +13,7 @@ get_download(token, data_id, file, ...)
 
 \item{file}{File path for which the link is generated.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 Url linking to file (expires immediately).

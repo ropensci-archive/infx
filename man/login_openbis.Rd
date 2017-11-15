@@ -12,7 +12,7 @@ login_openbis(user, pwd, auto_disconnect = TRUE, ...)
 \item{auto_disconnect}{Logical switch for automatically closing the
 connection upon garbage collection of the token.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 The login token to be used for further API interactions.

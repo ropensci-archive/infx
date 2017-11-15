@@ -1,43 +1,47 @@
 
 #' @title Helper querying openBis API
 #'
-#' @description Issues a POST request to the JSON-RPC based openBis API v1.
-#' Documentation is available at \code{https://wiki-bsse.ethz.ch/display/
-#' openBISDoc/openBIS+JSON+API}.
+#' @description Issues a POST request to the JSON-RPC based openBis API v1,
+#' using [make_request]. Documentation is available at
+#' \code{https://wiki-bsse.ethz.ch/display/openBISDoc/openBIS+JSON+API}.
 #' 
-#' @param method The method name
-#' @param params A list structure holding the arguments which, converted to
-#' JSON, will be used to call the supplied method. The "@type" entries will be
-#' generated from "json_class" attributes.
-#' @param api The location of the JS libraries handling the request. Is
-#' appended to the supplied url.
-#' @param url The base url, the request is sent to.
+#' @inheritParams make_request
+#' @param api The api section the used method is part of. This is used to
+#' construct the url the request is sent to.
+#' @param host The base url, the request is sent to.
 #' 
 #' @return A list/data.frame holding the response from openBis.
 #' 
-do_openbis <- function(method,
-                       params,
-                       api = "openbis/openbis/rmi-general-information-v1.json",
-                       url = "https://infectx.biozentrum.unibas.ch") {
+query_openbis <- function(method,
+                          params,
+                          api = c("IGeneralInformationService",
+                                  "IGeneralInformationChangingService",
+                                  "IQueryApiServer",
+                                  "IWebInformationService",
+                                  "IDssServiceRpcGeneric",
+                                  "IScreeningApiServer",
+                                  "IDssServiceRpcScreening"),
+                          host = "https://infectx.biozentrum.unibas.ch") {
 
+  api <- match.arg(api)
 
-  req <- list(id = "1",
-              jsonrpc = "2.0",
-              method = method,
-              params = rm_json_class(params))
+  url <- switch(api,
+                IGeneralInformationService =
+                  "openbis/openbis/rmi-general-information-v1.json",
+                IGeneralInformationChangingService =
+                  "openbis/openbis/rmi-general-information-changing-v1.json",
+                IQueryApiServer =
+                  "openbis/openbis/rmi-query-v1.json",
+                IWebInformationService =
+                  "openbis/openbis/rmi-web-information-v1.json",
+                IDssServiceRpcGeneric =
+                  "datastore_server/rmi-dss-api-v1.json",
+                IScreeningApiServer =
+                  "openbis/openbis/rmi-screening-api-v1.json",
+                IDssServiceRpcScreening =
+                  "rmi-datastore-server-screening-api-v1.json")
 
-  res <- httr::POST(paste(url, api, sep = "/"), body = req, encode = "json")
-
-  assert_that(res$status_code == 200)
-
-  res$content <- jsonlite::fromJSON(rawToChar(res$content),
-                                    simplifyVector = FALSE)
-
-  if (!is.null(res$content$error))
-    stop("Error:\n", paste(names(res$content$error), res$content$error,
-                           sep = ": ", collapse = "\n"))
-
-  add_json_class(res$content$result)
+  make_request(paste(host, url, sep = "/"), method, params)
 }
 
 #' @title Generate a login token
@@ -48,7 +52,7 @@ do_openbis <- function(method,
 #' @param user,pwd Login credentials for an openBis instance.
 #' @param auto_disconnect Logical switch for automatically closing the
 #' connection upon garbage collection of the token.
-#' @param ... Further arguments are passed to [do_openbis].
+#' @param ... Further arguments are passed to [query_openbis].
 #' 
 #' @return The login token to be used for further API interactions.
 #' 
@@ -67,8 +71,8 @@ login_openbis <- function(user,
     environment()
   }
 
-  token <- unlist(do_openbis("tryToAuthenticateForAllServices",
-                             list(user, pwd), ...))
+  token <- unlist(query_openbis("tryToAuthenticateForAllServices",
+                                list(user, pwd), ...))
 
   assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
@@ -85,14 +89,14 @@ login_openbis <- function(user,
 #' session is closed and the token is rendered invalid.
 #' 
 #' @param token Login token as created by [login_openbis].
-#' @param ... Further arguments are passed to [do_openbis].
+#' @param ... Further arguments are passed to [query_openbis].
 #' 
 #' @return NULL (invisibly)
 #' 
 #' @export
 #' 
 logout_openbis <- function(token, ...)
-  invisible(unlist(do_openbis("logout", list(token), ...)))
+  invisible(unlist(query_openbis("logout", list(token), ...)))
 
 #' @title Check validity of token
 #'
@@ -106,7 +110,7 @@ logout_openbis <- function(token, ...)
 #' @export
 #' 
 is_token_valid <- function(token, ...)
-  unlist(do_openbis("isSessionActive", list(token), ...))
+  unlist(query_openbis("isSessionActive", list(token), ...))
 
 #' @title List plates
 #'
@@ -120,8 +124,7 @@ is_token_valid <- function(token, ...)
 #' @export
 #' 
 list_plates <- function(token, ...)
-  do_openbis("listPlates", list(token),
-             "openbis/openbis/rmi-screening-api-v1.json", ...)
+  query_openbis("listPlates", list(token), "IScreeningApiServer", ...)
 
 #' @title List projects
 #'
@@ -135,7 +138,7 @@ list_plates <- function(token, ...)
 #' @export
 #' 
 list_projects <- function(token, ...)
-  do_openbis("listProjects", list(token), ...)
+  query_openbis("listProjects", list(token), ...)
 
 #' @title List experiment types
 #'
@@ -149,7 +152,7 @@ list_projects <- function(token, ...)
 #' @export
 #' 
 list_experiment_types <- function(token, ...)
-  do_openbis("listExperimentTypes", list(token), ...)
+  query_openbis("listExperimentTypes", list(token), ...)
 
 #' @title List plates
 #'
@@ -190,7 +193,7 @@ list_experiments <- function(token,
   proj <- lapply(projects, `[`, c("spaceCode", "code"))
 
   res <- lapply(exp_type, function(type)
-    do_openbis("listExperiments", list(token, proj, type), ...))
+    query_openbis("listExperiments", list(token, proj, type), ...))
 
   do.call(c, res)
 }
@@ -232,8 +235,8 @@ get_plate_sample <- function(token,
                              spaceCodeOrNull = space_code),
                         class = "json_class", json_class = "PlateIdentifier")
 
-  do_openbis("getPlateSample", list(token, plate_id),
-             "openbis/openbis/rmi-screening-api-v1.json", ...)
+  query_openbis("getPlateSample", list(token, plate_id),
+                "IScreeningApiServer", ...)
 }
 
 #' @title Get data sets for a plate
@@ -258,11 +261,11 @@ list_plate_datasets <- function(token,
   assert_that(has_json_class(sample, "Sample"),
               length(sample[["id"]]) == 1L)
 
-  do_openbis("listDataSetsForSample",
-             list(token,
-                  sample[c("id", "permId", "identifier", "properties",
-                           "retrievedFetchOptions")],
-                  TRUE), ...)
+  query_openbis("listDataSetsForSample",
+                list(token,
+                     sample[c("id", "permId", "identifier", "properties",
+                              "retrievedFetchOptions")],
+                     TRUE), ...)
 }
 
 #' @title Get data sets for a set of experiments
@@ -288,12 +291,12 @@ list_exp_datasets <- function(token,
   assert_that(all(sapply(experiment, has_json_class, "Experiment")),
               length(experiment) >= 1L)
 
-  do_openbis("listDataSetsForExperiments",
-             list(token,
-                  lapply(experiment, `[`,
-                         c("id", "permId", "identifier", "properties",
-                           "experimentTypeCode")),
-                  list("CHILDREN")), ...)
+  query_openbis("listDataSetsForExperiments",
+                list(token,
+                     lapply(experiment, `[`,
+                            c("id", "permId", "identifier", "properties",
+                              "experimentTypeCode")),
+                     list("CHILDREN")), ...)
 }
 
 #' @title Get files for a data set
@@ -309,15 +312,9 @@ list_exp_datasets <- function(token,
 #' 
 #' @export
 #' 
-list_files <- function(token,
-                       data_id,
-                       folder = "original",
-                       ...) {
-
-  do_openbis("listFilesForDataSet",
-             list(token, data_id, folder, TRUE),
-             "datastore_server/rmi-dss-api-v1.json", ...)
-}
+list_files <- function(token, data_id, folder = "original", ...)
+  query_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
+                "IDssServiceRpcGeneric", ...)
 
 #' @title Get download link for file
 #'
@@ -332,12 +329,6 @@ list_files <- function(token,
 #' 
 #' @export
 #' 
-get_download <- function(token,
-                         data_id,
-                         file,
-                         ...) {
-
-  do_openbis("getDownloadUrlForFileForDataSet",
-             list(token, data_id, file),
-             "datastore_server/rmi-dss-api-v1.json", ...)
-}
+get_download <- function(token, data_id, file, ...)
+  query_openbis("getDownloadUrlForFileForDataSet", list(token, data_id, file),
+                "IDssServiceRpcGeneric", ...)

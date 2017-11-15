@@ -9,7 +9,7 @@ is_token_valid(token, ...)
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 Scalar logical.

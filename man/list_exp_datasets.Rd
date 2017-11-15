@@ -11,7 +11,7 @@ list_exp_datasets(token, experiment, ...)
 
 \item{experiment}{A data.frame representing a set of experiments.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List, containing (among others), entries \"code\" and

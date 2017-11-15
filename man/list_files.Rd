@@ -13,7 +13,7 @@ list_files(token, data_id, folder = "original", ...)
 
 \item{folder}{Folder to which the file search is restricted.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List/data.frame, containing (among others), columns

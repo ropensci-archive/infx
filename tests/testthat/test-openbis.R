@@ -1,4 +1,4 @@
-context("openbis downloader")
+context("openbis general")
 
 cred <- load_config(section = "openbis")
 
@@ -16,7 +16,7 @@ test_that("openbis login is possible", {
   expect_null(logout_openbis(tok))
   expect_false(is_token_valid(tok))
   tok <- login_openbis(cred$username, cred$password,
-                       url = "https://infectx.biozentrum.unibas.ch")
+                       host = "https://infectx.biozentrum.unibas.ch")
   tok_chr <- as.character(tok)
   expect_true(is_token_valid(tok_chr))
   rm(tok)

@@ -1,4 +1,45 @@
 
+#' @title Make a JSON-RPC request
+#'
+#' @description Issues a POST request to a JSON-RPC server. All "@type" fields
+#' are converted to/from "json_class" attributes.
+#' 
+#' @param url Url, the request is sent to.
+#' @param method The method name
+#' @param params A list structure holding the arguments which, converted to
+#' JSON, will be used to call the supplied method. The "@type" entries will be
+#' generated from "json_class" attributes.
+#' @param version JSON-RPC protocol version to be used.
+#' @param id Id of the JSON-RPC request.
+#' 
+#' @return A (nested) list holding the response from the JSON-RPC server
+#' ("@type" entries are converted to "json_class" attributes).
+#' 
+make_request <- function(url,
+                         method,
+                         params,
+                         version = "2.0",
+                         id = "1") {
+
+  req <- list(id = id,
+              jsonrpc = version,
+              method = method,
+              params = rm_json_class(params))
+
+  res <- httr::POST(url, body = req, encode = "json")
+
+  assert_that(res$status_code == 200)
+
+  res$content <- jsonlite::fromJSON(rawToChar(res$content),
+                                    simplifyVector = FALSE)
+
+  if (!is.null(res$content$error))
+    stop("Error:\n", paste(names(res$content$error), res$content$error,
+                           sep = ": ", collapse = "\n"))
+
+  add_json_class(res$content$result)
+}
+
 #' @title Create/destroy JSON class
 #'
 #' @description To communicate object type information via JSON to the

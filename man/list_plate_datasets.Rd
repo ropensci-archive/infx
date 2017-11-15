@@ -11,7 +11,7 @@ list_plate_datasets(token, plate_id, ...)
 
 \item{plate_id}{Plate barcode.}
 
-\item{...}{Further arguments are passed to [do_openbis].}
+\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List, containing (among others), fields \"code\", and
