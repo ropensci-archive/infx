@@ -168,37 +168,15 @@ list_files <- function(token, data_id, folder = "original", ...)
 #' determined using [list_plates] and the sample object representing the given
 #' plate is queried.
 #' 
-#' @inheritParams logout_openbis
-#' @param plate_id Plate barcode.
-#' @param space_code The space code of the plate; it NULL, it is determined
-#' automatically.
+#' @inheritParams create_plate_id
 #' 
 #' @return List, containing (among others), entries \"id\", \"permId\",
 #' \"identifier\", \"properties\", \"retrievedFetchOptions\".
 #' 
 #' @export
 #' 
-get_plate_sample <- function(token,
-                             plate_id,
-                             space_code = NULL,
-                             ...) {
-
-  assert_that(is.character(plate_id), length(plate_id) == 1L)
-
-  if (is.null(space_code)) {
-    plates <- list_plates(token, ...)
-    plate_match <- sapply(plates, `[[`, "plateCode") == plate_id
-    assert_that(sum(plate_match) == 1L)
-
-    space_code <- plates[[which(plate_match)]][["spaceCodeOrNull"]]
-  }
-
-  assert_that(is.character(space_code), length(space_code) == 1L)
-
-  plate_id <- structure(list(plateCode = plate_id,
-                             spaceCodeOrNull = space_code),
-                        class = "json_class", json_class = "PlateIdentifier")
-
-  query_openbis("getPlateSample", list(token, plate_id),
+get_plate_sample <- function(token, plate_id, space_code = NULL, ...)
+  query_openbis("getPlateSample",
+                list(token,
+                     create_plate_id(plate_id, space_code, token, ...)),
                 "IScreeningApiServer", ...)
-}

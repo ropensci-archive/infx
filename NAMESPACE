@@ -2,6 +2,7 @@
 
 S3method("[",json_class)
 export(add_json_class)
+export(create_plate_id)
 export(do_download)
 export(fetch_meta)
 export(fetch_plate)
