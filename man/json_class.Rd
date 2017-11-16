@@ -7,6 +7,7 @@
 \alias{has_json_class}
 \alias{is_json_class}
 \alias{[.json_class}
+\alias{print.json_class}
 \title{Create/destroy JSON class}
 \usage{
 json_class(x, mode = c("add", "rm"))
@@ -20,6 +21,9 @@ has_json_class(x, class = NULL)
 is_json_class(x)
 
 \method{[}{json_class}(x, i, ...)
+
+\method{print}{json_class}(x, depth = 1L, width = getOption("width"),
+  length = 100L, fancy = TRUE, ...)
 }
 \arguments{
 \item{x}{Object to process.}
@@ -32,6 +36,17 @@ is_json_class(x)
 \item{i}{Sub-setting information.}
 
 \item{...}{Generic compatibility.}
+
+\item{depth}{The maximum recursion depth.}
+
+\item{width}{Number of columns to maximally print.}
+
+\item{length}{Number of lines to maximally print.}
+
+\item{fancy}{Logical switch to enable font styles, colors and UTF box
+characters.}
+
+\item{...}{Generic compatibility.}
 }
 \value{
 The modified object used as input.
@@ -41,6 +56,8 @@ A single logical.
 A single logical.
 
 The subsetted object.
+
+The input object (invisibly).
 }
 \description{
 To communicate object type information via JSON to the
@@ -62,4 +79,10 @@ Custom sub-setting of JSON objects that preserve class and
 "json_class" attributes. This is useful when objects are created from
 openBIS results which are subsequently used in further queries, but the
 constructors they are passed to require only a subset of the fetched fields.
+
+Prints a JSON object stored as a possibly nested list
+structure. The JSON objects themselves are rendered as nodes and will be
+traversed recursively up to the specified depth. Furthermore, the maximum
+width (number of columns printed) and length (number of lines printed) may
+be specified.
 }

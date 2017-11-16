@@ -74,3 +74,16 @@ test_that("json objects can be subsetted", {
   expect_true(all(sapply(lapply(lst, `[`, "b"), attr,
                          "json_class") == NULL))
 })
+
+test_that("json objects can be printed", {
+  cred <- load_config(section = "openbis")
+  tok <- login_openbis(cred$username, cred$password)
+  expect_is(proj <- list_projects(tok), "list")
+  expect_output(print(proj[[1]], depth = Inf))
+  expect_output(print(proj[[1]], depth = Inf), "EntityRegistrationDetails")
+  expect_output(print(proj[[1]], depth = Inf), "█─")
+  expect_output(print(proj[[1]], fancy = FALSE), "X-")
+  expect_output(print(proj[[1]]), "\\.\\.\\.")
+  expect_output(print(proj[[1]], depth = Inf, length = 10), "\\.\\.\\.")
+  expect_output(print(proj[[1]], depth = Inf, width = 50), "\\.\\.\\.")
+})

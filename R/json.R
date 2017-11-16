@@ -154,3 +154,154 @@ is_json_class <- function(x) inherits(x, "json_class")
   class(r) <- class(x)
   r
 }
+
+#' @title Print a JSON object
+#'
+#' @description Prints a JSON object stored as a possibly nested list
+#' structure. The JSON objects themselves are rendered as nodes and will be
+#' traversed recursively up to the specified depth. Furthermore, the maximum
+#' width (number of columns printed) and length (number of lines printed) may
+#' be specified.
+#' 
+#' @rdname json_class
+#' 
+#' @param depth The maximum recursion depth.
+#' @param width Number of columns to maximally print.
+#' @param length Number of lines to maximally print.
+#' @param fancy Logical switch to enable font styles, colors and UTF box
+#' characters.
+#' @param ... Generic compatibility.
+#' 
+#' @return The input object (invisibly).
+#' 
+#' @export
+#' 
+print.json_class <- function(x,
+                             depth = 1L,
+                             width = getOption("width"),
+                             length = 100L,
+                             fancy = TRUE,
+                             ...) {
+
+  out <- print_json_class(x, depth = 0L, max_depth = depth,
+                          layout = style(fancy))
+
+  too_wide <- crayon::col_nchar(out) > width
+  out[too_wide] <- paste0(crayon::col_substr(out[too_wide], 1L,
+                                             width - 4L), "...")
+
+  if (length(out) > length) {
+    out[length] <- "..."
+    out <- out[seq_len(length)]
+  }
+
+  cat(paste(out, "\n", collapse = ""), sep = "")
+  invisible(x)
+}
+
+#' @title Helper function for printing JSON objects
+#'
+#' @description Inspired by the ast printing function of Hadley's [lobstr
+#' package](https://github.com/hadley/lobstr) and also heavily borrowing code
+#' from [there](https://git.io/vFMA5), this enables the recursive printing of
+#' JSON objects.
+#' 
+#' @param x The JSON object to print.
+#' @param depth The current recursion depth.
+#' @param max_depth The maximum recursion depth.
+#' @param layout Characters for printing the tree structure and styles to be
+#' applied to the different entities.
+#' 
+#' @return A string that can be used for printing.
+#' 
+print_json_class <- function(x, depth, max_depth, layout = style()) {
+
+  indent <- function(x, first, rest) {
+    if (length(x) == 1)
+      paste0(first, x)
+    else
+      c(paste0(first, x[[1]]), paste0(rest, x[-1L]))
+  }
+
+  if (!is_json_class(x))
+
+    layout$val(paste(x))
+
+  else {
+
+    depth <- depth + 1
+
+    obj <- indent(layout$obj(attr(x, "json_class")),
+                  paste0(layout$n, layout$h),
+                  paste0(layout$v,  " "))
+
+    if (depth <= max_depth) {
+
+      if (any(sapply(x, is.null))) x[sapply(x, is.null)] <- ""
+
+      rest <- Map(indent,
+                  lapply(x, print_json_class, depth, max_depth,
+                         layout = layout),
+                  layout$key(paste0(names(x), " = ")),
+                  strrep(" ", nchar(names(x)) + 3))
+    } else
+      rest <- "..."
+
+    c(obj,
+      unlist(lapply(rest[-length(rest)], indent, paste0(layout$j, layout$h),
+                    paste0(layout$v,  " "))),
+      indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
+    )
+  }
+}
+
+#' @title Styles for printing JSON objects
+#'
+#' @description Characters for printing the tree structure and styles to be
+#' applied to the different entities in [print_json_class].
+#' 
+#' @param fancy Logical switch to enable font styles, colors and UTF box
+#' characters.
+#' 
+#' @return A list holding the tree characters and the entity styling.
+#' 
+style <- function(fancy = TRUE) {
+
+  if (fancy && l10n_info()$`UTF-8`) {
+
+    box <- list(h = "\u2500", # ─ horizontal
+                v = "\u2502", # │ vertical
+                l = "\u2514", # └ leaf
+                j = "\u251C", # ├ junction
+                n = "\u2588") # █ node
+
+  } else {
+
+    box <- list(h = "-",
+                v = "|",
+                l = "\\",
+                j = "+",
+                n = "X")
+  }
+
+  if (fancy && crayon::has_color()) {
+
+    obj_col <- crayon::magenta
+    key_col <- crayon::silver
+    val_col <- crayon::yellow
+
+    box$n <- obj_col(box$n)
+
+    c(box,
+      obj = crayon::combine_styles(crayon::underline, obj_col),
+      key = crayon::combine_styles(crayon::italic, key_col),
+      val = val_col)
+
+  } else {
+
+    c(box,
+      obj = identity,
+      key = identity,
+      val = identity)
+  }
+}
