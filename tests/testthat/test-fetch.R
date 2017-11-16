@@ -1,8 +1,5 @@
 context("openbis downloader")
 
-cred <- load_config(section = "openbis")
-tok <- login_openbis(cred$username, cred$password)
-
 test_that("openbis downloads can be created", {
   expect_is(files <- list_files(tok, "20160921085125038-3519900"), "list")
   expect_type(link <- get_download(tok, "20160921085125038-3519900",

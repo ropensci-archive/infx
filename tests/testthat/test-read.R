@@ -1,8 +1,5 @@
 context("test readers")
 
-cred <- load_config(section = "openbis")
-tok <- login_openbis(cred$username, cred$password)
-
 test_that("matlab data files can be read", {
   files <- list_files(tok, "20160921085125038-3519900")
   sel <- grepl(paste(".*handles.mat$", ".*Cells.Parent_Nuclei.mat$",

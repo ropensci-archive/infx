@@ -1,8 +1,5 @@
 context("openbis create objects")
 
-cred <- load_config(section = "openbis")
-tok <- login_openbis(cred$username, cred$password)
-
 test_that("create PlateIdentifier objects", {
   expect_error(create_plate_id())
   expect_s3_class(create_plate_id("foo", "bar"), "json_class")

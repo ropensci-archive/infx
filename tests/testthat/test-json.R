@@ -76,8 +76,6 @@ test_that("json objects can be subsetted", {
 })
 
 test_that("json objects can be printed", {
-  cred <- load_config(section = "openbis")
-  tok <- login_openbis(cred$username, cred$password)
   expect_is(proj <- list_projects(tok), "list")
   expect_output(print(proj[[1]], depth = Inf))
   expect_output(print(proj[[1]], depth = Inf), "EntityRegistrationDetails")

@@ -1,8 +1,5 @@
 context("openbis list objects")
 
-cred <- load_config(section = "openbis")
-tok <- login_openbis(cred$username, cred$password)
-
 test_that("openbis experiment listing works", {
   expect_is(proj <- list_projects(tok), "list")
   expect_true(all(sapply(proj, has_json_class, "Project")))
