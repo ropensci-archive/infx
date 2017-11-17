@@ -223,11 +223,14 @@ print_json_class <- function(x, depth, max_depth, layout = style()) {
       c(paste0(first, x[[1]]), paste0(rest, x[-1L]))
   }
 
-  if (!is_json_class(x))
+  if (!is_json_class(x)) {
 
-    layout$val(paste(x))
+    if (is.list(x))
+      layout$val(paste0("[", paste(x, collapse = ", "), "]"))
+    else
+      layout$val(paste(x))
 
-  else {
+  } else {
 
     depth <- depth + 1
 
@@ -237,7 +240,8 @@ print_json_class <- function(x, depth, max_depth, layout = style()) {
 
     if (depth <= max_depth) {
 
-      if (any(sapply(x, is.null))) x[sapply(x, is.null)] <- ""
+      if (any(sapply(x, is.null) | sapply(x, length) == 0L))
+        x[sapply(x, is.null) | sapply(x, length) == 0L] <- ""
 
       rest <- Map(indent,
                   lapply(x, print_json_class, depth, max_depth,
