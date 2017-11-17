@@ -4,10 +4,13 @@
 \alias{list_plates}
 \title{List plates}
 \usage{
-list_plates(token)
+list_plates(token, exp_id = NULL)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
+
+\item{exp_id}{A single ExperimentIdentifier object to limit the plate
+search to.}
 }
 \value{
 List/data.frame, containing (among others), columns \"plateCode\"

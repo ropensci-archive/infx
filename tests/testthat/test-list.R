@@ -67,6 +67,14 @@ test_that("openbis downloads can be created", {
   expect_equal(2 * length(plates),
                length(unlist(lapply(plates, `[`,
                                     c("plateCode", "spaceCodeOrNull")))))
+  exp <- create_exp_ids(exp_code = "VACCINIA-QU-K1",
+                        proj_code = "VACCINIA_TEAM",
+                        space_code = "INFECTX_PUBLISHED",
+                        perm_id = "20121218143856336-1733311")
+  expect_is(plates_exp <- list_plates(tok, exp), "list")
+  expect_true(all(sapply(plates_exp, has_json_class, "Plate")))
+  expect_lt(length(plates_exp), length(plates))
+  expect_error(list_plates(tok, "foo"))
 
   expect_type(samp <- get_plate_sample(tok, "BB02-2E"), "list")
   expect_s3_class(samp, "json_class")
