@@ -4,13 +4,19 @@
 \alias{list_img_datasets}
 \title{List image datasets}
 \usage{
-list_img_datasets(token, plate_id)
+list_img_datasets(token, plate_id, type = c("raw", "segmentation"),
+  most_recent = TRUE)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
 \item{plate_id}{Either a character vector holding plate barcodes or a list
 of/single PlateIdentifier object(s).}
+
+\item{type}{A switch to choose from raw or segmentation image datasets.}
+
+\item{most_recent}{Logical switch, if TRUE only the most recent dataset is
+returned.}
 }
 \value{
 A list/single object of type ImageDatasetReference.
