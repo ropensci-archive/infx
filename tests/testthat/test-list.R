@@ -13,6 +13,12 @@ test_that("openbis experiment listing works", {
   expect_equal(2 * length(et),
                length(unlist(lapply(et, `[`, c("code", "description")))))
 
+  expect_is(exp <- list_experiment_ids(tok), "list")
+  expect_true(all(sapply(exp, has_json_class, "ExperimentIdentifier")))
+  expect_gte(length(exp), 1L)
+  expect_equal(2 * length(exp),
+               length(unlist(lapply(exp, `[`, c("permId", "code")))))
+
   expect_is(exp <- list_experiments(tok), "list")
   expect_true(all(sapply(exp, has_json_class, "Experiment")))
   expect_gte(length(exp), 1L)

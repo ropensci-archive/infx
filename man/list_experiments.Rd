@@ -2,7 +2,7 @@
 % Please edit documentation in R/list.R
 \name{list_experiments}
 \alias{list_experiments}
-\title{List plates}
+\title{List experiments}
 \usage{
 list_experiments(token, projects = NULL, exp_type = NULL, ...)
 }
@@ -22,5 +22,6 @@ List/data.frame, containing (among others), columns \"plateCode\"
 and \"spaceCodeOrNull\".
 }
 \description{
-For a login token, list all available plates.
+For a login token (and optionally a set of projects and
+experiment types), list all available experiments.
 }
