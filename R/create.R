@@ -34,7 +34,65 @@ create_plate_id <- function(plate_id,
 
   assert_that(is.character(space_code), length(space_code) == 1L)
 
-  structure(list(plateCode = plate_id,
-                 spaceCodeOrNull = space_code),
-            class = "json_class", json_class = "PlateIdentifier")
+  json_class(c(`@type` = "PlateIdentifier",
+               list(plateCode = plate_id, spaceCodeOrNull = space_code)))
+}
+
+#' @title Create experiment id objects
+#'
+#' @description Either an ExperimentIdentifier object is created by specifying
+#' all needed information or, if some information is missing, openBis is
+#' queried for all available ExperimentIdentifiers and the provided regular
+#' expressions are used to select a subset of all ids.
+#' 
+#' @inheritParams logout_openbis
+#' @param exp_code,proj_code,space_code,perm_id If all are not NULL, character
+#' vectors of length 1 that make up the returned ExperimentIdentifier object
+#' or if one or more is NULL, regular expressions to match fields against the
+#' full list of available ExperimentIdentifier objects.
+#' @param ... Passed to [grepl].
+#' 
+#' @return A single or a list of ExperimentIdentifier object(s).
+#' 
+#' @export
+#' 
+create_exp_ids <- function(exp_code = NULL,
+                           proj_code = NULL,
+                           space_code = NULL,
+                           perm_id = NULL,
+                           token = NULL,
+                           ...) {
+
+  params <- list(permId = perm_id,
+                 spaceCode = space_code,
+                 projectCode = proj_code,
+                 experimentCode = exp_code)
+
+  if (any(sapply(params, is.null))) {
+
+    assert_that(!is.null(token))
+    all_exps <- list_experiment_ids(token)
+
+    hits <- lapply(names(params), function(key, ...) {
+      if (is.null(params[[key]]))
+        rep(TRUE, length(all_exps))
+      else
+        grepl(params[[key]], sapply(all_exps, `[[`, key), ...)
+    }, ...)
+
+    hits <- Reduce(`&`, hits)
+
+    assert_that(sum(hits) >= 1L)
+
+    if (sum(hits) == 1L)
+      all_exps[[which(hits)]]
+    else
+      all_exps[hits]
+
+  } else {
+
+    assert_that(all(sapply(params, length) == 1L))
+
+    json_class(c(`@type` = "ExperimentIdentifier", params))
+  }
 }
