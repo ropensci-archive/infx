@@ -13,11 +13,11 @@ test_that("openbis experiment listing works", {
   expect_equal(2 * length(et),
                length(unlist(lapply(et, `[`, c("code", "description")))))
 
-  expect_is(exp <- list_experiment_ids(tok), "list")
-  expect_true(all(sapply(exp, has_json_class, "ExperimentIdentifier")))
-  expect_gte(length(exp), 1L)
-  expect_equal(2 * length(exp),
-               length(unlist(lapply(exp, `[`, c("permId", "code")))))
+  expect_is(exp_ids <- list_experiment_ids(tok), "list")
+  expect_true(all(sapply(exp_ids, has_json_class, "ExperimentIdentifier")))
+  expect_gte(length(exp_ids), 1L)
+  expect_equal(2 * length(exp_ids),
+               length(unlist(lapply(exp_ids, `[`, c("permId", "spaceCode")))))
 
   expect_is(exp <- list_experiments(tok), "list")
   expect_true(all(sapply(exp, has_json_class, "Experiment")))
@@ -41,6 +41,18 @@ test_that("openbis experiment listing works", {
                list_experiments(tok, projects = proj[[1]]))
 
   expect_is(exp <- list_experiments(tok, projects = proj[1:2]), "list")
+  expect_true(all(sapply(exp, has_json_class, "Experiment")))
+  expect_gte(length(exp), 1L)
+  expect_equal(2 * length(exp),
+               length(unlist(lapply(exp, `[`, c("permId", "code")))))
+
+  expect_warning(list_experiments(tok, exp_type = "SIRNA_HCS",
+                                  exp_ids = exp_ids[1:2]))
+  expect_equal(list_experiments(tok, exp_ids = exp_ids[[1]]),
+               list_experiments(tok, exp_ids =
+    paste0("/", exp_ids[[1]][c("spaceCode", "projectCode", "experimentCode")],
+           collapse = "")))
+  expect_is(exp <- list_experiments(tok, exp_ids = exp_ids[1:2]), "list")
   expect_true(all(sapply(exp, has_json_class, "Experiment")))
   expect_gte(length(exp), 1L)
   expect_equal(2 * length(exp),

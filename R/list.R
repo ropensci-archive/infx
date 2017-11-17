@@ -65,6 +65,7 @@ list_experiment_ids <- function(token, ...)
 #' listed. If NULL, all experiments are returned.
 #' @param exp_type Character vector, specifying the desired experiment type.
 #' If NULL, all experiments are returned.
+#' @param exp_ids A set of experiment ID objects
 #' 
 #' @return List/data.frame, containing (among others), columns \"plateCode\"
 #' and \"spaceCodeOrNull\".
@@ -74,30 +75,58 @@ list_experiment_ids <- function(token, ...)
 list_experiments <- function(token,
                              projects = NULL,
                              exp_type = NULL,
+                             exp_ids = NULL,
                              ...) {
 
-  if (!is.null(projects)) {
-    if (has_json_class(projects, "Project")) projects <- list(projects)
-    assert_that(is.list(projects),
-                all(sapply(projects, has_json_class, "Project")),
-                length(projects) >= 1L)
-  } else
-    projects <- list_projects(token, ...)
+  if (!is.null(exp_ids)) {
+    if (has_json_class(exp_ids, "ExperimentIdentifier"))
+      exp_ids <- paste0("/", exp_ids[c("spaceCode", "projectCode",
+                                       "experimentCode")],
+                        collapse = "")
+    else if (all(sapply(exp_ids, has_json_class, "ExperimentIdentifier")))
+      exp_ids <- lapply(exp_ids, function(x)
+        paste0("/", x[c("spaceCode", "projectCode", "experimentCode")],
+               collapse = ""))
 
-  if (!is.null(exp_type)) {
-    if (is.list(exp_type))
-      exp_type <- sapply(exp_type, `[[`, "code")
-    assert_that(is.character(exp_type),
-                length(exp_type) >= 1L)
-  } else
-    exp_type <- sapply(list_experiment_types(token, ...), `[[`, "code")
+    if (is.character(exp_ids) && length(exp_ids) == 1L)
+      exp_ids <- list(exp_ids)
+    else if (is.character(exp_ids) && length(exp_ids) > 1L)
+      exp_ids <- lapply(exp_ids, identity)
 
-  proj <- lapply(projects, `[`, c("spaceCode", "code"))
+    assert_that(all(sapply(exp_ids, is.character)),
+                all(sapply(exp_ids, length)  == 1L),
+                length(exp_ids) >= 1L)
 
-  res <- lapply(exp_type, function(type)
-    query_openbis("listExperiments", list(token, proj, type), ...))
+    if (!is.null(projects) || !is.null(exp_type))
+      warning("ignoring params projects/exp_type.")
 
-  do.call(c, res)
+    query_openbis("listExperiments", list(token, exp_ids), ...)
+
+  } else {
+
+    if (!is.null(projects)) {
+      if (has_json_class(projects, "Project")) projects <- list(projects)
+      assert_that(is.list(projects),
+                  all(sapply(projects, has_json_class, "Project")),
+                  length(projects) >= 1L)
+    } else
+      projects <- list_projects(token, ...)
+
+    if (!is.null(exp_type)) {
+      if (is.list(exp_type))
+        exp_type <- sapply(exp_type, `[[`, "code")
+      assert_that(is.character(exp_type),
+                  length(exp_type) >= 1L)
+    } else
+      exp_type <- sapply(list_experiment_types(token, ...), `[[`, "code")
+
+    proj <- lapply(projects, `[`, c("spaceCode", "code"))
+
+    res <- lapply(exp_type, function(type)
+      query_openbis("listExperiments", list(token, proj, type), ...))
+
+    do.call(c, res)
+  }
 }
 
 #' @title Get data sets for a plate
