@@ -169,15 +169,13 @@ fetch_meta <- function(token,
 
   type <- match.arg(type)
 
-  exp <- list_experiments(token,
-                          structure(list(
-                            spaceCode = ifelse(type == "full", "INFECTX",
-                                               "INFECTX_PUBLISHED"),
-                            code = "_COMMON"),
-                            class = "json_class", json_class = "Project"))
+  if (type == "full")
+    exp <- "/INFECTX/_COMMON/REPORTS"
+  else
+    exp <- "/INFECTX_PUBLISHED/_COMMON/AGGREGATEFILES"
 
-  exp <- exp[sapply(exp, `[[`, "code") == ifelse(type == "full",
-                                                 "REPORTS", "AGGREGATEFILES")]
+  exp <- list_experiments(token, exp_ids = exp)
+
   assert_that(length(exp) == 1L)
 
   ds <- list_exp_datasets(token, exp)
