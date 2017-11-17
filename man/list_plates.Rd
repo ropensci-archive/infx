@@ -4,12 +4,10 @@
 \alias{list_plates}
 \title{List plates}
 \usage{
-list_plates(token, ...)
+list_plates(token)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List/data.frame, containing (among others), columns \"plateCode\"

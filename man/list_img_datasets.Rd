@@ -4,15 +4,13 @@
 \alias{list_img_datasets}
 \title{List image datasets}
 \usage{
-list_img_datasets(token, plate_id, ...)
+list_img_datasets(token, plate_id)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
 \item{plate_id}{Either a character vector holding plate barcodes or a list
 of/single PlateIdentifier object(s).}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 A list/single object of type ImageDatasetReference.

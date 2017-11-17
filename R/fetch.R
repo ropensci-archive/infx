@@ -12,9 +12,9 @@
 #' 
 #' @export
 #' 
-get_download <- function(token, data_id, file, ...)
+get_download <- function(token, data_id, file)
   query_openbis("getDownloadUrlForFileForDataSet", list(token, data_id, file),
-                "IDssServiceRpcGeneric", ...)
+                "IDssServiceRpcGeneric")
 
 #' @title Download files
 #'
@@ -156,8 +156,9 @@ fetch_plate <- function(token,
 #' available: dumps of SQLite databased holding the entire set of experimental
 #' meta data, as well as a CSV sheet, containing only the published subset.
 #' 
-#' @param type A switch for the type of meta data to be downloaded.
 #' @inheritParams logout_openbis
+#' @param type A switch for the type of meta data to be downloaded.
+#' @param ... All further arguments are passed to read_*_meta.
 #' 
 #' @return A list of downloaded files (raw).
 #' 

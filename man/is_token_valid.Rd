@@ -4,12 +4,10 @@
 \alias{is_token_valid}
 \title{Check validity of token}
 \usage{
-is_token_valid(token, ...)
+is_token_valid(token)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 Scalar logical.

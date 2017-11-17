@@ -10,8 +10,8 @@
 #' 
 #' @export
 #' 
-list_plates <- function(token, ...)
-  query_openbis("listPlates", list(token), "IScreeningApiServer", ...)
+list_plates <- function(token)
+  query_openbis("listPlates", list(token), "IScreeningApiServer")
 
 #' @title List projects
 #'
@@ -24,8 +24,8 @@ list_plates <- function(token, ...)
 #' 
 #' @export
 #' 
-list_projects <- function(token, ...)
-  query_openbis("listProjects", list(token), ...)
+list_projects <- function(token)
+  query_openbis("listProjects", list(token))
 
 #' @title List experiment types
 #'
@@ -38,8 +38,8 @@ list_projects <- function(token, ...)
 #' 
 #' @export
 #' 
-list_experiment_types <- function(token, ...)
-  query_openbis("listExperimentTypes", list(token), ...)
+list_experiment_types <- function(token)
+  query_openbis("listExperimentTypes", list(token))
 
 #' @title List experiment types
 #'
@@ -52,8 +52,8 @@ list_experiment_types <- function(token, ...)
 #' 
 #' @export
 #' 
-list_experiment_ids <- function(token, ...)
-  query_openbis("listExperiments", list(token), "IScreeningApiServer", ...)
+list_experiment_ids <- function(token)
+  query_openbis("listExperiments", list(token), "IScreeningApiServer")
 
 #' @title List experiments
 #'
@@ -75,8 +75,7 @@ list_experiment_ids <- function(token, ...)
 list_experiments <- function(token,
                              projects = NULL,
                              exp_type = NULL,
-                             exp_ids = NULL,
-                             ...) {
+                             exp_ids = NULL) {
 
   if (!is.null(exp_ids)) {
     if (has_json_class(exp_ids, "ExperimentIdentifier"))
@@ -100,7 +99,7 @@ list_experiments <- function(token,
     if (!is.null(projects) || !is.null(exp_type))
       warning("ignoring params projects/exp_type.")
 
-    query_openbis("listExperiments", list(token, exp_ids), ...)
+    query_openbis("listExperiments", list(token, exp_ids))
 
   } else {
 
@@ -110,7 +109,7 @@ list_experiments <- function(token,
                   all(sapply(projects, has_json_class, "Project")),
                   length(projects) >= 1L)
     } else
-      projects <- list_projects(token, ...)
+      projects <- list_projects(token)
 
     if (!is.null(exp_type)) {
       if (is.list(exp_type))
@@ -118,12 +117,12 @@ list_experiments <- function(token,
       assert_that(is.character(exp_type),
                   length(exp_type) >= 1L)
     } else
-      exp_type <- sapply(list_experiment_types(token, ...), `[[`, "code")
+      exp_type <- sapply(list_experiment_types(token), `[[`, "code")
 
     proj <- lapply(projects, `[`, c("spaceCode", "code"))
 
     res <- lapply(exp_type, function(type)
-      query_openbis("listExperiments", list(token, proj, type), ...))
+      query_openbis("listExperiments", list(token, proj, type)))
 
     do.call(c, res)
   }
@@ -143,10 +142,9 @@ list_experiments <- function(token,
 #' @export
 #' 
 list_plate_datasets <- function(token,
-                                plate_id,
-                                ...) {
+                                plate_id) {
 
-  sample <- get_plate_sample(token, plate_id, ...)
+  sample <- get_plate_sample(token, plate_id)
 
   assert_that(has_json_class(sample, "Sample"),
               length(sample[["id"]]) == 1L)
@@ -155,7 +153,7 @@ list_plate_datasets <- function(token,
                 list(token,
                      sample[c("id", "permId", "identifier", "properties",
                               "retrievedFetchOptions")],
-                     TRUE), ...)
+                     TRUE))
 }
 
 #' @title Get data sets for a set of experiments
@@ -173,8 +171,7 @@ list_plate_datasets <- function(token,
 #' @export
 #' 
 list_exp_datasets <- function(token,
-                              experiment,
-                              ...) {
+                              experiment) {
 
   if (has_json_class(experiment, "Experiment")) experiment <- list(experiment)
 
@@ -186,7 +183,7 @@ list_exp_datasets <- function(token,
                      lapply(experiment, `[`,
                             c("id", "permId", "identifier", "properties",
                               "experimentTypeCode")),
-                     list("CHILDREN")), ...)
+                     list("CHILDREN")))
 }
 
 #' @title Get files for a data set
@@ -202,9 +199,9 @@ list_exp_datasets <- function(token,
 #' 
 #' @export
 #' 
-list_files <- function(token, data_id, folder = "original", ...)
+list_files <- function(token, data_id, folder = "original")
   query_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
-                "IDssServiceRpcGeneric", ...)
+                "IDssServiceRpcGeneric")
 
 #' @title Get sample object of plate
 #'
@@ -219,8 +216,8 @@ list_files <- function(token, data_id, folder = "original", ...)
 #' 
 #' @export
 #' 
-get_plate_sample <- function(token, plate_id, space_code = NULL, ...)
+get_plate_sample <- function(token, plate_id, space_code = NULL)
   query_openbis("getPlateSample",
                 list(token,
-                     create_plate_id(plate_id, space_code, token, ...)),
-                "IScreeningApiServer", ...)
+                     create_plate_id(plate_id, space_code, token)),
+                "IScreeningApiServer")

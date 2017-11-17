@@ -142,7 +142,6 @@ is_json_class <- function(x) inherits(x, "json_class")
 #' @rdname json_class
 #' 
 #' @param i Sub-setting information.
-#' @param ... Generic compatibility.
 #' 
 #' @return The subsetted object.
 #' 

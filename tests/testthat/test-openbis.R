@@ -13,8 +13,7 @@ test_that("openbis login is possible", {
   expect_true(is_token_valid(token))
   expect_null(logout_openbis(token))
   expect_false(is_token_valid(token))
-  token <- login_openbis(cred$username, cred$password,
-                       host = "https://infectx.biozentrum.unibas.ch")
+  token <- login_openbis(cred$username, cred$password)
   tok_chr <- as.character(token)
   expect_true(is_token_valid(tok_chr))
   rm(token)

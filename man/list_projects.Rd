@@ -4,12 +4,10 @@
 \alias{list_projects}
 \title{List projects}
 \usage{
-list_projects(token, ...)
+list_projects(token)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List/data.frame, containing (among others), columns \"plateCode\"

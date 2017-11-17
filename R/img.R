@@ -15,8 +15,7 @@
 #' @export
 #' 
 list_img_datasets <- function(token,
-                              plate_id,
-                              ...) {
+                              plate_id) {
 
   if (all(sapply(plate_id, is.character)))
     plate_id <- lapply(plate_id, create_plate_id, token = token)
@@ -27,5 +26,5 @@ list_img_datasets <- function(token,
               all(sapply(plate_id, has_json_class, "PlateIdentifier")))
 
   query_openbis("listImageDatasets", list(token, plate_id),
-                "IScreeningApiServer", ...)
+                "IScreeningApiServer")
 }

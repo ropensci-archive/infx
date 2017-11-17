@@ -4,12 +4,10 @@
 \alias{logout_openbis}
 \title{Logout from openBis}
 \usage{
-logout_openbis(token, ...)
+logout_openbis(token)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 NULL (invisibly)

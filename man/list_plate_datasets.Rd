@@ -4,14 +4,12 @@
 \alias{list_plate_datasets}
 \title{Get data sets for a plate}
 \usage{
-list_plate_datasets(token, plate_id, ...)
+list_plate_datasets(token, plate_id)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
 \item{plate_id}{Plate barcode.}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List, containing (among others), fields \"code\", and

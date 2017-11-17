@@ -4,14 +4,12 @@
 \alias{list_exp_datasets}
 \title{Get data sets for a set of experiments}
 \usage{
-list_exp_datasets(token, experiment, ...)
+list_exp_datasets(token, experiment)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
 
 \item{experiment}{A data.frame representing a set of experiments.}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List, containing (among others), entries \"code\" and

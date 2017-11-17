@@ -4,7 +4,7 @@
 \alias{create_plate_id}
 \title{Create a plate id object}
 \usage{
-create_plate_id(plate_id, space_code = NULL, token = NULL, ...)
+create_plate_id(plate_id, space_code = NULL, token = NULL)
 }
 \arguments{
 \item{plate_id}{Plate barcode.}
@@ -13,8 +13,6 @@ create_plate_id(plate_id, space_code = NULL, token = NULL, ...)
 automatically.}
 
 \item{token}{Login token as created by [login_openbis].}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 A single PlateIdentifier object as a list of type json_class.

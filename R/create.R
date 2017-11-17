@@ -19,14 +19,13 @@
 #' 
 create_plate_id <- function(plate_id,
                             space_code = NULL,
-                            token = NULL,
-                            ...) {
+                            token = NULL) {
 
   assert_that(is.character(plate_id), length(plate_id) == 1L)
 
   if (is.null(space_code)) {
     assert_that(!is.null(token))
-    plates <- list_plates(token, ...)
+    plates <- list_plates(token)
     plate_match <- sapply(plates, `[[`, "plateCode") == plate_id
     assert_that(sum(plate_match) == 1L)
 

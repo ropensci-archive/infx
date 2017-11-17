@@ -4,8 +4,7 @@
 \alias{list_experiments}
 \title{List experiments}
 \usage{
-list_experiments(token, projects = NULL, exp_type = NULL, exp_ids = NULL,
-  ...)
+list_experiments(token, projects = NULL, exp_type = NULL, exp_ids = NULL)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -17,8 +16,6 @@ listed. If NULL, all experiments are returned.}
 If NULL, all experiments are returned.}
 
 \item{exp_ids}{A set of experiment ID objects}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List/data.frame, containing (among others), columns \"plateCode\"

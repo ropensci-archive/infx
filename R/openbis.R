@@ -52,7 +52,6 @@ query_openbis <- function(method,
 #' @param user,pwd Login credentials for an openBis instance.
 #' @param auto_disconnect Logical switch for automatically closing the
 #' connection upon garbage collection of the token.
-#' @param ... Further arguments are passed to [query_openbis].
 #' 
 #' @return The login token to be used for further API interactions.
 #' 
@@ -60,24 +59,22 @@ query_openbis <- function(method,
 #' 
 login_openbis <- function(user,
                           pwd,
-                          auto_disconnect = TRUE,
-                          ...) {
+                          auto_disconnect = TRUE) {
 
-  disco <- function(tok, ...) {
-    dots <- list(...)
+  disco <- function(tok) {
     reg.finalizer(environment(),
-                  function(...) do.call(logout_openbis, c(tok, dots)),
+                  function(...) logout_openbis(tok),
                   onexit = TRUE)
     environment()
   }
 
   token <- unlist(query_openbis("tryToAuthenticateForAllServices",
-                                list(user, pwd), ...))
+                                list(user, pwd)))
 
   assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
   if (auto_disconnect)  {
-    attr(token, "finaliser") <- disco(token, ...)
+    attr(token, "finaliser") <- disco(token)
   }
 
   token
@@ -89,14 +86,13 @@ login_openbis <- function(user,
 #' session is closed and the token is rendered invalid.
 #' 
 #' @param token Login token as created by [login_openbis].
-#' @param ... Further arguments are passed to [query_openbis].
 #' 
 #' @return NULL (invisibly)
 #' 
 #' @export
 #' 
-logout_openbis <- function(token, ...)
-  invisible(unlist(query_openbis("logout", list(token), ...)))
+logout_openbis <- function(token)
+  invisible(unlist(query_openbis("logout", list(token))))
 
 #' @title Check validity of token
 #'
@@ -109,5 +105,5 @@ logout_openbis <- function(token, ...)
 #' 
 #' @export
 #' 
-is_token_valid <- function(token, ...)
-  unlist(query_openbis("isSessionActive", list(token), ...))
+is_token_valid <- function(token)
+  unlist(query_openbis("isSessionActive", list(token)))

@@ -4,7 +4,7 @@
 \alias{list_files}
 \title{Get files for a data set}
 \usage{
-list_files(token, data_id, folder = "original", ...)
+list_files(token, data_id, folder = "original")
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -12,8 +12,6 @@ list_files(token, data_id, folder = "original", ...)
 \item{data_id}{Data set code.}
 
 \item{folder}{Folder to which the file search is restricted.}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List/data.frame, containing (among others), columns

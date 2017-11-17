@@ -11,7 +11,7 @@ fetch_meta(token, type = c("full", "public"), ...)
 
 \item{type}{A switch for the type of meta data to be downloaded.}
 
-\item{...}{Further arguments are passed to [query_openbis].}
+\item{...}{All further arguments are passed to read_*_meta.}
 }
 \value{
 A list of downloaded files (raw).

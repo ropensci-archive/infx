@@ -4,7 +4,7 @@
 \alias{get_download}
 \title{Get download link for file}
 \usage{
-get_download(token, data_id, file, ...)
+get_download(token, data_id, file)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -12,8 +12,6 @@ get_download(token, data_id, file, ...)
 \item{data_id}{Data set code.}
 
 \item{file}{File path for which the link is generated.}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 Url linking to file (expires immediately).

@@ -4,7 +4,7 @@
 \alias{get_plate_sample}
 \title{Get sample object of plate}
 \usage{
-get_plate_sample(token, plate_id, space_code = NULL, ...)
+get_plate_sample(token, plate_id, space_code = NULL)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -13,8 +13,6 @@ get_plate_sample(token, plate_id, space_code = NULL, ...)
 
 \item{space_code}{The space code of the plate; it NULL, it is determined
 automatically.}
-
-\item{...}{Further arguments are passed to [query_openbis].}
 }
 \value{
 List, containing (among others), entries \"id\", \"permId\",
