@@ -286,6 +286,7 @@ style <- function(fancy = TRUE) {
 
   if (fancy && crayon::has_color()) {
 
+    # nocov start
     obj_col <- crayon::magenta
     key_col <- crayon::silver
     val_col <- crayon::yellow
@@ -296,6 +297,7 @@ style <- function(fancy = TRUE) {
       obj = crayon::combine_styles(crayon::underline, obj_col),
       key = crayon::combine_styles(crayon::italic, key_col),
       val = val_col)
+    # nocov end
 
   } else {
 
