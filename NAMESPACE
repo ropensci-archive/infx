@@ -3,6 +3,7 @@
 S3method("[",json_class)
 S3method(print,json_class)
 export(add_json_class)
+export(create_dataset_id)
 export(create_exp_ids)
 export(create_plate_id)
 export(do_download)

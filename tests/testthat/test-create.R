@@ -27,3 +27,16 @@ test_that("create ExperimentIdentifier objects", {
   expect_equal(length(exp_ids), 2L)
   expect_true(all(sapply(exp_ids, has_json_class, "ExperimentIdentifier")))
 })
+
+test_that("create DatasetIdentifier objects", {
+  expect_error(create_dataset_id())
+
+  img_ds <- list_img_datasets(tok, "KB01-2H", type = "segmentation",
+                              most_recent = FALSE)
+  expect_is(ds_id_1 <- create_dataset_id(tok, img_ds[[1]]), "list")
+  expect_true(has_json_class(ds_id_1[[1]], "DatasetIdentifier"))
+  expect_is(ds_id <- create_dataset_id(tok, img_ds), "list")
+  expect_true(all(sapply(ds_id, has_json_class, "DatasetIdentifier")))
+  expect_equal(ds_id_1, ds_id[1])
+  expect_equal(ds_id_1, create_dataset_id(tok, "20160823213645991-3474683"))
+})

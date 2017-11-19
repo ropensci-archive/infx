@@ -96,3 +96,33 @@ create_exp_ids <- function(exp_code = NULL,
     json_class(c(`@type` = "ExperimentIdentifier", params))
   }
 }
+
+#' @title Create data set id objects
+#'
+#' @description From a list of objects, each containing a datasetCode field or
+#' from a character vector of datasetCodes, create a list of DatasetIdentifier
+#' objects.
+#' 
+#' @inheritParams logout_openbis
+#' @param data_set Either a single/list of json_class object(s), each
+#' containing a datasetCode field or a character vector.
+#' 
+#' @return A single or a list of DatasetIdentifier object(s).
+#' 
+#' @export
+#' 
+create_dataset_id <- function(token, data_set) {
+
+  if (is_json_class(data_set)) {
+    data_set <- data_set[["datasetCode"]]
+  } else if (all(sapply(data_set, is_json_class))) {
+    codes <- sapply(data_set, `[[`, "datasetCode")
+    assert_that(length(codes) == length(data_set))
+    data_set <- codes
+  }
+
+  assert_that(is.character(data_set), length(data_set) >= 1L)
+  query_openbis("getDatasetIdentifiers",
+                list(token, lapply(data_set, identity)),
+                "IScreeningApiServer")
+}
