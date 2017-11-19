@@ -9,6 +9,13 @@ test_that("openbis downloads can be created", {
 })
 
 test_that("openbis downloads can be executed", {
+  dat <- do_download(tok, "20141127152544140-3125953")
+  expect_type(dat, "list")
+  expect_named(dat)
+  expect_equal(length(dat), 1L)
+  expect_type(dat[[1]], "raw")
+  expect_equal(names(dat), "InfectXKinomeData-OutputPMM.csv")
+
   files <- list_files(tok, "20160921085125038-3519900")
 
   expect_error(do_download(tok, "20160921085125038-3519900", "foo"))

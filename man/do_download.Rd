@@ -4,7 +4,7 @@
 \alias{do_download}
 \title{Download files}
 \usage{
-do_download(token, data_id, files, rep = 1)
+do_download(token, data_id, files = NULL, rep = 1)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -12,7 +12,8 @@ do_download(token, data_id, files, rep = 1)
 \item{data_id}{Data set code.}
 
 \item{files}{Files objects as produced by [list_files] describing the files
-to be downloaded.}
+to be downloaded. If NULL, all available files of this data_id will be
+fetched (as long as there are less than 10).}
 
 \item{rep}{The number of times failed downloads are repeated.}
 }

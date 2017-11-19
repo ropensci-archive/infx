@@ -24,7 +24,8 @@ get_download <- function(token, data_id, file)
 #' 
 #' @inheritParams get_download
 #' @param files Files objects as produced by [list_files] describing the files
-#' to be downloaded.
+#' to be downloaded. If NULL, all available files of this data_id will be
+#' fetched (as long as there are less than 10).
 #' @param rep The number of times failed downloads are repeated.
 #' 
 #' @return A list of raw vectors holding the downloaded data.
@@ -37,10 +38,13 @@ get_download <- function(token, data_id, file)
 #' 
 do_download <- function(token,
                         data_id,
-                        files,
+                        files = NULL,
                         rep = 1) {
 
-  if (is_json_class(files)) files <- list(files)
+  if (is.null(files))
+    files <- list_files(token, data_id)
+  else if (has_json_class(files, "FileInfoDssDTO"))
+    files <- list(files)
 
   assert_that(all(sapply(files, has_json_class, "FileInfoDssDTO")),
               length(files) <= 10L)
