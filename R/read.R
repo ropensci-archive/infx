@@ -59,10 +59,10 @@ read_data <- function(data) {
 #' @title Read public meta data
 #'
 #' @description Read public meta data downloaded from openBis using
-#' [readr::read_delim].
+#' [read_delim].
 #' 
 #' @param dat The data (raw vector) to be read.
-#' @param ... All further arguments are passed to [readr::read_delim].
+#' @param ... All further arguments are passed to [read_delim].
 #' 
 #' @return A tibble holding all read meta data or a subset thereof, depending
 #' on the column specification.
@@ -83,16 +83,16 @@ read_pub_meta <- function(dat, ...) {
 
   writeBin(dat[[1]], file.path(dir, names(dat)))
 
-  readr::read_delim(file.path(dir, names(dat)), delim = ";", ...)
+  read_delim(file.path(dir, names(dat)), delim = ";", ...)
 }
 
 #' @title Read full meta data
 #'
 #' @description Read full meta data downloaded from openBis using
-#' [readr::read_delim].
+#' [read_delim].
 #' 
 #' @inheritParams read_pub_meta
-#' @param ... All further arguments are passed to [readr::read_delim]. If an
+#' @param ... All further arguments are passed to [read_delim]. If an
 #' argument should behave differently for each table, a named list is expected
 #' with names
 #' \enumerate{
@@ -137,5 +137,28 @@ read_full_meta <- function(dat, ...) {
   args <- lapply(stats::setNames(names(args), names(args)), function(x)
       c(args[[x]], rest[!indiv], lapply(rest[indiv], `[[`, x)))
 
-  lapply(args, function(x) do.call(readr::read_delim, x))
+  lapply(args, function(x) do.call(read_delim, x))
+}
+
+#' @title Read a delimited text file
+#'
+#' @description A wrapper around [readr::read_delim()], which provides a
+#' different default value for col_types (all columns are read as character
+#' instead of auto-detect).
+#' 
+#' @param file,col_types,... All are passed to [readr::read_delim()].
+#' 
+#' @return A tibble holding all read meta data or a subset thereof, depending
+#' on the column specification.
+#' 
+#' @export
+#' 
+read_delim <- function(file,
+                       ...,
+                       col_types = readr::cols(
+                         .default = readr::col_character()
+                       )) {
+
+  readr::read_delim(file, ..., col_types = col_types)
+
 }

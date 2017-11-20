@@ -42,3 +42,35 @@ list_img_datasets <- function(token,
   else
     res
 }
+
+load_thumb <- function(token,
+                       img_ref) {
+
+  query_openbis("loadThumbnailImagesBase64",
+                list(sessionToken = token, imageReferences = img_ref),
+                "IScreeningApiServer")
+}
+
+create_img_ref <- function(well_row,
+                           well_col,
+                           well_img,
+                           channel,
+                           data_set) {
+
+  well <- list(wellRow = well_row, wellColumn = well_col, img = well_img)
+
+  assert_that(all(sapply(well, is.numeric)),
+              all(sapply(well, length) == 1L))
+
+  well <- lapply(well, as.integer)
+
+  if (!is.null(channel))
+    assert_that(is.character(channel), length(channel) == 1L)
+
+  assert_that(has_json_class(data_set, "DatasetIdentifier"))
+
+  res <- list(tile = well[["img"]], channelOrNull = channel,
+              wellPosition = json_class(c(`@type` = "WellPosition",
+                                          well[c("wellRow", "wellColumn")])))
+  c(res, data_set)
+}
