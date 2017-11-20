@@ -9,7 +9,7 @@ read_pub_meta(dat, ...)
 \arguments{
 \item{dat}{The data (raw vector) to be read.}
 
-\item{...}{All further arguments are passed to [read_delim].}
+\item{...}{All further arguments are passed to [readr::read_delim].}
 }
 \value{
 A tibble holding all read meta data or a subset thereof, depending
@@ -17,5 +17,5 @@ on the column specification.
 }
 \description{
 Read public meta data downloaded from openBis using
-[read_delim].
+[readr::read_delim].
 }
