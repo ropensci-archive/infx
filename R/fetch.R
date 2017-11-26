@@ -18,9 +18,9 @@ get_download <- function(token, data_id, file)
 
 #' @title Download files
 #'
-#' @description Given a data set code and a set of file paths (as returned
-#' from [list_files]), a download link is generated for each file by
-#' [get_download]. The downloads are preformed asynchronously.
+#' @description Given a data set code and a small set (<= 10) of file paths
+#' (as returned from [list_files]), a download link is generated for each file
+#' by [get_download]. The downloads are preformed asynchronously.
 #' 
 #' @inheritParams get_download
 #' @param files Files objects as produced by [list_files] describing the files
@@ -98,6 +98,54 @@ do_download <- function(token,
                   basename(sapply(res, `[[`, "pathInDataSet")))
 }
 
+#' @title Split downloads
+#'
+#' @description A set of files is split into buckets and downloaded
+#' asynchronously and the progress is reported using a progress bar. The
+#' splitting is necessary as [do_download] downloads all files simultaneously.
+#' 
+#' @inheritParams do_download
+#' @param async The bucket size for simultaneous downloads.
+#' 
+#' @return A list of raw vectors holding the downloaded data.
+#' 
+#' @export
+#' 
+fetch_files <- function(token,
+                        files,
+                        async = 5L) {
+
+  assert_that(length(files) >= 1L,
+              all(sapply(files, has_json_class, "FileInfoDssDTO")),
+              length(async) == 1L, is.numeric(async))
+
+  n_bins <- ceiling(length(files) / async)
+  bin_size <- ceiling(length(files) / n_bins)
+
+  cut <- rep(1:n_bins, each = bin_size)[seq_len(length(files))]
+
+  if (n_bins > 1) {
+    tot <- sum(as.integer(sapply(files, `[[`, "fileSize")))
+    pb <- progress::progress_bar$new(
+      format = paste0("downloading [:bar] :percent in :elapsed (:bytes of ",
+                      format(structure(tot, class = "object_size"),
+                             units = "auto"), ")"),
+      total = tot)
+    pb$tick(0)
+  } else pb <- NULL
+
+  res <- lapply(split(files, cut), function(x) {
+    dat <- lapply(do_download(token, ds[["code"]], x), function(y) {
+      tryCatch(read_data(y), error = function(e) NULL)
+    })
+    if (!is.null(pb)) pb$tick(sum(as.integer(sapply(x, `[[`, "fileSize"))))
+    dat[!sapply(dat, is.null)]
+  })
+
+  stats::setNames(unlist(res, recursive = FALSE),
+                  unlist(lapply(res, names), recursive = FALSE))
+}
+
 #' @title Fetch single cell data
 #'
 #' @description Download single cell datasets corresponding to a plate barcode
@@ -126,31 +174,7 @@ fetch_plate <- function(token,
                        basename(sapply(files, `[[`, "pathInDataSet")))]
   assert_that(length(files) >= 1L)
 
-  n_bins <- ceiling(length(files) / 5)
-  bin_size <- ceiling(length(files) / n_bins)
-
-  cut <- rep(1:n_bins, each = bin_size)[seq_len(length(files))]
-
-  if (n_bins > 1) {
-    tot <- sum(as.integer(sapply(files, `[[`, "fileSize")))
-    pb <- progress::progress_bar$new(
-      format = paste0("downloading [:bar] :percent in :elapsed (:bytes of ",
-                      format(structure(tot, class = "object_size"),
-                             units = "auto"), ")"),
-      total = tot)
-    pb$tick(0)
-  } else pb <- NULL
-
-  res <- lapply(split(files, cut), function(x) {
-    dat <- lapply(do_download(token, ds[["code"]], x), function(y) {
-      tryCatch(read_data(y), error = function(e) NULL)
-    })
-    if (!is.null(pb)) pb$tick(sum(as.integer(sapply(x, `[[`, "fileSize"))))
-    dat[!sapply(dat, is.null)]
-  })
-
-  stats::setNames(unlist(res, recursive = FALSE),
-                  unlist(lapply(res, names), recursive = FALSE))
+  fetch_files(token, files)
 }
 
 #' @title Fetch InfectX meta data
