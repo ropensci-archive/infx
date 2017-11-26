@@ -23,3 +23,8 @@ A set of files is split into buckets and downloaded
 asynchronously and the progress is reported using a progress bar. The
 splitting is necessary as [do_download] downloads all files simultaneously.
 }
+\section{TODO}{
+ entry point to all downloads, choose single or async (both
+not exported) and use this in plate/meta fetching.
+}
+

@@ -33,6 +33,8 @@ get_download <- function(token, data_id, file)
 #' @section TODO: use file checksums instead of length for checking file
 #' integrity; see https://stackoverflow.com/q/21558777, can't rawToChar, might
 #' have to write to disk?
+#' @section TODO: rename to async_download and also provide a single_download
+#' option
 #' 
 #' @export
 #' 
@@ -108,6 +110,9 @@ do_download <- function(token,
 #' @param async The bucket size for simultaneous downloads.
 #' 
 #' @return A list of raw vectors holding the downloaded data.
+#' 
+#' @section TODO: entry point to all downloads, choose single or async (both
+#' not exported) and use this in plate/meta fetching.
 #' 
 #' @export
 #' 
@@ -238,6 +243,8 @@ fetch_meta <- function(token,
 #' @param most_recent Logical switch whether to select the most recent DataSet.
 #' 
 #' @return A (subsetted) list of DataSets.
+#' 
+#' @export
 #' 
 extract_dataset <- function(ds, type = NULL, most_recent = FALSE) {
 

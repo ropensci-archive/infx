@@ -29,5 +29,8 @@ by [get_download]. The downloads are preformed asynchronously.
  use file checksums instead of length for checking file
 integrity; see https://stackoverflow.com/q/21558777, can't rawToChar, might
 have to write to disk?
+
+ rename to async_download and also provide a single_download
+option
 }
 
