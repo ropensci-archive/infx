@@ -4,7 +4,7 @@
 \alias{fetch_files}
 \title{Split downloads}
 \usage{
-fetch_files(token, files, async = 5L)
+fetch_files(token, files, data_id, async = 5L)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}
@@ -12,6 +12,8 @@ fetch_files(token, files, async = 5L)
 \item{files}{Files objects as produced by [list_files] describing the files
 to be downloaded. If NULL, all available files of this data_id will be
 fetched (as long as there are less than 10).}
+
+\item{data_id}{Data set code.}
 
 \item{async}{The bucket size for simultaneous downloads.}
 }

@@ -118,6 +118,7 @@ do_download <- function(token,
 #' 
 fetch_files <- function(token,
                         files,
+                        data_id,
                         async = 5L) {
 
   assert_that(length(files) >= 1L,
@@ -140,7 +141,7 @@ fetch_files <- function(token,
   } else pb <- NULL
 
   res <- lapply(split(files, cut), function(x) {
-    dat <- lapply(do_download(token, ds[["code"]], x), function(y) {
+    dat <- lapply(do_download(token, data_id, x), function(y) {
       tryCatch(read_data(y), error = function(e) NULL)
     })
     if (!is.null(pb)) pb$tick(sum(as.integer(sapply(x, `[[`, "fileSize"))))
@@ -179,7 +180,7 @@ fetch_plate <- function(token,
                        basename(sapply(files, `[[`, "pathInDataSet")))]
   assert_that(length(files) >= 1L)
 
-  fetch_files(token, files)
+  fetch_files(token, files, ds[["code"]])
 }
 
 #' @title Fetch InfectX meta data
