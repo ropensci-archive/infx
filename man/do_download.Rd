@@ -4,7 +4,7 @@
 \alias{do_download}
 \title{Download files}
 \usage{
-do_download(token, data_id, files = NULL, rep = 1)
+do_download(token, data_id, files = NULL, rep = 2)
 }
 \arguments{
 \item{token}{Login token as created by [login_openbis].}

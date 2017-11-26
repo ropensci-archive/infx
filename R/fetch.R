@@ -39,7 +39,7 @@ get_download <- function(token, data_id, file)
 do_download <- function(token,
                         data_id,
                         files = NULL,
-                        rep = 1) {
+                        rep = 2) {
 
   if (is.null(files))
     files <- list_files(token, data_id)
@@ -120,7 +120,7 @@ fetch_plate <- function(token,
                         most_recent = TRUE)[[1]]
 
   files <- list_files(token, ds[["code"]])
-  sapply(files, `[[`, "isDirectory")
+
   files <- files[!sapply(files, `[[`, "isDirectory") &
                  grepl(file_regex,
                        basename(sapply(files, `[[`, "pathInDataSet")))]
@@ -145,7 +145,7 @@ fetch_plate <- function(token,
     dat <- lapply(do_download(token, ds[["code"]], x), function(y) {
       tryCatch(read_data(y), error = function(e) NULL)
     })
-    if (!is.null(pb)) pb$tick(sum(as.integer(sapply(files, `[[`, "fileSize"))))
+    if (!is.null(pb)) pb$tick(sum(as.integer(sapply(x, `[[`, "fileSize"))))
     dat[!sapply(dat, is.null)]
   })
 
