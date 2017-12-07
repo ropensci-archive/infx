@@ -7,7 +7,7 @@ Access to [InfectX](http://www.infectx.ch)/[TargetInfectX](https://www.targetinf
 
 OpenBIS API
 ===
-Documentation to the full JSON-RPC API is available [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
+Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
 
 * [IGeneralInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationService.html)
 * [IGeneralInformationChangingService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationChangingService.html)

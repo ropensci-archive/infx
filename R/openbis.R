@@ -62,9 +62,16 @@ login_openbis <- function(user,
                           auto_disconnect = TRUE) {
 
   disco <- function(tok) {
-    reg.finalizer(environment(),
-                  function(...) logout_openbis(tok),
-                  onexit = TRUE)
+
+    reg.finalizer(
+      environment(),
+      function(...) {
+        message("please call \"logout_openbis\" when no longer using a token.")
+        logout_openbis(tok)
+      },
+      onexit = TRUE
+    )
+
     environment()
   }
 
