@@ -74,16 +74,9 @@ read_pub_meta <- function(dat, ...) {
   assert_that(is.list(dat),
               length(dat) == 1L,
               is.raw(dat[[1]]),
-              grepl("\\.csv\\.zip$", names(dat)))
+              grepl("\\.csv\\.gz$", names(dat)))
 
-  # as per https://stackoverflow.com/a/3053883, need to write zip to disk
-  dir <- tempfile()
-  dir.create(dir)
-  on.exit(unlink(dir, recursive = TRUE))
-
-  writeBin(dat[[1]], file.path(dir, names(dat)))
-
-  read_delim(file.path(dir, names(dat)), delim = ";", ...)
+  read_delim(gzcon(rawConnection(dat[[1]])), delim = "\t", ...)
 }
 
 #' @title Read full meta data
