@@ -26,8 +26,8 @@ test_that("matlab data files can be read", {
 })
 
 test_that("public metadata data files can be read", {
-  public <- do_download(tok, "20140609103658114-3045667",
-                     list_files(tok, "20140609103658114-3045667"))
+  public <- do_download(tok, "20171124164623077-3752141",
+                        list_files(tok, "20171124164623077-3752141"))
   expect_is(dat <- read_pub_meta(public), "tbl")
   expect_gt(nrow(dat), 0L)
   expect_equal(ncol(dat), 39L)
