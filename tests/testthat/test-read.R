@@ -26,21 +26,21 @@ test_that("matlab data files can be read", {
 })
 
 test_that("public metadata data files can be read", {
-  public <- do_download(tok, "20171124164623077-3752141",
-                        list_files(tok, "20171124164623077-3752141"))
+  public <- do_download(tok, "20171124145822228-3752139",
+                        list_files(tok, "20171124145822228-3752139"))
   expect_is(dat <- read_pub_meta(public), "tbl")
-  expect_gt(nrow(dat), 0L)
-  expect_equal(ncol(dat), 39L)
+  expect_equal(nrow(dat), 3590L)
+  expect_equal(ncol(dat), 28L)
   expect_true(all(sapply(dat, is.character)))
   expect_false(anyNA(dat[["PlateQualityStatus"]]))
 
-  expect_warning(dat <- read_pub_meta(public, col_types = NULL))
-  expect_equal(ncol(dat), 39L)
+  expect_message(dat <- read_pub_meta(public, col_types = NULL))
+  expect_equal(ncol(dat), 28L)
   expect_false(all(sapply(dat, is.character)))
 
   expect_is(dat <- read_pub_meta(public, na = c("", "NA", "NaN", "unknown",
                                                 "UNKNOWN")), "tbl")
-  expect_equal(ncol(dat), 39L)
+  expect_equal(ncol(dat), 28L)
   expect_true(all(sapply(dat, is.character)))
   expect_true(anyNA(dat[["PlateQualityStatus"]]))
 })
