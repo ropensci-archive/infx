@@ -84,8 +84,6 @@ as_json_class <- function(x) {
 #' 
 #' @rdname json_class
 #' 
-#' @param x Object to process.
-#' 
 #' @return The modified object used as input.
 #' 
 #' @export
