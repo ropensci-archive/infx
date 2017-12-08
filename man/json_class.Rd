@@ -39,8 +39,6 @@ is_json_class(x)
 
 \item{fancy}{Logical switch to enable font styles, colors and UTF box
 characters.}
-
-\item{x}{Object to process.}
 }
 \value{
 The modified object used as input.
