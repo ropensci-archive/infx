@@ -2,7 +2,8 @@ context("openbis create objects")
 
 test_that("create PlateIdentifier objects", {
   expect_error(create_plate_id())
-  expect_s3_class(create_plate_id("foo", "bar"), "json_class")
+  expect_s3_class(create_plate_id("foo", "bar"),
+                  c("PlateIdentifier", "json_class"))
   expect_true(has_json_class(create_plate_id("foo", "bar"), "PlateIdentifier"))
   expect_error(create_plate_id("foo"))
   expect_error(create_plate_id("foo", token = tok))

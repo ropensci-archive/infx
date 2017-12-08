@@ -24,7 +24,7 @@ make_request <- function(url,
   req <- list(id = id,
               jsonrpc = version,
               method = method,
-              params = rm_json_class(params))
+              params = as_json_list(params))
 
   res <- httr::POST(url, body = req, encode = "json")
 
@@ -37,68 +37,73 @@ make_request <- function(url,
     stop("Error:\n", paste(names(res$content$error), res$content$error,
                            sep = ": ", collapse = "\n"))
 
-  add_json_class(res$content$result)
+  as_json_class(res$content$result)
 }
 
-#' @title Create/destroy JSON class
+#' @title Create JSON class
 #'
 #' @description To communicate object type information via JSON to the
 #' Jackson-powered openBis interface, the "@type" field is used. Furthermore,
 #' the "@id" field is used by the json-rpc specification to map requests in
 #' async scenarios. Data received from openBis is stripped of both "@type" and
-#' "@id" and the type information is saved as "json_class" attribute. Such
-#' objects also have the class "json_class" added. The opposite action removes
-#' both the "json_class" class and the "json_class" attribute and writes the
-#' "json_class" information to an "@type" filed. Both actions are recursively
-#' applied to lists.
+#' "@id" and the type information is saved as class attribute. Such
+#' objects also have the class "json_class" added.
 #' 
 #' @rdname json_class
 #' 
 #' @param x Object to process.
-#' @param mode Whether to move the type information from "@type" field to
-#' "json_class" attribute ("add") of the other way around ("rm").
 #' 
 #' @return The modified object used as input.
 #' 
 #' @export
 #' 
-json_class <- function(x, mode = c("add", "rm")) {
+as_json_class <- function(x) {
 
-  mode <- match.arg(mode)
-
-  if (mode == "add" && "@type" %in% names(x)) {
+  if (is.list(x) && "@type" %in% names(x)) {
 
     assert_that(sum("@type" == names(x)) == 1L)
 
     x <- structure(x[!names(x) %in% c("@type", "@id")],
-                   class = c(class(x), "json_class"),
-                   json_class = x[["@type"]])
+                   class = c(x[["@type"]], "json_class"))
 
-  } else if (mode == "rm" && has_json_class(x)) {
-
-    x <- c(`@type` = attr(x, "json_class"), x)
-    class(x) <- class(x)[class(x) != "json_class"]
-    attr(x, "json_class") <- NULL
   }
 
   sublist <- sapply(x, is.list)
+
   if (any(sublist))
-    x[sublist] <- lapply(x[sublist], json_class, mode)
+    x[sublist] <- lapply(x[sublist], as_json_class)
 
   x
 }
 
+#' @title Destroy JSON class
+#'
+#' @description Removes both the "json_class" class and the JSON class itself,
+#' which is written to an "@type" filed. This action is recursively applied to
+#' lists.
+#' 
 #' @rdname json_class
+#' 
+#' @param x Object to process.
+#' 
+#' @return The modified object used as input.
+#' 
 #' @export
 #' 
-add_json_class <- function(x) json_class(x, "add")
+as_json_list <- function(x) {
 
-#' @rdname json_class
-#' @export
-#' 
-rm_json_class <- function(x) json_class(x, "rm")
+  if (is_json_class(x))
+    x <- c(`@type` = class(x)[1], unclass(x))
 
-#' @title Test if object has a JSON class
+  sublist <- sapply(x, is.list)
+
+  if (any(sublist))
+    x[sublist] <- lapply(x[sublist], as_json_list)
+
+  x
+}
+
+#' @title Test if object has a specific JSON class
 #'
 #' @description Either tests whether an object has any JSON class attached or
 #' a specific one.
@@ -112,17 +117,20 @@ rm_json_class <- function(x) json_class(x, "rm")
 #' @export
 #' 
 has_json_class <- function(x, class = NULL) {
-  if (is.null(class)) !is.null(attr(x, "json_class"))
+
+  if (is.null(class))
+    is_json_class(x)
   else {
     assert_that(is.character(class), length(class) == 1L)
-    if (is.null(attr(x, "json_class"))) FALSE
-    else attr(x, "json_class") == class
+    class(x)[1] == class
   }
 }
 
 #' @title Test if object represents a JSON class
 #'
-#' @description Tests whether an object inherits from "json_class".
+#' @description Tests whether an object inherits from "json_class". Throws a
+#' warning if the "json_class" class attribute is not in the second position
+#' of the class vector.
 #' 
 #' @rdname json_class
 #' 
@@ -130,7 +138,15 @@ has_json_class <- function(x, class = NULL) {
 #' 
 #' @export
 #' 
-is_json_class <- function(x) inherits(x, "json_class")
+is_json_class <- function(x) {
+
+  if (inherits(x, "json_class")) {
+    if (class(x)[2] != "json_class")
+      warning("malformed json_class object")
+    TRUE
+  } else
+    FALSE
+}
 
 #' @title Subset a JSON object
 #'
@@ -149,7 +165,6 @@ is_json_class <- function(x) inherits(x, "json_class")
 #' 
 `[.json_class` <- function(x, i, ...) {
   r <- NextMethod("[")
-  attr(r, "json_class") <- attr(x, "json_class")
   class(r) <- class(x)
   r
 }
@@ -233,7 +248,7 @@ print_json_class <- function(x, depth, max_depth, layout = style()) {
 
     depth <- depth + 1
 
-    obj <- indent(layout$obj(attr(x, "json_class")),
+    obj <- indent(layout$obj(class(x)[1]),
                   paste0(layout$n, layout$h),
                   paste0(layout$v,  " "))
 

@@ -91,7 +91,7 @@ test_that("openbis downloads can be created", {
                length(unlist(lapply(ds, `[`, c("code", "dataSetTypeCode")))))
 
   pro <- structure(list(spaceCode = "INFECTX_PUBLISHED", code = "_COMMON"),
-                   class = "json_class", json_class = "Project")
+                   class = c("Project", "json_class"))
   exp <- list_experiments(tok, pro)
   expect_is(ds <- list_exp_datasets(tok, exp[[1]]), "list")
   expect_true(all(sapply(ds, is_json_class)))

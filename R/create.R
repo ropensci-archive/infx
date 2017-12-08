@@ -34,8 +34,8 @@ create_plate_id <- function(plate_id,
 
   assert_that(is.character(space_code), length(space_code) == 1L)
 
-  json_class(c(`@type` = "PlateIdentifier",
-               list(plateCode = plate_id, spaceCodeOrNull = space_code)))
+  as_json_class(c(`@type` = "PlateIdentifier",
+                  list(plateCode = plate_id, spaceCodeOrNull = space_code)))
 }
 
 #' @title Create experiment id objects
@@ -93,7 +93,7 @@ create_exp_ids <- function(exp_code = NULL,
 
     assert_that(all(sapply(params, length) == 1L))
 
-    json_class(c(`@type` = "ExperimentIdentifier", params))
+    as_json_class(c(`@type` = "ExperimentIdentifier", params))
   }
 }
 
