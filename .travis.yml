@@ -7,5 +7,19 @@ cache: packages
 r_packages:
   - covr
 
+r_github_packages:
+  - hadley/pkgdown
+
 after_success:
   - Rscript -e 'covr::codecov()'
+
+before_deploy:
+  - Rscript -e 'pkgdown::build_site()'
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
+  local_dir: docs
