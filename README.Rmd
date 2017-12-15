@@ -1,0 +1,67 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- build with rmarkdown::render("README.Rmd") -->
+
+```{r setup, include = FALSE}
+library(rvest)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# infx
+
+Access to [InfectX](http://www.infectx.ch)/[TargetInfectX](https://www.targetinfectx.ch) screening data from R. A browser-based view of the data is available [here](http://www.infectx.ch/databrowser).
+
+[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
+[![Travis-CI Build Status](https://travis-ci.org/nbenn/infx.svg?branch=master)](https://travis-ci.org/nbenn/infx)
+[![Coverage status](https://codecov.io/gh/nbenn/infx/branch/master/graph/badge.svg)](https://codecov.io/github/nbenn/infx?branch=master)
+
+## Installation
+
+You can install infx from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("nbenn/infx")
+```
+
+## OpenBIS API
+
+Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
+
+```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
+api <- c("generic/shared/api/v1/IGeneralInformationService.html",
+         "generic/shared/api/v1/IGeneralInformationChangingService.html",
+         "plugin/query/shared/api/v1/IQueryApiServer.html",
+         "generic/shared/api/v1/IWebInformationService.html",
+         "dss/generic/shared/api/v1/IDssServiceRpcGeneric.html",
+         "plugin/screening/shared/api/v1/IScreeningApiServer.html",
+         "dss/screening/shared/api/v1/IDssServiceRpcScreening.html")
+
+out <- sapply(api, function(url) {
+  url <- paste("http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd",
+               "openbis", url, sep = "/")
+
+  res <- html_nodes(read_html(url),
+                    xpath = "/html/body/div[4]/div[2]/ul/li/ul[2]/li/table")
+
+  res <- sapply(html_table(res)[[1]][, 2], function(x) {
+    name <- sub("\\($", "", regmatches(x, regexpr("^.+?\\(", x)))
+    desc <- sub("\\)\n", "", regmatches(x, regexpr("\\)\n.+$", x)))
+    paste0("    - ", name, ": ", gsub("\n", " ", desc))
+  })
+
+  paste0("* [", sub("\\.html$", "", basename(url)), "](", url, ")\n",
+         paste(res, collapse = "\n"))
+})
+cat(paste(out, collapse = "\n"))
+```
