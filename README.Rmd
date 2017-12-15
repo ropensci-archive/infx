@@ -57,7 +57,7 @@ out <- sapply(api, function(url) {
   res <- sapply(html_table(res)[[1]][, 2], function(x) {
     name <- sub("\\($", "", regmatches(x, regexpr("^.+?\\(", x)))
     desc <- sub("\\)\n", "", regmatches(x, regexpr("\\)\n.+$", x)))
-    paste0("    - ", name, ": ", gsub("\n", " ", desc))
+    paste0("    - [ ]", name, ": ", gsub("\n", " ", desc))
   })
 
   paste0("* [", sub("\\.html$", "", basename(url)), "](", url, ")\n",
