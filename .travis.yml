@@ -6,9 +6,10 @@ cache: packages
 
 r_packages:
   - covr
+  - rvest
 
 r_github_packages:
-  - hadley/pkgdown
+  - r-lib/pkgdown
 
 after_success:
   - Rscript -e 'covr::codecov()'
