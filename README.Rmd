@@ -39,6 +39,7 @@ devtools::install_github("nbenn/infx")
 Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
 
 ```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
+skip <- c("VisibleToUser", "OnBehalfOfUser")
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
          "plugin/query/shared/api/v1/IQueryApiServer.html",
@@ -57,7 +58,19 @@ out <- sapply(api, function(url) {
   res <- sapply(html_table(res)[[1]][, 2], function(x) {
     name <- sub("\\($", "", regmatches(x, regexpr("^.+?\\(", x)))
     desc <- sub("\\)\n", "", regmatches(x, regexpr("\\)\n.+$", x)))
-    paste0("    - [ ]", name, ": ", gsub("\n", " ", desc))
+
+    found <- any(sapply(list.files("R", full.names = TRUE), function(file) {
+      any(grepl(name, readLines(file, warn = FALSE)))
+    }))
+
+    if (grepl("^Deprecated", desc))
+      st <- TRUE
+    else
+      st <- any(sapply(skip, grepl, name))
+      
+    paste0("    - [", if (found) "x" else " ", "] ",
+           if (st) "~~", name, if (st) "~~", ": ",
+           gsub("\n", " ", desc))
   })
 
   paste0("* [", sub("\\.html$", "", basename(url)), "](", url, ")\n",
