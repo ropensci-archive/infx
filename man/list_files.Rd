@@ -7,7 +7,7 @@
 list_files(token, data_id, folder = "original")
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{data_id}{Data set code.}
 

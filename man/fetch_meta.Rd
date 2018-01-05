@@ -7,7 +7,7 @@
 fetch_meta(token, type = c("full", "public"), ...)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{type}{A switch for the type of meta data to be downloaded.}
 

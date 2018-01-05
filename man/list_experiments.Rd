@@ -7,7 +7,7 @@
 list_experiments(token, projects = NULL, exp_type = NULL, exp_ids = NULL)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{projects}{List holding Project objects for which experiments are to be
 listed. If NULL, all experiments are returned.}

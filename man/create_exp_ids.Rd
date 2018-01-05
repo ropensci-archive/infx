@@ -13,7 +13,7 @@ vectors of length 1 that make up the returned ExperimentIdentifier object
 or if one or more is NULL, regular expressions to match fields against the
 full list of available ExperimentIdentifier objects.}
 
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{...}{Passed to \link{grepl}.}
 }

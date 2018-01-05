@@ -7,7 +7,7 @@
 list_plate_datasets(token, plate_id)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{plate_id}{Plate barcode.}
 }

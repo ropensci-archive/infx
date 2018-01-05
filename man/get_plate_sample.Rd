@@ -7,7 +7,7 @@
 get_plate_sample(token, plate_id, space_code = NULL)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{plate_id}{Plate barcode.}
 

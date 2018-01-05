@@ -4,7 +4,7 @@
 \alias{login_openbis}
 \alias{logout_openbis}
 \alias{is_token_valid}
-\title{Generate a login token}
+\title{Generate/check/destroy a login token}
 \usage{
 login_openbis(user, pwd, auto_disconnect = TRUE)
 
@@ -18,34 +18,14 @@ is_token_valid(token)
 \item{auto_disconnect}{Logical switch for automatically closing the
 connection upon garbage collection of the token.}
 
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
-}
-\value{
-The login token to be used for further API interactions.
-
-NULL (invisibly)
-
-Scalar logical.
+\item{token}{Login token as created by \code{login_openbis()}.}
 }
 \description{
-Create a login token for openBis API calls. Upon garbage
-collection of the token, the user is logged out.
-
-Using a token as created by \code{\link[=login_openbis]{login_openbis()}}, the
-corresponding session is closed and the token is rendered invalid.
-
-A token as created by \code{\link[=login_openbis]{login_openbis()}} is tested for its
-validity.
+Create a login token for openBis API calls. If the \code{auto_disconnect} option
+is chosen, the user is logged out automatically upon garbage collection of
+the token. The validity of a token can be checked using \code{is_token_valid()}
+and a login token can be destroyed using \code{logout_openbis()}.
 }
-\section{Functions}{
-\itemize{
-\item \code{login_openbis}: 
-
-\item \code{logout_openbis}: 
-
-\item \code{is_token_valid}: 
-}}
-
 \examples{
 \donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)

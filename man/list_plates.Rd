@@ -7,7 +7,7 @@
 list_plates(token, exp_id = NULL)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{exp_id}{A single ExperimentIdentifier object to limit the plate
 search to.}

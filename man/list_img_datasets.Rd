@@ -8,7 +8,7 @@ list_img_datasets(token, plate_id, type = c("raw", "segmentation"),
   most_recent = TRUE)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{plate_id}{Either a character vector holding plate barcodes or a list
 of/single PlateIdentifier object(s).}

@@ -1,16 +1,17 @@
 
-#' @title Generate a login token
+#' Generate/check/destroy a login token
 #'
-#' @description Create a login token for openBis API calls. Upon garbage
-#' collection of the token, the user is logged out.
+#' Create a login token for openBis API calls. If the `auto_disconnect` option
+#' is chosen, the user is logged out automatically upon garbage collection of
+#' the token. The validity of a token can be checked using `is_token_valid()`
+#' and a login token can be destroyed using `logout_openbis()`.
 #' 
 #' @param user,pwd Login credentials for an openBis instance.
 #' @param auto_disconnect Logical switch for automatically closing the
 #' connection upon garbage collection of the token.
+#' @param token Login token as created by `login_openbis()`.
 #' 
-#' @return The login token to be used for further API interactions.
-#' 
-#' @describeIn login
+#' @rdname login
 #' 
 #' @examples
 #' \donttest{
@@ -52,33 +53,13 @@ login_openbis <- function(user,
   token
 }
 
-#' @title Logout from openBis
-#'
-#' @description Using a token as created by [login_openbis()], the
-#' corresponding session is closed and the token is rendered invalid.
-#' 
-#' @param token Login token as created by [login_openbis()].
-#' 
-#' @return NULL (invisibly)
-#' 
-#' @describeIn login
-#' 
+#' @rdname login
 #' @export
 #' 
 logout_openbis <- function(token)
   invisible(unlist(query_openbis("logout", list(token))))
 
-#' @title Check validity of token
-#'
-#' @description A token as created by [login_openbis()] is tested for its
-#' validity.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return Scalar logical.
-#' 
-#' @describeIn login
-#' 
+#' @rdname login
 #' @export
 #' 
 is_token_valid <- function(token)

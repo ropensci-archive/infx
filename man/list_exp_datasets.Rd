@@ -7,7 +7,7 @@
 list_exp_datasets(token, experiment)
 }
 \arguments{
-\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
+\item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{experiment}{A data.frame representing a set of experiments.}
 }
