@@ -1,12 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- build with rmarkdown::render("README.Rmd") -->
-infx
-====
-
-Access to [InfectX](http://www.infectx.ch)/[TargetInfectX](https://www.targetinfectx.ch) screening data from R. A browser-based view of the data is available [here](http://www.infectx.ch/databrowser).
+[infx](https://nbenn.github.io/infx)
+====================================
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://img.shields.io/badge/lifecycle-experimental-orange.svg) [![Travis-CI Build Status](https://travis-ci.org/nbenn/infx.svg?branch=master)](https://travis-ci.org/nbenn/infx) [![Coverage status](https://codecov.io/gh/nbenn/infx/branch/master/graph/badge.svg)](https://codecov.io/github/nbenn/infx?branch=master)
+
+Access to [InfectX](http://www.infectx.ch)/[TargetInfectX](https://www.targetinfectx.ch) screening data from R. A browser-based view of the data is available [here](http://www.infectx.ch/databrowser).
 
 Installation
 ------------
