@@ -7,13 +7,13 @@
 list_exp_datasets(token, experiment)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{experiment}{A data.frame representing a set of experiments.}
 }
 \value{
-List, containing (among others), entries \"code\" and
-\"dataSetTypeCode\".
+List, containing (among others), entries "code" and
+"dataSetTypeCode".
 }
 \description{
 Given a set of experiments as a data.frame, the corresponding

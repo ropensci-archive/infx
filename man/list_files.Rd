@@ -7,7 +7,7 @@
 list_files(token, data_id, folder = "original")
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{data_id}{Data set code.}
 
@@ -15,7 +15,7 @@ list_files(token, data_id, folder = "original")
 }
 \value{
 List/data.frame, containing (among others), columns
-\"pathInDataSet\", \"pathInListing\".
+"pathInDataSet", "pathInListing".
 }
 \description{
 Given a data set code, the corresponding files are queried.

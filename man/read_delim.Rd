@@ -8,14 +8,14 @@ read_delim(file, ..., col_types = readr::cols(.default =
   readr::col_character()))
 }
 \arguments{
-\item{file, col_types, ...}{All are passed to [readr::read_delim()].}
+\item{file, col_types, ...}{All are passed to \code{\link[readr:read_delim]{readr::read_delim()}}.}
 }
 \value{
 A tibble holding all read meta data or a subset thereof, depending
 on the column specification.
 }
 \description{
-A wrapper around [readr::read_delim()], which provides a
+A wrapper around \code{\link[readr:read_delim]{readr::read_delim()}}, which provides a
 different default value for col_types (all columns are read as character
 instead of auto-detect).
 }

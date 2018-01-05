@@ -7,7 +7,7 @@
 list_experiments(token, projects = NULL, exp_type = NULL, exp_ids = NULL)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{projects}{List holding Project objects for which experiments are to be
 listed. If NULL, all experiments are returned.}
@@ -18,8 +18,8 @@ If NULL, all experiments are returned.}
 \item{exp_ids}{A set of experiment ID objects}
 }
 \value{
-List/data.frame, containing (among others), columns \"plateCode\"
-and \"spaceCodeOrNull\".
+List/data.frame, containing (among others), columns "plateCode"
+and "spaceCodeOrNull".
 }
 \description{
 For a login token (and optionally a set of projects and

@@ -13,9 +13,9 @@ vectors of length 1 that make up the returned ExperimentIdentifier object
 or if one or more is NULL, regular expressions to match fields against the
 full list of available ExperimentIdentifier objects.}
 
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
-\item{...}{Passed to [grepl].}
+\item{...}{Passed to \link{grepl}.}
 }
 \value{
 A single or a list of ExperimentIdentifier object(s).

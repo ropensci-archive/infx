@@ -7,12 +7,12 @@
 logout_openbis(token)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 }
 \value{
 NULL (invisibly)
 }
 \description{
-Using a token as created by [login_openbis], the corresponding
+Using a token as created by \link{login_openbis}, the corresponding
 session is closed and the token is rendered invalid.
 }

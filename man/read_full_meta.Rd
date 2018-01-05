@@ -9,16 +9,16 @@ read_full_meta(dat, ...)
 \arguments{
 \item{dat}{The data (raw vector) to be read.}
 
-\item{...}{All further arguments are passed to [read_delim]. If an
+\item{...}{All further arguments are passed to \link{read_delim}. If an
 argument should behave differently for each table, a named list is expected
 with names
 \enumerate{
-  \item \code{\"well_annotation\"}
-  \item \code{\"sequence_information_sirna\"}
-  \item \code{\"sequence_information_mirna\"}
-  \item \code{\"sequence_information_esirna\"}
-  \item \code{\"sequence_information_compound\"}
-  \item \code{\"pool_contained_compound_lookup\"}
+\item \code{\"well_annotation\"}
+\item \code{\"sequence_information_sirna\"}
+\item \code{\"sequence_information_mirna\"}
+\item \code{\"sequence_information_esirna\"}
+\item \code{\"sequence_information_compound\"}
+\item \code{\"pool_contained_compound_lookup\"}
 }
 for this argument in order to match to the respective table.}
 }
@@ -28,5 +28,5 @@ depending on the column specification.
 }
 \description{
 Read full meta data downloaded from openBis using
-[read_delim].
+\link{read_delim}.
 }

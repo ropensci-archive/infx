@@ -7,7 +7,7 @@
 get_plate_sample(token, plate_id, space_code = NULL)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{plate_id}{Plate barcode.}
 
@@ -15,11 +15,11 @@ get_plate_sample(token, plate_id, space_code = NULL)
 automatically.}
 }
 \value{
-List, containing (among others), entries \"id\", \"permId\",
-\"identifier\", \"properties\", \"retrievedFetchOptions\".
+List, containing (among others), entries "id", "permId",
+"identifier", "properties", "retrievedFetchOptions".
 }
 \description{
 Given a plate id (barcode), the corresponding plate space is
-determined using [list_plates] and the sample object representing the given
+determined using \link{list_plates} and the sample object representing the given
 plate is queried.
 }

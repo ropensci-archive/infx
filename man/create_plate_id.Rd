@@ -12,7 +12,7 @@ create_plate_id(plate_id, space_code = NULL, token = NULL)
 \item{space_code}{The space code of the plate; it NULL, it is determined
 automatically.}
 
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 }
 \value{
 A single PlateIdentifier object as a list of type json_class.
@@ -21,7 +21,7 @@ A single PlateIdentifier object as a list of type json_class.
 PlateIdentifier objects are used throughout the openBis API
 to identify plates. In addition to the plate barcode, the space the plate
 resides in is needed. If unknown (NULL), this property can be determined by
-listing all Plates (using [list_plates]) and matching the provided barcode.
+listing all Plates (using \link{list_plates}) and matching the provided barcode.
 If several plates in different spaces have the same barcode, an error is
 thrown.
 }

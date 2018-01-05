@@ -7,12 +7,12 @@
 is_token_valid(token)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 }
 \value{
 Scalar logical.
 }
 \description{
-A token as created by [login_openbis] is tested for its
+A token as created by \link{login_openbis} is tested for its
 validity.
 }

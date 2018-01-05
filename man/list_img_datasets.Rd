@@ -8,7 +8,7 @@ list_img_datasets(token, plate_id, type = c("raw", "segmentation"),
   most_recent = TRUE)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{plate_id}{Either a character vector holding plate barcodes or a list
 of/single PlateIdentifier object(s).}
@@ -24,6 +24,6 @@ A list/single object of type ImageDatasetReference.
 \description{
 For a plate, which can be specified as a (vector of)
 string(s), for which the PlateIdentifier objects then are constructed using
-[create_plate_id], or for a (list of) PlateIdentifier object(s), list image
+\link{create_plate_id}, or for a (list of) PlateIdentifier object(s), list image
 datasets.
 }

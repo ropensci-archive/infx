@@ -7,14 +7,14 @@
 list_plates(token, exp_id = NULL)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{exp_id}{A single ExperimentIdentifier object to limit the plate
 search to.}
 }
 \value{
-List/data.frame, containing (among others), columns \"plateCode\"
-and \"spaceCodeOrNull\".
+List/data.frame, containing (among others), columns "plateCode"
+and "spaceCodeOrNull".
 }
 \description{
 For a login token, list all available plates.

@@ -7,9 +7,9 @@
 fetch_files(token, files, data_id, async = 5L)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
-\item{files}{Files objects as produced by [list_files] describing the files
+\item{files}{Files objects as produced by \link{list_files} describing the files
 to be downloaded. If NULL, all available files of this data_id will be
 fetched (as long as there are less than 10).}
 
@@ -23,7 +23,7 @@ A list of raw vectors holding the downloaded data.
 \description{
 A set of files is split into buckets and downloaded
 asynchronously and the progress is reported using a progress bar. The
-splitting is necessary as [do_download] downloads all files simultaneously.
+splitting is necessary as \link{do_download} downloads all files simultaneously.
 }
 \section{TODO}{
  entry point to all downloads, choose single or async (both

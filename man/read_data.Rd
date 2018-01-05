@@ -14,7 +14,7 @@ A vector holding all data. The attribute \code{length} can be used
 to split the linearized data into bins corresponding to images.
 }
 \description{
-Calling [R.matlab::readMat] single cell feature files in
+Calling \link[R.matlab:readMat]{R.matlab::readMat} single cell feature files in
 Matlab format, as produced by CellProfiler are read and checked for the
 correct structure. The Matlab file is expected to contain a nested list
 where each node corresponds to an image and contains a list which is either

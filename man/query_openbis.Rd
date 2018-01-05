@@ -26,6 +26,6 @@ A list/data.frame holding the response from openBis.
 }
 \description{
 Issues a POST request to the JSON-RPC based openBis API v1,
-using [make_request]. Documentation is available at
+using \link{make_request}. Documentation is available at
 \code{https://wiki-bsse.ethz.ch/display/openBISDoc/openBIS+JSON+API}.
 }

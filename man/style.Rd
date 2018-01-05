@@ -15,5 +15,5 @@ A list holding the tree characters and the entity styling.
 }
 \description{
 Characters for printing the tree structure and styles to be
-applied to the different entities in [print_json_class].
+applied to the different entities in \link{print_json_class}.
 }

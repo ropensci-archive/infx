@@ -7,16 +7,16 @@
 list_plate_datasets(token, plate_id)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 
 \item{plate_id}{Plate barcode.}
 }
 \value{
-List, containing (among others), fields \"code\", and
-\"dataSetTypeCode\".
+List, containing (among others), fields "code", and
+"dataSetTypeCode".
 }
 \description{
 Given a plate id (barcode), the corresponding sample object is
-fetched using [get_plate_sample] and all available datasets for this sample
+fetched using \link{get_plate_sample} and all available datasets for this sample
 are queried.
 }

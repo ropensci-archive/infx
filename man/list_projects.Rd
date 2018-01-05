@@ -7,11 +7,11 @@
 list_projects(token)
 }
 \arguments{
-\item{token}{Login token as created by [login_openbis].}
+\item{token}{Login token as created by \link{login_openbis}.}
 }
 \value{
-List/data.frame, containing (among others), columns \"plateCode\"
-and \"spaceCodeOrNull\".
+List/data.frame, containing (among others), columns "plateCode"
+and "spaceCodeOrNull".
 }
 \description{
 For a login token, list all available projects.

@@ -20,8 +20,7 @@ applied to the different entities.}
 A string that can be used for printing.
 }
 \description{
-Inspired by the ast printing function of Hadley's [lobstr
-package](https://github.com/hadley/lobstr) and also heavily borrowing code
-from [there](https://git.io/vFMA5), this enables the recursive printing of
+Inspired by the ast printing function of Hadley's \href{https://github.com/hadley/lobstr}{lobstrpackage} and also heavily borrowing code
+from \href{https://git.io/vFMA5}{there}, this enables the recursive printing of
 JSON objects.
 }
