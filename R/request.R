@@ -30,6 +30,8 @@
 #'   print(projects[[1]])
 #' }
 #' 
+#' @export
+#' 
 make_request <- function(url,
                          method,
                          params,
