@@ -1,20 +1,44 @@
 
-
-#' @title Create JSON class
+#' JSON class objects
 #'
-#' @description To communicate object type information via JSON to the
-#' Jackson-powered openBis interface, the "@type" field is used. Furthermore,
-#' the "@id" field is used by the json-rpc specification to map requests in
-#' async scenarios. Data received from openBis is stripped of both "@type" and
-#' "@id" and the type information is saved as class attribute. Such
-#' objects also have the class "json_class" added.
+#' To communicate object type information via JSON to the Jackson-powered
+#' openBis interface, the `@type` field is used. Furthermore, the `@id` field
+#' is used by the JSON-RPC specification to map requests in async scenarios.
+#' Data received from openBis is  recursively stripped of both `@type` and
+#' `@id` fields and the type information is saved as class attribute. Such
+#' objects also have the class `json_class` added.
 #' 
-#' @rdname json_class
+#' The action of [as_json_class()] is reversed by [as_json_list()], which
+#' removes both the `json_class` class attribute and the JSON class attribute
+#' itself, which is subsequently written to a `@type` filed. This action is
+#' recursively applied to lists.
+#' 
+#' The functions [is_json_class()] and [has_json_class()] test whether an
+#' object is a JSON class object. The former tests whether an object inherits
+#' from `json_class` and throws a warning if the `json_class` class attribute
+#' is not in the second position of the class vector. The latter tests whether
+#' an object has a specific JSON class attached.
+#' 
+#' JSON class objects have custom sub-setting and printing functions available.
+#' Sub-setting of JSON objects that preserve class and `json_class`
+#' attributes. This is useful when objects are created from openBIS results
+#' which are subsequently used in further queries, but the constructors they
+#' are passed to require only a subset of the fetched fields. Printing is
+#' inspired by (and heavily borrows code from) the ast printing function of
+#' Hadley's [lobstr package](https://github.com/hadley/lobstr).
 #' 
 #' @param x Object to process.
+#' @param class JSON class name used to test for.
+#' @param i Sub-setting information.
+#' @param depth The maximum recursion depth for printing.
+#' @param width Number of columns to maximally print.
+#' @param length Number of lines to maximally print.
+#' @param fancy Logical switch to enable font styles, colors and UTF box
+#' characters for printing.
+#' @param ... Generic compatibility.
 #' 
-#' @return The modified object used as input.
-#' 
+#' @rdname json_class
+#'  
 #' @export
 #' 
 as_json_class <- function(x) {
@@ -36,16 +60,7 @@ as_json_class <- function(x) {
   x
 }
 
-#' @title Destroy JSON class
-#'
-#' @description Removes both the "json_class" class and the JSON class itself,
-#' which is written to an "@type" filed. This action is recursively applied to
-#' lists.
-#' 
 #' @rdname json_class
-#' 
-#' @return The modified object used as input.
-#' 
 #' @export
 #' 
 as_json_list <- function(x) {
@@ -61,39 +76,7 @@ as_json_list <- function(x) {
   x
 }
 
-#' @title Test if object has a specific JSON class
-#'
-#' @description Either tests whether an object has any JSON class attached or
-#' a specific one.
-#' 
 #' @rdname json_class
-#' 
-#' @param class (Optional) class name to test.
-#' 
-#' @return A single logical.
-#' 
-#' @export
-#' 
-has_json_class <- function(x, class = NULL) {
-
-  if (is.null(class))
-    is_json_class(x)
-  else {
-    assert_that(is.character(class), length(class) == 1L)
-    class(x)[1] == class
-  }
-}
-
-#' @title Test if object represents a JSON class
-#'
-#' @description Tests whether an object inherits from "json_class". Throws a
-#' warning if the "json_class" class attribute is not in the second position
-#' of the class vector.
-#' 
-#' @rdname json_class
-#' 
-#' @return A single logical.
-#' 
 #' @export
 #' 
 is_json_class <- function(x) {
@@ -106,19 +89,20 @@ is_json_class <- function(x) {
     FALSE
 }
 
-#' @title Subset a JSON object
-#'
-#' @description Custom sub-setting of JSON objects that preserve class and
-#' "json_class" attributes. This is useful when objects are created from
-#' openBIS results which are subsequently used in further queries, but the
-#' constructors they are passed to require only a subset of the fetched fields.
-#' 
 #' @rdname json_class
+#' @export
 #' 
-#' @param i Sub-setting information.
-#' 
-#' @return The subsetted object.
-#' 
+has_json_class <- function(x, class) {
+
+  if (!is_json_class(x))
+    FALSE
+  else {
+    assert_that(is.character(class), length(class) == 1L)
+    class(x)[1] == class
+  }
+}
+
+#' @rdname json_class
 #' @export
 #' 
 `[.json_class` <- function(x, i, ...) {
@@ -127,25 +111,7 @@ is_json_class <- function(x) {
   r
 }
 
-#' @title Print a JSON object
-#'
-#' @description Prints a JSON object stored as a possibly nested list
-#' structure. The JSON objects themselves are rendered as nodes and will be
-#' traversed recursively up to the specified depth. Furthermore, the maximum
-#' width (number of columns printed) and length (number of lines printed) may
-#' be specified.
-#' 
 #' @rdname json_class
-#' 
-#' @param depth The maximum recursion depth.
-#' @param width Number of columns to maximally print.
-#' @param length Number of lines to maximally print.
-#' @param fancy Logical switch to enable font styles, colors and UTF box
-#' characters.
-#' @param ... Generic compatibility.
-#' 
-#' @return The input object (invisibly).
-#' 
 #' @export
 #' 
 print.json_class <- function(x,
@@ -171,22 +137,26 @@ print.json_class <- function(x,
   invisible(x)
 }
 
-#' @title Helper function for printing JSON objects
+#' Helper functions for printing JSON objects
 #'
-#' @description Inspired by the ast printing function of Hadley's [lobstr
-#' package](https://github.com/hadley/lobstr) and also heavily borrowing code
-#' from [there](https://git.io/vFMA5), this enables the recursive printing of
-#' JSON objects.
+#' Inspired by the ast printing function of Hadley's `lobstr` package heavily
+#' borrowing code from [there](https://git.io/vFMA5), this enables the
+#' recursive printing of JSON objects. Printing style can either be with fancy
+#' (colors, UTF box characters. etc.) or simple.
 #' 
 #' @param x The JSON object to print.
-#' @param depth The current recursion depth.
+#' @param cur_depth The current recursion depth.
 #' @param max_depth The maximum recursion depth.
 #' @param layout Characters for printing the tree structure and styles to be
 #' applied to the different entities.
+#' @param fancy Logical switch to enable font styles, colors and UTF box
+#' characters.
 #' 
-#' @return A string that can be used for printing.
+#' @rdname json_print
 #' 
-print_json_class <- function(x, depth, max_depth, layout = style()) {
+#' @keywords internal
+#' 
+print_json_class <- function(x, cur_depth, max_depth, layout = style()) {
 
   indent <- function(x, first, rest) {
     if (length(x) == 1)
@@ -204,19 +174,19 @@ print_json_class <- function(x, depth, max_depth, layout = style()) {
 
   } else {
 
-    depth <- depth + 1
+    cur_depth <- cur_depth + 1
 
     obj <- indent(layout$obj(class(x)[1]),
                   paste0(layout$n, layout$h),
                   paste0(layout$v,  " "))
 
-    if (depth <= max_depth) {
+    if (cur_depth <= max_depth) {
 
       if (any(sapply(x, is.null) | sapply(x, length) == 0L))
         x[sapply(x, is.null) | sapply(x, length) == 0L] <- ""
 
       rest <- Map(indent,
-                  lapply(x, print_json_class, depth, max_depth,
+                  lapply(x, print_json_class, cur_depth, max_depth,
                          layout = layout),
                   layout$key(paste0(names(x), " = ")),
                   strrep(" ", nchar(names(x)) + 3))
@@ -231,15 +201,8 @@ print_json_class <- function(x, depth, max_depth, layout = style()) {
   }
 }
 
-#' @title Styles for printing JSON objects
-#'
-#' @description Characters for printing the tree structure and styles to be
-#' applied to the different entities in [print_json_class].
-#' 
-#' @param fancy Logical switch to enable font styles, colors and UTF box
-#' characters.
-#' 
-#' @return A list holding the tree characters and the entity styling.
+#' @rdname json_print
+#' @keywords internal
 #' 
 style <- function(fancy = TRUE) {
 

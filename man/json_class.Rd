@@ -3,19 +3,19 @@
 \name{as_json_class}
 \alias{as_json_class}
 \alias{as_json_list}
-\alias{has_json_class}
 \alias{is_json_class}
+\alias{has_json_class}
 \alias{[.json_class}
 \alias{print.json_class}
-\title{Create JSON class}
+\title{JSON class objects}
 \usage{
 as_json_class(x)
 
 as_json_list(x)
 
-has_json_class(x, class = NULL)
-
 is_json_class(x)
+
+has_json_class(x, class)
 
 \method{[}{json_class}(x, i, ...)
 
@@ -25,61 +25,46 @@ is_json_class(x)
 \arguments{
 \item{x}{Object to process.}
 
-\item{class}{(Optional) class name to test.}
+\item{class}{JSON class name used to test for.}
 
 \item{i}{Sub-setting information.}
 
 \item{...}{Generic compatibility.}
 
-\item{depth}{The maximum recursion depth.}
+\item{depth}{The maximum recursion depth for printing.}
 
 \item{width}{Number of columns to maximally print.}
 
 \item{length}{Number of lines to maximally print.}
 
 \item{fancy}{Logical switch to enable font styles, colors and UTF box
-characters.}
-}
-\value{
-The modified object used as input.
-
-The modified object used as input.
-
-A single logical.
-
-A single logical.
-
-The subsetted object.
-
-The input object (invisibly).
+characters for printing.}
 }
 \description{
-To communicate object type information via JSON to the
-Jackson-powered openBis interface, the "@type" field is used. Furthermore,
-the "@id" field is used by the json-rpc specification to map requests in
-async scenarios. Data received from openBis is stripped of both "@type" and
-"@id" and the type information is saved as class attribute. Such
-objects also have the class "json_class" added.
+To communicate object type information via JSON to the Jackson-powered
+openBis interface, the \code{@type} field is used. Furthermore, the \code{@id} field
+is used by the JSON-RPC specification to map requests in async scenarios.
+Data received from openBis is  recursively stripped of both \code{@type} and
+\code{@id} fields and the type information is saved as class attribute. Such
+objects also have the class \code{json_class} added.
+}
+\details{
+The action of \code{\link[=as_json_class]{as_json_class()}} is reversed by \code{\link[=as_json_list]{as_json_list()}}, which
+removes both the \code{json_class} class attribute and the JSON class attribute
+itself, which is subsequently written to a \code{@type} filed. This action is
+recursively applied to lists.
 
-Removes both the "json_class" class and the JSON class itself,
-which is written to an "@type" filed. This action is recursively applied to
-lists.
+The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has_json_class]{has_json_class()}} test whether an
+object is a JSON class object. The former tests whether an object inherits
+from \code{json_class} and throws a warning if the \code{json_class} class attribute
+is not in the second position of the class vector. The latter tests whether
+an object has a specific JSON class attached.
 
-Either tests whether an object has any JSON class attached or
-a specific one.
-
-Tests whether an object inherits from "json_class". Throws a
-warning if the "json_class" class attribute is not in the second position
-of the class vector.
-
-Custom sub-setting of JSON objects that preserve class and
-"json_class" attributes. This is useful when objects are created from
-openBIS results which are subsequently used in further queries, but the
-constructors they are passed to require only a subset of the fetched fields.
-
-Prints a JSON object stored as a possibly nested list
-structure. The JSON objects themselves are rendered as nodes and will be
-traversed recursively up to the specified depth. Furthermore, the maximum
-width (number of columns printed) and length (number of lines printed) may
-be specified.
+JSON class objects have custom sub-setting and printing functions available.
+Sub-setting of JSON objects that preserve class and \code{json_class}
+attributes. This is useful when objects are created from openBIS results
+which are subsequently used in further queries, but the constructors they
+are passed to require only a subset of the fetched fields. Printing is
+inspired by (and heavily borrows code from) the ast printing function of
+Hadley's \href{https://github.com/hadley/lobstr}{lobstr package}.
 }
