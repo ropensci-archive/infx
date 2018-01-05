@@ -14,10 +14,10 @@
 #' 
 list_plates <- function(token, exp_id = NULL) {
   if (is.null(exp_id))
-    query_openbis("listPlates", list(token), "IScreeningApiServer")
+    request_openbis("listPlates", list(token), "IScreeningApiServer")
   else{
     assert_that(has_json_class(exp_id, "ExperimentIdentifier"))
-    query_openbis("listPlates", list(token, exp_id), "IScreeningApiServer")
+    request_openbis("listPlates", list(token, exp_id), "IScreeningApiServer")
   }
 }
 
@@ -33,7 +33,7 @@ list_plates <- function(token, exp_id = NULL) {
 #' @export
 #' 
 list_projects <- function(token)
-  query_openbis("listProjects", list(token))
+  request_openbis("listProjects", list(token))
 
 #' @title List experiment types
 #'
@@ -47,7 +47,7 @@ list_projects <- function(token)
 #' @export
 #' 
 list_experiment_types <- function(token)
-  query_openbis("listExperimentTypes", list(token))
+  request_openbis("listExperimentTypes", list(token))
 
 #' @title List experiment types
 #'
@@ -61,7 +61,7 @@ list_experiment_types <- function(token)
 #' @export
 #' 
 list_experiment_ids <- function(token)
-  query_openbis("listExperiments", list(token), "IScreeningApiServer")
+  request_openbis("listExperiments", list(token), "IScreeningApiServer")
 
 #' @title List experiments
 #'
@@ -107,7 +107,7 @@ list_experiments <- function(token,
     if (!is.null(projects) || !is.null(exp_type))
       warning("ignoring params projects/exp_type.")
 
-    query_openbis("listExperiments", list(token, exp_ids))
+    request_openbis("listExperiments", list(token, exp_ids))
 
   } else {
 
@@ -130,7 +130,7 @@ list_experiments <- function(token,
     proj <- lapply(projects, `[`, c("spaceCode", "code"))
 
     res <- lapply(exp_type, function(type)
-      query_openbis("listExperiments", list(token, proj, type)))
+      request_openbis("listExperiments", list(token, proj, type)))
 
     do.call(c, res)
   }
@@ -157,11 +157,11 @@ list_plate_datasets <- function(token,
   assert_that(has_json_class(sample, "Sample"),
               length(sample[["id"]]) == 1L)
 
-  query_openbis("listDataSetsForSample",
-                list(token,
-                     sample[c("id", "permId", "identifier", "properties",
-                              "retrievedFetchOptions")],
-                     TRUE))
+  request_openbis("listDataSetsForSample",
+                  list(token,
+                       sample[c("id", "permId", "identifier", "properties",
+                                "retrievedFetchOptions")],
+                       TRUE))
 }
 
 #' @title Get data sets for a set of experiments
@@ -186,12 +186,12 @@ list_exp_datasets <- function(token,
   assert_that(all(sapply(experiment, has_json_class, "Experiment")),
               length(experiment) >= 1L)
 
-  query_openbis("listDataSetsForExperiments",
-                list(token,
-                     lapply(experiment, `[`,
-                            c("id", "permId", "identifier", "properties",
-                              "experimentTypeCode")),
-                     list("CHILDREN")))
+  request_openbis("listDataSetsForExperiments",
+                  list(token,
+                       lapply(experiment, `[`,
+                              c("id", "permId", "identifier", "properties",
+                                "experimentTypeCode")),
+                       list("CHILDREN")))
 }
 
 #' @title Get files for a data set
@@ -208,7 +208,7 @@ list_exp_datasets <- function(token,
 #' @export
 #' 
 list_files <- function(token, data_id, folder = "original")
-  query_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
+  request_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
                 "IDssServiceRpcGeneric")
 
 #' @title Get sample object of plate
@@ -225,7 +225,7 @@ list_files <- function(token, data_id, folder = "original")
 #' @export
 #' 
 get_plate_sample <- function(token, plate_id, space_code = NULL)
-  query_openbis("getPlateSample",
-                list(token,
-                     create_plate_id(plate_id, space_code, token)),
-                "IScreeningApiServer")
+  request_openbis("getPlateSample",
+                  list(token,
+                       create_plate_id(plate_id, space_code, token)),
+                  "IScreeningApiServer")

@@ -122,7 +122,7 @@ create_dataset_id <- function(token, data_set) {
   }
 
   assert_that(is.character(data_set), length(data_set) >= 1L)
-  query_openbis("getDatasetIdentifiers",
-                list(token, lapply(data_set, identity)),
-                "IScreeningApiServer")
+  request_openbis("getDatasetIdentifiers",
+                  list(token, lapply(data_set, identity)),
+                  "IScreeningApiServer")
 }

@@ -35,7 +35,7 @@ list_img_datasets <- function(token,
   assert_that(is.list(plate_id),
               all(sapply(plate_id, has_json_class, "PlateIdentifier")))
 
-  res <- query_openbis(type, list(token, plate_id), "IScreeningApiServer")
+  res <- request_openbis(type, list(token, plate_id), "IScreeningApiServer")
 
   if (most_recent)
     res[[which.max(sapply(res, `[[`, "registrationDate"))]]
@@ -46,9 +46,9 @@ list_img_datasets <- function(token,
 load_thumb <- function(token,
                        img_ref) {
 
-  query_openbis("loadThumbnailImagesBase64",
-                list(sessionToken = token, imageReferences = img_ref),
-                "IScreeningApiServer")
+  request_openbis("loadThumbnailImagesBase64",
+                  list(sessionToken = token, imageReferences = img_ref),
+                  "IScreeningApiServer")
 }
 
 create_img_ref <- function(well_row,

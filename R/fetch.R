@@ -13,8 +13,8 @@
 #' @export
 #' 
 get_download <- function(token, data_id, file)
-  query_openbis("getDownloadUrlForFileForDataSet", list(token, data_id, file),
-                "IDssServiceRpcGeneric")
+  request_openbis("getDownloadUrlForFileForDataSet",
+                  list(token, data_id, file), "IDssServiceRpcGeneric")
 
 #' @title Download files
 #'

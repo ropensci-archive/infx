@@ -3,7 +3,7 @@
 #'
 #' Issues a POST request to a JSON-RPC server. All `@type` fields are
 #' converted to/from `json_class` attributes, using [as_json_list()] and
-#' [as_json_class()]. The helper function `query_openbis()` wraps
+#' [as_json_class()]. The helper function `request_openbis()` wraps
 #' `make_request()` and constructs the url the request is sent to.
 #' 
 #' @param url Destination url, the request is sent to.
@@ -24,7 +24,7 @@
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
-#'   projects <- query_openbis("listProjects", tok)
+#'   projects <- request_openbis("listProjects", tok)
 #'   print(projects[[1]])
 #' }
 #' 
@@ -58,7 +58,7 @@ make_request <- function(url,
 #' @rdname request
 #' @export
 #' 
-query_openbis <- function(method,
+request_openbis <- function(method,
                           params,
                           api = c("IGeneralInformationService",
                                   "IGeneralInformationChangingService",

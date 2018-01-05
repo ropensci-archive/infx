@@ -41,8 +41,8 @@ login_openbis <- function(user,
     environment()
   }
 
-  token <- unlist(query_openbis("tryToAuthenticateForAllServices",
-                                list(user, pwd)))
+  token <- unlist(request_openbis("tryToAuthenticateForAllServices",
+                                  list(user, pwd)))
 
   assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
@@ -57,10 +57,10 @@ login_openbis <- function(user,
 #' @export
 #' 
 logout_openbis <- function(token)
-  invisible(unlist(query_openbis("logout", list(token))))
+  invisible(unlist(request_openbis("logout", list(token))))
 
 #' @rdname login
 #' @export
 #' 
 is_token_valid <- function(token)
-  unlist(query_openbis("isSessionActive", list(token)))
+  unlist(request_openbis("isSessionActive", list(token)))
