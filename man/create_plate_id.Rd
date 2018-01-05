@@ -12,7 +12,7 @@ create_plate_id(plate_id, space_code = NULL, token = NULL)
 \item{space_code}{The space code of the plate; it NULL, it is determined
 automatically.}
 
-\item{token}{Login token as created by \link{login_openbis}.}
+\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
 }
 \value{
 A single PlateIdentifier object as a list of type json_class.

@@ -7,7 +7,7 @@
 get_download(token, data_id, file)
 }
 \arguments{
-\item{token}{Login token as created by \link{login_openbis}.}
+\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
 
 \item{data_id}{Data set code.}
 

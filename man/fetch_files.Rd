@@ -7,7 +7,7 @@
 fetch_files(token, files, data_id, async = 5L)
 }
 \arguments{
-\item{token}{Login token as created by \link{login_openbis}.}
+\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
 
 \item{files}{Files objects as produced by \link{list_files} describing the files
 to be downloaded. If NULL, all available files of this data_id will be

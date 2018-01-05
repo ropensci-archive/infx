@@ -10,6 +10,16 @@
 #' 
 #' @return The login token to be used for further API interactions.
 #' 
+#' @describeIn login
+#' 
+#' @examples
+#' \donttest{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
+#'   is_token_valid(tok)
+#'   logout_openbis(tok)
+#'   is_token_valid(tok)
+#' }
+#' 
 #' @export
 #' 
 login_openbis <- function(user,
@@ -44,12 +54,14 @@ login_openbis <- function(user,
 
 #' @title Logout from openBis
 #'
-#' @description Using a token as created by [login_openbis], the corresponding
-#' session is closed and the token is rendered invalid.
+#' @description Using a token as created by [login_openbis()], the
+#' corresponding session is closed and the token is rendered invalid.
 #' 
-#' @param token Login token as created by [login_openbis].
+#' @param token Login token as created by [login_openbis()].
 #' 
 #' @return NULL (invisibly)
+#' 
+#' @describeIn login
 #' 
 #' @export
 #' 
@@ -58,12 +70,14 @@ logout_openbis <- function(token)
 
 #' @title Check validity of token
 #'
-#' @description A token as created by [login_openbis] is tested for its
+#' @description A token as created by [login_openbis()] is tested for its
 #' validity.
 #' 
 #' @inheritParams logout_openbis
 #' 
 #' @return Scalar logical.
+#' 
+#' @describeIn login
 #' 
 #' @export
 #' 

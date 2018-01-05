@@ -7,7 +7,7 @@
 list_experiment_ids(token)
 }
 \arguments{
-\item{token}{Login token as created by \link{login_openbis}.}
+\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
 }
 \value{
 List/data.frame, containing (among others), columns "plateCode"

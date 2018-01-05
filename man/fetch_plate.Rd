@@ -7,7 +7,7 @@
 fetch_plate(token, plate_id, file_regex)
 }
 \arguments{
-\item{token}{Login token as created by \link{login_openbis}.}
+\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
 
 \item{plate_id}{Plate barcode.}
 

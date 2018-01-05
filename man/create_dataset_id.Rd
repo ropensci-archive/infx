@@ -7,7 +7,7 @@
 create_dataset_id(token, data_set)
 }
 \arguments{
-\item{token}{Login token as created by \link{login_openbis}.}
+\item{token}{Login token as created by \code{\link[=login_openbis]{login_openbis()}}.}
 
 \item{data_set}{Either a single/list of json_class object(s), each
 containing a datasetCode field or a character vector.}
