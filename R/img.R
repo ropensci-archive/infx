@@ -70,7 +70,7 @@ create_img_ref <- function(well_row,
   assert_that(has_json_class(data_set, "DatasetIdentifier"))
 
   res <- list(tile = well[["img"]], channelOrNull = channel,
-              wellPosition = json_class(c(`@type` = "WellPosition",
-                                          well[c("wellRow", "wellColumn")])))
+              wellPosition = as_json_class(
+                c(`@type` = "WellPosition", well[c("wellRow", "wellColumn")])))
   c(res, data_set)
 }
