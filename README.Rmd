@@ -40,6 +40,8 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
 
 ```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
 skip <- c("VisibleToUser", "OnBehalfOfUser")
+done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive")
+
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
          "plugin/query/shared/api/v1/IQueryApiServer.html",
@@ -59,11 +61,9 @@ out <- sapply(api, function(url) {
     name <- sub("\\($", "", regmatches(x, regexpr("^.+?\\(", x)))
     desc <- sub("\\)\n", "", regmatches(x, regexpr("\\)\n.+$", x)))
 
-    found <- any(sapply(list.files("R", full.names = TRUE), function(file) {
-      any(grepl(name, readLines(file, warn = FALSE)))
-    }))
+    found <- any(sapply(done, grepl, name))
 
-    if (grepl("^Deprecated", desc))
+    if (length(desc) && grepl("^Deprecated", desc))
       st <- TRUE
     else
       st <- any(sapply(skip, grepl, name))
