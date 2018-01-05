@@ -44,74 +44,43 @@ query_openbis <- function(method,
   make_request(paste(host, url, sep = "/"), method, params)
 }
 
-#' @title Generate a login token
+#' @title Make a JSON-RPC request
 #'
-#' @description Create a login token for openBis API calls. Upon garbage
-#' collection of the token, the user is logged out.
+#' @description Issues a POST request to a JSON-RPC server. All "@type" fields
+#' are converted to/from "json_class" attributes.
 #' 
-#' @param user,pwd Login credentials for an openBis instance.
-#' @param auto_disconnect Logical switch for automatically closing the
-#' connection upon garbage collection of the token.
+#' @param url Url, the request is sent to.
+#' @param method The method name
+#' @param params A list structure holding the arguments which, converted to
+#' JSON, will be used to call the supplied method. The "@type" entries will be
+#' generated from "json_class" attributes.
+#' @param version JSON-RPC protocol version to be used.
+#' @param id Id of the JSON-RPC request.
 #' 
-#' @return The login token to be used for further API interactions.
+#' @return A (nested) list holding the response from the JSON-RPC server
+#' ("@type" entries are converted to "json_class" attributes).
 #' 
-#' @export
-#' 
-login_openbis <- function(user,
-                          pwd,
-                          auto_disconnect = TRUE) {
+make_request <- function(url,
+                         method,
+                         params,
+                         version = "2.0",
+                         id = "1") {
 
-  disco <- function(tok) {
+  req <- list(id = id,
+              jsonrpc = version,
+              method = method,
+              params = as_json_list(params))
 
-    reg.finalizer(
-      environment(),
-      function(...) {
-        message("please call \"logout_openbis\" when no longer using a token.",
-                "\n", tok)
-        logout_openbis(tok)
-      },
-      onexit = TRUE
-    )
+  res <- httr::POST(url, body = req, encode = "json")
 
-    environment()
-  }
+  assert_that(res$status_code == 200)
 
-  token <- unlist(query_openbis("tryToAuthenticateForAllServices",
-                                list(user, pwd)))
+  res$content <- jsonlite::fromJSON(rawToChar(res$content),
+                                    simplifyVector = FALSE)
 
-  assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
+  if (!is.null(res$content$error))
+    stop("Error:\n", paste(names(res$content$error), res$content$error,
+                           sep = ": ", collapse = "\n"))
 
-  if (auto_disconnect)  {
-    attr(token, "finaliser") <- disco(token)
-  }
-
-  token
+  as_json_class(res$content$result)
 }
-
-#' @title Logout from openBis
-#'
-#' @description Using a token as created by [login_openbis], the corresponding
-#' session is closed and the token is rendered invalid.
-#' 
-#' @param token Login token as created by [login_openbis].
-#' 
-#' @return NULL (invisibly)
-#' 
-#' @export
-#' 
-logout_openbis <- function(token)
-  invisible(unlist(query_openbis("logout", list(token))))
-
-#' @title Check validity of token
-#'
-#' @description A token as created by [login_openbis] is tested for its
-#' validity.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return Scalar logical.
-#' 
-#' @export
-#' 
-is_token_valid <- function(token)
-  unlist(query_openbis("isSessionActive", list(token)))
