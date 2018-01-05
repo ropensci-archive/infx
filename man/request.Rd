@@ -36,7 +36,9 @@ A (nested) list holding the response from the JSON-RPC server
 Issues a POST request to a JSON-RPC server. All \code{@type} fields are
 converted to/from \code{json_class} attributes, using \code{\link[=as_json_list]{as_json_list()}} and
 \code{\link[=as_json_class]{as_json_class()}}. The helper function \code{request_openbis()} wraps
-\code{make_request()} and constructs the url the request is sent to.
+\code{make_request()} and constructs the url the request is sent to, based on a
+root url and an API section name (for the API section mapping, see
+\href{https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API}{docs}).
 }
 \examples{
 \donttest{

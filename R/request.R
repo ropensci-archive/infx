@@ -4,7 +4,9 @@
 #' Issues a POST request to a JSON-RPC server. All `@type` fields are
 #' converted to/from `json_class` attributes, using [as_json_list()] and
 #' [as_json_class()]. The helper function `request_openbis()` wraps
-#' `make_request()` and constructs the url the request is sent to.
+#' `make_request()` and constructs the url the request is sent to, based on a
+#' root url and an API section name (for the API section mapping, see
+#' [docs](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API)).
 #' 
 #' @param url Destination url, the request is sent to.
 #' @param api, host Strings used to construct the destination url.
