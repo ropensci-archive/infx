@@ -209,7 +209,7 @@ list_exp_datasets <- function(token,
 #' 
 list_files <- function(token, data_id, folder = "original")
   request_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
-                "IDssServiceRpcGeneric")
+                  "IDssServiceRpcGeneric")
 
 #' @title Get sample object of plate
 #'

@@ -49,7 +49,6 @@ as_json_class <- function(x) {
 
     x <- structure(x[!names(x) %in% c("@type", "@id")],
                    class = c(x[["@type"]], "json_class"))
-
   }
 
   sublist <- sapply(x, is.list)
@@ -121,7 +120,7 @@ print.json_class <- function(x,
                              fancy = TRUE,
                              ...) {
 
-  out <- print_json_class(x, depth = 0L, max_depth = depth,
+  out <- print_json_class(x, cur_depth = 0L, max_depth = depth,
                           layout = style(fancy))
 
   too_wide <- crayon::col_nchar(out) > width
