@@ -68,9 +68,10 @@ test_that("json subclass can be determined", {
   expect_equal(get_json_subclass(structure(list("a", "b"),
                                            class = c("foo", "json_class"))),
                "foo")
-  expect_warning(
+  expect_equal(
     get_json_subclass(structure(list("a", "b"),
-                                class = c("foo", "bar", "json_class"))))
+                                class = c("foo", "bar", "json_class"))),
+    c("foo", "bar"))
 })
 
 test_that("json objects can be subsetted", {
