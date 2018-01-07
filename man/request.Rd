@@ -26,7 +26,7 @@ generated from \code{json_class} attributes.}
 \item{id}{An identifier for the JSON-RPC request (defaults to \code{"1"}). Can be
 ignored, as only single JSON-RPC requests are issued per HTTP request.}
 
-\item{api, }{host Strings used to construct the destination url.}
+\item{api, host}{Strings used to construct the destination url.}
 }
 \value{
 A (nested) list holding the response from the JSON-RPC server

@@ -9,7 +9,7 @@
 #' [docs](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API)).
 #' 
 #' @param url Destination url, the request is sent to.
-#' @param api, host Strings used to construct the destination url.
+#' @param api,host Strings used to construct the destination url.
 #' @param method The API method name.
 #' @param params A list structure holding the arguments which, converted to
 #' JSON, will be used to call the supplied method. The `@type` entries will be
@@ -63,15 +63,15 @@ make_request <- function(url,
 #' @export
 #' 
 request_openbis <- function(method,
-                          params,
-                          api = c("IGeneralInformationService",
-                                  "IGeneralInformationChangingService",
-                                  "IQueryApiServer",
-                                  "IWebInformationService",
-                                  "IDssServiceRpcGeneric",
-                                  "IScreeningApiServer",
-                                  "IDssServiceRpcScreening"),
-                          host = "https://infectx.biozentrum.unibas.ch") {
+                            params,
+                            api = c("IGeneralInformationService",
+                                    "IGeneralInformationChangingService",
+                                    "IQueryApiServer",
+                                    "IWebInformationService",
+                                    "IDssServiceRpcGeneric",
+                                    "IScreeningApiServer",
+                                    "IDssServiceRpcScreening"),
+                            host = "https://infectx.biozentrum.unibas.ch") {
 
   api <- match.arg(api)
 
