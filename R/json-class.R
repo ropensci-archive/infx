@@ -13,7 +13,7 @@
 #' itself, which is subsequently written to a `@type` filed. This action is
 #' recursively applied to lists.
 #' 
-#' The functions [is_json_class()] and [has_json_class()] test whether an
+#' The functions [is_json_class()] and [has_json_subclass()] test whether an
 #' object is a JSON class object. The former tests whether an object inherits
 #' from `json_class` and throws a warning if the `json_class` class attribute
 #' is not in the second position of the class vector. The latter tests whether
@@ -91,7 +91,7 @@ is_json_class <- function(x) {
 #' @rdname json_class
 #' @export
 #' 
-has_json_class <- function(x, class) {
+has_json_subclass <- function(x, class) {
 
   if (!is_json_class(x))
     FALSE

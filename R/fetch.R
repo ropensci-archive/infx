@@ -45,10 +45,10 @@ do_download <- function(token,
 
   if (is.null(files))
     files <- list_files(token, data_id)
-  else if (has_json_class(files, "FileInfoDssDTO"))
+  else if (has_json_subclass(files, "FileInfoDssDTO"))
     files <- list(files)
 
-  assert_that(all(sapply(files, has_json_class, "FileInfoDssDTO")),
+  assert_that(all(sapply(files, has_json_subclass, "FileInfoDssDTO")),
               length(files) <= 10L)
 
   res <- lapply(files[!sapply(files, `[[`, "isDirectory")], `[`,
@@ -122,7 +122,7 @@ fetch_files <- function(token,
                         async = 5L) {
 
   assert_that(length(files) >= 1L,
-              all(sapply(files, has_json_class, "FileInfoDssDTO")),
+              all(sapply(files, has_json_subclass, "FileInfoDssDTO")),
               length(async) == 1L, is.numeric(async))
 
   n_bins <- ceiling(length(files) / async)
@@ -251,7 +251,7 @@ extract_dataset <- function(ds, type = NULL, most_recent = FALSE) {
 
   if (is_json_class(ds)) ds <- list(ds)
 
-  assert_that(all(sapply(ds, has_json_class, "DataSet")),
+  assert_that(all(sapply(ds, has_json_subclass, "DataSet")),
               length(ds) >= 1L)
 
   if (!is.null(type)) {

@@ -29,11 +29,11 @@ list_img_datasets <- function(token,
 
   if (all(sapply(plate_id, is.character)))
     plate_id <- lapply(plate_id, create_plate_id, token = token)
-  else if (has_json_class(plate_id, "PlateIdentifier"))
+  else if (has_json_subclass(plate_id, "PlateIdentifier"))
     plate_id <- list(plate_id)
 
   assert_that(is.list(plate_id),
-              all(sapply(plate_id, has_json_class, "PlateIdentifier")))
+              all(sapply(plate_id, has_json_subclass, "PlateIdentifier")))
 
   res <- request_openbis(type, list(token, plate_id), "IScreeningApiServer")
 
@@ -67,7 +67,7 @@ create_img_ref <- function(well_row,
   if (!is.null(channel))
     assert_that(is.character(channel), length(channel) == 1L)
 
-  assert_that(has_json_class(data_set, "DatasetIdentifier"))
+  assert_that(has_json_subclass(data_set, "DatasetIdentifier"))
 
   res <- list(tile = well[["img"]], channelOrNull = channel,
               wellPosition = as_json_class(

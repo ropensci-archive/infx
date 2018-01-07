@@ -16,7 +16,7 @@ list_plates <- function(token, exp_id = NULL) {
   if (is.null(exp_id))
     request_openbis("listPlates", list(token), "IScreeningApiServer")
   else{
-    assert_that(has_json_class(exp_id, "ExperimentIdentifier"))
+    assert_that(has_json_subclass(exp_id, "ExperimentIdentifier"))
     request_openbis("listPlates", list(token, exp_id), "IScreeningApiServer")
   }
 }
@@ -86,11 +86,11 @@ list_experiments <- function(token,
                              exp_ids = NULL) {
 
   if (!is.null(exp_ids)) {
-    if (has_json_class(exp_ids, "ExperimentIdentifier"))
+    if (has_json_subclass(exp_ids, "ExperimentIdentifier"))
       exp_ids <- paste0("/", exp_ids[c("spaceCode", "projectCode",
                                        "experimentCode")],
                         collapse = "")
-    else if (all(sapply(exp_ids, has_json_class, "ExperimentIdentifier")))
+    else if (all(sapply(exp_ids, has_json_subclass, "ExperimentIdentifier")))
       exp_ids <- lapply(exp_ids, function(x)
         paste0("/", x[c("spaceCode", "projectCode", "experimentCode")],
                collapse = ""))
@@ -112,9 +112,9 @@ list_experiments <- function(token,
   } else {
 
     if (!is.null(projects)) {
-      if (has_json_class(projects, "Project")) projects <- list(projects)
+      if (has_json_subclass(projects, "Project")) projects <- list(projects)
       assert_that(is.list(projects),
-                  all(sapply(projects, has_json_class, "Project")),
+                  all(sapply(projects, has_json_subclass, "Project")),
                   length(projects) >= 1L)
     } else
       projects <- list_projects(token)
@@ -154,7 +154,7 @@ list_plate_datasets <- function(token,
 
   sample <- get_plate_sample(token, plate_id)
 
-  assert_that(has_json_class(sample, "Sample"),
+  assert_that(has_json_subclass(sample, "Sample"),
               length(sample[["id"]]) == 1L)
 
   request_openbis("listDataSetsForSample",
@@ -181,9 +181,10 @@ list_plate_datasets <- function(token,
 list_exp_datasets <- function(token,
                               experiment) {
 
-  if (has_json_class(experiment, "Experiment")) experiment <- list(experiment)
+  if (has_json_subclass(experiment, "Experiment"))
+    experiment <- list(experiment)
 
-  assert_that(all(sapply(experiment, has_json_class, "Experiment")),
+  assert_that(all(sapply(experiment, has_json_subclass, "Experiment")),
               length(experiment) >= 1L)
 
   request_openbis("listDataSetsForExperiments",

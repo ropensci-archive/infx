@@ -51,10 +51,10 @@ test_that("json objects can be converted", {
 })
 
 test_that("json objects can be tested", {
-  expect_false(has_json_class(list(`@type` = "foo", "a", "b")))
-  expect_true(has_json_class(as_json_class(list(`@type` = "foo", "a", "b")),
-                             "foo"))
-  expect_false(has_json_class(list(`@type` = "foo", "a", "b"), "foo"))
+  expect_false(has_json_subclass(list(`@type` = "foo", "a", "b")))
+  expect_true(has_json_subclass(as_json_class(list(`@type` = "foo", "a", "b")),
+                                "foo"))
+  expect_false(has_json_subclass(list(`@type` = "foo", "a", "b"), "foo"))
   expect_false(is_json_class(list(`@type` = "foo", "a", "b")))
   expect_true(is_json_class(as_json_class(list(`@type` = "foo", "a", "b"))))
 })

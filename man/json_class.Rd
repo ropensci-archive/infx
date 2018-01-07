@@ -4,7 +4,7 @@
 \alias{as_json_class}
 \alias{as_json_list}
 \alias{is_json_class}
-\alias{has_json_class}
+\alias{has_json_subclass}
 \alias{[.json_class}
 \alias{print.json_class}
 \title{JSON class objects}
@@ -15,7 +15,7 @@ as_json_list(x)
 
 is_json_class(x)
 
-has_json_class(x, class)
+has_json_subclass(x, class)
 
 \method{[}{json_class}(x, i, ...)
 
@@ -54,7 +54,7 @@ removes both the \code{json_class} class attribute and the JSON class attribute
 itself, which is subsequently written to a \code{@type} filed. This action is
 recursively applied to lists.
 
-The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has_json_class]{has_json_class()}} test whether an
+The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has_json_subclass]{has_json_subclass()}} test whether an
 object is a JSON class object. The former tests whether an object inherits
 from \code{json_class} and throws a warning if the \code{json_class} class attribute
 is not in the second position of the class vector. The latter tests whether
