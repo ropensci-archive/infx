@@ -90,6 +90,8 @@ test_that("json objects can be subsetted", {
 })
 
 test_that("json objects can be printed", {
+  expect_output(print(list(structure("a", class = c("foo", "json_class")))),
+                "█─foo \n└─a")
   expect_is(proj <- list_projects(tok), "list")
   expect_output(print(proj[[1]], depth = Inf))
   expect_output(print(proj[[1]], depth = Inf), "EntityRegistrationDetails")

@@ -200,8 +200,10 @@ print_json_class <- function(x, cur_depth, max_depth, layout = style()) {
       rest <- Map(indent,
                   lapply(x, print_json_class, cur_depth, max_depth,
                          layout = layout),
-                  layout$key(paste0(names(x), " = ")),
-                  strrep(" ", nchar(names(x)) + 3))
+                  layout$key(ifelse(is.null(names(x)), "",
+                                    paste0(names(x), " = "))),
+                  strrep(" ", ifelse(is.null(names(x)), 0,
+                                     nchar(nchar(names(x)) + 3))))
     } else
       rest <- "..."
 
