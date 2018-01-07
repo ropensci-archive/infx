@@ -57,8 +57,8 @@ from individual json_class objects and \code{as.json_vec} is a S3 generic that
 converts existing objects.
 }
 \examples{
-a <- structure("a", class = "foo")
-b <- structure("b", class = "foo")
+a <- structure("a", class = c("foo", "json_class"))
+b <- structure("b", class = c("foo", "json_class"))
 
 new_json_vec(list(a, b))
 json_vec(a, b)

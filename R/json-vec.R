@@ -9,8 +9,8 @@
 #' @param x A single/list of `json_class` object(s), or other object to coerce
 #' 
 #' @examples
-#' a <- structure("a", class = "foo")
-#' b <- structure("b", class = "foo")
+#' a <- structure("a", class = c("foo", "json_class"))
+#' b <- structure("b", class = c("foo", "json_class"))
 #'
 #' new_json_vec(list(a, b))
 #' json_vec(a, b)

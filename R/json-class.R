@@ -86,7 +86,7 @@ as_json_list <- function(x) {
 is_json_class <- function(x) {
 
   if (inherits(x, "json_class"))
-    isTRUE(length(class(x)) > 1L && tail(class(x), 1) == "json_class")
+    isTRUE(length(class(x)) > 1L && utils::tail(class(x), 1) == "json_class")
   else
     FALSE
 }
