@@ -5,6 +5,7 @@
 \alias{as_json_list}
 \alias{is_json_class}
 \alias{has_json_subclass}
+\alias{get_json_subclass}
 \alias{[.json_class}
 \alias{print.json_class}
 \title{JSON class objects}
@@ -16,6 +17,8 @@ as_json_list(x)
 is_json_class(x)
 
 has_json_subclass(x, class)
+
+get_json_subclass(x)
 
 \method{[}{json_class}(x, i, ...)
 

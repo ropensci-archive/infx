@@ -48,6 +48,7 @@ test_that("json objects can be converted", {
   expect_s3_class(as_json_class(lst)[[2]], "json_class")
   expect_true(all(sapply(as_json_class(lst), class)[1, ] == "foobar"))
   expect_equal(lst, as_json_list(as_json_class(lst)))
+  expect_error(as_json_class(list(`@type` = c("foo", "bar"), "a", "b")))
 })
 
 test_that("json objects can be tested", {
@@ -57,6 +58,19 @@ test_that("json objects can be tested", {
   expect_false(has_json_subclass(list(`@type` = "foo", "a", "b"), "foo"))
   expect_false(is_json_class(list(`@type` = "foo", "a", "b")))
   expect_true(is_json_class(as_json_class(list(`@type` = "foo", "a", "b"))))
+})
+
+test_that("json subclass can be determined", {
+  expect_error(get_json_subclass("a"))
+  expect_error(get_json_subclass(list(`@type` = "foo", "a", "b")))
+  expect_equal(
+    get_json_subclass(as_json_class(list(`@type` = "foo", "a", "b"))), "foo")
+  expect_equal(get_json_subclass(structure(list("a", "b"),
+                                           class = c("foo", "json_class"))),
+               "foo")
+  expect_warning(
+    get_json_subclass(structure(list("a", "b"),
+                                class = c("foo", "bar", "json_class"))))
 })
 
 test_that("json objects can be subsetted", {

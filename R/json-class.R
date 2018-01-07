@@ -45,7 +45,9 @@ as_json_class <- function(x) {
 
   if (is.list(x) && "@type" %in% names(x)) {
 
-    assert_that(sum("@type" == names(x)) == 1L)
+    assert_that(sum("@type" == names(x)) == 1L,
+                is.character(x[["@type"]]),
+                length(x[["@type"]]) == 1L)
 
     x <- structure(x[!names(x) %in% c("@type", "@id")],
                    class = c(x[["@type"]], "json_class"))
@@ -99,6 +101,16 @@ has_json_subclass <- function(x, class) {
     assert_that(is.character(class), length(class) == 1L)
     class(x)[1] == class
   }
+}
+
+#' @rdname json_class
+#' @export
+#' 
+get_json_subclass <- function(x) {
+
+  assert_that(is_json_class(x))
+
+  class(x)[1]
 }
 
 #' @rdname json_class
