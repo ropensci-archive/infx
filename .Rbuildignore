@@ -4,4 +4,4 @@
 ^data-raw$
 ^README\.Rmd$
 ^docs$
-^\.sublime-(project|workspace)
+^.*\.sublime-(project|workspace)$
