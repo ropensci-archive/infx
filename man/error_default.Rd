@@ -4,13 +4,14 @@
 \alias{error_default}
 \title{Helper for S3 default error}
 \usage{
-error_default(x, ...)
+error_default(x)
 }
 \arguments{
 \item{x}{The object on which the dispatch is done.}
 }
 \description{
 Whenever the default function of an S3 generic is a \code{not implemented} error,
-tis function can be used.
+this function can be used. It is a wrapper around \code{\link[base:stop]{base::stop()}}, with a
+custom error message.
 }
 \keyword{internal}
