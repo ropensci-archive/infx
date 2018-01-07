@@ -58,10 +58,15 @@ itself, which is subsequently written to a \code{@type} filed. This action is
 recursively applied to lists.
 
 The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has_json_subclass]{has_json_subclass()}} test whether an
-object is a JSON class object. The former tests whether an object inherits
-from \code{json_class} and throws a warning if the \code{json_class} class attribute
-is not in the second position of the class vector. The latter tests whether
-an object has a specific JSON class attached.
+object is a JSON class object. The former tests whether an object is a
+proper \code{json_class} object, meaning that:
+\itemize{
+\item it inherits \code{json_class}
+\item the last class attribute is \code{json_class}
+\item apart from \code{json_class} there exists at least one more class attribute
+The latter function tests whether an object has a specific JSON class
+attached.
+}
 
 JSON class objects have custom sub-setting and printing functions available.
 Sub-setting of JSON objects that preserve class and \code{json_class}

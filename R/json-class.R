@@ -14,10 +14,13 @@
 #' recursively applied to lists.
 #' 
 #' The functions [is_json_class()] and [has_json_subclass()] test whether an
-#' object is a JSON class object. The former tests whether an object inherits
-#' from `json_class` and throws a warning if the `json_class` class attribute
-#' is not in the second position of the class vector. The latter tests whether
-#' an object has a specific JSON class attached.
+#' object is a JSON class object. The former tests whether an object is a
+#' proper `json_class` object, meaning that:
+#'   * it inherits `json_class`
+#'   * the last class attribute is `json_class`
+#'   * apart from `json_class` there exists at least one more class attribute
+#' The latter function tests whether an object has a specific JSON class
+#' attached.
 #' 
 #' JSON class objects have custom sub-setting and printing functions available.
 #' Sub-setting of JSON objects that preserve class and `json_class`
@@ -82,11 +85,9 @@ as_json_list <- function(x) {
 #' 
 is_json_class <- function(x) {
 
-  if (inherits(x, "json_class")) {
-    if (class(x)[2] != "json_class")
-      warning("malformed json_class object")
-    TRUE
-  } else
+  if (inherits(x, "json_class"))
+    isTRUE(length(class(x)) > 1L && tail(class(x), 1) == "json_class")
+  else
     FALSE
 }
 
@@ -98,8 +99,8 @@ has_json_subclass <- function(x, class) {
   if (!is_json_class(x))
     FALSE
   else {
-    assert_that(is.character(class), length(class) == 1L)
-    class(x)[1] == class
+    assert_that(is.character(class))
+    setequal(class, get_json_subclass(x))
   }
 }
 
@@ -110,7 +111,7 @@ get_json_subclass <- function(x) {
 
   assert_that(is_json_class(x))
 
-  class(x)[1]
+  setdiff(class(x), "json_class")
 }
 
 #' @rdname json_class
