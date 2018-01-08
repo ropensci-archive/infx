@@ -3,12 +3,12 @@
 #'
 #' `new_json_vec()` is a low-level constructor that takes a list of
 #' `json_class` objects of the same sub-class. `json_vec()` constructs a
-#' json_vec from individual json_class objects and `as.json_vec()` is an S3
-#' generic that converts existing objects. Applying `as.list()` to a
-#' `json_vec` object reverses the action of `new_json_vec()` by removing all
-#' json vec related class information. Finally, `is_json_vec()` and
-#' `is.json_vec()` test whether an object is a proper `json_vec` object, which
-#' entails that
+#' json_vec from individual json_class objects and `as_json_vec()`/
+#' `as.json_vec()` is an S3 generic function that converts existing objects.
+#' Applying `as.list()` to a `json_vec` object reverses the action of
+#' `new_json_vec()` by removing all json vec related class information.
+#' Finally, `is_json_vec()`/`is.json_vec()` test whether an object is a proper
+#' `json_vec` object, which entails that
 #'   * all child elements have to be of the same sub-class
 #'   * all child elements are required to be properly formed `json_class`
 #'     objects
@@ -26,8 +26,8 @@
 #' new_json_vec(list(a, b))
 #' json_vec(a, b)
 #' 
-#' as.json_vec(list(a, b))
-#' as.json_vec(a)
+#' as_json_vec(list(a, b))
+#' as_json_vec(a)
 #' 
 #' is_json_vec(json_vec(a, b))
 #' is_json_vec(a)
@@ -56,35 +56,40 @@ new_json_vec <- function(x) {
 #' @rdname json_vec
 #' @export
 #' 
-as.json_vec <- function(x, ...) {
-  UseMethod("as.json_vec")
+as_json_vec <- function(x, ...) {
+  UseMethod("as_json_vec")
 }
 
 #' @rdname json_vec
 #' @export
 #' 
-as.json_vec.json_vec <- function(x, ...) {
+as.json_vec <- as_json_vec
+
+#' @rdname json_vec
+#' @export
+#' 
+as_json_vec.json_vec <- function(x, ...) {
   x
 }
 
 #' @rdname json_vec
 #' @export
 #' 
-as.json_vec.json_class <- function(x, ...) {
+as_json_vec.json_class <- function(x, ...) {
   new_json_vec(list(x))
 }
 
 #' @rdname json_vec
 #' @export
 #' 
-as.json_vec.list <- function(x, ...) {
+as_json_vec.list <- function(x, ...) {
   new_json_vec(x)
 }
 
 #' @rdname json_vec
 #' @export
 #' 
-as.json_vec.default <- function(x, ...) error_default(x)
+as_json_vec.default <- function(x, ...) error_default(x)
 
 #' @rdname json_vec
 #' @export

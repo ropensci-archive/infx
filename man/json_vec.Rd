@@ -3,11 +3,12 @@
 \name{json_vec}
 \alias{json_vec}
 \alias{new_json_vec}
+\alias{as_json_vec}
 \alias{as.json_vec}
-\alias{as.json_vec.json_vec}
-\alias{as.json_vec.json_class}
-\alias{as.json_vec.list}
-\alias{as.json_vec.default}
+\alias{as_json_vec.json_vec}
+\alias{as_json_vec.json_class}
+\alias{as_json_vec.list}
+\alias{as_json_vec.default}
 \alias{as.list.json_vec}
 \alias{has_common_subclass}
 \alias{get_common_subclass}
@@ -23,15 +24,17 @@ json_vec(...)
 
 new_json_vec(x)
 
+as_json_vec(x, ...)
+
 as.json_vec(x, ...)
 
-\method{as.json_vec}{json_vec}(x, ...)
+\method{as_json_vec}{json_vec}(x, ...)
 
-\method{as.json_vec}{json_class}(x, ...)
+\method{as_json_vec}{json_class}(x, ...)
 
-\method{as.json_vec}{list}(x, ...)
+\method{as_json_vec}{list}(x, ...)
 
-\method{as.json_vec}{default}(x, ...)
+\method{as_json_vec}{default}(x, ...)
 
 \method{as.list}{json_vec}(x, ...)
 
@@ -59,12 +62,12 @@ is.json_vec(x)
 \description{
 \code{new_json_vec()} is a low-level constructor that takes a list of
 \code{json_class} objects of the same sub-class. \code{json_vec()} constructs a
-json_vec from individual json_class objects and \code{as.json_vec()} is an S3
-generic that converts existing objects. Applying \code{as.list()} to a
-\code{json_vec} object reverses the action of \code{new_json_vec()} by removing all
-json vec related class information. Finally, \code{is_json_vec()} and
-\code{is.json_vec()} test whether an object is a proper \code{json_vec} object, which
-entails that
+json_vec from individual json_class objects and \code{as_json_vec()}/
+\code{as.json_vec()} is an S3 generic function that converts existing objects.
+Applying \code{as.list()} to a \code{json_vec} object reverses the action of
+\code{new_json_vec()} by removing all json vec related class information.
+Finally, \code{is_json_vec()}/\code{is.json_vec()} test whether an object is a proper
+\code{json_vec} object, which entails that
 \itemize{
 \item all child elements have to be of the same sub-class
 \item all child elements are required to be properly formed \code{json_class}
@@ -81,8 +84,8 @@ b <- structure("b", class = c("foo", "json_class"))
 new_json_vec(list(a, b))
 json_vec(a, b)
 
-as.json_vec(list(a, b))
-as.json_vec(a)
+as_json_vec(list(a, b))
+as_json_vec(a)
 
 is_json_vec(json_vec(a, b))
 is_json_vec(a)
