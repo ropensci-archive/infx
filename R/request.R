@@ -7,6 +7,9 @@
 #' `make_request()` and constructs the url the request is sent to, based on a
 #' root url and an API section name (for the API section mapping, see
 #' [docs](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API)).
+#' As part of the JSON-RPC specification, all objects returned form the API
+#' will have `@id` fields. The helper function `remove_id()` recursively
+#' removes all fields with name `@id` from a list.
 #' 
 #' @param url Destination url, the request is sent to.
 #' @param api,host Strings used to construct the destination url.
@@ -40,23 +43,24 @@ make_request <- function(url,
 
   if (!is.list(params)) params <- list(params)
 
-  req <- list(id = id,
-              jsonrpc = version,
-              method = method,
-              params = as_json_list(params))
+  requ <- list(id = id,
+               jsonrpc = version,
+               method = method,
+               params = as_json_list(params))
 
-  res <- httr::POST(url, body = req, encode = "json")
+  resp <- httr::POST(url, body = requ, encode = "json")
 
-  assert_that(res$status_code == 200)
+  assert_that(resp$status_code == 200)
 
-  res$content <- jsonlite::fromJSON(rawToChar(res$content),
-                                    simplifyVector = FALSE)
+  resp$content <- jsonlite::fromJSON(rawToChar(resp$content),
+                                     simplifyVector = FALSE)
 
-  if (!is.null(res$content$error))
-    stop("Error:\n", paste(names(res$content$error), res$content$error,
+  if (!is.null(resp$content$error))
+    stop("Error:\n", paste(names(resp$content$error), resp$content$error,
                            sep = ": ", collapse = "\n"))
 
-  as_json_class(res$content$result)
+  res <- remove_id(resp$content$result)
+  as_json_class(res)
 }
 
 #' @rdname request
@@ -92,4 +96,15 @@ request_openbis <- function(method,
                   "rmi-datastore-server-screening-api-v1.json")
 
   make_request(paste(host, url, sep = "/"), method, params)
+}
+
+#' @rdname request
+#' @export
+#' 
+remove_id <- function(x) {
+  if (is.list(x)) {
+    x <- lapply(x, remove_id)
+    x[names(x) != "@id"]
+  } else
+    x
 }

@@ -3,6 +3,7 @@
 \name{make_request}
 \alias{make_request}
 \alias{request_openbis}
+\alias{remove_id}
 \title{Make a JSON-RPC request}
 \usage{
 make_request(url, method, params, version = "2.0", id = "1")
@@ -11,6 +12,8 @@ request_openbis(method, params, api = c("IGeneralInformationService",
   "IGeneralInformationChangingService", "IQueryApiServer",
   "IWebInformationService", "IDssServiceRpcGeneric", "IScreeningApiServer",
   "IDssServiceRpcScreening"), host = "https://infectx.biozentrum.unibas.ch")
+
+remove_id(x)
 }
 \arguments{
 \item{url}{Destination url, the request is sent to.}
@@ -39,6 +42,9 @@ converted to/from \code{json_class} attributes, using \code{\link[=as_json_list]
 \code{make_request()} and constructs the url the request is sent to, based on a
 root url and an API section name (for the API section mapping, see
 \href{https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API}{docs}).
+As part of the JSON-RPC specification, all objects returned form the API
+will have \code{@id} fields. The helper function \code{remove_id()} recursively
+removes all fields with name \code{@id} from a list.
 }
 \examples{
 \donttest{
