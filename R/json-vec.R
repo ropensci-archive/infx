@@ -16,7 +16,7 @@
 #'   * the remaining class attributes have to be equal to the common sub-class
 #'     determined for the children.
 #'
-#' @param ... Individual `json_class` objects
+#' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
 #' 
 #' @examples
@@ -27,6 +27,7 @@
 #' json_vec(a, b)
 #' 
 #' as.json_vec(list(a, b))
+#' as.json_vec(a)
 #' 
 #' is_json_vec(json_vec(a, b))
 #' is_json_vec(a)

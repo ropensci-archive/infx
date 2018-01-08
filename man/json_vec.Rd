@@ -52,7 +52,7 @@ is_json_vec(x)
 is.json_vec(x)
 }
 \arguments{
-\item{...}{Individual \code{json_class} objects}
+\item{...}{Individual \code{json_class} objects, or generic compatibility}
 
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
 }
@@ -82,6 +82,7 @@ new_json_vec(list(a, b))
 json_vec(a, b)
 
 as.json_vec(list(a, b))
+as.json_vec(a)
 
 is_json_vec(json_vec(a, b))
 is_json_vec(a)
