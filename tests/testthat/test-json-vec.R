@@ -45,3 +45,10 @@ test_that("common subclass can be determined", {
     list(structure("a", class = c("foo", "bar", "json_class")),
          structure("b", class = c("bar", "foo", "json_class")))))
 })
+
+test_that("json_vec objects can be created", {
+  a <- structure("a", class = c("foo", "json_class"))
+  b <- structure("b", class = c("foo", "json_class"))
+  expect_s3_class(json_vec(a, b), c("foo", "json_vec"))
+  expect_identical(json_vec(a, b), new_json_vec(list(a, b)))
+})

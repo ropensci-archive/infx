@@ -15,6 +15,8 @@
 \alias{get_common_subclass.list}
 \alias{get_common_subclass.json_vec}
 \alias{get_common_subclass.default}
+\alias{is_json_vec}
+\alias{is.json_vec}
 \title{Construct a json_vec object}
 \usage{
 json_vec(...)
@@ -44,6 +46,10 @@ get_common_subclass(x, ...)
 \method{get_common_subclass}{json_vec}(x, ...)
 
 \method{get_common_subclass}{default}(x, ...)
+
+is_json_vec(x)
+
+is.json_vec(x)
 }
 \arguments{
 \item{...}{Individual \code{json_class} objects}
@@ -51,10 +57,22 @@ get_common_subclass(x, ...)
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
 }
 \description{
-\code{new_json_vec} is a low-level constructor that takes a list of
-\code{json_class} objects of the same sub-class. \code{json_vec} constructs a json_vec
-from individual json_class objects and \code{as.json_vec} is a S3 generic that
-converts existing objects.
+\code{new_json_vec()} is a low-level constructor that takes a list of
+\code{json_class} objects of the same sub-class. \code{json_vec()} constructs a
+json_vec from individual json_class objects and \code{as.json_vec()} is an S3
+generic that converts existing objects. Applying \code{as.list()} to a
+\code{json_vec} object reverses the action of \code{new_json_vec()} by removing all
+json vec related class information. Finally, \code{is_json_vec()} and
+\code{is.json_vec()} test whether an object is a proper \code{json_vec} object, which
+entails that
+\itemize{
+\item all child elements have to be of the same sub-class
+\item all child elements are required to be properly formed \code{json_class}
+objects
+\item the \code{json_vec} class attribute has to be in last position
+\item the remaining class attributes have to be equal to the common sub-class
+determined for the children.
+}
 }
 \examples{
 a <- structure("a", class = c("foo", "json_class"))
@@ -64,5 +82,8 @@ new_json_vec(list(a, b))
 json_vec(a, b)
 
 as.json_vec(list(a, b))
+
+is_json_vec(json_vec(a, b))
+is_json_vec(a)
 
 }
