@@ -30,6 +30,9 @@ generated from \code{json_class} attributes.}
 ignored, as only single JSON-RPC requests are issued per HTTP request.}
 
 \item{api, host}{Strings used to construct the destination url.}
+
+\item{x}{A (possibly nested) list structure for which all \code{@id} fields are
+recursively removed.}
 }
 \value{
 A (nested) list holding the response from the JSON-RPC server

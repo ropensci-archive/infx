@@ -20,6 +20,8 @@
 #' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
 #' @param id An identifier for the JSON-RPC request (defaults to `"1"`). Can be
 #' ignored, as only single JSON-RPC requests are issued per HTTP request.
+#' @param x A (possibly nested) list structure for which all `@id` fields are
+#' recursively removed.
 #' 
 #' @return A (nested) list holding the response from the JSON-RPC server
 #' (`@type` entries are converted to `json_class` attributes).
