@@ -10,6 +10,7 @@
 \alias{as_json_class.json_vec}
 \alias{as_json_class.default}
 \alias{rm_json_class}
+\alias{as.list.json_class}
 \alias{is_json_class}
 \alias{has_json_subclass}
 \alias{get_json_subclass}
@@ -33,7 +34,10 @@ as.json_class(x, ...)
 
 \method{as_json_class}{default}(x, force = FALSE, ...)
 
-rm_json_class(x)
+rm_json_class(x, recursive = TRUE, restore_type = TRUE)
+
+\method{as.list}{json_class}(x, recursive = FALSE, restore_type = FALSE,
+  ...)
 
 is_json_class(x)
 

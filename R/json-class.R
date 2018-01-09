@@ -118,14 +118,32 @@ as_json_class.default <- function(x, force = FALSE, ...) {
 #' @rdname json_class
 #' @export
 #' 
-rm_json_class <- function(x) {
+rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
 
   if (is.list(x)) {
-    if (is_json_class(x))
-      x <- c(`@type` = get_json_subclass(x), unclass(x))
-    lapply(x, rm_json_class)
+    if (is_json_class(x)) {
+      if (restore_type)
+        x <- c(`@type` = get_json_subclass(x), unclass(x))
+      else
+        x <- unclass(x)
+    }
+    if (recursive)
+      lapply(x, rm_json_class, recursive, restore_type)
+    else
+      x
   } else
     x
+}
+
+#' @rdname json_class
+#' @export
+#' 
+as.list.json_class <- function(x,
+                               recursive = FALSE,
+                               restore_type = FALSE,
+                               ...) {
+
+  rm_json_class(x, recursive, restore_type)
 }
 
 #' @rdname json_class
