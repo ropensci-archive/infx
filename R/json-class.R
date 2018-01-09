@@ -16,6 +16,7 @@
 #' The functions [is_json_class()] and [has_json_subclass()] test whether an
 #' object is a JSON class object. The former tests whether an object is a
 #' proper `json_class` object, meaning that:
+#'   * it is a list
 #'   * it inherits `json_class`
 #'   * the last class attribute is `json_class`
 #'   * apart from `json_class` there exists at least one more class attribute
@@ -149,11 +150,14 @@ as.list.json_class <- function(x,
 #' @rdname json_class
 #' @export
 #' 
-is_json_class <- function(x) {
+is_json_class <- function(x, recursive = FALSE) {
 
-  isTRUE(inherits(x, "json_class") &&
-         length(class(x)) > 1L &&
-         utils::tail(class(x), 1) == "json_class")
+  if (recursive)
+
+  test <- isTRUE(is.list(x) &&
+                 inherits(x, "json_class") &&
+                 length(class(x)) > 1L &&
+                 utils::tail(class(x), 1) == "json_class")
 }
 
 #' @rdname json_class
@@ -196,6 +200,8 @@ print.json_class <- function(x,
                              length = 100L,
                              fancy = TRUE,
                              ...) {
+
+  assert_that(is_json_class(x))
 
   out <- print_json_class(x, cur_depth = 0L, max_depth = depth,
                           layout = style(fancy))
@@ -247,7 +253,7 @@ print_json_class <- function(x,
       c(paste0(first, x[[1]]), paste0(rest, x[-1L]))
   }
 
-  if (!is_json_class(x) && !is.list(x)) {
+  if (!is.list(x)) {
 
     layout$val(paste(x))
 
@@ -260,8 +266,7 @@ print_json_class <- function(x,
       nme[names(x) == ""] <- ""
     }
 
-    if (!is_json_class(x) && !any(sapply(x, is.list)) &&
-        !any(sapply(x, is_json_class))) {
+    if (!is_json_class(x) && !any(sapply(x, is.list))) {
 
       layout$val(paste0("[", paste0(nme, x, collapse = ", "), "]"))
 

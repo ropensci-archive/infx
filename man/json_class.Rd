@@ -86,6 +86,7 @@ The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has
 object is a JSON class object. The former tests whether an object is a
 proper \code{json_class} object, meaning that:
 \itemize{
+\item it is a list
 \item it inherits \code{json_class}
 \item the last class attribute is \code{json_class}
 \item apart from \code{json_class} there exists at least one more class attribute

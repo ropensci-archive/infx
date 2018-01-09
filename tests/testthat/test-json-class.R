@@ -89,26 +89,26 @@ test_that("json objects can be subsetted", {
 })
 
 test_that("json objects can be printed", {
-  expect_output(print(structure("a", class = c("foo", "json_class"))),
+  expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
                 "█─foo \n└─a")
   expect_output(print(structure(list(a = "a", "b"),
                                 class = c("foo", "json_class"))),
                 "├─a = a \n└─b")
   expect_output(print(
     structure(list(a = "a",
-                   list(structure("b", class = c("bar", "json_class")),
+                   list(structure(list("b"), class = c("bar", "json_class")),
                         "c")),
               class = c("foo", "json_class"))), "└─...")
   expect_output(print(
     structure(list(a = "a",
-                   list(structure("b", class = c("bar", "json_class")),
+                   list(structure(list("b"), class = c("bar", "json_class")),
                         "c")),
               class = c("foo", "json_class")), depth = 3),
     "└─┬─█─bar \n  │ └─b")
   expect_output(print(
     structure(list(a = "a",
                    list(c = "c",
-                        structure("b", class = c("bar", "json_class")))),
+                        structure(list("b"), class = c("bar", "json_class")))),
               class = c("foo", "json_class")), depth = 3),
     "└─┬─c = c \n  └─█─bar")
 })
