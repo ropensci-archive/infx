@@ -5,12 +5,16 @@
 \alias{style}
 \title{Helper functions for printing JSON objects}
 \usage{
-print_json_class(x, cur_depth, max_depth, layout = style())
+print_json_class(x, unnamed_parent = FALSE, cur_depth, max_depth,
+  layout = style())
 
 style(fancy = TRUE)
 }
 \arguments{
 \item{x}{The JSON object to print.}
+
+\item{unnamed_parent}{Whether the parent node is named or not (in some
+cases, a different box character has to be used if this is true).}
 
 \item{cur_depth}{The current recursion depth.}
 
@@ -28,8 +32,4 @@ borrowing code from \href{https://git.io/vFMA5}{there}, this enables the
 recursive printing of JSON objects. Printing style can either be with fancy
 (colors, UTF box characters. etc.) or simple.
 }
-\section{todo Make sure that structures such as lst print correctly}{
-NA
-}
-
 \keyword{internal}

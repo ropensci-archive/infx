@@ -221,6 +221,8 @@ print.json_class <- function(x,
 #' (colors, UTF box characters. etc.) or simple.
 #' 
 #' @param x The JSON object to print.
+#' @param unnamed_parent Whether the parent node is named or not (in some
+#' cases, a different box character has to be used if this is true).
 #' @param cur_depth The current recursion depth.
 #' @param max_depth The maximum recursion depth.
 #' @param layout Characters for printing the tree structure and styles to be
@@ -230,11 +232,13 @@ print.json_class <- function(x,
 #' 
 #' @rdname json_print
 #' 
-#' @section todo Make sure that structures such as lst print correctly
-#' 
 #' @keywords internal
 #' 
-print_json_class <- function(x, cur_depth, max_depth, layout = style()) {
+print_json_class <- function(x,
+                             unnamed_parent = FALSE,
+                             cur_depth,
+                             max_depth,
+                             layout = style()) {
 
   indent <- function(x, first, rest) {
     if (length(x) == 1)
@@ -243,41 +247,61 @@ print_json_class <- function(x, cur_depth, max_depth, layout = style()) {
       c(paste0(first, x[[1]]), paste0(rest, x[-1L]))
   }
 
-  if (!is_json_class(x)) {
+  if (!is_json_class(x) && !is.list(x)) {
 
-    if (is.list(x))
-      layout$val(paste0("[", paste(x, collapse = ", "), "]"))
-    else
-      layout$val(paste(x))
+    layout$val(paste(x))
 
   } else {
 
-    cur_depth <- cur_depth + 1
+    if (is.null(names(x)))
+      nme <- rep("", length(x))
+    else {
+      nme <- paste(names(x), "= ")
+      nme[names(x) == ""] <- ""
+    }
 
-    obj <- indent(layout$obj(class(x)[1]),
-                  paste0(layout$n, layout$h),
-                  paste0(layout$v,  " "))
+    if (!is_json_class(x) && !any(sapply(x, is.list)) &&
+        !any(sapply(x, is_json_class))) {
 
-    if (cur_depth <= max_depth) {
+      layout$val(paste0("[", paste0(nme, x, collapse = ", "), "]"))
 
-      if (any(sapply(x, is.null) | sapply(x, length) == 0L))
-        x[sapply(x, is.null) | sapply(x, length) == 0L] <- ""
+    } else {
 
-      rest <- Map(indent,
-                  lapply(x, print_json_class, cur_depth, max_depth,
-                         layout = layout),
-                  layout$key(if (is.null(names(x))) ""
-                             else paste0(names(x), " = ")),
-                  strrep(" ", if (is.null(names(x))) 0L
-                              else nchar(names(x)) + 3))
-    } else
-      rest <- "..."
+      cur_depth <- cur_depth + 1
 
-    c(obj,
-      unlist(lapply(rest[-length(rest)], indent, paste0(layout$j, layout$h),
-                    paste0(layout$v,  " "))),
-      indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
-    )
+      if (cur_depth <= max_depth) {
+
+        if (any(sapply(x, is.null) | sapply(x, length) == 0L))
+          x[sapply(x, is.null) | sapply(x, length) == 0L] <- ""
+
+        rest <- Map(indent,
+                    mapply(print_json_class, x, nme == "",
+                           MoreArgs = list(cur_depth = cur_depth,
+                                           max_depth = max_depth,
+                                           layout = layout), SIMPLIFY = FALSE),
+                    layout$key(nme),
+                    strrep(" ", nchar(nme)))
+      } else
+        rest <- "..."
+
+      if (is_json_class(x)) {
+        c(indent(layout$obj(class(x)[1]), paste0(layout$n, layout$h),
+                            paste0(layout$v,  " ")),
+          unlist(lapply(rest[-length(rest)], indent,
+                        paste0(layout$j, layout$h), paste0(layout$v,  " "))),
+          indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
+        )
+      } else if (cur_depth <= max_depth) {
+        c(indent(rest[[1]], paste0(if (unnamed_parent) layout$c else layout$t,
+                                   layout$h), paste0(layout$v,  " ")),
+          unlist(lapply(rest[-c(1, length(rest))], indent,
+                        paste0(layout$j, layout$h), paste0(layout$v,  " "))),
+          indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
+        )
+      } else {
+        "..."
+      }
+    }
   }
 }
 
@@ -289,16 +313,20 @@ style <- function(fancy = TRUE) {
   if (fancy && l10n_info()$`UTF-8`) {
 
     box <- list(h = "\u2500", # ─ horizontal
+                t = "\u250C", # ┌ top
                 v = "\u2502", # │ vertical
                 l = "\u2514", # └ leaf
+                c = "\u252C", # ┬ junction
                 j = "\u251C", # ├ junction
                 n = "\u2588") # █ node
 
   } else {
 
     box <- list(h = "-",
+                t = "//",
                 v = "|",
                 l = "\\",
+                c = "+",
                 j = "+",
                 n = "X")
   }
