@@ -54,8 +54,27 @@ test_that("json objects can be tested", {
   expect_true(has_json_subclass(json_class(list(`@type` = "foo", "a", "b")),
                                 "foo"))
   expect_false(has_json_subclass(list(`@type` = "foo", "a", "b"), "foo"))
+
   expect_false(is_json_class(list(`@type` = "foo", "a", "b")))
   expect_true(is_json_class(json_class(list(`@type` = "foo", "a", "b"))))
+  expect_true(is_json_class(structure(list("a", "b"),
+                                      class = c("foo", "json_class"))))
+  expect_false(is_json_class(structure(c("a", "b"),
+                                       class = c("foo", "json_class"))))
+
+  expect_true(check_json_class(structure(list("a", "b"),
+                                         class = c("foo", "json_class"))))
+  expect_false(check_json_class(structure(c("a", "b"),
+                                          class = c("foo", "json_class"))))
+  expect_true(check_json_class(
+    structure(list("a",
+                   structure(list("b"), class = c("bar", "json_class"))),
+              class = c("foo", "json_class"))))
+  expect_false(check_json_class(
+    structure(list("a",
+                   structure("b", class = c("bar", "json_class"))),
+              class = c("foo", "json_class"))))
+
 })
 
 test_that("json subclass can be determined", {
@@ -111,4 +130,6 @@ test_that("json objects can be printed", {
                         structure(list("b"), class = c("bar", "json_class")))),
               class = c("foo", "json_class")), depth = 3),
     "└─┬─c = c \n  └─█─bar")
+
+  expect_warning(print(structure("a", class = c("foo", "json_class"))))
 })

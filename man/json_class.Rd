@@ -12,6 +12,7 @@
 \alias{rm_json_class}
 \alias{as.list.json_class}
 \alias{is_json_class}
+\alias{check_json_class}
 \alias{has_json_subclass}
 \alias{get_json_subclass}
 \alias{[.json_class}
@@ -40,6 +41,8 @@ rm_json_class(x, recursive = TRUE, restore_type = TRUE)
   ...)
 
 is_json_class(x)
+
+check_json_class(x, recursive = TRUE)
 
 has_json_subclass(x, class)
 

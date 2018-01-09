@@ -150,14 +150,28 @@ as.list.json_class <- function(x,
 #' @rdname json_class
 #' @export
 #' 
-is_json_class <- function(x, recursive = FALSE) {
+is_json_class <- function(x) {
 
-  if (recursive)
+  isTRUE(is.list(x) &&
+         inherits(x, "json_class") &&
+         length(class(x)) > 1L &&
+         utils::tail(class(x), 1) == "json_class")
+}
 
-  test <- isTRUE(is.list(x) &&
-                 inherits(x, "json_class") &&
-                 length(class(x)) > 1L &&
-                 utils::tail(class(x), 1) == "json_class")
+#' @rdname json_class
+#' @export
+#' 
+check_json_class <- function(x, recursive = TRUE) {
+
+  if (inherits(x, "json_class"))
+    res <- is_json_class(x)
+  else
+    res <- TRUE
+
+  if (length(x) > 1 && res && recursive)
+    all(sapply(x, check_json_class, recursive))
+  else
+    res
 }
 
 #' @rdname json_class
@@ -201,7 +215,8 @@ print.json_class <- function(x,
                              fancy = TRUE,
                              ...) {
 
-  assert_that(is_json_class(x))
+  if (!check_json_class(x))
+    warning("printing a json_class object that is not properly formed.")
 
   out <- print_json_class(x, cur_depth = 0L, max_depth = depth,
                           layout = style(fancy))
