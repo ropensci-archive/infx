@@ -6,10 +6,11 @@
 #' custom error message.
 #' 
 #' @param x The object on which the dispatch is done.
+#' @param prefix Optional string that is inserted before the error message.
 #' 
 #' @keywords internal
 #' 
-error_default <- function(x) {
-  stop("cannot handle objects of type c(",
+error_default <- function(x, prefix = "") {
+  stop(prefix, "cannot handle objects of type c(",
        paste0("\"", class(x), "\"", collapse = ", "), ").")
 }

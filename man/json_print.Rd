@@ -28,4 +28,8 @@ borrowing code from \href{https://git.io/vFMA5}{there}, this enables the
 recursive printing of JSON objects. Printing style can either be with fancy
 (colors, UTF box characters. etc.) or simple.
 }
+\section{todo Make sure that structures such as lst print correctly}{
+NA
+}
+
 \keyword{internal}

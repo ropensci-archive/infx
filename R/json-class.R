@@ -44,40 +44,88 @@
 #'  
 #' @export
 #' 
-as_json_class <- function(x) {
+json_class <- function(x) {
 
-  if (is.list(x) && "@type" %in% names(x)) {
+  if (is.list(x)) {
+    x <- lapply(x, json_class)
+    if ("@type" %in% names(x))
+      new_json_class(x)
+    else
+      x
+  } else
+    x
+}
 
-    assert_that(sum("@type" == names(x)) == 1L,
-                is.character(x[["@type"]]),
-                length(x[["@type"]]) == 1L)
+#' @rdname json_class
+#' @export
+#' 
+new_json_class <- function(x) {
 
-    x <- structure(x[!names(x) %in% c("@type", "@id")],
-                   class = c(x[["@type"]], "json_class"))
-  }
+  assert_that(is.list(x),
+              sum("@type" == names(x)) == 1L,
+              is.character(x[["@type"]]),
+              length(x[["@type"]]) == 1L)
 
-  sublist <- sapply(x, is.list)
+  structure(x[names(x) != "@type"],
+            class = c(x[["@type"]], "json_class"))
+}
 
-  if (any(sublist))
-    x[sublist] <- lapply(x[sublist], as_json_class)
+#' @rdname json_class
+#' @export
+#' 
+as_json_class <- function(x, ...) {
+  UseMethod("as_json_class")
+}
 
+#' @rdname json_class
+#' @export
+#' 
+as.json_class <- as_json_class
+
+#' @rdname json_class
+#' @export
+#' 
+as_json_class.json_class <- function(x, ...) {
   x
 }
 
 #' @rdname json_class
 #' @export
 #' 
-as_json_list <- function(x) {
+as_json_class.list <- function(x, ...) {
+  json_class(x)
+}
 
-  if (is_json_class(x))
-    x <- c(`@type` = class(x)[1], unclass(x))
+#' @rdname json_class
+#' @export
+#' 
+as_json_class.json_vec <- function(x, ...) {
+  assert_that(is_json_vec(x),
+              length(x) == 1L)
+  x[[1]]
+}
 
-  sublist <- sapply(x, is.list)
+#' @rdname json_class
+#' @export
+#' 
+as_json_class.default <- function(x, force = FALSE, ...) {
+  if (force)
+    x
+  else
+    error_default(x, "if param force is FALSE, ")
+}
 
-  if (any(sublist))
-    x[sublist] <- lapply(x[sublist], as_json_list)
+#' @rdname json_class
+#' @export
+#' 
+rm_json_class <- function(x) {
 
-  x
+  if (is.list(x)) {
+    if (is_json_class(x))
+      x <- c(`@type` = get_json_subclass(x), unclass(x))
+    lapply(x, rm_json_class)
+  } else
+    x
 }
 
 #' @rdname json_class
@@ -85,10 +133,9 @@ as_json_list <- function(x) {
 #' 
 is_json_class <- function(x) {
 
-  if (inherits(x, "json_class"))
-    isTRUE(length(class(x)) > 1L && utils::tail(class(x), 1) == "json_class")
-  else
-    FALSE
+  isTRUE(inherits(x, "json_class") &&
+         length(class(x)) > 1L &&
+         utils::tail(class(x), 1) == "json_class")
 }
 
 #' @rdname json_class
@@ -97,11 +144,10 @@ is_json_class <- function(x) {
 has_json_subclass <- function(x, class) {
 
   if (!is_json_class(x))
-    FALSE
-  else {
-    assert_that(is.character(class))
-    setequal(class, get_json_subclass(x))
-  }
+    return(FALSE)
+
+  assert_that(is.character(class))
+  isTRUE(all(class == get_json_subclass(x)))
 }
 
 #' @rdname json_class
@@ -165,6 +211,8 @@ print.json_class <- function(x,
 #' characters.
 #' 
 #' @rdname json_print
+#' 
+#' @section todo Make sure that structures such as lst print correctly
 #' 
 #' @keywords internal
 #' 

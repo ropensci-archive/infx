@@ -2,7 +2,7 @@
 #' Make a JSON-RPC request
 #'
 #' Issues a POST request to a JSON-RPC server. All `@type` fields are
-#' converted to/from `json_class` attributes, using [as_json_list()] and
+#' converted to/from `json_class` attributes, using [rm_json_class()] and
 #' [as_json_class()]. The helper function `request_openbis()` wraps
 #' `make_request()` and constructs the url the request is sent to, based on a
 #' root url and an API section name (for the API section mapping, see
@@ -46,7 +46,7 @@ make_request <- function(url,
   requ <- list(id = id,
                jsonrpc = version,
                method = method,
-               params = as_json_list(params))
+               params = rm_json_class(params))
 
   resp <- httr::POST(url, body = requ, encode = "json")
 
@@ -60,7 +60,7 @@ make_request <- function(url,
                            sep = ": ", collapse = "\n"))
 
   res <- remove_id(resp$content$result)
-  as_json_class(res)
+  as_json_class(res, force = TRUE)
 }
 
 #' @rdname request
@@ -103,8 +103,9 @@ request_openbis <- function(method,
 #' 
 remove_id <- function(x) {
   if (is.list(x)) {
-    x <- lapply(x, remove_id)
-    x[names(x) != "@id"]
+    if (!is.null(names(x)))
+      x <- x[names(x) != "@id"]
+    lapply(x, remove_id)
   } else
     x
 }
