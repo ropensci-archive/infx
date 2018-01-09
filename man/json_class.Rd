@@ -58,6 +58,14 @@ get_json_subclass(x)
 
 \item{...}{Generic compatibility.}
 
+\item{force}{Suppress error when casting an object to \code{json_class} that
+cannot be converted.}
+
+\item{recursive}{Recursively apply the function.}
+
+\item{restore_type}{When removing the \code{json_class} information from an
+object, whether to preserve the subclass attribute as \code{@type} filed.}
+
 \item{class}{JSON class name used to test for.}
 
 \item{i}{Sub-setting information.}
@@ -75,15 +83,19 @@ characters for printing.}
 To communicate object type information via JSON to the Jackson-powered
 openBis interface, the \code{@type} field is used. Furthermore, the \code{@id} field
 is used by the JSON-RPC specification to map requests in async scenarios.
-Data received from openBis is  recursively stripped of both \code{@type} and
-\code{@id} fields and the type information is saved as class attribute. Such
-objects also have the class \code{json_class} added.
+Data received from openBis is recursively stripped of both \code{@id} (using
+\code{remove_id()}) and \code{@type} fields and the type information is saved as
+class attribute. Such objects also have the class \code{json_class} added. The
+function \code{new_json_class()} powers this conversion of a list with filed
+\code{@type} into a \code{json_class} object, while \code{json_class()}/\code{as_json_class()}
+does this recursively.
 }
 \details{
-The action of \code{\link[=as_json_class]{as_json_class()}} is reversed by \code{\link[=as_json_list]{as_json_list()}}, which
-removes both the \code{json_class} class attribute and the JSON class attribute
-itself, which is subsequently written to a \code{@type} filed. This action is
-recursively applied to lists.
+The action of \code{as_json_class()} is reversed by \code{rm_json_class()}
+(recursively) and \code{as.list()} (non-recursively). This removes both the
+\code{json_class} class attribute and the JSON class attribute itself, which is
+subsequently written to a \code{@type} filed. This preserving of type information
+can be disabled, by setting the argument \code{restore_type} to \code{FALSE}.
 
 The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has_json_subclass]{has_json_subclass()}} test whether an
 object is a JSON class object. The former tests whether an object is a
@@ -94,7 +106,8 @@ proper \code{json_class} object, meaning that:
 \item the last class attribute is \code{json_class}
 \item apart from \code{json_class} there exists at least one more class attribute
 The latter function tests whether an object has a specific JSON class
-attached.
+attached. In order to recursively test a \code{json_class} object for being
+properly formed, the function \code{check_json_class()} can be used.
 }
 
 JSON class objects have custom sub-setting and printing functions available.

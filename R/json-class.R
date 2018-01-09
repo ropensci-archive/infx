@@ -4,14 +4,18 @@
 #' To communicate object type information via JSON to the Jackson-powered
 #' openBis interface, the `@type` field is used. Furthermore, the `@id` field
 #' is used by the JSON-RPC specification to map requests in async scenarios.
-#' Data received from openBis is  recursively stripped of both `@type` and
-#' `@id` fields and the type information is saved as class attribute. Such
-#' objects also have the class `json_class` added.
+#' Data received from openBis is recursively stripped of both `@id` (using
+#' `remove_id()`) and `@type` fields and the type information is saved as
+#' class attribute. Such objects also have the class `json_class` added. The
+#' function `new_json_class()` powers this conversion of a list with filed
+#' `@type` into a `json_class` object, while `json_class()`/`as_json_class()`
+#' does this recursively.
 #' 
-#' The action of [as_json_class()] is reversed by [as_json_list()], which
-#' removes both the `json_class` class attribute and the JSON class attribute
-#' itself, which is subsequently written to a `@type` filed. This action is
-#' recursively applied to lists.
+#' The action of `as_json_class()` is reversed by `rm_json_class()`
+#' (recursively) and `as.list()` (non-recursively). This removes both the
+#' `json_class` class attribute and the JSON class attribute itself, which is
+#' subsequently written to a `@type` filed. This preserving of type information
+#' can be disabled, by setting the argument `restore_type` to `FALSE`.
 #' 
 #' The functions [is_json_class()] and [has_json_subclass()] test whether an
 #' object is a JSON class object. The former tests whether an object is a
@@ -21,7 +25,8 @@
 #'   * the last class attribute is `json_class`
 #'   * apart from `json_class` there exists at least one more class attribute
 #' The latter function tests whether an object has a specific JSON class
-#' attached.
+#' attached. In order to recursively test a `json_class` object for being
+#' properly formed, the function `check_json_class()` can be used.
 #' 
 #' JSON class objects have custom sub-setting and printing functions available.
 #' Sub-setting of JSON objects that preserve class and `json_class`
@@ -33,6 +38,11 @@
 #' 
 #' @param x Object to process.
 #' @param class JSON class name used to test for.
+#' @param force Suppress error when casting an object to `json_class` that
+#' cannot be converted.
+#' @param recursive Recursively apply the function.
+#' @param restore_type When removing the `json_class` information from an
+#' object, whether to preserve the subclass attribute as `@type` filed.
 #' @param i Sub-setting information.
 #' @param depth The maximum recursion depth for printing.
 #' @param width Number of columns to maximally print.
@@ -123,11 +133,14 @@ rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
 
   if (is.list(x)) {
     if (is_json_class(x)) {
-      if (restore_type)
+
+      if (restore_type) {
+        assert_that(!"@type" %in% names(x))
         x <- c(`@type` = get_json_subclass(x), unclass(x))
-      else
+      } else
         x <- unclass(x)
     }
+
     if (recursive)
       lapply(x, rm_json_class, recursive, restore_type)
     else
