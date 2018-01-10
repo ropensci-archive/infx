@@ -59,6 +59,16 @@
 #' 
 #' @rdname json_class
 #'  
+#' @examples
+#' lst <- list(`@type` = "foo", "a", "b")
+#' cls <- as_json_class(lst)
+#' 
+#' print(cls)
+#' is_json_class(cls)
+#' get_json_subclass(cls)
+#' 
+#' identical(rm_json_class(cls), lst)
+#' 
 #' @export
 #' 
 json_class <- function(x) {

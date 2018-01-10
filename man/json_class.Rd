@@ -125,3 +125,14 @@ are passed to require only a subset of the fetched fields. Printing is
 inspired by (and heavily borrows code from) the ast printing function of
 Hadley's \href{https://github.com/hadley/lobstr}{lobstr package}.
 }
+\examples{
+lst <- list(`@type` = "foo", "a", "b")
+cls <- as_json_class(lst)
+
+print(cls)
+is_json_class(cls)
+get_json_subclass(cls)
+
+identical(rm_json_class(cls), lst)
+
+}
