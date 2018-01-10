@@ -211,7 +211,7 @@ is_json_vec <- function(x) {
 #' 
 is.json_vec <- is_json_vec
 
-#' @rdname json_class
+#' @rdname json_vec
 #' @export
 #' 
 print.json_vec <- function(x,

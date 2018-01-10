@@ -6,6 +6,11 @@
 \usage{
 as_list(x, ...)
 }
+\arguments{
+\item{x}{Object to coerce to list.}
+
+\item{...}{Generic compatibility.}
+}
 \description{
 For consistency with other functions provided by this package, where for
 example both \code{is_json_vec()} and \code{is.json_vec()} are available, \code{as_list()}

@@ -9,6 +9,9 @@ NULL
 #' is provided as an alias for `as.list()`. Consequently, functions such as
 #' `as.list.json_vec()` are also available as `as_list.json_vec()`.
 #' 
+#' @param x Object to coerce to list.
+#' @param ... Generic compatibility.
+#' 
 #' @export
 #' 
 as_list <- as.list
