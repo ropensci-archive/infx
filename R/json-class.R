@@ -49,7 +49,6 @@
 #' @param keep_asis Used in `as.list()`, if `TRUE`, the `json_class` object
 #' is returned as-is, if `FALSE`, class attributes may be dropped/written to
 #' the list structure into the `@type` field.
-#' @param i Sub-setting information.
 #' @param depth The maximum recursion depth for printing.
 #' @param width Number of columns to maximally print.
 #' @param length Number of lines to maximally print.

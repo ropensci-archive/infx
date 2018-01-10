@@ -51,7 +51,6 @@ test_that("json objects can be converted", {
   cls <- structure(list("a", "b"), class = c("foo", "json_class"))
   expect_identical(cls, as_json_class(cls))
   expect_identical(cls, as.json_class(as.json_vec(cls)))
-  expect_error(as.json_vec(c(cls, cls)))
   expect_identical(cls, as.list(cls))
   expect_identical(as_json_class(lst), lapply(as_json_class(lst), as_list))
   expect_identical(lst, lapply(as_json_class(lst), as_list, keep_asis = FALSE))
