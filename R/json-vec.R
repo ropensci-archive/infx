@@ -91,23 +91,17 @@ as_json_vec.list <- function(x, ...) {
 #' 
 as_json_vec.default <- function(x, ...) error_default(x)
 
-#' @rdname json_vec
 #' @export
-#' 
 as.list.json_vec <- function(x, ...) {
   unclass(x)
 }
 
-#' @rdname json_vec
 #' @export
-#' 
 `[.json_vec` <- function(x, i, ...) {
   new_json_vec(NextMethod())
 }
 
-#' @rdname json_vec
 #' @export
-#' 
 `[<-.json_vec` <- function(x, i, ..., value) {
 
   sub_class <- get_common_subclass(x)
@@ -120,9 +114,7 @@ as.list.json_vec <- function(x, ...) {
   NextMethod()
 }
 
-#' @rdname json_vec
 #' @export
-#' 
 `[<-.json_vec` <- function(x, i, ..., value) {
 
   sub_class <- get_common_subclass(x)
@@ -135,9 +127,7 @@ as.list.json_vec <- function(x, ...) {
   NextMethod()
 }
 
-#' @rdname json_vec
 #' @export
-#' 
 `[[<-.json_vec` <- function(x, i, ..., value) {
 
   assert_that(get_json_subclass(value) == get_common_subclass(x))
