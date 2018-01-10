@@ -46,6 +46,9 @@
 #' @param recursive Recursively apply the function.
 #' @param restore_type When removing the `json_class` information from an
 #' object, whether to preserve the subclass attribute as `@type` filed.
+#' @param keep_asis Used in `as.list()`, if `TRUE`, the `json_class` object
+#' is returned as-is, if `FALSE`, class attributes may be dropped/written to
+#' the list structure into the `@type` field.
 #' @param i Sub-setting information.
 #' @param depth The maximum recursion depth for printing.
 #' @param width Number of columns to maximally print.

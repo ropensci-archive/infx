@@ -66,6 +66,10 @@ cannot be converted.}
 \item{restore_type}{When removing the \code{json_class} information from an
 object, whether to preserve the subclass attribute as \code{@type} filed.}
 
+\item{keep_asis}{Used in \code{as.list()}, if \code{TRUE}, the \code{json_class} object
+is returned as-is, if \code{FALSE}, class attributes may be dropped/written to
+the list structure into the \code{@type} field.}
+
 \item{class}{JSON class name used to test for.}
 
 \item{i}{Sub-setting information.}
