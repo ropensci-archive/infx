@@ -57,6 +57,9 @@ test_that("json objects can be converted", {
   expect_identical(lst, lapply(as_json_class(lst), as_list, keep_asis = FALSE))
   lst <- list(`@type` = "foo", "a", "b")
   expect_identical(lst, as.list(as.json_class(lst), keep_asis = FALSE))
+  a <- structure(list("a"), class = c("foo", "json_class"))
+  b <- structure(list("b"), class = c("foo", "json_class"))
+  expect_s3_class(c(a, b), "json_vec")
 })
 
 test_that("json objects can be tested", {

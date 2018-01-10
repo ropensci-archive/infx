@@ -135,6 +135,9 @@ as.list.json_vec <- function(x, ...) {
   NextMethod()
 }
 
+#' @export
+c.json_vec <- function(x, ...) as_json_vec(NextMethod())
+
 #' @rdname json_vec
 #' 
 #' @export

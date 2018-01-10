@@ -15,7 +15,6 @@
 \alias{check_json_class}
 \alias{has_json_subclass}
 \alias{get_json_subclass}
-\alias{[.json_class}
 \alias{print.json_class}
 \title{JSON class objects}
 \usage{
@@ -48,8 +47,6 @@ has_json_subclass(x, class)
 
 get_json_subclass(x)
 
-\method{[}{json_class}(x, i, ...)
-
 \method{print}{json_class}(x, depth = 1L, width = getOption("width"),
   length = 100L, fancy = TRUE, ...)
 }
@@ -72,8 +69,6 @@ the list structure into the \code{@type} field.}
 
 \item{class}{JSON class name used to test for.}
 
-\item{i}{Sub-setting information.}
-
 \item{depth}{The maximum recursion depth for printing.}
 
 \item{width}{Number of columns to maximally print.}
@@ -82,6 +77,8 @@ the list structure into the \code{@type} field.}
 
 \item{fancy}{Logical switch to enable font styles, colors and UTF box
 characters for printing.}
+
+\item{i}{Sub-setting information.}
 }
 \description{
 To communicate object type information via JSON to the Jackson-powered

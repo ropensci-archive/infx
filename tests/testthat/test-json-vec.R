@@ -79,6 +79,7 @@ test_that("json_vec objects can be created", {
   expect_identical(vec[[1]], b)
   expect_identical(vec[[2]], a)
   expect_error(vec[[1]] <- "a")
+  expect_s3_class(c(json_vec(a, b), json_vec(b, a)), "json_vec")
 })
 
 test_that("json_vec helpers work", {

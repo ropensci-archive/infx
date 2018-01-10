@@ -228,14 +228,15 @@ get_json_subclass <- function(x) {
   setdiff(class(x), "json_class")
 }
 
-#' @rdname json_class
 #' @export
-#' 
 `[.json_class` <- function(x, i, ...) {
   r <- NextMethod("[")
   class(r) <- class(x)
   r
 }
+
+#' @export
+c.json_class <- function(x, ...) c(as_json_vec(x), json_vec(...))
 
 #' @rdname json_class
 #' @export
