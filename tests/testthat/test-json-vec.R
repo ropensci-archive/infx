@@ -69,6 +69,15 @@ test_that("json_vec objects can be created", {
   expect_error(as.json_vec(list("a", "b")))
   expect_error(as.json_vec("a"))
   expect_identical(as.list(json_vec(a, b)), list(a, b))
+
+  vec <- json_vec(a, b)
+  expect_s3_class(vec[1], "json_vec")
+  expect_s3_class(vec[[1]], "json_class")
+  vec[2] <- a
+  expect_identical(vec[[1]], vec[[2]])
+  vec[1:2] <- list(b, a)
+  expect_identical(vec[[1]], b)
+  expect_identical(vec[[2]], a)
 })
 
 test_that("json_vec helpers work", {
