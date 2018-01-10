@@ -11,13 +11,16 @@
 #' `@type` into a `json_class` object, while `json_class()`/`as_json_class()`
 #' does this recursively.
 #' 
-#' The action of `as_json_class()` is reversed by `rm_json_class()`
-#' (recursively) and `as.list()` (non-recursively). This removes both the
-#' `json_class` class attribute and the JSON class attribute itself, which is
-#' subsequently written to a `@type` filed. This preserving of type information
-#' can be disabled, by setting the argument `restore_type` to `FALSE`.
+#' The action of `as_json_class()` is reversed by `rm_json_class()`. This
+#' removes both the `json_class` class attribute and the JSON class attribute
+#' itself, which is subsequently written to a `@type` filed. This preserving
+#' of type information can be disabled, by setting the argument `restore_type`
+#' to `FALSE`. Furthermore, the action can be applied recursively with the
+#' argument `recursive`. The function `as.list()` can also be used to perform
+#' the above actions, but with default arguments, it does nothing, as
+#' functions such as `base::sapply()` and `base::lapply()`, call `as.list()`.
 #' 
-#' The functions [is_json_class()] and [has_json_subclass()] test whether an
+#' The functions `is_json_class()` and `has_json_subclass()` test whether an
 #' object is a JSON class object. The former tests whether an object is a
 #' proper `json_class` object, meaning that:
 #'   * it is a list
@@ -57,7 +60,7 @@
 #' 
 json_class <- function(x) {
 
-  if (is.list(x)) {
+  if (is.list(x) && !is_json_class(x)) {
     x <- lapply(x, json_class)
     if ("@type" %in% names(x))
       new_json_class(x)
@@ -153,11 +156,14 @@ rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
 #' @export
 #' 
 as.list.json_class <- function(x,
-                               recursive = FALSE,
-                               restore_type = FALSE,
+                               keep_asis = TRUE,
+                               recursive = !keep_asis,
+                               restore_type = !keep_asis,
                                ...) {
-
-  rm_json_class(x, recursive, restore_type)
+  if (keep_asis)
+    x
+  else
+    rm_json_class(x, recursive, restore_type)
 }
 
 #' @rdname json_class

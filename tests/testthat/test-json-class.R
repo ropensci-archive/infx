@@ -47,6 +47,11 @@ test_that("json objects can be converted", {
   expect_true(all(sapply(json_class(lst), class)[1, ] == "foobar"))
   expect_equal(lst, rm_json_class(json_class(lst)))
   expect_error(json_class(list(`@type` = c("foo", "bar"), "a", "b")))
+  expect_identical(as_json_class(lst), as_json_class(as_json_class(lst)))
+  cls <- structure(list("a", "b"), class = c("foo", "json_class"))
+  expect_identical(cls, as_json_class(cls))
+  expect_identical(cls, as.json_class(as.json_vec(cls)))
+  expect_error(as.json_vec(c(cls, cls)))
 })
 
 test_that("json objects can be tested", {
@@ -110,9 +115,17 @@ test_that("json objects can be subsetted", {
 test_that("json objects can be printed", {
   expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
                 "█─foo \n└─a")
+  expect_output(print(structure(list("a"), class = c("foo", "json_class")),
+                      length = 1L), "...")
   expect_output(print(structure(list(a = "a", "b"),
                                 class = c("foo", "json_class"))),
                 "├─a = a \n└─b")
+  expect_output(print(structure(list(a = "a", b = list(c = "d", e = "f")),
+                                class = c("foo", "json_class"))),
+                "[c = d, e = f]")
+  expect_output(print(structure(list(a = "a", b = list(c = "d", "f")),
+                                class = c("foo", "json_class"))),
+                "[c = d, f]")
   expect_output(print(
     structure(list(a = "a",
                    list(structure(list("b"), class = c("bar", "json_class")),
@@ -130,6 +143,11 @@ test_that("json objects can be printed", {
                         structure(list("b"), class = c("bar", "json_class")))),
               class = c("foo", "json_class")), depth = 3),
     "└─┬─c = c \n  └─█─bar")
-
+  expect_output(print(
+    structure(list(a = "a",
+                   list(c = "c",
+                        structure(list("b"), class = c("bar", "json_class")))),
+              class = c("foo", "json_class")), depth = 3, fancy = FALSE),
+    "\\-+-c = c \n  \\-X-bar", fixed = TRUE)
   expect_warning(print(structure("a", class = c("foo", "json_class"))))
 })

@@ -37,8 +37,8 @@ as.json_class(x, ...)
 
 rm_json_class(x, recursive = TRUE, restore_type = TRUE)
 
-\method{as.list}{json_class}(x, recursive = FALSE, restore_type = FALSE,
-  ...)
+\method{as.list}{json_class}(x, keep_asis = TRUE, recursive = !keep_asis,
+  restore_type = !keep_asis, ...)
 
 is_json_class(x)
 
@@ -91,13 +91,16 @@ function \code{new_json_class()} powers this conversion of a list with filed
 does this recursively.
 }
 \details{
-The action of \code{as_json_class()} is reversed by \code{rm_json_class()}
-(recursively) and \code{as.list()} (non-recursively). This removes both the
-\code{json_class} class attribute and the JSON class attribute itself, which is
-subsequently written to a \code{@type} filed. This preserving of type information
-can be disabled, by setting the argument \code{restore_type} to \code{FALSE}.
+The action of \code{as_json_class()} is reversed by \code{rm_json_class()}. This
+removes both the \code{json_class} class attribute and the JSON class attribute
+itself, which is subsequently written to a \code{@type} filed. This preserving
+of type information can be disabled, by setting the argument \code{restore_type}
+to \code{FALSE}. Furthermore, the action can be applied recursively with the
+argument \code{recursive}. The function \code{as.list()} can also be used to perform
+the above actions, but with default arguments, it does nothing, as
+functions such as \code{base::sapply()} and \code{base::lapply()}, call \code{as.list()}.
 
-The functions \code{\link[=is_json_class]{is_json_class()}} and \code{\link[=has_json_subclass]{has_json_subclass()}} test whether an
+The functions \code{is_json_class()} and \code{has_json_subclass()} test whether an
 object is a JSON class object. The former tests whether an object is a
 proper \code{json_class} object, meaning that:
 \itemize{
