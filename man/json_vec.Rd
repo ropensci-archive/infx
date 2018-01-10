@@ -12,6 +12,8 @@
 \alias{as.list.json_vec}
 \alias{[.json_vec}
 \alias{[<-.json_vec}
+\alias{[<-.json_vec}
+\alias{[[<-.json_vec}
 \alias{has_common_subclass}
 \alias{get_common_subclass}
 \alias{get_common_subclass.json_class}
@@ -43,6 +45,10 @@ as.json_vec(x, ...)
 \method{[}{json_vec}(x, i, ...)
 
 \method{[}{json_vec}(x, i, ...) <- value
+
+\method{[}{json_vec}(x, i, ...) <- value
+
+\method{[[}{json_vec}(x, i, ...) <- value
 
 has_common_subclass(x)
 

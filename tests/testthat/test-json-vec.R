@@ -78,6 +78,7 @@ test_that("json_vec objects can be created", {
   vec[1:2] <- list(b, a)
   expect_identical(vec[[1]], b)
   expect_identical(vec[[2]], a)
+  expect_error(vec[[1]] <- "a")
 })
 
 test_that("json_vec helpers work", {
