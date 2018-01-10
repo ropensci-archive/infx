@@ -20,7 +20,10 @@ Imports:
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests:
-  testthat
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
