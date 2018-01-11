@@ -18,8 +18,9 @@
 #' JSON, will be used to call the supplied method. The `@type` entries will be
 #' generated from `json_class` attributes.
 #' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
-#' @param id An identifier for the JSON-RPC request (defaults to `"1"`). Can be
-#' ignored, as only single JSON-RPC requests are issued per HTTP request.
+#' @param id An identifier for the JSON-RPC request (defaults to a random
+#' string of length 7). Can be usually be ignored, as only single JSON-RPC
+#' requests are issued per HTTP request.
 #' @param x A (possibly nested) list structure for which all `@id` fields are
 #' recursively removed.
 #' 
@@ -41,7 +42,8 @@ make_request <- function(url,
                          method,
                          params,
                          version = "2.0",
-                         id = "1") {
+                         id = paste(sample(c(letters, LETTERS, 0:9), 7),
+                                    collapse = "")) {
 
   if (!is.list(params)) params <- list(params)
 
@@ -51,11 +53,12 @@ make_request <- function(url,
                params = rm_json_class(params))
 
   resp <- httr::POST(url, body = requ, encode = "json")
-
   assert_that(resp$status_code == 200)
 
   resp$content <- jsonlite::fromJSON(rawToChar(resp$content),
                                      simplifyVector = FALSE)
+
+  assert_that(resp$content$id == id)
 
   if (!is.null(resp$content$error))
     stop("Error:\n", paste(names(resp$content$error), resp$content$error,

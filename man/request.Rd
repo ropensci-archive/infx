@@ -6,7 +6,8 @@
 \alias{remove_id}
 \title{Make a JSON-RPC request}
 \usage{
-make_request(url, method, params, version = "2.0", id = "1")
+make_request(url, method, params, version = "2.0",
+  id = paste(sample(c(letters, LETTERS, 0:9), 7), collapse = ""))
 
 request_openbis(method, params, api = c("IGeneralInformationService",
   "IGeneralInformationChangingService", "IQueryApiServer",
@@ -26,8 +27,9 @@ generated from \code{json_class} attributes.}
 
 \item{version}{JSON-RPC protocol version to be used (defaults to \code{"2.0"}.}
 
-\item{id}{An identifier for the JSON-RPC request (defaults to \code{"1"}). Can be
-ignored, as only single JSON-RPC requests are issued per HTTP request.}
+\item{id}{An identifier for the JSON-RPC request (defaults to a random
+string of length 7). Can be usually be ignored, as only single JSON-RPC
+requests are issued per HTTP request.}
 
 \item{api, host}{Strings used to construct the destination url.}
 
