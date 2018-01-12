@@ -69,12 +69,11 @@
 #' 
 #' @export
 #' 
-json_class <- function(x, class) {
+json_class <- function(..., class) {
 
   assert_that(!missing(class))
 
-  if (!is.list(x))
-    x <- list(x)
+  x <- list(...)
 
   new_json_class(x, class)
 }

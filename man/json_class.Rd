@@ -18,7 +18,7 @@
 \alias{print.json_class}
 \title{JSON class objects}
 \usage{
-json_class(x, class)
+json_class(..., class)
 
 new_json_class(x, class = NULL)
 
@@ -51,11 +51,11 @@ get_json_subclass(x)
   length = 100L, fancy = TRUE, ...)
 }
 \arguments{
-\item{x}{Object to process.}
+\item{...}{Generic compatibility.}
 
 \item{class}{JSON sub-class name.}
 
-\item{...}{Generic compatibility.}
+\item{x}{Object to process.}
 
 \item{force}{Suppress error when casting an object to \code{json_class} that
 cannot be converted.}
