@@ -197,6 +197,11 @@ is_json_class <- function(x) {
 #' @rdname json_class
 #' @export
 #' 
+is.json_class <- is_json_class
+
+#' @rdname json_class
+#' @export
+#' 
 check_json_class <- function(x, recursive = TRUE) {
 
   if (inherits(x, "json_class"))
