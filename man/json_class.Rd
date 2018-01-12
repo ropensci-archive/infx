@@ -18,9 +18,9 @@
 \alias{print.json_class}
 \title{JSON class objects}
 \usage{
-json_class(x)
+json_class(x, class)
 
-new_json_class(x)
+new_json_class(x, class = NULL)
 
 as_json_class(x, ...)
 
@@ -53,6 +53,8 @@ get_json_subclass(x)
 \arguments{
 \item{x}{Object to process.}
 
+\item{class}{JSON sub-class name.}
+
 \item{...}{Generic compatibility.}
 
 \item{force}{Suppress error when casting an object to \code{json_class} that
@@ -67,8 +69,6 @@ object, whether to preserve the subclass attribute as \code{@type} filed.}
 is returned as-is, if \code{FALSE}, class attributes may be dropped/written to
 the list structure into the \code{@type} field.}
 
-\item{class}{JSON class name used to test for.}
-
 \item{depth}{The maximum recursion depth for printing.}
 
 \item{width}{Number of columns to maximally print.}
@@ -80,14 +80,13 @@ characters for printing.}
 }
 \description{
 To communicate object type information via JSON to the Jackson-powered
-openBis interface, the \code{@type} field is used. Furthermore, the \code{@id} field
-is used by the JSON-RPC specification to map requests in async scenarios.
-Data received from openBis is recursively stripped of both \code{@id} (using
-\code{remove_id()}) and \code{@type} fields and the type information is saved as
+openBis interface, the \code{@type} field is used. Data received from openBis is
+recursively stripped of \code{@type} fields and the type information is saved as
 class attribute. Such objects also have the class \code{json_class} added. The
-function \code{new_json_class()} powers this conversion of a list with filed
-\code{@type} into a \code{json_class} object, while \code{json_class()}/\code{as_json_class()}
-does this recursively.
+function \code{as_json_class()} (or its alias \code{as.json_class()}) powers this
+recursive conversion of a list with filed \code{@type} into a \code{json_class}
+object. The constructor \code{json_class()} is available for non-recursive
+instantiation of \code{json_class} objects.
 }
 \details{
 The action of \code{as_json_class()} is reversed by \code{rm_json_class()}. This

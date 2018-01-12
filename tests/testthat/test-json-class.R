@@ -1,16 +1,16 @@
 context("json objects")
 
 test_that("json objects can be converted", {
-  expect_equal("a", json_class("a"))
-  expect_equal(list(), json_class(list()))
-  expect_equal(list("a", "b"), json_class(list("a", "b")))
+  expect_equal(list(), as_json_class(list()))
+  expect_equal(list("a", "b"), as_json_class(list("a", "b")))
+  expect_error(as_json_class("a"))
 
-  expect_equal("a", rm_json_class("a"))
   expect_equal(list(), rm_json_class(list()))
   expect_equal(list("a", "b"), rm_json_class(list("a", "b")))
+  expect_equal("a", rm_json_class("a"))
 
-  expect_s3_class(json_class(list(`@type` = "foo", "a", "b")), "json_class")
-  expect_s3_class(json_class(list(`@type` = "foo", "a", "b")), "foo")
+  expect_s3_class(as_json_class(list(`@type` = "foo", "a", "b")), "json_class")
+  expect_s3_class(as_json_class(list(`@type` = "foo", "a", "b")), "foo")
 
   lst <- list(`@type` = "foo",
               `@id` = 1L,
@@ -24,29 +24,34 @@ test_that("json objects can be converted", {
                             `@id` = 3L,
                             j = "k"))
 
-  expect_s3_class(json_class(lst), c("foo", "json_class"))
-  expect_s3_class(json_class(lst)$foobar, c("bar", "json_class"))
-  expect_s3_class(json_class(lst)$bar$foo, c("xyz", "json_class"))
+  expect_s3_class(as_json_class(lst), "foo")
+  expect_s3_class(as_json_class(lst), "json_class")
+  expect_s3_class(as_json_class(lst)$foobar, "bar")
+  expect_s3_class(as_json_class(lst)$foobar, "json_class")
+  expect_s3_class(as_json_class(lst)$bar$foo, "xyz")
+  expect_s3_class(as_json_class(lst)$bar$foo, "json_class")
   expect_equal(sum(grepl("@type", names(unlist(lst)))), 3L)
-  expect_equal(sum(grepl("@type", names(unlist(json_class(lst))))), 0L)
+  expect_equal(sum(grepl("@type", names(unlist(as_json_class(lst))))), 0L)
 
   expect_equal(lst, rm_json_class(lst))
 
-  expect_s3_class(tmp <- json_class(lst), "json_class")
+  expect_s3_class(tmp <- as_json_class(lst), "json_class")
   expect_type(tmp <- rm_json_class(tmp), "list")
-  expect_equal(tmp, rm_json_class(json_class(tmp)))
+  expect_equal(tmp, rm_json_class(as_json_class(tmp)))
 
-  expect_error(json_class(list(`@type` = "foo", `@type` = "bar", a = "b")))
+  expect_error(as_json_class(list(`@type` = "foo", `@type` = "bar", a = "b")))
 
   lst <- list(foo = list(`@type` = "foobar",
                          a = "b"),
               bar = list(`@type` = "foobar",
                          c = "d"))
-  expect_s3_class(json_class(lst)[[1]], "json_class")
-  expect_s3_class(json_class(lst)[[2]], "json_class")
-  expect_true(all(sapply(json_class(lst), class)[1, ] == "foobar"))
-  expect_equal(lst, rm_json_class(json_class(lst)))
-  expect_error(json_class(list(`@type` = c("foo", "bar"), "a", "b")))
+  expect_s3_class(as_json_class(lst)[[1]], "foobar")
+  expect_s3_class(as_json_class(lst)[[1]], "json_class")
+  expect_s3_class(as_json_class(lst)[[2]], "foobar")
+  expect_s3_class(as_json_class(lst)[[2]], "json_class")
+  expect_true(all(sapply(as_json_class(lst), class)[1, ] == "foobar"))
+  expect_equal(lst, rm_json_class(as_json_class(lst)))
+  expect_error(as_json_class(list(`@type` = c("foo", "bar"), "a", "b")))
   expect_identical(as_json_class(lst), as_json_class(as_json_class(lst)))
   cls <- structure(list("a", "b"), class = c("foo", "json_class"))
   expect_identical(cls, as_json_class(cls))
@@ -58,17 +63,26 @@ test_that("json objects can be converted", {
   expect_identical(lst, as.list(as.json_class(lst), keep_asis = FALSE))
   a <- structure(list("a"), class = c("foo", "json_class"))
   b <- structure(list("b"), class = c("foo", "json_class"))
+  expect_s3_class(c(a, b), "foo")
   expect_s3_class(c(a, b), "json_vec")
+})
+
+test_that("json objects can be created", {
+  cls <- json_class(c("a", "b"), "foo")
+  expect_s3_class(cls, "foo")
+  expect_s3_class(cls, "json_class")
+  expect_identical(cls, json_class(list(c("a", "b")), "foo"))
+  json_class(list("a", "b"), "foo")
 })
 
 test_that("json objects can be tested", {
   expect_false(has_json_subclass(list(`@type` = "foo", "a", "b")))
-  expect_true(has_json_subclass(json_class(list(`@type` = "foo", "a", "b")),
+  expect_true(has_json_subclass(as_json_class(list(`@type` = "foo", "a", "b")),
                                 "foo"))
   expect_false(has_json_subclass(list(`@type` = "foo", "a", "b"), "foo"))
 
   expect_false(is_json_class(list(`@type` = "foo", "a", "b")))
-  expect_true(is_json_class(json_class(list(`@type` = "foo", "a", "b"))))
+  expect_true(is_json_class(as_json_class(list(`@type` = "foo", "a", "b"))))
   expect_true(is_json_class(structure(list("a", "b"),
                                       class = c("foo", "json_class"))))
   expect_false(is_json_class(structure(c("a", "b"),
@@ -93,7 +107,7 @@ test_that("json subclass can be determined", {
   expect_error(get_json_subclass("a"))
   expect_error(get_json_subclass(list(`@type` = "foo", "a", "b")))
   expect_equal(
-    get_json_subclass(json_class(list(`@type` = "foo", "a", "b"))), "foo")
+    get_json_subclass(as_json_class(list(`@type` = "foo", "a", "b"))), "foo")
   expect_equal(get_json_subclass(structure(list("a", "b"),
                                            class = c("foo", "json_class"))),
                "foo")
@@ -110,11 +124,11 @@ test_that("json objects can be subsetted", {
               bar = list(`@type` = "foobar",
                          a = "e",
                          b = "f"))
-  expect_true(all(sapply(lapply(json_class(lst), `[`, "b"),
+  expect_true(all(sapply(lapply(as_json_class(lst), `[`, "b"),
                          class)[1, ] == "foobar"))
-  expect_true(all(sapply(lapply(json_class(lst), `[`, "b"),
+  expect_true(all(sapply(lapply(as_json_class(lst), `[`, "b"),
                          class)[2, ] == "json_class"))
-  lst <- lapply(json_class(lst), `class<-`, "some_class")
+  lst <- lapply(as_json_class(lst), `class<-`, "some_class")
   expect_true(all(sapply(lst, class) == "some_class"))
   expect_false(all(sapply(lapply(lst, `[`, "b"), class) == "some_class"))
 })

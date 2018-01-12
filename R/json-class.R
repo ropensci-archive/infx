@@ -2,14 +2,13 @@
 #' JSON class objects
 #'
 #' To communicate object type information via JSON to the Jackson-powered
-#' openBis interface, the `@type` field is used. Furthermore, the `@id` field
-#' is used by the JSON-RPC specification to map requests in async scenarios.
-#' Data received from openBis is recursively stripped of both `@id` (using
-#' `remove_id()`) and `@type` fields and the type information is saved as
+#' openBis interface, the `@type` field is used. Data received from openBis is
+#' recursively stripped of `@type` fields and the type information is saved as
 #' class attribute. Such objects also have the class `json_class` added. The
-#' function `new_json_class()` powers this conversion of a list with filed
-#' `@type` into a `json_class` object, while `json_class()`/`as_json_class()`
-#' does this recursively.
+#' function `as_json_class()` (or its alias `as.json_class()`) powers this
+#' recursive conversion of a list with filed `@type` into a `json_class`
+#' object. The constructor `json_class()` is available for non-recursive
+#' instantiation of `json_class` objects.
 #' 
 #' The action of `as_json_class()` is reversed by `rm_json_class()`. This
 #' removes both the `json_class` class attribute and the JSON class attribute
@@ -40,7 +39,7 @@
 #' Hadley's [lobstr package](https://github.com/hadley/lobstr).
 #' 
 #' @param x Object to process.
-#' @param class JSON class name used to test for.
+#' @param class JSON sub-class name.
 #' @param force Suppress error when casting an object to `json_class` that
 #' cannot be converted.
 #' @param recursive Recursively apply the function.
@@ -70,30 +69,32 @@
 #' 
 #' @export
 #' 
-json_class <- function(x) {
+json_class <- function(x, class) {
 
-  if (is.list(x) && !is_json_class(x)) {
-    x <- lapply(x, json_class)
-    if ("@type" %in% names(x))
-      new_json_class(x)
-    else
-      x
-  } else
-    x
+  assert_that(!missing(class))
+
+  if (!is.list(x))
+    x <- list(x)
+
+  new_json_class(x, class)
 }
 
 #' @rdname json_class
-#' @export
 #' 
-new_json_class <- function(x) {
+new_json_class <- function(x, class = NULL) {
 
-  assert_that(is.list(x),
-              sum("@type" == names(x)) == 1L,
-              is.character(x[["@type"]]),
-              length(x[["@type"]]) == 1L)
+  assert_that(is.list(x))
 
-  structure(x[names(x) != "@type"],
-            class = c(x[["@type"]], "json_class"))
+  if (is.null(class)) {
+    assert_that(sum("@type" == names(x)) == 1L)
+    class <- x[["@type"]]
+    x <- x[names(x) != "@type"]
+  }
+
+  assert_that(is.character(class),
+              length(class) == 1L)
+
+  structure(x, class = c(class, "json_class"))
 }
 
 #' @rdname json_class
@@ -119,7 +120,12 @@ as_json_class.json_class <- function(x, ...) {
 #' @export
 #' 
 as_json_class.list <- function(x, ...) {
-  json_class(x)
+
+  x <- lapply(x, as_json_class, force = TRUE)
+  if ("@type" %in% names(x))
+    new_json_class(x)
+  else
+    x
 }
 
 #' @rdname json_class
