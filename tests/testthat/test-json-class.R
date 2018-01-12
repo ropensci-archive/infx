@@ -68,11 +68,10 @@ test_that("json objects can be converted", {
 })
 
 test_that("json objects can be created", {
-  cls <- json_class(c("a", "b"), "foo")
+  cls <- json_class("a", "b", class = "foo")
   expect_s3_class(cls, "foo")
   expect_s3_class(cls, "json_class")
   expect_identical(cls, json_class(list(c("a", "b")), "foo"))
-  json_class(list("a", "b"), "foo")
 })
 
 test_that("json objects can be tested", {
