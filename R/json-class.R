@@ -308,7 +308,10 @@ print_json_class <- function(x,
 
   if (!is.list(x)) {
 
-    layout$val(paste(x))
+    if (length(x) > 1L)
+      layout$val(paste0("(", paste(x, collapse = ", "), ")"))
+    else
+      layout$val(paste(x))
 
   } else {
 

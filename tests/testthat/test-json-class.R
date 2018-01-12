@@ -147,6 +147,9 @@ test_that("json objects can be printed", {
   expect_output(print(structure(list(a = "a", b = list(c = "d", "f")),
                                 class = c("foo", "json_class"))),
                 "[c = d, f]")
+  expect_output(print(structure(list(a = "a", b = c("d", "f")),
+                                class = c("foo", "json_class"))),
+                "(d, f)")
   expect_output(print(
     structure(list(a = "a",
                    list(structure(list("b"), class = c("bar", "json_class")),
