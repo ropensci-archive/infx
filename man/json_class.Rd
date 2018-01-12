@@ -2,7 +2,6 @@
 % Please edit documentation in R/json-class.R
 \name{json_class}
 \alias{json_class}
-\alias{new_json_class}
 \alias{as_json_class}
 \alias{as.json_class}
 \alias{as_json_class.json_class}
@@ -20,8 +19,6 @@
 \title{JSON class objects}
 \usage{
 json_class(..., class)
-
-new_json_class(x, class = NULL)
 
 as_json_class(x, ...)
 

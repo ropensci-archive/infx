@@ -28,7 +28,6 @@
 #' a <- structure(list("a"), class = c("foo", "json_class"))
 #' b <- structure(list("b"), class = c("foo", "json_class"))
 #'
-#' new_json_vec(list(a, b))
 #' json_vec(a, b)
 #' 
 #' as_json_vec(list(a, b))
@@ -43,10 +42,6 @@ json_vec <- function(...) {
   new_json_vec(list(...))
 }
 
-#' @rdname json_vec
-#' 
-#' @export
-#' 
 new_json_vec <- function(x) {
 
   assert_that(has_common_subclass(x))

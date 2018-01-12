@@ -78,8 +78,6 @@ json_class <- function(..., class) {
   new_json_class(x, class)
 }
 
-#' @rdname json_class
-#' 
 new_json_class <- function(x, class = NULL) {
 
   assert_that(is.list(x))

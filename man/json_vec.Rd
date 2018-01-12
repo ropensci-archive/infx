@@ -2,7 +2,6 @@
 % Please edit documentation in R/json-vec.R
 \name{json_vec}
 \alias{json_vec}
-\alias{new_json_vec}
 \alias{as_json_vec}
 \alias{as.json_vec}
 \alias{as_json_vec.json_vec}
@@ -21,8 +20,6 @@
 \title{Construct a json_vec object}
 \usage{
 json_vec(...)
-
-new_json_vec(x)
 
 as_json_vec(x, ...)
 
@@ -91,7 +88,6 @@ determined for the children.
 a <- structure(list("a"), class = c("foo", "json_class"))
 b <- structure(list("b"), class = c("foo", "json_class"))
 
-new_json_vec(list(a, b))
 json_vec(a, b)
 
 as_json_vec(list(a, b))
