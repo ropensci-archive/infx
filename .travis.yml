@@ -15,8 +15,7 @@ after_success:
   - Rscript -e 'covr::codecov()'
 
 before_deploy:
-  - Rscript -e 'pkgdown::build_site()' > build.out
-  - cat build.out
+  - Rscript -e 'pkgdown::build_site()'
 
 deploy:
   provider: pages
