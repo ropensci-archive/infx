@@ -102,6 +102,13 @@ as.list.json_vec <- function(x, ...) {
 }
 
 #' @export
+`[[.json_vec` <- function(x, i, ...) {
+  res <- NextMethod()
+  assert_that(is_json_class(res))
+  res
+}
+
+#' @export
 `[<-.json_vec` <- function(x, i, ..., value) {
 
   sub_class <- get_common_subclass(x)
