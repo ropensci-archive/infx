@@ -15,7 +15,6 @@
 \alias{check_json_class}
 \alias{has_json_subclass}
 \alias{get_json_subclass}
-\alias{print.json_class}
 \title{JSON class objects}
 \usage{
 json_class(..., class)
@@ -46,9 +45,6 @@ check_json_class(x, recursive = TRUE)
 has_json_subclass(x, class)
 
 get_json_subclass(x)
-
-\method{print}{json_class}(x, depth = 1L, width = getOption("width"),
-  length = 100L, fancy = TRUE, ...)
 }
 \arguments{
 \item{...}{Generic compatibility.}
@@ -68,15 +64,6 @@ object, whether to preserve the subclass attribute as \code{@type} filed.}
 \item{keep_asis}{Used in \code{as.list()}, if \code{TRUE}, the \code{json_class} object
 is returned as-is, if \code{FALSE}, class attributes may be dropped/written to
 the list structure into the \code{@type} field.}
-
-\item{depth}{The maximum recursion depth for printing.}
-
-\item{width}{Number of columns to maximally print.}
-
-\item{length}{Number of lines to maximally print.}
-
-\item{fancy}{Logical switch to enable font styles, colors and UTF box
-characters for printing.}
 }
 \description{
 To communicate object type information via JSON to the Jackson-powered

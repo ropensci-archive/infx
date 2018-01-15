@@ -16,7 +16,6 @@
 \alias{get_common_subclass.default}
 \alias{is_json_vec}
 \alias{is.json_vec}
-\alias{print.json_vec}
 \title{Construct a json_vec object}
 \usage{
 json_vec(...)
@@ -48,23 +47,11 @@ get_common_subclass(x, ...)
 is_json_vec(x)
 
 is.json_vec(x)
-
-\method{print}{json_vec}(x, depth = 1L, width = getOption("width"),
-  length = 100L, fancy = TRUE, ...)
 }
 \arguments{
 \item{...}{Individual \code{json_class} objects, or generic compatibility}
 
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
-
-\item{depth}{The maximum recursion depth for printing.}
-
-\item{width}{Number of columns to maximally print.}
-
-\item{length}{Number of lines to maximally print.}
-
-\item{fancy}{Logical switch to enable font styles, colors and UTF box
-characters for printing.}
 }
 \description{
 \code{new_json_vec()} is a low-level constructor that takes a list of
