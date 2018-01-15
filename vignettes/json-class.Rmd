@@ -1,0 +1,163 @@
+---
+title: "JSON object handling"
+author: "Nicolas Bennett"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{JSON objects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(infx)
+```
+
+The openBIS JSON-RPC API is powered by the Jackson JSON processor on the server side. As such, object type information is communicated via `@type` fields. Take as an example the class `Dog` defined as
+
+```java
+public class Dog {
+  private String name;
+  private String breed;
+  // setters and getters
+}
+```
+
+An instance of `Dog` can be represented as the following JSON object
+
+```json
+{
+  "@type": "Dog",
+  "name": "Rufus",
+  "breed": "english shepherd"
+}
+```
+
+where the `@type` filed is used by the deserializer to infer what java object should result. Furthermore, on the client side, class information is used for S3 method dispatch. This document will illustrate how typed JSON objects returned by openBIS are converted into S3 classes, how these classes can be manipulated in R and subsequently used for further openBIS queries.
+
+## Creating `json_class` objects
+
+Again a feature of the Jackson serializer, `@id` fields are generated for all objects by an `ObjectIdGenerator` (an `IntSequenceGenerator` to be more specific), which can be used to represent relationships among objects. These object ids however do not currently serve any purpose on the client side and are therefore recursively stripped by the function `remove_id()`. This initial action is illustrated, using the object `response`
+
+```{r resp}
+response <- list(`@type` = "foobar",
+                 `@id` = 1L,
+                 a = list(`@type` = "foo",
+                          `@id` = 2L,
+                          b = "c"),
+                 d = list(`@type` = "bar",
+                          `@id` = 3L,
+                          e = "f"))
+response <- remove_id(response)
+str(response)
+```
+
+Turning a list such as `response` into a `json_class` S3 class can be done, using the function `as_json_class()` (or its alias `as.json_class()`). This action is applied recursively, meaning that all sub-lists, containing an `@type` field are turned into `json_class` objects as well.
+
+```{r as-class}
+json_class <- as_json_class(response)
+str(json_class)
+```
+
+In case the user wants to create `json_class` object, the constructor `json_class()` is available. It can be used as follows, e.g. for the recreation of the above `json_class` object
+
+```{r construct}
+construct <- json_class(a = json_class(b = "c", class = "foo"),
+                        d = json_class(e = "f", class = "bar"),
+                        class = "foobar")
+identical(construct, json_class)
+```
+
+The effect of `as_json_class()` can be reversed by `rm_json_class()` or `as_list()` (as well as its alias `as.list()`). The two functions differ in default behavior however. Where `rm_json_class()` removes S3 classes and writes class information into the respective `@type` fields, `as_list()`, by default simple returns its input. This somewhat odd choice is owed to the circumstance that iterating though a `json_class` object with `lapply()` or `sapply()` calls `as.list()` on its first argument.
+
+```{r destruct}
+identical(response,
+          rm_json_class(json_class))
+identical(as.list(json_class, keep_asis = FALSE),
+          rm_json_class(json_class))
+```
+
+In addition to functions for creating and destroying `json_class` objects, several utility functions for `json_class` are provided as well. `is_json_class()` (and its alias `is.json_class()`) tests whether the object in question is a list inheriting the class attribute `json_class` and has at least one more class attribute in front of `json_class`, which is expected in last place (within the class vector). Similarly, `check_json_class()` can be used to recursively test a list structure to make sure that every node inheriting the `json_class` class attribute is a properly formed `json_class` object. Finally, the two functions `get_json_subclass()` and `has_json_subclass()` can be used to extract the sub-class and test whether a given `json_class` object has a specific sub-class.
+
+```{r test}
+test <- structure(list(a = structure(list(b = "c"),
+                                     class = c("foo", "json_class")),
+                       d = structure(c(e = "f"),
+                                     class = c("bar", "json_class"))),
+                  class = c("foobar", "json_class"))
+
+is_json_class(test)
+check_json_class(test)
+is_json_class(test$a)
+is_json_class(test$d)
+
+has_json_subclass(test, "foobar")
+get_json_subclass(test)
+```
+
+The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are width, length and a logical flag for turning off fancy printing (color is disabled and UTF box characters are replaced with ASCI characters).
+
+```{r base-generics}
+json_class
+print(json_class, depth = 2L)
+print(json_class, depth = 2L, length = 4L)
+print(json_class, depth = 2L, fancy = FALSE)
+```
+
+## Using vectors of `json_class` objects
+
+Now that class information of objects fetched from openBIS is available in R, this can be used for method dispatch of S3 generic functions. Assume we have a generic function `list_datasets()`. We could then implement an object-specific method for objects of type `sample` as `list_datasets.sample()` and one for objects of type `experiment` as `list_datasets.experiment()`. Depending on the class of the object passed to `list_datasets()`, datasets for an experiment or for a sample will be listed.
+
+There is an issue with this approach though: how can we list the datasets associated with several experiments? A straightforward approach could be simply iterating over the list of experiments and for each one, issuing a separate request to openBIS. A more efficient way of doing this would be to query openBIS with a single list of several experiment objects. This, however defeats S3 method dispatch, as the object on which dispatch occurs is no longer `experiment` but `list` (containing several `experiment`s). To work around this, `json_vec` objects are used.
+
+The `json_vec` class can be used to wrap around a list of `json_class` and it serves to bring the common sub-class of all child objects to the surface for using method dispatch on. `json_vec` objects can be created in several ways, using the `json_vec()` constructor, by coercing a list structure with `as_json_vec()` or by combining several `json_class` objects using `c()`. The reverse action can be performed, using `as.list()`. 
+
+```{r json-vec}
+a <- json_class("a", class = "foo")
+b <- json_class("b", class = "foo")
+
+foo_vec <- json_vec(a, b)
+
+str(foo_vec)
+
+identical(foo_vec, as_json_vec(list(a, b)))
+identical(foo_vec, c(a, b))
+
+identical(as.list(foo_vec), list(a, b))
+```
+
+Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_common_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and it alias `is.json_vec()`), which can be used to check whether
+
+  * all child elements are of the same sub-class
+  * all child elements are properly formed `json_class` objects
+  * the `json_vec` class attribute is in last position of the class vector
+  * the remaining class attributes are equal to the common sub-class of the
+    children.
+
+```{r vec-utils}
+has_common_subclass(list(a, b))
+
+get_common_subclass(list(a, b))
+get_common_subclass(foo_vec)
+
+is_json_vec(foo_vec)
+is_json_vec(list(a, b))
+```
+
+Finally, the base R generics for which `json_vec`-specific methods are provided include `print()`, `c()`, as well as several accessors and assignment functions.
+
+```{r vec-base}
+foo_vec
+foo_vec[1]
+
+c(foo_vec[2], foo_vec[1])
+
+class(foo_vec[1])
+class(foo_vec[[1]])
+```
+
+As shown in the above code block, subsetting a `json_vec` object preserves all class attributes. This is in analogy to base vector objects, where subsetting, for example a character vector again yields a character vector. The single element accessor `[[`, however yields an element of the `json_vec` object, which should not come as surprise given the list nature of `json_vec` objects.
