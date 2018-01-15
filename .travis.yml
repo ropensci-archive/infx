@@ -15,8 +15,7 @@ after_success:
   - Rscript -e 'covr::codecov()'
 
 before_deploy:
-  - Rscript -e 'pkgdown::init_site()'
-  - Rscript -e 'pkgdown::build_home()'
+  - Rscript -e 'pkgdown::build_site()'
 
 deploy:
   provider: pages
