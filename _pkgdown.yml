@@ -10,4 +10,7 @@ reference:
   - title: "JSON objects in R"
     desc: Create, display and modify JSON objects returned by openBIS
     contents: 
-      - starts_with("json_")
+      - json_class
+      - is_json_class
+      - json_vec
+      - is_json_vec
