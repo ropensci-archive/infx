@@ -9,7 +9,7 @@ r_packages:
   - rvest
 
 r_github_packages:
-  - r-lib/pkgdown
+  - r-lib/pkgdown@2f64c0c
 
 after_success:
   - Rscript -e 'covr::codecov()'
