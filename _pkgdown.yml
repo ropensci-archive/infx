@@ -1,6 +1,13 @@
+authors:
+  Nicolas Bennett:
+    href: https://nbenn.github.io/infx
+navbar:
+  type: inverse
+template:
+  params:
+    bootswatch: flatly
 reference:
   - title: "JSON objects in R"
-    desc: >
-      Creation, display and modification of JSON objects returned by openBIS
+    desc: Create, display and modify JSON objects returned by openBIS
     contents: 
       - starts_with("json_")
