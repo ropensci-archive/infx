@@ -107,3 +107,57 @@ print(json_class, depth = 2L)
 print(json_class, depth = 2L, length = 4L)
 print(json_class, depth = 2L, fancy = FALSE)
 ```
+
+## Using vectors of `json_class` objects
+
+Now that class information of objects fetched from openBIS is available in R, this can be used for method dispatch of S3 generic functions. Assume we have a generic function `list_datasets()`. We could then implement an object-specific method for objects of type `sample` as `list_datasets.sample()` and one for objects of type `experiment` as `list_datasets.experiment()`. Depending on the class of the object passed to `list_datasets()`, datasets for an experiment or for a sample will be listed.
+
+There is an issue with this approach though: how can we list the datasets associated with several experiments? A straightforward approach could be simply iterating over the list of experiments and for each one, issuing a separate request to openBIS. A more efficient way of doing this would be to query openBIS with a single list of several experiment objects. This, however defeats S3 method dispatch, as the object on which dispatch occurs is no longer `experiment` but `list` (containing several `experiment`s). To work around this, `json_vec` objects are used.
+
+The `json_vec` class can be used to wrap around a list of `json_class` and it serves to bring the common sub-class of all child objects to the surface for using method dispatch on. `json_vec` objects can be created in several ways, using the `json_vec()` constructor, by coercing a list structure with `as_json_vec()` or by combining several `json_class` objects using `c()`. The reverse action can be performed, using `as.list()`. 
+
+```{r json-vec}
+a <- json_class("a", class = "foo")
+b <- json_class("b", class = "foo")
+
+foo_vec <- json_vec(a, b)
+
+str(foo_vec)
+
+identical(foo_vec, as_json_vec(list(a, b)))
+identical(foo_vec, c(a, b))
+
+identical(as.list(foo_vec), list(a, b))
+```
+
+Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_common_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and it alias `is.json_vec()`), which can be used to check whether
+
+  * all child elements are of the same sub-class
+  * all child elements are properly formed `json_class` objects
+  * the `json_vec` class attribute is in last position of the class vector
+  * the remaining class attributes are equal to the common sub-class of the
+    children.
+
+```{r vec-utils}
+has_common_subclass(list(a, b))
+
+get_common_subclass(list(a, b))
+get_common_subclass(foo_vec)
+
+is_json_vec(foo_vec)
+is_json_vec(list(a, b))
+```
+
+Finally, the base R generics for which `json_vec`-specific methods are provided include `print()`, `c()`, as well as several accessors and assignment functions.
+
+```{r vec-base}
+foo_vec
+foo_vec[1]
+
+c(foo_vec[2], foo_vec[1])
+
+class(foo_vec[1])
+class(foo_vec[[1]])
+```
+
+As shown in the above code block, subsetting a `json_vec` object preserves all class attributes. This is in analogy to base vector objects, where subsetting, for example a character vector again yields a character vector. The single element accessor `[[`, however yields an element of the `json_vec` object, which should not come as surprise given the list nature of `json_vec` objects.
