@@ -10,12 +10,7 @@
 \alias{as_json_class.default}
 \alias{rm_json_class}
 \alias{as.list.json_class}
-\alias{is_json_class}
-\alias{is.json_class}
-\alias{check_json_class}
-\alias{has_json_subclass}
-\alias{get_json_subclass}
-\title{JSON class objects}
+\title{Create JSON class objects}
 \usage{
 json_class(..., class)
 
@@ -35,16 +30,6 @@ rm_json_class(x, recursive = TRUE, restore_type = TRUE)
 
 \method{as.list}{json_class}(x, keep_asis = TRUE, recursive = !keep_asis,
   restore_type = !keep_asis, ...)
-
-is_json_class(x)
-
-is.json_class(x)
-
-check_json_class(x, recursive = TRUE)
-
-has_json_subclass(x, class)
-
-get_json_subclass(x)
 }
 \arguments{
 \item{...}{Generic compatibility.}
@@ -85,26 +70,11 @@ argument \code{recursive}. The function \code{as.list()} can also be used to per
 the above actions, but with default arguments, it does nothing, as
 functions such as \code{base::sapply()} and \code{base::lapply()}, call \code{as.list()}.
 
-The functions \code{is_json_class()} and \code{has_json_subclass()} test whether an
-object is a JSON class object. The former tests whether an object is a
-proper \code{json_class} object, meaning that:
-\itemize{
-\item it is a list
-\item it inherits \code{json_class}
-\item the last class attribute is \code{json_class}
-\item apart from \code{json_class} there exists at least one more class attribute
-The latter function tests whether an object has a specific JSON class
-attached. In order to recursively test a \code{json_class} object for being
-properly formed, the function \code{check_json_class()} can be used.
-}
-
 JSON class objects have custom sub-setting and printing functions available.
 Sub-setting of JSON objects that preserve class and \code{json_class}
 attributes. This is useful when objects are created from openBIS results
 which are subsequently used in further queries, but the constructors they
-are passed to require only a subset of the fetched fields. Printing is
-inspired by (and heavily borrows code from) the ast printing function of
-Hadley's \href{https://github.com/hadley/lobstr}{lobstr package}.
+are passed to require only a subset of the fetched fields.
 }
 \examples{
 lst <- list(`@type` = "foo", "a", "b")

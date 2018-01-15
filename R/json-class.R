@@ -1,5 +1,5 @@
 
-#' JSON class objects
+#' Create JSON class objects
 #'
 #' To communicate object type information via JSON to the Jackson-powered
 #' openBis interface, the `@type` field is used. Data received from openBis is
@@ -19,24 +19,11 @@
 #' the above actions, but with default arguments, it does nothing, as
 #' functions such as `base::sapply()` and `base::lapply()`, call `as.list()`.
 #' 
-#' The functions `is_json_class()` and `has_json_subclass()` test whether an
-#' object is a JSON class object. The former tests whether an object is a
-#' proper `json_class` object, meaning that:
-#'   * it is a list
-#'   * it inherits `json_class`
-#'   * the last class attribute is `json_class`
-#'   * apart from `json_class` there exists at least one more class attribute
-#' The latter function tests whether an object has a specific JSON class
-#' attached. In order to recursively test a `json_class` object for being
-#' properly formed, the function `check_json_class()` can be used.
-#' 
 #' JSON class objects have custom sub-setting and printing functions available.
 #' Sub-setting of JSON objects that preserve class and `json_class`
 #' attributes. This is useful when objects are created from openBIS results
 #' which are subsequently used in further queries, but the constructors they
-#' are passed to require only a subset of the fetched fields. Printing is
-#' inspired by (and heavily borrows code from) the ast printing function of
-#' Hadley's [lobstr package](https://github.com/hadley/lobstr).
+#' are passed to require only a subset of the fetched fields.
 #' 
 #' @param x Object to process.
 #' @param class JSON sub-class name.
@@ -50,7 +37,7 @@
 #' the list structure into the `@type` field.
 #' @param ... Generic compatibility.
 #' 
-#' @rdname json_class
+#' @rdname json_class_create
 #'  
 #' @examples
 #' lst <- list(`@type` = "foo", "a", "b")
@@ -89,26 +76,26 @@ new_json_class <- function(x, class = NULL) {
   structure(x, class = c(class, "json_class"))
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as_json_class <- function(x, ...) {
   UseMethod("as_json_class")
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as.json_class <- as_json_class
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as_json_class.json_class <- function(x, ...) {
   x
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as_json_class.list <- function(x, ...) {
@@ -120,7 +107,7 @@ as_json_class.list <- function(x, ...) {
     x
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as_json_class.json_vec <- function(x, ...) {
@@ -129,7 +116,7 @@ as_json_class.json_vec <- function(x, ...) {
   x[[1]]
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as_json_class.default <- function(x, force = FALSE, ...) {
@@ -139,7 +126,7 @@ as_json_class.default <- function(x, force = FALSE, ...) {
     error_default(x, "if param force is FALSE, ")
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
@@ -162,7 +149,7 @@ rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
     x
 }
 
-#' @rdname json_class
+#' @rdname json_class_create
 #' @export
 #' 
 as.list.json_class <- function(x,
@@ -176,7 +163,37 @@ as.list.json_class <- function(x,
     rm_json_class(x, recursive, restore_type)
 }
 
-#' @rdname json_class
+#' Validate JSON class objects
+#'
+#' The functions `is_json_class()` and `has_json_subclass()` test whether an
+#' object is a JSON class object. The former tests whether an object is a
+#' proper `json_class` object, meaning that:
+#'   * it is a list
+#'   * it inherits `json_class`
+#'   * the last class attribute is `json_class`
+#'   * apart from `json_class` there exists at least one more class attribute
+#' The latter function tests whether an object has a specific JSON class
+#' attached. In order to recursively test a `json_class` object for being
+#' properly formed, the function `check_json_class()` can be used. In order to
+#' retrieve the sub-class to a `json_class` object, `get_json_subclass()` can
+#' be used.
+#' 
+#' @param x Object to process.
+#' @param class JSON sub-class name.
+#' @param recursive Recursively apply the function.
+#' 
+#' @rdname json_class_validate
+#'  
+#' @examples
+#' lst <- list(`@type` = "foo", "a", "b")
+#' cls <- as_json_class(lst)
+#' 
+#' print(cls)
+#' is_json_class(cls)
+#' get_json_subclass(cls)
+#' 
+#' identical(rm_json_class(cls), lst)
+#' 
 #' @export
 #' 
 is_json_class <- function(x) {
@@ -187,12 +204,12 @@ is_json_class <- function(x) {
          utils::tail(class(x), 1) == "json_class")
 }
 
-#' @rdname json_class
+#' @rdname json_class_validate
 #' @export
 #' 
 is.json_class <- is_json_class
 
-#' @rdname json_class
+#' @rdname json_class_validate
 #' @export
 #' 
 check_json_class <- function(x, recursive = TRUE) {
@@ -208,7 +225,7 @@ check_json_class <- function(x, recursive = TRUE) {
     res
 }
 
-#' @rdname json_class
+#' @rdname json_class_validate
 #' @export
 #' 
 has_json_subclass <- function(x, class) {
@@ -220,7 +237,7 @@ has_json_subclass <- function(x, class) {
   isTRUE(all(class == get_json_subclass(x)))
 }
 
-#' @rdname json_class
+#' @rdname json_class_validate
 #' @export
 #' 
 get_json_subclass <- function(x) {
