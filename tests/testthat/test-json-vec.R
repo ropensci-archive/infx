@@ -1,4 +1,4 @@
-context("json object vectors")
+context("json_vec objects")
 
 test_that("common subclass can be determined", {
   expect_true(has_common_subclass(
@@ -201,39 +201,4 @@ test_that("json_vec helpers work", {
     structure(list("a"), class = c("foo", "json_class")),
     structure(list("b"), class = c("foo", "json_class"))),
     class = c("json_vec"))))
-})
-
-test_that("json_vec printing work", {
-  expect_output(print(
-    structure(list(structure(list("a"), class = c("foo", "json_class"))),
-              class = c("json_vec"))),
-    "──█─foo")
-  expect_output(print(
-    structure(list(structure(list("a"), class = c("foo", "json_class")),
-                   structure(list("b"), class = c("foo", "json_class"))),
-              class = c("json_vec"))),
-    "┌─█─foo \n│ └─a \n└─█─foo")
-  expect_output(print(
-    structure(list(structure(list("a"), class = c("foo", "json_class")),
-                   structure(list("b"), class = c("foo", "json_class")),
-                   structure(list("c"), class = c("foo", "json_class"))),
-              class = c("json_vec"))),
-    "┌─█─foo \n│ └─a \n├─█─foo \n│ └─b \n└─█─foo \n  └─c")
-  expect_output(print(
-    structure(list(structure(list("a"), class = c("foo", "json_class")),
-                   structure(list("b"), class = c("foo", "json_class"))),
-              class = c("json_vec")), length = 2),
-    "┌─█─foo \n...")
-  expect_output(print(
-    structure(list(structure(list(paste(letters, collapse = "")),
-                             class = c("foo", "json_class")),
-                   structure(list("b"), class = c("foo", "json_class"))),
-              class = c("json_vec"))),
-    "│ └─abcdefghijklmnopqrstuvwxyz")
-  expect_output(print(
-    structure(list(structure(list(paste(letters, collapse = "")),
-                             class = c("foo", "json_class")),
-                   structure(list("b"), class = c("foo", "json_class"))),
-              class = c("json_vec")), width = 20),
-    "│ └─abcdefghijklm...")
 })

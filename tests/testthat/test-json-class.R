@@ -1,4 +1,4 @@
-context("json objects")
+context("json_class objects")
 
 test_that("json objects can be converted", {
   expect_equal(list(), as_json_class(list()))
@@ -129,47 +129,4 @@ test_that("json objects can be subsetted", {
   lst <- lapply(as_json_class(lst), `class<-`, "some_class")
   expect_true(all(sapply(lst, class) == "some_class"))
   expect_false(all(sapply(lapply(lst, `[`, "b"), class) == "some_class"))
-})
-
-test_that("json objects can be printed", {
-  expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
-                "█─foo \n└─a")
-  expect_output(print(structure(list("a"), class = c("foo", "json_class")),
-                      length = 1L), "...")
-  expect_output(print(structure(list(a = "a", "b"),
-                                class = c("foo", "json_class"))),
-                "├─a = a \n└─b")
-  expect_output(print(structure(list(a = "a", b = list(c = "d", e = "f")),
-                                class = c("foo", "json_class"))),
-                "[c = d, e = f]")
-  expect_output(print(structure(list(a = "a", b = list(c = "d", "f")),
-                                class = c("foo", "json_class"))),
-                "[c = d, f]")
-  expect_output(print(structure(list(a = "a", b = c("d", "f")),
-                                class = c("foo", "json_class"))),
-                "(d, f)")
-  expect_output(print(
-    structure(list(a = "a",
-                   list(structure(list("b"), class = c("bar", "json_class")),
-                        "c")),
-              class = c("foo", "json_class"))), "└─...")
-  expect_output(print(
-    structure(list(a = "a",
-                   list(structure(list("b"), class = c("bar", "json_class")),
-                        "c")),
-              class = c("foo", "json_class")), depth = 3),
-    "└─┬─█─bar \n  │ └─b")
-  expect_output(print(
-    structure(list(a = "a",
-                   list(c = "c",
-                        structure(list("b"), class = c("bar", "json_class")))),
-              class = c("foo", "json_class")), depth = 3),
-    "└─┬─c = c \n  └─█─bar")
-  expect_output(print(
-    structure(list(a = "a",
-                   list(c = "c",
-                        structure(list("b"), class = c("bar", "json_class")))),
-              class = c("foo", "json_class")), depth = 3, fancy = FALSE),
-    "\\-+-c = c \n  \\-X-bar", fixed = TRUE)
-  expect_warning(print(structure("a", class = c("foo", "json_class"))))
 })
