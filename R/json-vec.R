@@ -1,5 +1,5 @@
 
-#' Construct a json_vec object
+#' Construct JSON object vectors
 #'
 #' `new_json_vec()` is a low-level constructor that takes a list of
 #' `json_class` objects of the same sub-class. `json_vec()` constructs a
@@ -84,7 +84,7 @@ as.list.json_vec <- function(x, ...) {
   unclass(x)
 }
 
-#' Validate a json_vec object
+#' Validate JSON object vectors
 #'
 #' The function `is_json_vec()` and its alias `is.json_vec()` can be used to
 #' test whether an object is a proper `json_vec` object. This requires that

@@ -9,7 +9,7 @@
 \alias{as_json_vec.list}
 \alias{as_json_vec.default}
 \alias{as.list.json_vec}
-\title{Construct a json_vec object}
+\title{Construct JSON object vectors}
 \usage{
 json_vec(...)
 

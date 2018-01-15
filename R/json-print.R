@@ -1,5 +1,5 @@
 
-#' Print JSON class objects
+#' Print JSON objects
 #'
 #' Inspired by the ast printing function of Hadley's `lobstr` package and
 #' borrowing code from [there](https://git.io/vFMA5), this enables the

@@ -9,7 +9,7 @@
 \alias{get_common_subclass.list}
 \alias{get_common_subclass.json_vec}
 \alias{get_common_subclass.default}
-\title{Validate a json_vec object}
+\title{Validate JSON object vectors}
 \usage{
 is_json_vec(x)
 

@@ -3,7 +3,7 @@
 \name{print.json_class}
 \alias{print.json_class}
 \alias{print.json_vec}
-\title{Print JSON class objects}
+\title{Print JSON objects}
 \usage{
 \method{print}{json_class}(x, depth = 1L, width = getOption("width"),
   length = 100L, fancy = TRUE, ...)
