@@ -9,13 +9,14 @@ r_packages:
   - rvest
 
 r_github_packages:
-  - r-lib/pkgdown@2f64c0c
+  - r-lib/pkgdown
 
 after_success:
   - Rscript -e 'covr::codecov()'
 
 before_deploy:
-  - Rscript -e 'pkgdown::build_site()'
+  - Rscript -e 'pkgdown::init_site()'
+  - Rscript -e 'pkgdown::build_home()'
 
 deploy:
   provider: pages
