@@ -24,166 +24,637 @@ OpenBIS API
 Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
 
 -   [IGeneralInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationService.html)
-    -   \[ \] ~~filterDataSetsVisibleToUser~~: Returns a filtered list of allDataSets containing those data sets which are visible to userId.
-    -   \[ \] ~~filterExperimentsVisibleToUser~~: Returns a filtered list of allExperiments containing those experiments which are visible to userId.
-    -   \[ \] ~~filterSamplesVisibleToUser~~: Returns a filtered list of allSamples containing those samples which are visible to userId.
-    -   \[ \] getDataSetMetaData: Returns meta data for all specified data sets.
-    -   \[ \] getDataSetMetaData: Returns meta data for all specified data sets.
-    -   \[ \] getDataStoreBaseURLs: Returns the download URL for the data store of specified data sets.
-    -   \[ \] getDefaultPutDataStoreBaseURL: Returns the URL for the default data store server for this openBIS AS.
-    -   \[ \] getMaterialByCodes: Returns the materials with specified identifiers (i.e.
-    -   \[ \] getMetaproject: Returns all entities tagged with given metaproject.
-    -   \[ \] ~~getMetaprojectOnBehalfOfUser~~: Returns all entities tagged with given metaproject for specified user.
-    -   \[ \] ~~getVocabularyTermsMap~~: Deprecated.  Please use listVocabularies(String) instead.
-    -   \[x\] isSessionActive: Returns true if session with the specified token is still active, false otherwise.
-    -   \[ \] listAttachmentsForExperiment: Lists attachments of specified experiment.
-    -   \[ \] listAttachmentsForProject: Lists attachments of specified project.
-    -   \[ \] listAttachmentsForSample: Lists attachments of specified sample.
-    -   \[ \] listDataSets: Return all data sets attached to the given samples.
-    -   \[ \] listDataSets: Return all data sets attached to the given samples with connections.
-    -   \[ \] listDataSetsForExperiments: Return all data sets attached to the given experiments with connections.
-    -   \[ \] ~~listDataSetsForExperimentsOnBehalfOfUser~~: Return all data sets attached to the given experiments with connections that the user userId is allowed to see.
-    -   \[ \] listDataSetsForSample: Return the data sets attached to the specified sample, optionally including child samples.
-    -   \[ \] ~~listDataSetsOnBehalfOfUser~~: Return all data sets attached to the given samples with connections that the user userId is allowed to see.
-    -   \[ \] listDataSetTypes: Returns all data set types.
-    -   \[ \] listDataStores: Lists all DSS server registered this openBIS server instance.
-    -   \[ \] listExperiments: Return all experiments of the given type that belong to the supplied projects.
-    -   \[ \] listExperiments: Return all experiments matching a specified set of identifiers.
-    -   \[ \] listExperimentsHavingDataSets: Return all experiments of the given type that belong to the supplied projects and have registered data sets.
-    -   \[ \] listExperimentsHavingSamples: Return all experiments of the given type that belong to the supplied projects and have registered samles.
-    -   \[ \] listExperimentTypes: Returns all experiment types.
-    -   \[ \] listMetaprojects: Lists all metaprojects belonging to current user.
-    -   \[ \] ~~listMetaprojectsOnBehalfOfUser~~: Lists all metaprojects belonging to specified user.
-    -   \[ \] listNamedRoleSets: Returns all named role sets.
-    -   \[ \] listProjects: Returns all available projects.
-    -   \[ \] ~~listProjectsOnBehalfOfUser~~: Returns all available projects that a particular user is allowed to see.
-    -   \[ \] listSamplesForExperiment: Return all samples that belong to the supplied experiment.
-    -   \[ \] ~~listSamplesForExperimentOnBehalfOfUser~~: Return all samples that belong to the supplied experiment that are visible to user userId.
-    -   \[ \] listSampleTypes: Returns all sample types.
-    -   \[ \] listSpacesWithProjectsAndRoleAssignments: Returns all spaces of specified database instance enriched with their projects and role assignments.
-    -   \[ \] listVocabularies: Returns all available vocabularies together with the contained terms.
-    -   \[x\] logout: Logout the session with the specified session token.
-    -   \[ \] searchForDataSets: Return all data sets matching specified search criteria.
-    -   \[ \] ~~searchForDataSetsOnBehalfOfUser~~: Return all data sets matching specified search criteria and visible to user userId.
-    -   \[ \] searchForExperiments: Returns all experiments matching specified search criteria.
-    -   \[ \] searchForMaterials: Returns all material fulfilling specified search criteria.
-    -   \[ \] searchForSamples: Return all samples that match the search criteria.
-    -   \[ \] searchForSamples: Return all samples that match the search criteria.
-    -   \[ \] ~~searchForSamplesOnBehalfOfUser~~: Return all samples that match the search criteria and that a particular user is allowed to see.
-    -   \[ \] tryGetDataStoreBaseURL: Returns the download URL for the data store of specified data set or null if such data set does not exist.
-    -   \[x\] tryToAuthenticateForAllServices: Tries to authenticate specified user with specified password.
+    -   \[ \] ~~filterDataSetsVisibleToUser~~:
+        -   description: Returns a filtered list of allDataSets containing those data sets which are visible to userId.
+        -   arguments: java.lang.String sessionToken, java.util.List<DataSet> allDataSets, java.lang.String userId
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] ~~filterExperimentsVisibleToUser~~:
+        -   description: Returns a filtered list of allExperiments containing those experiments which are visible to userId.
+        -   arguments: java.lang.String sessionToken, java.util.List<Experiment> allExperiments, java.lang.String userId
+        -   returntype: java.util.List<Experiment>
+    -   \[ \] ~~filterSamplesVisibleToUser~~:
+        -   description: Returns a filtered list of allSamples containing those samples which are visible to userId.
+        -   arguments: java.lang.String sessionToken, java.util.List<Sample> allSamples, java.lang.String userId
+        -   returntype: java.util.List<Sample>
+    -   \[ \] getDataSetMetaData:
+        -   description: Returns meta data for all specified data sets.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] getDataSetMetaData:
+        -   description: Returns meta data for all specified data sets.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes, java.util.EnumSet<DataSetFetchOption> fetchOptions
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] getDataStoreBaseURLs:
+        -   description: Returns the download URL for the data store of specified data sets.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes
+        -   returntype: java.util.List<DataStoreURLForDataSets>
+    -   \[ \] getDefaultPutDataStoreBaseURL:
+        -   description: Returns the URL for the default data store server for this openBIS AS.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.lang.String
+    -   \[ \] getMaterialByCodes:
+        -   description: Returns the materials with specified identifiers (i.e.
+        -   arguments: java.lang.String sessionToken, java.util.List<MaterialIdentifier> materialIdentifier
+        -   returntype: java.util.List<Material>
+    -   \[ \] getMetaproject:
+        -   description: Returns all entities tagged with given metaproject.
+        -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId
+        -   returntype: MetaprojectAssignments
+    -   \[ \] ~~getMetaprojectOnBehalfOfUser~~:
+        -   description: Returns all entities tagged with given metaproject for specified user.
+        -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, java.lang.String userId
+        -   returntype: MetaprojectAssignments
+    -   \[ \] ~~getVocabularyTermsMap~~:
+        -   description: Deprecated.  Please use listVocabularies(String) instead.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.HashMap&lt;ch.systemsx.cisd.openbis.generic.shared.basic.dto.Vocabulary,java.util.List&lt;ControlledVocabularyPropertyType.VocabularyTerm&gt;&gt;
+    -   \[x\] isSessionActive:
+        -   description: Returns true if session with the specified token is still active, false otherwise.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: boolean
+    -   \[ \] listAttachmentsForExperiment:
+        -   description: Lists attachments of specified experiment.
+        -   arguments: java.lang.String sessionToken, IExperimentId experimentId, boolean allVersions
+        -   returntype: java.util.List<Attachment>
+    -   \[ \] listAttachmentsForProject:
+        -   description: Lists attachments of specified project.
+        -   arguments: java.lang.String sessionToken, IProjectId projectId, boolean allVersions
+        -   returntype: java.util.List<Attachment>
+    -   \[ \] listAttachmentsForSample:
+        -   description: Lists attachments of specified sample.
+        -   arguments: java.lang.String sessionToken, ISampleId sampleId, boolean allVersions
+        -   returntype: java.util.List<Attachment>
+    -   \[ \] listDataSets:
+        -   description: Return all data sets attached to the given samples.
+        -   arguments: java.lang.String sessionToken, java.util.List<Sample> samples
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] listDataSets:
+        -   description: Return all data sets attached to the given samples with connections.
+        -   arguments: java.lang.String sessionToken, java.util.List<Sample> samples, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] listDataSetsForExperiments:
+        -   description: Return all data sets attached to the given experiments with connections.
+        -   arguments: java.lang.String sessionToken, java.util.List<Experiment> experiments, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] ~~listDataSetsForExperimentsOnBehalfOfUser~~:
+        -   description: Return all data sets attached to the given experiments with connections that the user userId is allowed to see.
+        -   arguments: java.lang.String sessionToken, java.util.List<Experiment> experiments, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet, java.lang.String userId
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] listDataSetsForSample:
+        -   description: Return the data sets attached to the specified sample, optionally including child samples.
+        -   arguments: java.lang.String sessionToken, Sample sample, boolean areOnlyDirectlyConnectedIncluded
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] ~~listDataSetsOnBehalfOfUser~~:
+        -   description: Return all data sets attached to the given samples with connections that the user userId is allowed to see.
+        -   arguments: java.lang.String sessionToken, java.util.List<Sample> samples, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet, java.lang.String userId
+        -   returntype: java.util.List<DataSet>
+    -   \[x\] listDataSetTypes:
+        -   description: Returns all data set types.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<DataSetType>
+    -   \[ \] listDataStores:
+        -   description: Lists all DSS server registered this openBIS server instance.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<DataStore>
+    -   \[ \] listExperiments:
+        -   description: Return all experiments of the given type that belong to the supplied projects.
+        -   arguments: java.lang.String sessionToken, java.util.List<Project> projects, java.lang.String experimentType
+        -   returntype: java.util.List<Experiment>
+    -   \[ \] listExperiments:
+        -   description: Return all experiments matching a specified set of identifiers.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; experimentIdentifiers
+        -   returntype: java.util.List<Experiment>
+    -   \[ \] listExperimentsHavingDataSets:
+        -   description: Return all experiments of the given type that belong to the supplied projects and have registered data sets.
+        -   arguments: java.lang.String sessionToken, java.util.List<Project> projects, java.lang.String experimentType
+        -   returntype: java.util.List<Experiment>
+    -   \[ \] listExperimentsHavingSamples:
+        -   description: Return all experiments of the given type that belong to the supplied projects and have registered samles.
+        -   arguments: java.lang.String sessionToken, java.util.List<Project> projects, java.lang.String experimentType
+        -   returntype: java.util.List<Experiment>
+    -   \[ \] listExperimentTypes:
+        -   description: Returns all experiment types.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<ExperimentType>
+    -   \[ \] listMetaprojects:
+        -   description: Lists all metaprojects belonging to current user.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List&lt;ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject&gt;
+    -   \[ \] ~~listMetaprojectsOnBehalfOfUser~~:
+        -   description: Lists all metaprojects belonging to specified user.
+        -   arguments: java.lang.String sessionToken, java.lang.String userId
+        -   returntype: java.util.List&lt;ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject&gt;
+    -   \[ \] listNamedRoleSets:
+        -   description: Returns all named role sets.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.Map&lt;java.lang.String,java.util.Set<Role>&gt;
+    -   \[ \] listProjects:
+        -   description: Returns all available projects.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<Project>
+    -   \[ \] ~~listProjectsOnBehalfOfUser~~:
+        -   description: Returns all available projects that a particular user is allowed to see.
+        -   arguments: java.lang.String sessionToken, java.lang.String userId
+        -   returntype: java.util.List<Project>
+    -   \[ \] listSamplesForExperiment:
+        -   description: Return all samples that belong to the supplied experiment.
+        -   arguments: java.lang.String sessionToken, java.lang.String experimentIdentifierString
+        -   returntype: java.util.List<Sample>
+    -   \[ \] ~~listSamplesForExperimentOnBehalfOfUser~~:
+        -   description: Return all samples that belong to the supplied experiment that are visible to user userId.
+        -   arguments: java.lang.String sessionToken, java.lang.String experimentIdentifierString, java.lang.String userId
+        -   returntype: java.util.List<Sample>
+    -   \[ \] listSampleTypes:
+        -   description: Returns all sample types.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<SampleType>
+    -   \[ \] listSpacesWithProjectsAndRoleAssignments:
+        -   description: Returns all spaces of specified database instance enriched with their projects and role assignments.
+        -   arguments: java.lang.String sessionToken, java.lang.String databaseInstanceCodeOrNull
+        -   returntype: java.util.List<SpaceWithProjectsAndRoleAssignments>
+    -   \[ \] listVocabularies:
+        -   description: Returns all available vocabularies together with the contained terms.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<Vocabulary>
+    -   \[x\] logout:
+        -   description: Logout the session with the specified session token.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: void
+    -   \[ \] searchForDataSets:
+        -   description: Return all data sets matching specified search criteria.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] ~~searchForDataSetsOnBehalfOfUser~~:
+        -   description: Return all data sets matching specified search criteria and visible to user userId.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria, java.lang.String userId
+        -   returntype: java.util.List<DataSet>
+    -   \[ \] searchForExperiments:
+        -   description: Returns all experiments matching specified search criteria.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
+        -   returntype: java.util.List<Experiment>
+    -   \[ \] searchForMaterials:
+        -   description: Returns all material fulfilling specified search criteria.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
+        -   returntype: java.util.List<Material>
+    -   \[ \] searchForSamples:
+        -   description: Return all samples that match the search criteria.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
+        -   returntype: java.util.List<Sample>
+    -   \[ \] searchForSamples:
+        -   description: Return all samples that match the search criteria.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria, java.util.EnumSet<SampleFetchOption> fetchOptions
+        -   returntype: java.util.List<Sample>
+    -   \[ \] ~~searchForSamplesOnBehalfOfUser~~:
+        -   description: Return all samples that match the search criteria and that a particular user is allowed to see.
+        -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria, java.util.EnumSet<SampleFetchOption> fetchOptions, java.lang.String userId
+        -   returntype: java.util.List<Sample>
+    -   \[ \] tryGetDataStoreBaseURL:
+        -   description: Returns the download URL for the data store of specified data set or null if such data set does not exist.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode
+        -   returntype: java.lang.String
+    -   \[x\] tryToAuthenticateForAllServices:
+        -   description: Tries to authenticate specified user with specified password.
+        -   arguments: java.lang.String userID, java.lang.String userPassword
+        -   returntype: java.lang.String
 -   [IGeneralInformationChangingService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationChangingService.html)
-    -   \[ \] addToMetaproject: Adds given entities to an existing metaproject.
-    -   \[ \] addUnofficialVocabularyTerm: Adds new unofficial terms to a vocabulary starting from specified ordinal + 1.
-    -   \[ \] ~~addUnofficialVocabularyTerm~~: Deprecated.  Because the parameters refer to an internal openBIS class (TechID).
-    -   \[ \] createMetaproject: Creates a new metaproject.
-    -   \[ \] deleteMetaproject: Deletes an existing metaproject.
-    -   \[ \] getWebAppSettings: Returns the persistent settings for a given custom web app.
-    -   \[ \] removeFromMetaproject: Removes given entities from an existing metaproject.
-    -   \[ \] setWebAppSettings: Sets the persistent settings for a given custom web app.
-    -   \[ \] updateMetaproject: Updates an existing metaproject.
+    -   \[ \] addToMetaproject:
+        -   description: Adds given entities to an existing metaproject.
+        -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, MetaprojectAssignmentsIds assignmentsToAdd
+        -   returntype: void
+    -   \[ \] addUnofficialVocabularyTerm:
+        -   description: Adds new unofficial terms to a vocabulary starting from specified ordinal + 1.
+        -   arguments: java.lang.String sessionToken, java.lang.Long vocabularyId, NewVocabularyTerm term
+        -   returntype: void
+    -   \[ \] ~~addUnofficialVocabularyTerm~~:
+        -   description: Deprecated.  Because the parameters refer to an internal openBIS class (TechID).
+        -   arguments: java.lang.String sessionToken, ch.systemsx.cisd.openbis.generic.shared.basic.TechId vocabularyId, java.lang.String code, java.lang.String label, java.lang.String description, java.lang.Long previousTermOrdinal
+        -   returntype: void
+    -   \[ \] createMetaproject:
+        -   description: Creates a new metaproject.
+        -   arguments: java.lang.String sessionToken, java.lang.String name, java.lang.String descriptionOrNull
+        -   returntype: ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject
+    -   \[ \] deleteMetaproject:
+        -   description: Deletes an existing metaproject.
+        -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId
+        -   returntype: void
+    -   \[ \] getWebAppSettings:
+        -   description: Returns the persistent settings for a given custom web app.
+        -   arguments: java.lang.String sessionToken, java.lang.String webAppId
+        -   returntype: WebAppSettings
+    -   \[ \] removeFromMetaproject:
+        -   description: Removes given entities from an existing metaproject.
+        -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, MetaprojectAssignmentsIds assignmentsToRemove
+        -   returntype: void
+    -   \[ \] setWebAppSettings:
+        -   description: Sets the persistent settings for a given custom web app.
+        -   arguments: java.lang.String sessionToken, WebAppSettings webAppSettings
+        -   returntype: void
+    -   \[ \] updateMetaproject:
+        -   description: Updates an existing metaproject.
+        -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, java.lang.String name, java.lang.String descriptionOrNull
+        -   returntype: ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject
     -   \[ \] updateSampleProperties:
+        -   description:
+        -   arguments: java.lang.String sessionToken, long sampleID, java.util.Map&lt;java.lang.String,java.lang.String&gt; properties
+        -   returntype: void
 -   [IQueryApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/query/shared/api/v1/IQueryApiServer.html)
-    -   \[ \] createReportFromAggregationService: Executes the specified aggregation or ingestion service for the specified parameters and creates a report.
-    -   \[ \] createReportFromDataSets: Creates for the specified data sets a report.
-    -   \[ \] executeQuery: Executes specified query using specified parameter bindings.
-    -   \[ \] listAggregationServices: Returns metadata for all aggregation and ingestion services.
-    -   \[ \] listQueries: Lists all queries available for the user of the specified session.
-    -   \[ \] listTableReportDescriptions: Returns meta data for all reporting plugins which deliver a table.
-    -   \[x\] logout: Logout the session with the specified session token.
-    -   \[ \] tryToAuthenticateAtQueryServer: Tries to authenticate specified user with specified password.
+    -   \[ \] createReportFromAggregationService:
+        -   description: Executes the specified aggregation or ingestion service for the specified parameters and creates a report.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataStoreCode, java.lang.String serviceKey, java.util.Map&lt;java.lang.String,java.lang.Object&gt; parameters
+        -   returntype: QueryTableModel
+    -   \[ \] createReportFromDataSets:
+        -   description: Creates for the specified data sets a report.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataStoreCode, java.lang.String serviceKey, java.util.List&lt;java.lang.String&gt; dataSetCodes
+        -   returntype: QueryTableModel
+    -   \[ \] executeQuery:
+        -   description: Executes specified query using specified parameter bindings.
+        -   arguments: java.lang.String sessionToken, long queryID, java.util.Map&lt;java.lang.String,java.lang.String&gt; parameterBindings
+        -   returntype: QueryTableModel
+    -   \[ \] listAggregationServices:
+        -   description: Returns metadata for all aggregation and ingestion services.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<AggregationServiceDescription>
+    -   \[ \] listQueries:
+        -   description: Lists all queries available for the user of the specified session.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<QueryDescription>
+    -   \[ \] listTableReportDescriptions:
+        -   description: Returns meta data for all reporting plugins which deliver a table.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<ReportDescription>
+    -   \[x\] logout:
+        -   description: Logout the session with the specified session token.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: void
+    -   \[ \] tryToAuthenticateAtQueryServer:
+        -   description: Tries to authenticate specified user with specified password.
+        -   arguments: java.lang.String userID, java.lang.String userPassword
+        -   returntype: java.lang.String
 -   [IWebInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IWebInformationService.html)
-    -   \[ \] getSessionToken: Returns the server side session token for the current HTTP session.
+    -   \[ \] getSessionToken:
+        -   description: Returns the server side session token for the current HTTP session.
+        -   arguments:
+        -   returntype: java.lang.String
 -   [IDssServiceRpcGeneric](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/generic/shared/api/v1/IDssServiceRpcGeneric.html)
-    -   \[ \] createReportFromAggregationService: Create the report from the specified aggregation service.
-    -   \[ \] createReportFromDataSets: Creates for the specified data sets a report.
-    -   \[ \] deleteSessionWorkspaceFile: Delete a file or directory in the session workspace.
-    -   \[ \] getDownloadUrlForFileForDataSet: Returns an URL from which the requested file.
-    -   \[ \] getDownloadUrlForFileForDataSet: Returns an URL from which the requested file of the specified data set can be downloaded.
-    -   \[ \] getDownloadUrlForFileForDataSetWithTimeout: Returns an URL from which the requested file.
-    -   \[ \] getDownloadUrlForFileForDataSetWithTimeout: Returns an URL from which the requested file of the specified data set can be downloaded.
-    -   \[ \] ~~getFileForDataSet~~: Deprecated.  use getDownloadUrlForFileForDataSet(String, DataSetFileDTO).
-    -   \[ \] ~~getFileForDataSet~~: Deprecated.  use getDownloadUrlForFileForDataSet(String, String, String).
-    -   \[ \] getFileFromSessionWorkspace: Download a file from the user's session workspace.
-    -   \[ \] getPathToDataSet: Get a path to the data set.
-    -   \[ \] getValidationScript: Get the validation script for the specified data set type.
-    -   \[ \] listAggregationServices: Returns metadata for all aggregation services.
-    -   \[ \] listAllShares: Lists all shares.
-    -   \[ \] listFilesForDataSet: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
-    -   \[ \] listFilesForDataSet: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
-    -   \[ \] listTableReportDescriptions: Returns meta data for all reporting plugins which deliver a table.
-    -   \[ \] putDataSet: Upload a new data set to the DSS.
-    -   \[ \] putFileSliceToSessionWorkspace: Upload a file slice to the user's session workspace.
-    -   \[ \] putFileToSessionWorkspace: Upload a new file to the user's session workspace.
-    -   \[ \] shuffleDataSet: Moves specified data set to specified share.
+    -   \[ \] createReportFromAggregationService:
+        -   description: Create the report from the specified aggregation service.
+        -   arguments: java.lang.String sessionToken, java.lang.String aggregationServiceName, java.util.Map&lt;java.lang.String,java.lang.Object&gt; parameters
+        -   returntype: QueryTableModel
+    -   \[ \] createReportFromDataSets:
+        -   description: Creates for the specified data sets a report.
+        -   arguments: java.lang.String sessionToken, java.lang.String serviceKey, java.util.List&lt;java.lang.String&gt; dataSetCodes
+        -   returntype: QueryTableModel
+    -   \[ \] deleteSessionWorkspaceFile:
+        -   description: Delete a file or directory in the session workspace.
+        -   arguments: java.lang.String sessionToken, java.lang.String path
+        -   returntype: boolean
+    -   \[ \] getDownloadUrlForFileForDataSet:
+        -   description: Returns an URL from which the requested file.
+        -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder
+        -   returntype: java.lang.String
+    -   \[ \] getDownloadUrlForFileForDataSet:
+        -   description: Returns an URL from which the requested file of the specified data set can be downloaded.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path
+        -   returntype: java.lang.String
+    -   \[ \] getDownloadUrlForFileForDataSetWithTimeout:
+        -   description: Returns an URL from which the requested file.
+        -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder, long validityDurationInSeconds
+        -   returntype: java.lang.String
+    -   \[ \] getDownloadUrlForFileForDataSetWithTimeout:
+        -   description: Returns an URL from which the requested file of the specified data set can be downloaded.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path, long validityDurationInSeconds
+        -   returntype: java.lang.String
+    -   \[ \] ~~getFileForDataSet~~:
+        -   description: Deprecated.  use getDownloadUrlForFileForDataSet(String, DataSetFileDTO).
+        -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder
+        -   returntype: java.io.InputStream
+    -   \[ \] ~~getFileForDataSet~~:
+        -   description: Deprecated.  use getDownloadUrlForFileForDataSet(String, String, String).
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path
+        -   returntype: java.io.InputStream
+    -   \[ \] getFileFromSessionWorkspace:
+        -   description: Download a file from the user's session workspace.
+        -   arguments: java.lang.String sessionToken, java.lang.String filePath
+        -   returntype: java.io.InputStream
+    -   \[ \] getPathToDataSet:
+        -   description: Get a path to the data set.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String overrideStoreRootPathOrNull
+        -   returntype: java.lang.String
+    -   \[ \] getValidationScript:
+        -   description: Get the validation script for the specified data set type.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetTypeOrNull
+        -   returntype: java.lang.String
+    -   \[ \] listAggregationServices:
+        -   description: Returns metadata for all aggregation services.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<AggregationServiceDescription>
+    -   \[ \] listAllShares:
+        -   description: Lists all shares.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<ShareInfo>
+    -   \[ \] listFilesForDataSet:
+        -   description: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
+        -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder
+        -   returntype: FileInfoDssDTO\[\]
+    -   \[ \] listFilesForDataSet:
+        -   description: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path, boolean isRecursive
+        -   returntype: FileInfoDssDTO\[\]
+    -   \[ \] listTableReportDescriptions:
+        -   description: Returns meta data for all reporting plugins which deliver a table.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<ReportDescription>
+    -   \[ \] putDataSet:
+        -   description: Upload a new data set to the DSS.
+        -   arguments: java.lang.String sessionToken, NewDataSetDTO newDataset, java.io.InputStream inputStream
+        -   returntype: java.lang.String
+    -   \[ \] putFileSliceToSessionWorkspace:
+        -   description: Upload a file slice to the user's session workspace.
+        -   arguments: java.lang.String sessionToken, java.lang.String filePath, long slicePosition, java.io.InputStream sliceInputStream
+        -   returntype: long
+    -   \[ \] putFileToSessionWorkspace:
+        -   description: Upload a new file to the user's session workspace.
+        -   arguments: java.lang.String sessionToken, java.lang.String filePath, java.io.InputStream inputStream
+        -   returntype: long
+    -   \[ \] shuffleDataSet:
+        -   description: Moves specified data set to specified share.
+        -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String shareId
+        -   returntype: void
 -   [IScreeningApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/screening/shared/api/v1/IScreeningApiServer.html)
-    -   \[ \] getDatasetIdentifiers: Converts a given list of dataset codes to dataset identifiers.
-    -   \[ \] getExperimentImageMetadata: Returns aggregated metadata for all images/plates within one experiment.
-    -   \[ \] getPlateMetadataList: Fetches the contents of a given list of plates.
-    -   \[ \] getPlateSample: For a given plateIdentifier, return the corresponding Sample.
-    -   \[ \] getWellSample: For a given wellIdentifier, return the corresponding Sample including properties.
-    -   \[ \] listAvailableFeatureCodes: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatureCodes(String, List) method for each group of objects on appropriate data store server.
-    -   \[ \] listAvailableFeatures: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatures(String, List) method for each group of objects on appropriate data store server.
-    -   \[ \] listAvailableImageRepresentationFormats: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableImageRepresentationFormats(String, List) method for each group of objects on appropriate data store server.
-    -   \[ \] listExperiments: Return the list of all visible experiments, along with their hierarchical context (space, project).
-    -   \[ \] listExperiments: Return the list of all experiments visible to user userId, along with their hierarchical context (space, project).
-    -   \[ \] listFeatureVectorDatasets: For a given set of plates (given by space / plate bar code), provide the list of all data sets containing feature vectors for each of these plates.
-    -   \[ \] listImageDatasets: For a given set of plates provide the list of all data sets containing images for each of these plates.
-    -   \[ \] listImageMetadata: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listImageMetadata(String, List) method for each group of objects on appropriate data store server.
-    -   \[ \] listPlateMaterialMapping: For a given list of plates, return the mapping of plate wells to materials contained in each well.
-    -   \[ \] listPlates: Return the list of all visible plates assigned to any experiment, along with their hierarchical context (space, project, experiment).
-    -   \[ \] listPlates: Return the list of all plates assigned to the given experiment.
-    -   \[ \] listPlateWells: For the given experimentIdentifier, find all plate locations that are connected to the specified materialIdentifier.
-    -   \[ \] listPlateWells: For the given materialIdentifier, find all plate locations that are connected to it.
-    -   \[ \] listPlateWells: For the given plateIdentifier find all wells that are connected to it.
-    -   \[ \] listRawImageDatasets: For a given set of plates provide the list of all data sets containing raw images for each of these plates.
-    -   \[ \] listSegmentationImageDatasets: For a given set of plates provide the list of all data sets containing segmentation images for each of these plates.
-    -   \[ \] loadFeatures: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeatures(String, List, List) method for each group of objects on appropriate data store server.
-    -   \[ \] loadFeaturesForDatasetWellReferences: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeaturesForDatasetWellReferences(String, List, List) method for each group of objects on appropriate data store server.
-    -   \[ \] loadImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List) method for each group of objects on appropriate data store server.
-    -   \[ \] loadImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, boolean) method for each group of objects on appropriate data store server.
-    -   \[ \] loadImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, IImageRepresentationFormatSelectionCriterion...) method for each group of objects on appropriate data store server.
-    -   \[ \] loadImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, ImageRepresentationFormat) method for each group of objects on appropriate data store server.
-    -   \[ \] loadImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, ImageSize) method for each group of objects on appropriate data store server.
-    -   \[ \] loadImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, LoadImageConfiguration) method for each group of objects on appropriate data store server.
-    -   \[ \] loadPhysicalThumbnailsBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadPhysicalThumbnailsBase64(String, List, ImageRepresentationFormat) method for each group of objects on appropriate data store server.
-    -   \[ \] loadThumbnailImagesBase64: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadThumbnailImagesBase64(String, List) method for each group of objects on appropriate data store server.
-    -   \[x\] logoutScreening: Logout the session with the specified session token.
-    -   \[ \] tryLoginScreening: Authenticates the user with a given password.
+    -   \[ \] getDatasetIdentifiers:
+        -   description: Converts a given list of dataset codes to dataset identifiers.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; datasetCodes
+        -   returntype: java.util.List<IDatasetIdentifier>
+    -   \[ \] getExperimentImageMetadata:
+        -   description: Returns aggregated metadata for all images/plates within one experiment.
+        -   arguments: java.lang.String sessionToken, ExperimentIdentifier experimentIdentifer
+        -   returntype: ExperimentImageMetadata
+    -   \[ \] getPlateMetadataList:
+        -   description: Fetches the contents of a given list of plates.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
+        -   returntype: java.util.List<PlateMetadata>
+    -   \[ \] getPlateSample:
+        -   description: For a given plateIdentifier, return the corresponding Sample.
+        -   arguments: java.lang.String sessionToken, PlateIdentifier plateIdentifier
+        -   returntype: Sample
+    -   \[ \] getWellSample:
+        -   description: For a given wellIdentifier, return the corresponding Sample including properties.
+        -   arguments: java.lang.String sessionToken, WellIdentifier wellIdentifier
+        -   returntype: Sample
+    -   \[ \] listAvailableFeatureCodes:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatureCodes(String, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] listAvailableFeatures:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatures(String, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
+        -   returntype: java.util.List<FeatureInformation>
+    -   \[ \] listAvailableImageRepresentationFormats:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableImageRepresentationFormats(String, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IDatasetIdentifier&gt; imageDatasets
+        -   returntype: java.util.List<DatasetImageRepresentationFormats>
+    -   \[ \] listExperiments:
+        -   description: Return the list of all visible experiments, along with their hierarchical context (space, project).
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<ExperimentIdentifier>
+    -   \[ \] listExperiments:
+        -   description: Return the list of all experiments visible to user userId, along with their hierarchical context (space, project).
+        -   arguments: java.lang.String sessionToken, java.lang.String userId
+        -   returntype: java.util.List<ExperimentIdentifier>
+    -   \[ \] listFeatureVectorDatasets:
+        -   description: For a given set of plates (given by space / plate bar code), provide the list of all data sets containing feature vectors for each of these plates.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
+        -   returntype: java.util.List<FeatureVectorDatasetReference>
+    -   \[ \] listImageDatasets:
+        -   description: For a given set of plates provide the list of all data sets containing images for each of these plates.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
+        -   returntype: java.util.List<ImageDatasetReference>
+    -   \[ \] listImageMetadata:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listImageMetadata(String, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IImageDatasetIdentifier&gt; imageDatasets
+        -   returntype: java.util.List<ImageDatasetMetadata>
+    -   \[ \] listPlateMaterialMapping:
+        -   description: For a given list of plates, return the mapping of plate wells to materials contained in each well.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates, MaterialTypeIdentifier materialTypeIdentifierOrNull
+        -   returntype: java.util.List<PlateWellMaterialMapping>
+    -   \[ \] listPlates:
+        -   description: Return the list of all visible plates assigned to any experiment, along with their hierarchical context (space, project, experiment).
+        -   arguments: java.lang.String sessionToken
+        -   returntype: java.util.List<Plate>
+    -   \[ \] listPlates:
+        -   description: Return the list of all plates assigned to the given experiment.
+        -   arguments: java.lang.String sessionToken, ExperimentIdentifier experiment
+        -   returntype: java.util.List<Plate>
+    -   \[ \] listPlateWells:
+        -   description: For the given experimentIdentifier, find all plate locations that are connected to the specified materialIdentifier.
+        -   arguments: java.lang.String sessionToken, ExperimentIdentifier experimentIdentifer, MaterialIdentifier materialIdentifier, boolean findDatasets
+        -   returntype: java.util.List<PlateWellReferenceWithDatasets>
+    -   \[ \] listPlateWells:
+        -   description: For the given materialIdentifier, find all plate locations that are connected to it.
+        -   arguments: java.lang.String sessionToken, MaterialIdentifier materialIdentifier, boolean findDatasets
+        -   returntype: java.util.List<PlateWellReferenceWithDatasets>
+    -   \[ \] listPlateWells:
+        -   description: For the given plateIdentifier find all wells that are connected to it.
+        -   arguments: java.lang.String sessionToken, PlateIdentifier plateIdentifier
+        -   returntype: java.util.List<WellIdentifier>
+    -   \[ \] listRawImageDatasets:
+        -   description: For a given set of plates provide the list of all data sets containing raw images for each of these plates.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
+        -   returntype: java.util.List<ImageDatasetReference>
+    -   \[ \] listSegmentationImageDatasets:
+        -   description: For a given set of plates provide the list of all data sets containing segmentation images for each of these plates.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
+        -   returntype: java.util.List<ImageDatasetReference>
+    -   \[ \] loadFeatures:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeatures(String, List, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<FeatureVectorDatasetReference> featureDatasets, java.util.List&lt;java.lang.String&gt; featureCodes
+        -   returntype: java.util.List<FeatureVectorDataset>
+    -   \[ \] loadFeaturesForDatasetWellReferences:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeaturesForDatasetWellReferences(String, List, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<FeatureVectorDatasetWellReference> datasetWellReferences, java.util.List&lt;java.lang.String&gt; featureCodes
+        -   returntype: java.util.List<FeatureVectorWithDescription>
+    -   \[ \] loadImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, boolean) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, boolean convertToPng
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, IImageRepresentationFormatSelectionCriterion...) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, IImageRepresentationFormatSelectionCriterion... criteria
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, ImageRepresentationFormat) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageRepresentationFormat format
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, ImageSize) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageSize size
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, LoadImageConfiguration) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, LoadImageConfiguration configuration
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadPhysicalThumbnailsBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadPhysicalThumbnailsBase64(String, List, ImageRepresentationFormat) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageRepresentationFormat format
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadThumbnailImagesBase64:
+        -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadThumbnailImagesBase64(String, List) method for each group of objects on appropriate data store server.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[x\] logoutScreening:
+        -   description: Logout the session with the specified session token.
+        -   arguments: java.lang.String sessionToken
+        -   returntype: void
+    -   \[ \] tryLoginScreening:
+        -   description: Authenticates the user with a given password.
+        -   arguments: java.lang.String userId, java.lang.String userPassword
+        -   returntype: java.lang.String
 -   [IDssServiceRpcScreening](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/screening/shared/api/v1/IDssServiceRpcScreening.html)
-    -   \[ \] getFeatureList: Return the feature codes of a specified feature list for a specified feature vector data set
-    -   \[ \] getImageTransformerFactoryOrNull: Returns the transformer factory for the specified channel and the experiment to which the specified data sets belong.
-    -   \[ \] listAvailableFeatureCodes: For a given set of feature vector data sets provide the list of all available features.
-    -   \[ \] ~~listAvailableFeatureNames~~: Deprecated.  Use listAvailableFeatureCodes(String, List) instead.
-    -   \[ \] listAvailableFeatures: For a given set of feature vector data sets provide the list of all available features.
-    -   \[ \] listAvailableImageRepresentationFormats: Return image representation formats available for the specified image data sets.
-    -   \[ \] listImageMetadata: For a given set of image data sets, provide all image channels that have been acquired and the available (natural) image size(s).
-    -   \[ \] listImageReferences: Lists microscopy image references for specified data set and channels.
-    -   \[ \] listImageReferences: Lists microscopy image references for specified data set and channel.
-    -   \[ \] listPlateImageReferences: Lists plate image references for specified data set, list of well positions and channels.
-    -   \[ \] listPlateImageReferences: Lists plate image references for specified data set, list of well positions and channel.
-    -   \[ \] loadFeatures: Conceptually, for a given list of data well references (i.e.
-    -   \[ \] loadFeaturesForDatasetWellReferences: Conceptually, for a given list of dataset well references (i.e.
-    -   \[ \] loadImages: Provide images for specified data set, list of well positions, channel, and optional thumb nail size.
-    -   \[ \] loadImages: Provide images for specified microscopy data set, channel and optional thumb nail size.
-    -   \[ \] loadImages: Provide images for a given list of image references (given by data set code, well position, channel and tile).
-    -   \[ \] loadImages: Provide images for a given list of image references (specified by data set code, well position, channel and tile).
-    -   \[ \] loadImages: Provides images for the specified list of image references (specified by data set code, well position, channel and tile) and image selection criteria.
-    -   \[ \] loadImages: Provides images for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
-    -   \[ \] loadImages: Provide images (PNG encoded) for a given list of image references (given by data set code, well position, channel and tile).
-    -   \[ \] loadImages: Provide images for a given list of image references (specified by data set code, well position, channel and tile).
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, IDatasetIdentifier, List, String, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, IDatasetIdentifier, String, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, List, boolean) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, List, IImageRepresentationFormatSelectionCriterion...) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, List, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadImagesBase64: Returns the same images as loadImages(String, List, ch.systemsx.cisd.openbis.plugin.screening.shared.api.v1.dto.LoadImageConfiguration) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadPhysicalThumbnails: The fast method to provide registered thumbnail images (without calculating them) for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
-    -   \[ \] loadPhysicalThumbnailsBase64: /\*\* Returns the same images as loadPhysicalThumbnails(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadThumbnailImages: Provide thumbnail images for specified microscopy data set.
-    -   \[ \] loadThumbnailImages: Provide thumbnail images for a given list of image references (specified by data set code, well position, channel and tile).
-    -   \[ \] loadThumbnailImagesBase64: Returns the same images as loadThumbnailImages(String, IDatasetIdentifier, List) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] loadThumbnailImagesBase64: Returns the same images as loadThumbnailImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
-    -   \[ \] saveImageTransformerFactory: Saves the specified transformer factory for the specified channel of the specified data.
+    -   \[ \] getFeatureList:
+        -   description: Return the feature codes of a specified feature list for a specified feature vector data set
+        -   arguments: java.lang.String sessionToken, IFeatureVectorDatasetIdentifier featureDataset, java.lang.String featureListCode
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] getImageTransformerFactoryOrNull:
+        -   description: Returns the transformer factory for the specified channel and the experiment to which the specified data sets belong.
+        -   arguments: java.lang.String sessionToken, java.util.List<IDatasetIdentifier> dataSetIdentifiers, java.lang.String channel
+        -   returntype: ch.systemsx.cisd.base.image.IImageTransformerFactory
+    -   \[ \] listAvailableFeatureCodes:
+        -   description: For a given set of feature vector data sets provide the list of all available features.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] ~~listAvailableFeatureNames~~:
+        -   description: Deprecated.  Use listAvailableFeatureCodes(String, List) instead.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] listAvailableFeatures:
+        -   description: For a given set of feature vector data sets provide the list of all available features.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
+        -   returntype: java.util.List<FeatureInformation>
+    -   \[ \] listAvailableImageRepresentationFormats:
+        -   description: Return image representation formats available for the specified image data sets.
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IDatasetIdentifier&gt; imageDatasets
+        -   returntype: java.util.List<DatasetImageRepresentationFormats>
+    -   \[ \] listImageMetadata:
+        -   description: For a given set of image data sets, provide all image channels that have been acquired and the available (natural) image size(s).
+        -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IImageDatasetIdentifier&gt; imageDatasets
+        -   returntype: java.util.List<ImageDatasetMetadata>
+    -   \[ \] listImageReferences:
+        -   description: Lists microscopy image references for specified data set and channels.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;java.lang.String&gt; channels
+        -   returntype: java.util.List<MicroscopyImageReference>
+    -   \[ \] listImageReferences:
+        -   description: Lists microscopy image references for specified data set and channel.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.lang.String channel
+        -   returntype: java.util.List<MicroscopyImageReference>
+    -   \[ \] listPlateImageReferences:
+        -   description: Lists plate image references for specified data set, list of well positions and channels.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List<WellPosition> wellPositions, java.util.List&lt;java.lang.String&gt; channels
+        -   returntype: java.util.List<PlateImageReference>
+    -   \[ \] listPlateImageReferences:
+        -   description: Lists plate image references for specified data set, list of well positions and channel.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List<WellPosition> wellPositions, java.lang.String channel
+        -   returntype: java.util.List<PlateImageReference>
+    -   \[ \] loadFeatures:
+        -   description: Conceptually, for a given list of data well references (i.e.
+        -   arguments: java.lang.String sessionToken, java.util.List<FeatureVectorDatasetReference> featureDatasets, java.util.List&lt;java.lang.String&gt; featureCodes
+        -   returntype: java.util.List<FeatureVectorDataset>
+    -   \[ \] loadFeaturesForDatasetWellReferences:
+        -   description: Conceptually, for a given list of dataset well references (i.e.
+        -   arguments: java.lang.String sessionToken, java.util.List<FeatureVectorDatasetWellReference> datasetWellReferences, java.util.List&lt;java.lang.String&gt; featureCodes
+        -   returntype: java.util.List<FeatureVectorWithDescription>
+    -   \[ \] loadImages:
+        -   description: Provide images for specified data set, list of well positions, channel, and optional thumb nail size.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List<WellPosition> wellPositions, java.lang.String channel, ImageSize thumbnailSizeOrNull
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provide images for specified microscopy data set, channel and optional thumb nail size.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.lang.String channel, ImageSize thumbnailSizeOrNull
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provide images for a given list of image references (given by data set code, well position, channel and tile).
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provide images for a given list of image references (specified by data set code, well position, channel and tile).
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, boolean convertToPng
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provides images for the specified list of image references (specified by data set code, well position, channel and tile) and image selection criteria.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, IImageRepresentationFormatSelectionCriterion... criteria
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provides images for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageRepresentationFormat format
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provide images (PNG encoded) for a given list of image references (given by data set code, well position, channel and tile).
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageSize size
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImages:
+        -   description: Provide images for a given list of image references (specified by data set code, well position, channel and tile).
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, LoadImageConfiguration configuration
+        -   returntype: java.io.InputStream
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, IDatasetIdentifier, List, String, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List<WellPosition> wellPositions, java.lang.String channel, ImageSize thumbnailSizeOrNull
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, IDatasetIdentifier, String, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.lang.String channel, ImageSize thumbnailSizeOrNull
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, List, boolean) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, boolean convertToPng
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, List, IImageRepresentationFormatSelectionCriterion...) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, IImageRepresentationFormatSelectionCriterion... criteria
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageRepresentationFormat format
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, List, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageSize size
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadImagesBase64:
+        -   description: Returns the same images as loadImages(String, List, ch.systemsx.cisd.openbis.plugin.screening.shared.api.v1.dto.LoadImageConfiguration) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, LoadImageConfiguration configuration
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadPhysicalThumbnails:
+        -   description: The fast method to provide registered thumbnail images (without calculating them) for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageRepresentationFormat format
+        -   returntype: java.io.InputStream
+    -   \[ \] loadPhysicalThumbnailsBase64:
+        -   description: /\*\* Returns the same images as loadPhysicalThumbnails(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences, ImageRepresentationFormat format
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadThumbnailImages:
+        -   description: Provide thumbnail images for specified microscopy data set.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;java.lang.String&gt; channels
+        -   returntype: java.io.InputStream
+    -   \[ \] loadThumbnailImages:
+        -   description: Provide thumbnail images for a given list of image references (specified by data set code, well position, channel and tile).
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences
+        -   returntype: java.io.InputStream
+    -   \[ \] loadThumbnailImagesBase64:
+        -   description: Returns the same images as loadThumbnailImages(String, IDatasetIdentifier, List) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;java.lang.String&gt; channels
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] loadThumbnailImagesBase64:
+        -   description: Returns the same images as loadThumbnailImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
+        -   arguments: java.lang.String sessionToken, java.util.List<PlateImageReference> imageReferences
+        -   returntype: java.util.List&lt;java.lang.String&gt;
+    -   \[ \] saveImageTransformerFactory:
+        -   description: Saves the specified transformer factory for the specified channel of the specified data.
+        -   arguments: java.lang.String sessionToken, java.util.List<IDatasetIdentifier> dataSetIdentifiers, java.lang.String channel, ch.systemsx.cisd.base.image.IImageTransformerFactory transformerFactory
+        -   returntype: void

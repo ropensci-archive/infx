@@ -40,7 +40,8 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
 
 ```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
 skip <- c("VisibleToUser", "OnBehalfOfUser")
-done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive")
+done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
+          "listDataSetTypes")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
@@ -57,8 +58,12 @@ out <- sapply(api, function(url) {
   res <- html_nodes(read_html(url),
                     xpath = "/html/body/div[4]/div[2]/ul/li/ul[2]/li/table")
 
-  res <- sapply(html_table(res)[[1]][, 2], function(x) {
+  res <- apply(html_table(res)[[1]], 1, function(x) {
+    retr <- x[1]
+    x <- x[2]
     name <- sub("\\($", "", regmatches(x, regexpr("^.+?\\(", x)))
+    args <- sub("^\\(", "",
+                sub("\\)$", "", regmatches(x, regexpr("\\(.+?\\)", x))))
     desc <- sub("\\)\n", "", regmatches(x, regexpr("\\)\n.+$", x)))
 
     found <- any(sapply(done, grepl, name))
@@ -67,10 +72,12 @@ out <- sapply(api, function(url) {
       st <- TRUE
     else
       st <- any(sapply(skip, grepl, name))
-      
-    paste0("    - [", if (found) "x" else " ", "] ",
-           if (st) "~~", name, if (st) "~~", ": ",
-           gsub("\n", " ", desc))
+
+    paste0("    + [", if (found) "x" else " ", "] ",
+           if (st) "~~", name, if (st) "~~", ":\n        - description: ",
+           gsub("\n", " ", desc), "\n        - arguments: ",
+           paste(gsub(",\n +", ", ", args), collapse = ", "),
+           "\n        - returntype: ", retr)
   })
 
   paste0("* [", sub("\\.html$", "", basename(url)), "](", url, ")\n",
