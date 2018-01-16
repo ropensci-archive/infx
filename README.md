@@ -164,7 +164,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return all samples that belong to the supplied experiment that are visible to user userId.
         -   arguments: java.lang.String sessionToken, java.lang.String experimentIdentifierString, java.lang.String userId
         -   returntype: java.util.List&lt;Sample&gt;
-    -   \[ \] listSampleTypes:
+    -   \[x\] listSampleTypes:
         -   description: Returns all sample types.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;SampleType&gt;
