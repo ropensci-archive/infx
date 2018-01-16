@@ -1,7 +1,7 @@
 context("openbis downloader")
 
 test_that("openbis downloads can be created", {
-  expect_is(files <- list_files(tok, "20160921085125038-3519900"), "list")
+  expect_is(files <- list_files(tok, "20160921085125038-3519900"), "json_vec")
   expect_type(link <- get_download(tok, "20160921085125038-3519900",
                                    files[[2]][["pathInDataSet"]]),
               "character")

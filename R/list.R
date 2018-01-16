@@ -132,6 +132,8 @@ list_experiments <- function(token,
     res <- lapply(exp_type, function(type)
       request_openbis("listExperiments", list(token, proj, type)))
 
+    res <- res[!sapply(res, is.null)]
+
     do.call(c, res)
   }
 }
@@ -154,8 +156,10 @@ list_plate_datasets <- function(token,
 
   sample <- get_plate_sample(token, plate_id)
 
-  assert_that(has_json_subclass(sample, "Sample"),
-              length(sample[["id"]]) == 1L)
+  assert_that(length(sample) == 1L)
+
+  sample <- sample[[1]]
+  assert_that(has_json_subclass(sample, "Sample"))
 
   request_openbis("listDataSetsForSample",
                   list(token,

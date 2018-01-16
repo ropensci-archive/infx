@@ -10,7 +10,7 @@ test_that("image datasets can be listed", {
   expect_true(has_json_subclass(segm_ds, "ImageDatasetReference"))
   expect_gte(length(segm_ds), 1L)
   expect_is(segm_ds <- list_img_datasets(tok, "KB03-2K", "segmentation",
-                                         FALSE), "list")
+                                         FALSE), "json_vec")
   expect_true(all(sapply(segm_ds, has_json_subclass, "ImageDatasetReference")))
   expect_gte(length(segm_ds), 1L)
 })

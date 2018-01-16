@@ -1,7 +1,7 @@
 context("json_class objects")
 
 test_that("json objects can be converted", {
-  expect_equal(list(), as_json_class(list()))
+  expect_equal(NULL, as_json_class(list()))
   expect_equal(list("a", "b"), as_json_class(list("a", "b")))
   expect_error(as_json_class("a"))
 

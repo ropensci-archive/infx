@@ -40,7 +40,6 @@ test_that("json objects can be printed", {
                         structure(list("b"), class = c("bar", "json_class")))),
               class = c("foo", "json_class")), depth = 3, fancy = FALSE),
     "\\-+-c = c \n  \\-X-bar", fixed = TRUE)
-  expect_warning(print(structure("a", class = c("foo", "json_class"))))
 })
 
 test_that("json_vec printing work", {
