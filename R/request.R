@@ -63,7 +63,9 @@ make_request <- function(url,
 
   res <- remove_id(resp$content$result)
   res <- as_json_class(res, force = TRUE)
-  as_json_vec(res)
+  res <- as_json_vec(res, force = TRUE)
+
+  res
 }
 
 #' @rdname request

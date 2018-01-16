@@ -75,7 +75,7 @@ as_json_vec.list <- function(x, ...) {
 #' @rdname json_vec_create
 #' @export
 #' 
-as_json_vec.default <- function(x, ...) error_default(x)
+as_json_vec.default <- as_json_class.default
 
 #' @rdname json_vec_create
 #' @export
