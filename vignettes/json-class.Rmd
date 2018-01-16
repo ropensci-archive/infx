@@ -15,9 +15,6 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-if (!"infx" %in% rownames(installed.packages()))
-  devtools::install_github("nbenn/infx")
-
 library(infx)
 ```
 

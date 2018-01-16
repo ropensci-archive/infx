@@ -15,6 +15,7 @@ after_success:
   - Rscript -e 'covr::codecov()'
 
 before_deploy:
+  - Rscript -e 'devtools::install_github("nbenn/infx")'
   - Rscript -e 'pkgdown::build_site()'
 
 deploy:
