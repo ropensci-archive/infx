@@ -83,5 +83,5 @@ out <- sapply(api, function(url) {
   paste0("* [", sub("\\.html$", "", basename(url)), "](", url, ")\n",
          paste(res, collapse = "\n"))
 })
-cat(paste(gsub("<", "&lt", gsub(">", "&gt", out)), collapse = "\n"))
+cat(paste(gsub("<", "&lt;", gsub(">", "&gt;", out)), collapse = "\n"))
 ```
