@@ -46,20 +46,6 @@ list_projects <- function(token)
 #' 
 #' @export
 #' 
-list_experiment_types <- function(token)
-  request_openbis("listExperimentTypes", list(token))
-
-#' @title List experiment types
-#'
-#' @description For a login token, list all available experiment types.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return List/data.frame, containing (among others), columns \"plateCode\"
-#' and \"spaceCodeOrNull\".
-#' 
-#' @export
-#' 
 list_experiment_ids <- function(token)
   request_openbis("listExperiments", list(token), "IScreeningApiServer")
 

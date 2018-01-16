@@ -132,7 +132,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return all experiments of the given type that belong to the supplied projects and have registered samles.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Project&gt; projects, java.lang.String experimentType
         -   returntype: java.util.List&lt;Experiment&gt;
-    -   \[ \] listExperimentTypes:
+    -   \[x\] listExperimentTypes:
         -   description: Returns all experiment types.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ExperimentType&gt;

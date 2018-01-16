@@ -7,12 +7,6 @@ test_that("openbis experiment listing works", {
   expect_equal(2 * length(proj),
                length(unlist(lapply(proj, `[`, c("spaceCode", "code")))))
 
-  expect_is(et <- list_experiment_types(tok), "json_vec")
-  expect_true(all(sapply(et, has_json_subclass, "ExperimentType")))
-  expect_gte(length(et), 1L)
-  expect_equal(2 * length(et),
-               length(unlist(lapply(et, `[`, c("code", "description")))))
-
   expect_is(exp_ids <- list_experiment_ids(tok), "json_vec")
   expect_true(all(sapply(exp_ids, has_json_subclass, "ExperimentIdentifier")))
   expect_gte(length(exp_ids), 1L)
