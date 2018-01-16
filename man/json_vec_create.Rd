@@ -31,6 +31,9 @@ as.json_vec(x, ...)
 \item{...}{Individual \code{json_class} objects, or generic compatibility}
 
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
+
+\item{force}{Suppress error when casting an object to \code{json_vec} that
+cannot be converted.}
 }
 \description{
 \code{new_json_vec()} is a low-level constructor that takes a list of

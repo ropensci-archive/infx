@@ -10,6 +10,8 @@
 #'
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
+#' @param force Suppress error when casting an object to `json_vec` that
+#' cannot be converted.
 #' 
 #' @rdname json_vec_create
 #' 
