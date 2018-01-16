@@ -7,8 +7,15 @@ template:
   params:
     bootswatch: flatly
 reference:
-  - title: "JSON objects in R"
+  - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
     contents: 
       - matches("json_vec")
       - matches("json_class")
+  - title: Utility functions
+    desc: >
+      Assemble JSON-RPC request and issue a POST request to openBIS; parse
+      results; login/logout functionality
+    contents: 
+      - make_request
+      - login_openbis

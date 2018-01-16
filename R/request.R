@@ -24,9 +24,6 @@
 #' @param x A (possibly nested) list structure for which all `@id` fields are
 #' recursively removed.
 #' 
-#' @return A (nested) list holding the response from the JSON-RPC server
-#' (`@type` entries are converted to `json_class` attributes).
-#' 
 #' @rdname request
 #' 
 #' @examples
@@ -65,7 +62,8 @@ make_request <- function(url,
                            sep = ": ", collapse = "\n"))
 
   res <- remove_id(resp$content$result)
-  as_json_class(res, force = TRUE)
+  res <- as_json_class(res, force = TRUE)
+  as_json_vec(res)
 }
 
 #' @rdname request

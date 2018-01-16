@@ -36,10 +36,6 @@ requests are issued per HTTP request.}
 \item{x}{A (possibly nested) list structure for which all \code{@id} fields are
 recursively removed.}
 }
-\value{
-A (nested) list holding the response from the JSON-RPC server
-(\code{@type} entries are converted to \code{json_class} attributes).
-}
 \description{
 Issues a POST request to a JSON-RPC server. All \code{@type} fields are
 converted to/from \code{json_class} attributes, using \code{\link[=rm_json_class]{rm_json_class()}} and
