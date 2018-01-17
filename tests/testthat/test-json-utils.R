@@ -1,4 +1,4 @@
-context("print json objects")
+context("json utils")
 
 test_that("json objects can be printed", {
   expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
