@@ -2,18 +2,27 @@
 % Please edit documentation in R/experiment.R
 \name{list_experiments}
 \alias{list_experiments}
+\alias{list_experiment_ids}
+\alias{list_experiment_types}
 \title{List experiments}
 \usage{
 list_experiments(x, ...)
+
+list_experiment_ids(token)
+
+list_experiment_types(token)
 }
 \arguments{
 \item{x}{Object to limit the number of returned experiments, e.g. a set of
 \code{ExperimentIdentifier} objects.}
-}
-\value{
-A a list of ExperimentIdentifier objects.
+
+\item{...}{Generic compatibility}
+
+\item{token}{Login token as created by \code{login_openbis()}.}
 }
 \description{
 Given a login token and a set of experiment ids, all available experiments
-are listed.
+are listed. The two utility functions \code{list_experiment_ids()} and
+\code{list_experiment_types()} list all available experiment ids and experiment
+types of the queried openBIS instance.
 }

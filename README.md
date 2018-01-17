@@ -116,19 +116,19 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Lists all DSS server registered this openBIS server instance.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;DataStore&gt;
-    -   \[ \] listExperiments:
+    -   \[x\] listExperiments:
         -   description: Return all experiments of the given type that belong to the supplied projects.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Project&gt; projects, java.lang.String experimentType
         -   returntype: java.util.List&lt;Experiment&gt;
-    -   \[ \] listExperiments:
+    -   \[x\] listExperiments:
         -   description: Return all experiments matching a specified set of identifiers.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; experimentIdentifiers
         -   returntype: java.util.List&lt;Experiment&gt;
-    -   \[ \] listExperimentsHavingDataSets:
+    -   \[x\] listExperimentsHavingDataSets:
         -   description: Return all experiments of the given type that belong to the supplied projects and have registered data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Project&gt; projects, java.lang.String experimentType
         -   returntype: java.util.List&lt;Experiment&gt;
-    -   \[ \] listExperimentsHavingSamples:
+    -   \[x\] listExperimentsHavingSamples:
         -   description: Return all experiments of the given type that belong to the supplied projects and have registered samles.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Project&gt; projects, java.lang.String experimentType
         -   returntype: java.util.List&lt;Experiment&gt;
@@ -413,11 +413,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableImageRepresentationFormats(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;DatasetImageRepresentationFormats&gt;
-    -   \[ \] listExperiments:
+    -   \[x\] listExperiments:
         -   description: Return the list of all visible experiments, along with their hierarchical context (space, project).
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ExperimentIdentifier&gt;
-    -   \[ \] listExperiments:
+    -   \[x\] listExperiments:
         -   description: Return the list of all experiments visible to user userId, along with their hierarchical context (space, project).
         -   arguments: java.lang.String sessionToken, java.lang.String userId
         -   returntype: java.util.List&lt;ExperimentIdentifier&gt;

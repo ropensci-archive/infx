@@ -2,13 +2,14 @@
 #' List experiments
 #'
 #' Given a login token and a set of experiment ids, all available experiments
-#' are listed.
+#' are listed. The two utility functions `list_experiment_ids()` and
+#' `list_experiment_types()` list all available experiment ids and experiment
+#' types of the queried openBIS instance.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned experiments, e.g. a set of
 #' `ExperimentIdentifier` objects.
-#' 
-#' @return A a list of ExperimentIdentifier objects.
+#' @param ... Generic compatibility
 #' 
 #' @export
 #' 
@@ -32,27 +33,13 @@ list_experiments.ExperimentIdentifier <- function(x, token, ...) {
   request_openbis("listExperiments", list(token, exps))
 }
 
-#' List experiment ids
-#'
-#' Given a login token, all available experiment ids are listed.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return A a list of ExperimentIdentifier objects.
-#' 
+#' @rdname list_experiments
 #' @export
 #' 
 list_experiment_ids <- function(token)
   request_openbis("listExperiments", token, "IScreeningApiServer")
 
-#' List experiment types
-#'
-#' Given a login token, all available experiment types are listed.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return A a list of ExperimentType objects.
-#' 
+#' @rdname list_experiments
 #' @export
 #' 
 list_experiment_types <- function(token)
