@@ -9,10 +9,10 @@ list_projects(token)
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
 }
-\value{
-List/data.frame, containing (among others), columns "plateCode"
-and "spaceCodeOrNull".
-}
 \description{
-For a login token, list all available projects.
+List all projects available on the queries openBIS instance. A project forms
+one of the most basic entities in the organizational hierarchy of openBIS.
+One or more projects are contained in each space (the topmost
+organizational entity) and each project consists of one or several
+experiments.
 }

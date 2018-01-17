@@ -1,4 +1,19 @@
 
+#' List projects
+#'
+#' List all projects available on the queries openBIS instance. A project forms
+#' one of the most basic entities in the organizational hierarchy of openBIS.
+#' One or more projects are contained in each space (the topmost
+#' organizational entity) and each project consists of one or several
+#' experiments.
+#' 
+#' @inheritParams logout_openbis
+#' 
+#' @export
+#' 
+list_projects <- function(token)
+  request_openbis("listProjects", token)
+
 #' @title List plates
 #'
 #' @description For a login token, list all available plates.
@@ -20,20 +35,6 @@ list_plates <- function(token, exp_id = NULL) {
     request_openbis("listPlates", list(token, exp_id), "IScreeningApiServer")
   }
 }
-
-#' @title List projects
-#'
-#' @description For a login token, list all available projects.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return List/data.frame, containing (among others), columns \"plateCode\"
-#' and \"spaceCodeOrNull\".
-#' 
-#' @export
-#' 
-list_projects <- function(token)
-  request_openbis("listProjects", list(token))
 
 #' @title Get data sets for a plate
 #'

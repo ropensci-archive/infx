@@ -1,11 +1,12 @@
-context("openbis list objects")
+context("list misc objects")
 
-test_that("openbis experiment listing works", {
-  expect_is(proj <- list_projects(tok), "json_vec")
+test_that("projects can be listed", {
+  proj <- list_projects(tok)
+  expect_is(proj, "Project")
+  expect_is(proj, "json_vec")
+  expect_identical(get_common_subclass(proj), "Project")
   expect_true(all(sapply(proj, has_json_subclass, "Project")))
   expect_gte(length(proj), 1L)
-  expect_equal(2 * length(proj),
-               length(unlist(lapply(proj, `[`, c("spaceCode", "code")))))
 })
 
 test_that("openbis downloads can be created", {

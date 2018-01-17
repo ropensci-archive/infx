@@ -10,6 +10,7 @@ reference:
   - title: List openBIS objects
     desc: Query openBIS for objects used to organize datasets
     contents: 
+      - list_projects
       - list_experiments
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
