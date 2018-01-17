@@ -2,27 +2,43 @@
 % Please edit documentation in R/experiment.R
 \name{list_experiments}
 \alias{list_experiments}
+\alias{list_experiments.ExperimentIdentifier}
+\alias{list_experiments.Project}
 \alias{list_experiment_ids}
 \alias{list_experiment_types}
 \title{List experiments}
 \usage{
-list_experiments(x, ...)
+list_experiments(token, x, ...)
+
+\method{list_experiments}{ExperimentIdentifier}(token, x, ...)
+
+\method{list_experiments}{Project}(token, x,
+  types = list_experiment_types(token), require = c(NA, "DataSets",
+  "Samples"), ...)
 
 list_experiment_ids(token)
 
 list_experiment_types(token)
 }
 \arguments{
+\item{token}{Login token as created by \code{login_openbis()}.}
+
 \item{x}{Object to limit the number of returned experiments, e.g. a set of
-\code{ExperimentIdentifier} objects.}
+\code{ExperimentIdentifier} or \code{Project} objects.}
 
 \item{...}{Generic compatibility}
 
-\item{token}{Login token as created by \code{login_openbis()}.}
+\item{types}{Either a single of vector of \code{ExperimentType} objects}
+
+\item{require}{A switch to require the resulting experiments to contain a
+nonzero number of dataset or sample. Default behavior is no requirement.}
 }
 \description{
-Given a login token and a set of experiment ids, all available experiments
-are listed. The two utility functions \code{list_experiment_ids()} and
+Given a login token and a set of experiment ids or projects, all available
+experiments are listed. In case of projects being used as filtering
+criterion, it is also possible to limit the search to experiments that are
+of a certain type and exclude experiments that either have no datasets or
+samples associated. The two utility functions \code{list_experiment_ids()} and
 \code{list_experiment_types()} list all available experiment ids and experiment
 types of the queried openBIS instance.
 }

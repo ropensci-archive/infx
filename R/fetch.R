@@ -213,7 +213,7 @@ fetch_meta <- function(token,
                       experimentCode = "AGGREGATEFILES",
                       class = "ExperimentIdentifier")
 
-  exp <- list_experiments(exp, token)
+  exp <- list_experiments(token, exp)
 
   assert_that(length(exp) == 1L)
 

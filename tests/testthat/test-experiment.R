@@ -2,7 +2,7 @@ context("experiment")
 
 test_that("experiments can be listed", {
   exp_ids <- list_experiment_ids(tok)
-  experiments <- list_experiments(exp_ids[1:2], tok)
+  experiments <- list_experiments(tok, exp_ids[1:2])
 
   expect_is(experiments, "Experiment")
   expect_is(experiments, "json_vec")
@@ -10,16 +10,42 @@ test_that("experiments can be listed", {
   expect_true(all(sapply(experiments, has_json_subclass, "Experiment")))
   expect_equal(length(experiments), 2L)
 
-  experiments <- list_experiments(exp_ids[[1]], tok)
+  experiments <- list_experiments(tok, exp_ids[[1]])
   expect_is(experiments, "Experiment")
   expect_is(experiments, "json_vec")
   expect_identical(get_common_subclass(experiments), "Experiment")
   expect_true(all(sapply(experiments, has_json_subclass, "Experiment")))
   expect_equal(length(experiments), 1L)
 
-  expect_error(list_experiments(json_class(a = 1, b = 2,
-                                            class = "ExperimentIdentifier"),
-                                tok))
+  expect_error(list_experiments(tok,
+                                json_class(a = 1, b = 2,
+                                           class = "ExperimentIdentifier")))
+
+  proj <- list_projects(tok)
+  experiments <- list_experiments(tok, proj[1:2],
+                                  json_class(code = "SIRNA_HCS",
+                                             class = "ExperimentType"))
+  expect_is(experiments, "Experiment")
+  expect_is(experiments, "json_vec")
+  expect_identical(get_common_subclass(experiments), "Experiment")
+  expect_true(all(sapply(experiments, has_json_subclass, "Experiment")))
+  expect_gte(length(experiments), 1L)
+
+  experiments <- list_experiments(tok, proj[[1]])
+  expect_is(experiments, "Experiment")
+  expect_is(experiments, "json_vec")
+  expect_identical(get_common_subclass(experiments), "Experiment")
+  expect_true(all(sapply(experiments, has_json_subclass, "Experiment")))
+  expect_gte(length(experiments), 1L)
+
+  expect_identical(list_experiments(tok, proj[[1]],
+                                    json_class(code = "SIRNA_HCS",
+                                               class = "ExperimentType"),
+                                    "DataSets"),
+                   list_experiments(tok, proj[[1]],
+                                    json_class(code = "SIRNA_HCS",
+                                               class = "ExperimentType"),
+                                    "Samples"))
 })
 
 test_that("experiment types can be listed", {
