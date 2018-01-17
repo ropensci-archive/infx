@@ -205,11 +205,15 @@ fetch_meta <- function(token,
   type <- match.arg(type)
 
   if (type == "full")
-    exp <- "/INFECTX/_COMMON/REPORTS"
+    exp <- json_class(spaceCode = "INFECTX", projectCode = "_COMMON",
+                      experimentCode = "REPORTS",
+                      class = "ExperimentIdentifier")
   else
-    exp <- "/INFECTX_PUBLISHED/_COMMON/AGGREGATEFILES"
+    exp <- json_class(spaceCode = "INFECTX_PUBLISHED", projectCode = "_COMMON",
+                      experimentCode = "AGGREGATEFILES",
+                      class = "ExperimentIdentifier")
 
-  exp <- list_experiments(token, exp_ids = exp)
+  exp <- list_experiments(exp, token)
 
   assert_that(length(exp) == 1L)
 

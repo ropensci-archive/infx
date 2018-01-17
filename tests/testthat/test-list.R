@@ -6,51 +6,6 @@ test_that("openbis experiment listing works", {
   expect_gte(length(proj), 1L)
   expect_equal(2 * length(proj),
                length(unlist(lapply(proj, `[`, c("spaceCode", "code")))))
-
-  expect_is(exp_ids <- list_experiment_ids(tok), "json_vec")
-  expect_true(all(sapply(exp_ids, has_json_subclass, "ExperimentIdentifier")))
-  expect_gte(length(exp_ids), 1L)
-  expect_equal(2 * length(exp_ids),
-               length(unlist(lapply(exp_ids, `[`, c("permId", "spaceCode")))))
-
-  expect_is(exp <- list_experiments(tok), "json_vec")
-  expect_true(all(sapply(exp, has_json_subclass, "Experiment")))
-  expect_gte(length(exp), 1L)
-  expect_equal(2 * length(exp),
-               length(unlist(lapply(exp, `[`, c("permId", "code")))))
-
-  expect_is(exp <- list_experiments(tok, exp_type = "SIRNA_HCS"), "json_vec")
-  expect_true(all(sapply(exp, has_json_subclass, "Experiment")))
-  expect_gte(length(exp), 1L)
-  expect_equal(2 * length(exp),
-               length(unlist(lapply(exp, `[`, c("permId", "code")))))
-
-  expect_is(exp <- list_experiments(tok, projects = proj[1]), "json_vec")
-  expect_true(all(sapply(exp, has_json_subclass, "Experiment")))
-  expect_gte(length(exp), 1L)
-  expect_equal(2 * length(exp),
-               length(unlist(lapply(exp, `[`, c("permId", "code")))))
-
-  expect_equal(list_experiments(tok, projects = proj[1]),
-               list_experiments(tok, projects = proj[[1]]))
-
-  expect_is(exp <- list_experiments(tok, projects = proj[1:2]), "json_vec")
-  expect_true(all(sapply(exp, has_json_subclass, "Experiment")))
-  expect_gte(length(exp), 1L)
-  expect_equal(2 * length(exp),
-               length(unlist(lapply(exp, `[`, c("permId", "code")))))
-
-  expect_warning(list_experiments(tok, exp_type = "SIRNA_HCS",
-                                  exp_ids = exp_ids[1:2]))
-  expect_equal(list_experiments(tok, exp_ids = exp_ids[[1]]),
-               list_experiments(tok, exp_ids =
-    paste0("/", exp_ids[[1]][c("spaceCode", "projectCode", "experimentCode")],
-           collapse = "")))
-  expect_is(exp <- list_experiments(tok, exp_ids = exp_ids[1:2]), "json_vec")
-  expect_true(all(sapply(exp, has_json_subclass, "Experiment")))
-  expect_gte(length(exp), 1L)
-  expect_equal(2 * length(exp),
-               length(unlist(lapply(exp, `[`, c("permId", "code")))))
 })
 
 test_that("openbis downloads can be created", {
@@ -79,16 +34,6 @@ test_that("openbis downloads can be created", {
   expect_equal(length(samp[[1]][["permId"]]), 1L)
 
   expect_is(ds <- list_plate_datasets(tok, "BB02-2E"), "json_vec")
-  expect_true(all(sapply(ds, is_json_class)))
-  expect_true(all(sapply(ds, has_json_subclass, "DataSet")))
-  expect_gte(length(ds), 1L)
-  expect_equal(2 * length(ds),
-               length(unlist(lapply(ds, `[`, c("code", "dataSetTypeCode")))))
-
-  pro <- structure(list(spaceCode = "INFECTX_PUBLISHED", code = "_COMMON"),
-                   class = c("Project", "json_class"))
-  exp <- list_experiments(tok, pro)
-  expect_is(ds <- list_exp_datasets(tok, exp[[1]]), "json_vec")
   expect_true(all(sapply(ds, is_json_class)))
   expect_true(all(sapply(ds, has_json_subclass, "DataSet")))
   expect_gte(length(ds), 1L)
