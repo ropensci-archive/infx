@@ -1,5 +1,30 @@
 context("json utils")
 
+test_that("json objects can be checked for fields", {
+  obj_1 <- json_class(a = 1, b = 2, class = "foo")
+  obj_2 <- json_class(a = 3, b = 4, class = "foo")
+  obj_3 <- json_class(a = 3, c = 4, class = "foo")
+
+  expect_true(has_fields(obj_1, "a"))
+  expect_true(has_fields(obj_1, c("a", "b")))
+  expect_false(has_fields(obj_1, "c"))
+  expect_false(has_fields(obj_1, c("a", "c")))
+
+  expect_true(has_fields(c(obj_1, obj_2), "a"))
+  expect_true(has_fields(c(obj_1, obj_2), c("a", "b")))
+  expect_false(has_fields(c(obj_1, obj_2), "c"))
+  expect_false(has_fields(c(obj_1, obj_2), c("a", "c")))
+
+  expect_true(has_fields(c(obj_1, obj_3), "a"))
+  expect_false(has_fields(c(obj_1, obj_3), c("a", "b")))
+  expect_false(has_fields(c(obj_1, obj_3), "c"))
+  expect_false(has_fields(c(obj_1, obj_3), c("a", "c")))
+
+  expect_error(has_fields(obj_1, 1L))
+  expect_error(has_fields(obj_1, character()))
+  expect_error(has_fields(list(a = 1), "a"))
+})
+
 test_that("json objects can be printed", {
   expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
                 "█─foo \n└─a")

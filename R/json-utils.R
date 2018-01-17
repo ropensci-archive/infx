@@ -1,4 +1,51 @@
 
+#' Check JSON objects
+#'
+#' Test whether a single `json_class` object contains all of the specified
+#' fields or whether each `json_class` object contained in a `json_vec` object
+#' passes this test.
+#' 
+#' @param x Object to test.
+#' @param fields Character vector of nonzero length, holding the field names
+#' for which to check.
+#' @param ... Generic compatibility.
+#' 
+#' @rdname json_check
+#'  
+#' @examples
+#' obj_1 <- json_class(a = 1, b = 2, class = "foo")
+#' obj_2 <- json_class(a = 3, b = 4, class = "foo")
+#' obj_3 <- json_class(a = 3, c = 4, class = "foo")
+#' 
+#' has_fields(obj_1, "a")
+#' has_fields(obj_1, c("a", "b"))
+#' 
+#' has_fields(c(obj_1, obj_2), "a")
+#' has_fields(c(obj_1, obj_3), "a")
+#' has_fields(c(obj_1, obj_3), c("a", "b"))
+#' 
+#' @export
+#' 
+has_fields <- function(x, fields, ...) {
+
+  assert_that(is.character(fields),
+              length(fields) >= 1L)
+
+  UseMethod("has_fields", x)
+}
+
+#' @rdname json_check
+#' @export
+#' 
+has_fields.json_class <- function(x, fields, ...)
+  all(fields %in% names(x))
+
+#' @rdname json_check
+#' @export
+#' 
+has_fields.json_vec <- function(x, fields, ...)
+  all(sapply(x, has_fields, fields))
+
 #' Print JSON objects
 #'
 #' Inspired by the ast printing function of Hadley's `lobstr` package and
