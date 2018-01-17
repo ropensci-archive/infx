@@ -13,33 +13,28 @@ has_fields(x, fields, ...)
 \method{has_fields}{json_vec}(x, fields, ...)
 }
 \arguments{
-\item{x}{Object to print.}
+\item{x}{Object to test.}
+
+\item{fields}{Character vector of nonzero length, holding the field names
+for which to check.}
 
 \item{...}{Generic compatibility.}
-
-\item{depth}{The maximum recursion depth for printing.}
-
-\item{width}{Number of columns to maximally print.}
-
-\item{length}{Number of lines to maximally print.}
-
-\item{fancy}{Logical switch to enable font styles, colors and UTF box
-characters for printing.}
 }
 \description{
-Inspired by the ast printing function of Hadley's \code{lobstr} package and
-borrowing code from \href{https://git.io/vFMA5}{there}, this enables the
-recursive printing of \code{json_class} and \code{json_vec} objects. Printing style
-can either be with fancy (colors, UTF box characters. etc.) or simple and
-several options are available for setting the max printing with/length, as
-well as a max recursion depth for nested \code{json_class} objects.
+Test whether a single \code{json_class} object contains all of the specified
+fields or whether each \code{json_class} object contained in a \code{json_vec} object
+passes this test.
 }
 \examples{
-tmp <- json_class(a = json_class(b = "c", class = "foo"),
-                  d = json_class(e = "f", class = "bar"),
-                  class = "foobar")
-tmp
-print(tmp, depth = 2L)
-print(tmp, depth = 2L, length = 4L)
+obj_1 <- json_class(a = 1, b = 2, class = "foo")
+obj_2 <- json_class(a = 3, b = 4, class = "foo")
+obj_3 <- json_class(a = 3, c = 4, class = "foo")
+
+has_fields(obj_1, "a")
+has_fields(obj_1, c("a", "b"))
+
+has_fields(c(obj_1, obj_2), "a")
+has_fields(c(obj_1, obj_3), "a")
+has_fields(c(obj_1, obj_3), c("a", "b"))
 
 }

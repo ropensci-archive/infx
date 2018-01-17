@@ -19,16 +19,14 @@ list_experiments <- function(x, ...)
 #' @export
 list_experiments.ExperimentIdentifier <- function(x, token, ...) {
 
-  if (is_json_vec(x)) {
-    exps <- lapply(x, function(y) {
-      paste0("/", y[c("spaceCode", "projectCode", "experimentCode")],
-             collapse = "")
-    })
-  } else if (is_json_class(x)) {
-    exps <- paste0("/", x[c("spaceCode", "projectCode", "experimentCode")],
-                   collapse = "")
-    exps <- list(exps)
-  }
+  fields <- c("spaceCode", "projectCode", "experimentCode")
+
+  assert_that(has_fields(x, fields))
+
+  if (is_json_vec(x))
+    exps <- lapply(x, function(y) paste0("/", y[fields], collapse = ""))
+  else if (is_json_class(x))
+    exps <- list(paste0("/", x[fields], collapse = ""))
 
   request_openbis("listExperiments", list(token, exps))
 }
