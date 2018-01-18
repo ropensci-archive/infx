@@ -28,19 +28,8 @@ list_experiments <- function(token, x, ...)
 #' @rdname list_experiments
 #' @export
 #' 
-list_experiments.ExperimentIdentifier <- function(token, x, ...) {
-
-  fields <- c("spaceCode", "projectCode", "experimentCode")
-
-  assert_that(has_fields(x, fields))
-
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
-
-  exps <- lapply(x, function(y) paste0("/", y[fields], collapse = ""))
-
-  request_openbis("listExperiments", list(token, exps))
-}
+list_experiments.ExperimentIdentifier <- function(token, x, ...)
+  request_openbis("listExperiments", list(token, exp_id_str(x)))
 
 #' @rdname list_experiments
 #' @export
@@ -87,3 +76,28 @@ list_experiment_ids <- function(token)
 #' 
 list_experiment_types <- function(token)
   request_openbis("listExperimentTypes", token)
+
+exp_id_str <- function(x, ...)
+  UseMethod("exp_id_str")
+
+exp_id_str.ExperimentIdentifier <- function(x, ...) {
+
+  fields <- c("spaceCode", "projectCode", "experimentCode")
+
+  assert_that(has_fields(x, fields))
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  lapply(x, function(y) paste0("/", y[fields], collapse = ""))
+}
+
+exp_id_str.Experiment <- function(x, ...) {
+
+  assert_that(has_fields(x, "identifier"))
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  lapply(x, `[[`, "identifier")
+}

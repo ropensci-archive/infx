@@ -25,35 +25,18 @@ list_samples <- function(token, x, ...)
 #' @export
 #' 
 list_samples.ExperimentIdentifier <- function(token, x, ...) {
-
-  fields <- c("spaceCode", "projectCode", "experimentCode")
-
-  assert_that(has_fields(x, fields))
-
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
-
-  exps <- lapply(x, function(y) paste0("/", y[fields], collapse = ""))
-
-  res <- lapply(exps, function(exp)
-    request_openbis("listSamplesForExperiment", list(token, exp)))
-
-  as_json_vec(do.call(c, res))
+  list_samples_for_exp(token, x)
 }
 
 #' @rdname list_samples
 #' @export
 #' 
 list_samples.Experiment <- function(token, x, ...) {
+  list_samples_for_exp(token, x)
+}
 
-  assert_that(has_fields(x, "identifier"))
-
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
-
-  exps <- lapply(x, `[[`, "identifier")
-
-  res <- lapply(exps, function(exp)
+list_samples_for_exp <- function(token, x) {
+  res <- lapply(exp_id_str(x), function(exp)
     request_openbis("listSamplesForExperiment", list(token, exp)))
 
   as_json_vec(do.call(c, res))
