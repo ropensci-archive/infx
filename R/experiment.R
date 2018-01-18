@@ -101,3 +101,23 @@ exp_id_str.Experiment <- function(x, ...) {
 
   lapply(x, `[[`, "identifier")
 }
+
+exp_to_expid <- function(x) {
+
+  convert <- function(x) {
+    id <- unlist(strsplit(sub("^/", "", x[["identifier"]]), "/"))
+    assert_that(length(id) == 3L)
+    json_class(permId = x[["permId"]], spaceCode = id[1], projectCode = id[2],
+               experimentCode = id[3], class = "ExperimentIdentifier")
+  }
+
+  fields <- c("permId", "identifier")
+
+  assert_that(inherits(x, "Experiment"),
+              has_fields(x, fields))
+
+  if (is_json_class(x))
+    convert(x)
+  else
+    as_json_vec(lapply(x, convert))
+}

@@ -14,28 +14,6 @@
 list_projects <- function(token)
   request_openbis("listProjects", token)
 
-#' @title List plates
-#'
-#' @description For a login token, list all available plates.
-#' 
-#' @inheritParams logout_openbis
-#' @param exp_id A single ExperimentIdentifier object to limit the plate
-#' search to.
-#' 
-#' @return List/data.frame, containing (among others), columns \"plateCode\"
-#' and \"spaceCodeOrNull\".
-#' 
-#' @export
-#' 
-list_plates <- function(token, exp_id = NULL) {
-  if (is.null(exp_id))
-    request_openbis("listPlates", list(token), "IScreeningApiServer")
-  else{
-    assert_that(has_json_subclass(exp_id, "ExperimentIdentifier"))
-    request_openbis("listPlates", list(token, exp_id), "IScreeningApiServer")
-  }
-}
-
 #' @title Get data sets for a plate
 #'
 #' @description Given a plate id (barcode), the corresponding sample object is

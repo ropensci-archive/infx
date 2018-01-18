@@ -156,11 +156,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns all available projects that a particular user is allowed to see.
         -   arguments: java.lang.String sessionToken, java.lang.String userId
         -   returntype: java.util.List&lt;Project&gt;
-    -   \[ \] listSamplesForExperiment:
+    -   \[x\] listSamplesForExperiment:
         -   description: Return all samples that belong to the supplied experiment.
         -   arguments: java.lang.String sessionToken, java.lang.String experimentIdentifierString
         -   returntype: java.util.List&lt;Sample&gt;
-    -   \[ \] ~~listSamplesForExperimentOnBehalfOfUser~~:
+    -   \[x\] ~~listSamplesForExperimentOnBehalfOfUser~~:
         -   description: Return all samples that belong to the supplied experiment that are visible to user userId.
         -   arguments: java.lang.String sessionToken, java.lang.String experimentIdentifierString, java.lang.String userId
         -   returntype: java.util.List&lt;Sample&gt;
@@ -437,11 +437,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given list of plates, return the mapping of plate wells to materials contained in each well.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates, MaterialTypeIdentifier materialTypeIdentifierOrNull
         -   returntype: java.util.List&lt;PlateWellMaterialMapping&gt;
-    -   \[ \] listPlates:
+    -   \[x\] listPlates:
         -   description: Return the list of all visible plates assigned to any experiment, along with their hierarchical context (space, project, experiment).
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;Plate&gt;
-    -   \[ \] listPlates:
+    -   \[x\] listPlates:
         -   description: Return the list of all plates assigned to the given experiment.
         -   arguments: java.lang.String sessionToken, ExperimentIdentifier experiment
         -   returntype: java.util.List&lt;Plate&gt;

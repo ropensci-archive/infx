@@ -1,0 +1,46 @@
+
+#' List plates
+#'
+#' Given a login token, all plates available to the corresponding user on the
+#' queried openBIS instance are listed for one or more experiment(s). If
+#' multiple experiments are used for limiting the search (e.g. a `json_vec` of
+#' experiments), an API call for each object has to be made. If no experiments
+#' are specified, all available plates are returned.
+#' 
+#' @inheritParams logout_openbis
+#' @param x Object to limit the number of returned plates, e.g. a set of
+#' `ExperimentIdentifier` or `Experiment` objects. The default is NULL, which
+#' will fetch all available plates.
+#' @param ... Generic compatibility
+#' 
+#' @export
+#' 
+list_plates <- function(token, x = NULL, ...)
+  UseMethod("list_plates", x)
+
+#' @rdname list_plates
+#' @export
+#' 
+list_plates.NULL <- function(token, x, ...)
+  request_openbis("listPlates", token, "IScreeningApiServer")
+
+#' @rdname list_plates
+#' @export
+#' 
+list_plates.ExperimentIdentifier <- function(token, x, ...) {
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  res <- lapply(x, function(exp)
+    request_openbis("listPlates", list(token, exp), "IScreeningApiServer"))
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_plates
+#' @export
+#' 
+list_plates.Experiment <- function(token, x, ...) {
+  list_plates(token, exp_to_expid(x))
+}

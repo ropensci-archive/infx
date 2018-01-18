@@ -43,8 +43,9 @@ skip <- c("VisibleToUser", "OnBehalfOfUser")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "list_projects",
           "listExperiments", "listExperimentTypes",
-          "listSampleTypes",
-          "listDataSetTypes")
+          "listSamplesForExperiment", "listSampleTypes",
+          "listDataSetTypes",
+          "listPlates")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
