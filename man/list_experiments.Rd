@@ -38,7 +38,11 @@ Given a login token and a set of experiment ids or projects, all available
 experiments are listed. In case of projects being used as filtering
 criterion, it is also possible to limit the search to experiments that are
 of a certain type and exclude experiments that either have no datasets or
-samples associated. The two utility functions \code{list_experiment_ids()} and
+samples associated. If several experiment types are requested (default: all
+available), an API call per experiment type has to be made.
+}
+\details{
+The two utility functions \code{list_experiment_ids()} and
 \code{list_experiment_types()} list all available experiment ids and experiment
 types of the queried openBIS instance.
 }
