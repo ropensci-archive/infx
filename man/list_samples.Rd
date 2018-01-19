@@ -4,6 +4,8 @@
 \alias{list_samples}
 \alias{list_samples.ExperimentIdentifier}
 \alias{list_samples.Experiment}
+\alias{list_samples.PlateIdentifier}
+\alias{list_samples.Plate}
 \title{List samples}
 \usage{
 list_samples(token, x, ...)
@@ -11,6 +13,10 @@ list_samples(token, x, ...)
 \method{list_samples}{ExperimentIdentifier}(token, x, ...)
 
 \method{list_samples}{Experiment}(token, x, ...)
+
+\method{list_samples}{PlateIdentifier}(token, x, ...)
+
+\method{list_samples}{Plate}(token, x, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}

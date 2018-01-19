@@ -44,3 +44,21 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
 list_plates.Experiment <- function(token, x, ...) {
   list_plates(token, exp_to_expid(x))
 }
+
+plate_to_plateid <- function(x) {
+
+  convert <- function(x)
+    json_class(plateCode = x[["plateCode"]],
+               spaceCodeOrNull = x[["spaceCodeOrNull"]],
+               class = "PlateIdentifier")
+
+  fields <- c("plateCode", "spaceCodeOrNull")
+
+  assert_that(inherits(x, "Plate"),
+              has_fields(x, fields))
+
+  if (is_json_class(x))
+    convert(x)
+  else
+    as_json_vec(lapply(x, convert))
+}

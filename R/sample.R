@@ -42,6 +42,27 @@ list_samples_for_exp <- function(token, x) {
   as_json_vec(do.call(c, res))
 }
 
+#' @rdname list_samples
+#' @export
+#' 
+list_samples.PlateIdentifier <- function(token, x, ...) {
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  res <- lapply(x, function(plate)
+    request_openbis("getPlateSample", list(token, plate),
+                    "IScreeningApiServer"))
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_samples
+#' @export
+#' 
+list_samples.Plate <- function(token, x, ...)
+  list_samples(token, plate_to_plateid(x))
+
 #' List sample types
 #'
 #' Given a login token, all available sample types are listed.
