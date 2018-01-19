@@ -4,7 +4,8 @@
 #' Given a login token, all samples available to the corresponding user on the
 #' queried openBIS instance are listed for an experiment, plate or well. If
 #' multiple objects are used for limiting the search (e.g. a `json_vec` of
-#' wells), an API call for each object has to be made.
+#' wells), an API call for each object has to be made. Furthermore, all
+#' available sample types can be listed using `list_sample_types()`.
 #' 
 #' @section TODO:
 #' Add class specific functions to generic `list_samples()` for
@@ -63,14 +64,7 @@ list_samples.PlateIdentifier <- function(token, x, ...) {
 list_samples.Plate <- function(token, x, ...)
   list_samples(token, plate_to_plateid(x))
 
-#' List sample types
-#'
-#' Given a login token, all available sample types are listed.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return A a list of SampleType objects.
-#' 
+#' @rdname list_samples
 #' @export
 #' 
 list_sample_types <- function(token)

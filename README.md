@@ -393,7 +393,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Fetches the contents of a given list of plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;PlateMetadata&gt;
-    -   \[ \] getPlateSample:
+    -   \[x\] getPlateSample:
         -   description: For a given plateIdentifier, return the corresponding Sample.
         -   arguments: java.lang.String sessionToken, PlateIdentifier plateIdentifier
         -   returntype: Sample
@@ -445,15 +445,15 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return the list of all plates assigned to the given experiment.
         -   arguments: java.lang.String sessionToken, ExperimentIdentifier experiment
         -   returntype: java.util.List&lt;Plate&gt;
-    -   \[ \] listPlateWells:
+    -   \[x\] listPlateWells:
         -   description: For the given experimentIdentifier, find all plate locations that are connected to the specified materialIdentifier.
         -   arguments: java.lang.String sessionToken, ExperimentIdentifier experimentIdentifer, MaterialIdentifier materialIdentifier, boolean findDatasets
         -   returntype: java.util.List&lt;PlateWellReferenceWithDatasets&gt;
-    -   \[ \] listPlateWells:
+    -   \[x\] listPlateWells:
         -   description: For the given materialIdentifier, find all plate locations that are connected to it.
         -   arguments: java.lang.String sessionToken, MaterialIdentifier materialIdentifier, boolean findDatasets
         -   returntype: java.util.List&lt;PlateWellReferenceWithDatasets&gt;
-    -   \[ \] listPlateWells:
+    -   \[x\] listPlateWells:
         -   description: For the given plateIdentifier find all wells that are connected to it.
         -   arguments: java.lang.String sessionToken, PlateIdentifier plateIdentifier
         -   returntype: java.util.List&lt;WellIdentifier&gt;

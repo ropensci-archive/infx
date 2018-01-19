@@ -6,6 +6,7 @@
 \alias{list_samples.Experiment}
 \alias{list_samples.PlateIdentifier}
 \alias{list_samples.Plate}
+\alias{list_sample_types}
 \title{List samples}
 \usage{
 list_samples(token, x, ...)
@@ -17,6 +18,8 @@ list_samples(token, x, ...)
 \method{list_samples}{PlateIdentifier}(token, x, ...)
 
 \method{list_samples}{Plate}(token, x, ...)
+
+list_sample_types(token)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -30,7 +33,8 @@ list_samples(token, x, ...)
 Given a login token, all samples available to the corresponding user on the
 queried openBIS instance are listed for an experiment, plate or well. If
 multiple objects are used for limiting the search (e.g. a \code{json_vec} of
-wells), an API call for each object has to be made.
+wells), an API call for each object has to be made. Furthermore, all
+available sample types can be listed using \code{list_sample_types()}.
 }
 \section{TODO}{
 
