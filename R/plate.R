@@ -62,3 +62,41 @@ plate_to_plateid <- function(x) {
   else
     as_json_vec(lapply(x, convert))
 }
+
+#' List wells
+#'
+#' Given a login token, all wells available to the corresponding user on the
+#' queried openBIS instance are listed for one or more plate(s). If multiple
+#' plates are searched for (e.g. a `json_vec` of plates), an API call for each
+#' object has to be made.
+#' 
+#' @inheritParams logout_openbis
+#' @param x Object to limit the number of returned wells, e.g. a set of
+#' `PlateIdentifier` or `Plate` objects.
+#' @param ... Generic compatibility
+#' 
+#' @export
+#' 
+list_wells <- function(token, x = NULL, ...)
+  UseMethod("list_wells", x)
+
+#' @rdname list_wells
+#' @export
+#' 
+list_wells.PlateIdentifier <- function(token, x, ...) {
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  res <- lapply(x, function(plate)
+    request_openbis("listPlateWells", list(token, plate),
+                    "IScreeningApiServer"))
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_wells
+#' @export
+#' 
+list_wells.Plate <- function(token, x, ...)
+  list_wells(token, plate_to_plateid(x))

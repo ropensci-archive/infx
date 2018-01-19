@@ -28,3 +28,22 @@ test_that("plates can be listed", {
   expect_identical(plate_1, list_plates(tok, experiments[[1]]))
   expect_identical(plate_2, list_plates(tok, experiments[1:2]))
 })
+
+test_that("wells can be listed", {
+  exp_ids <- list_experiment_ids(tok)
+  plate <- list_plates(tok, exp_ids[[1]])
+
+  wells_1 <- list_wells(tok, plate[[1]])
+  expect_is(wells_1, "WellIdentifier")
+  expect_is(wells_1, "json_vec")
+  expect_identical(get_common_subclass(wells_1), "WellIdentifier")
+  expect_true(all(sapply(wells_1, has_json_subclass, "WellIdentifier")))
+  expect_equal(length(wells_1), 384L)
+
+  wells_2 <- list_wells(tok, plate[c(1, 2)])
+  expect_is(wells_2, "WellIdentifier")
+  expect_is(wells_2, "json_vec")
+  expect_identical(get_common_subclass(wells_2), "WellIdentifier")
+  expect_true(all(sapply(wells_2, has_json_subclass, "WellIdentifier")))
+  expect_equal(length(wells_2), 768L)
+})
