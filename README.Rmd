@@ -39,9 +39,10 @@ devtools::install_github("nbenn/infx")
 Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
 
 ```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
-skip <- c("VisibleToUser", "OnBehalfOfUser")
+skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
+          "^remove", "^update")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
-          "list_projects",
+          "listProjects",
           "listExperiments", "listExperimentTypes",
           "listSamplesForExperiment", "getPlateSample", "getWellSample",
           "listSampleTypes",

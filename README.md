@@ -148,11 +148,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns all named role sets.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.Map&lt;java.lang.String,java.util.Set&lt;Role&gt;&gt;
-    -   \[ \] listProjects:
+    -   \[x\] listProjects:
         -   description: Returns all available projects.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;Project&gt;
-    -   \[ \] ~~listProjectsOnBehalfOfUser~~:
+    -   \[x\] ~~listProjectsOnBehalfOfUser~~:
         -   description: Returns all available projects that a particular user is allowed to see.
         -   arguments: java.lang.String sessionToken, java.lang.String userId
         -   returntype: java.util.List&lt;Project&gt;
@@ -217,11 +217,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   arguments: java.lang.String userID, java.lang.String userPassword
         -   returntype: java.lang.String
 -   [IGeneralInformationChangingService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationChangingService.html)
-    -   \[ \] addToMetaproject:
+    -   \[ \] ~~addToMetaproject~~:
         -   description: Adds given entities to an existing metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, MetaprojectAssignmentsIds assignmentsToAdd
         -   returntype: void
-    -   \[ \] addUnofficialVocabularyTerm:
+    -   \[ \] ~~addUnofficialVocabularyTerm~~:
         -   description: Adds new unofficial terms to a vocabulary starting from specified ordinal + 1.
         -   arguments: java.lang.String sessionToken, java.lang.Long vocabularyId, NewVocabularyTerm term
         -   returntype: void
@@ -229,11 +229,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Deprecated.  Because the parameters refer to an internal openBIS class (TechID).
         -   arguments: java.lang.String sessionToken, ch.systemsx.cisd.openbis.generic.shared.basic.TechId vocabularyId, java.lang.String code, java.lang.String label, java.lang.String description, java.lang.Long previousTermOrdinal
         -   returntype: void
-    -   \[ \] createMetaproject:
+    -   \[ \] ~~createMetaproject~~:
         -   description: Creates a new metaproject.
         -   arguments: java.lang.String sessionToken, java.lang.String name, java.lang.String descriptionOrNull
         -   returntype: ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject
-    -   \[ \] deleteMetaproject:
+    -   \[ \] ~~deleteMetaproject~~:
         -   description: Deletes an existing metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId
         -   returntype: void
@@ -241,7 +241,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns the persistent settings for a given custom web app.
         -   arguments: java.lang.String sessionToken, java.lang.String webAppId
         -   returntype: WebAppSettings
-    -   \[ \] removeFromMetaproject:
+    -   \[ \] ~~removeFromMetaproject~~:
         -   description: Removes given entities from an existing metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, MetaprojectAssignmentsIds assignmentsToRemove
         -   returntype: void
@@ -249,20 +249,20 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Sets the persistent settings for a given custom web app.
         -   arguments: java.lang.String sessionToken, WebAppSettings webAppSettings
         -   returntype: void
-    -   \[ \] updateMetaproject:
+    -   \[ \] ~~updateMetaproject~~:
         -   description: Updates an existing metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, java.lang.String name, java.lang.String descriptionOrNull
         -   returntype: ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject
-    -   \[ \] updateSampleProperties:
+    -   \[ \] ~~updateSampleProperties~~:
         -   description:
         -   arguments: java.lang.String sessionToken, long sampleID, java.util.Map&lt;java.lang.String,java.lang.String&gt; properties
         -   returntype: void
 -   [IQueryApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/query/shared/api/v1/IQueryApiServer.html)
-    -   \[ \] createReportFromAggregationService:
+    -   \[ \] ~~createReportFromAggregationService~~:
         -   description: Executes the specified aggregation or ingestion service for the specified parameters and creates a report.
         -   arguments: java.lang.String sessionToken, java.lang.String dataStoreCode, java.lang.String serviceKey, java.util.Map&lt;java.lang.String,java.lang.Object&gt; parameters
         -   returntype: QueryTableModel
-    -   \[ \] createReportFromDataSets:
+    -   \[ \] ~~createReportFromDataSets~~:
         -   description: Creates for the specified data sets a report.
         -   arguments: java.lang.String sessionToken, java.lang.String dataStoreCode, java.lang.String serviceKey, java.util.List&lt;java.lang.String&gt; dataSetCodes
         -   returntype: QueryTableModel
@@ -296,15 +296,15 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   arguments:
         -   returntype: java.lang.String
 -   [IDssServiceRpcGeneric](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/generic/shared/api/v1/IDssServiceRpcGeneric.html)
-    -   \[ \] createReportFromAggregationService:
+    -   \[ \] ~~createReportFromAggregationService~~:
         -   description: Create the report from the specified aggregation service.
         -   arguments: java.lang.String sessionToken, java.lang.String aggregationServiceName, java.util.Map&lt;java.lang.String,java.lang.Object&gt; parameters
         -   returntype: QueryTableModel
-    -   \[ \] createReportFromDataSets:
+    -   \[ \] ~~createReportFromDataSets~~:
         -   description: Creates for the specified data sets a report.
         -   arguments: java.lang.String sessionToken, java.lang.String serviceKey, java.util.List&lt;java.lang.String&gt; dataSetCodes
         -   returntype: QueryTableModel
-    -   \[ \] deleteSessionWorkspaceFile:
+    -   \[ \] ~~deleteSessionWorkspaceFile~~:
         -   description: Delete a file or directory in the session workspace.
         -   arguments: java.lang.String sessionToken, java.lang.String path
         -   returntype: boolean
