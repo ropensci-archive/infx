@@ -3,7 +3,7 @@
 \name{make_request}
 \alias{make_request}
 \alias{request_openbis}
-\alias{remove_id}
+\alias{resolve_references}
 \title{Make a JSON-RPC request}
 \usage{
 make_request(url, method, params, version = "2.0",
@@ -14,7 +14,7 @@ request_openbis(method, params, api = c("IGeneralInformationService",
   "IWebInformationService", "IDssServiceRpcGeneric", "IScreeningApiServer",
   "IDssServiceRpcScreening"), host = "https://infectx.biozentrum.unibas.ch")
 
-remove_id(x)
+resolve_references(x)
 }
 \arguments{
 \item{url}{Destination url, the request is sent to.}
@@ -44,8 +44,9 @@ converted to/from \code{json_class} attributes, using \code{\link[=rm_json_class
 root url and an API section name (for the API section mapping, see
 \href{https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API}{docs}).
 As part of the JSON-RPC specification, all objects returned form the API
-will have \code{@id} fields. The helper function \code{remove_id()} recursively
-removes all fields with name \code{@id} from a list.
+will have \code{@id} fields, which may be referenced if an objects is used
+multiple times. The helper function \code{resolve_references()} recursively
+resolves all references such that each object is self-contained.
 }
 \examples{
 \donttest{

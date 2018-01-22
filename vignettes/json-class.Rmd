@@ -42,25 +42,34 @@ where the `@type` filed is used by the deserializer to infer what java object sh
 
 ## Creating `json_class` objects
 
-Again a feature of the Jackson serializer, `@id` fields are generated for all objects by an `ObjectIdGenerator` (an `IntSequenceGenerator` to be more specific), which can be used to represent relationships among objects. These object ids however do not currently serve any purpose on the client side and are therefore recursively stripped by the function `remove_id()`. This initial action is illustrated, using the object `response`
+Again a feature of the Jackson serializer, `@id` fields are generated for all objects by an `ObjectIdGenerator` (an `IntSequenceGenerator` to be more specific), which can be used to represent relationships among objects. These object ids are employed whenever the same object is returned multiple times. This happens for example when several objects representing wells on the same plate are returned. The first `WellIdentifier` object will contain a `PlateIdentifier` object and all subsequent wells identify their parent plate via a reference to this `PlateIdentifier` object. A simplified example, demonstrating this structure is shown below.
 
 ```{r resp}
-response <- list(`@type` = "foobar",
-                 `@id` = 1L,
-                 a = list(`@type` = "foo",
-                          `@id` = 2L,
-                          b = "c"),
-                 d = list(`@type` = "bar",
-                          `@id` = 3L,
-                          e = "f"))
-response <- remove_id(response)
-str(response)
+response <- list(list(`@type` = "WellIdentifier",
+                      `@id` = 1L,
+                      row = "A",
+                      col = 1L,
+                      plate = list(`@type` = "PlateIdentifier",
+                                   `@id` = 2L,
+                                   barcode = "abcd-123")),
+                 list(`@type` = "WellIdentifier",
+                      `@id` = 3L,
+                      row = "A",
+                      col = 2L,
+                      plate = 2L))
 ```
 
 Turning a list such as `response` into a `json_class` S3 class can be done, using the function `as_json_class()` (or its alias `as.json_class()`). This action is applied recursively, meaning that all sub-lists, containing an `@type` field are turned into `json_class` objects as well.
 
 ```{r as-class}
 json_class <- as_json_class(response)
+str(json_class)
+```
+
+In order to resolve object references encoded by `@id` fields, the function `resolve_references()`, which also acts recursively on its input, can be used. This will duplicate all occurrences of referenced objects, introducing a memory penalty, but in turn making objects self-contained. After resolving references, the list of well objects can be subsetted and the second `WellIdentifier` object can be used for a further query on its own.
+
+```{r ref}
+json_class <- resolve_references(json_class)
 str(json_class)
 ```
 

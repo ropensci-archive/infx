@@ -8,8 +8,9 @@
 #' root url and an API section name (for the API section mapping, see
 #' [docs](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API)).
 #' As part of the JSON-RPC specification, all objects returned form the API
-#' will have `@id` fields. The helper function `remove_id()` recursively
-#' removes all fields with name `@id` from a list.
+#' will have `@id` fields, which may be referenced if an objects is used
+#' multiple times. The helper function `resolve_references()` recursively
+#' resolves all references such that each object is self-contained.
 #' 
 #' @param url Destination url, the request is sent to.
 #' @param api,host Strings used to construct the destination url.
@@ -61,8 +62,8 @@ make_request <- function(url,
     stop("Error:\n", paste(names(resp$content$error), resp$content$error,
                            sep = ": ", collapse = "\n"))
 
-  res <- remove_id(resp$content$result)
-  res <- as_json_class(res, force = TRUE)
+  res <- as_json_class(resp$content$result, force = TRUE)
+  res <- resolve_references(res)
   res <- as_json_vec(res, force = TRUE)
 
   res
@@ -106,11 +107,78 @@ request_openbis <- function(method,
 #' @rdname request
 #' @export
 #' 
-remove_id <- function(x) {
+resolve_references <- function(x) {
+  lookup <- unlist_objects(x)
+  traverse_list(x, get_object_spec(lookup), lookup)
+}
+
+unlist_objects <- function(x) {
+
+  gather_objs <- function(obj) {
+    if (is.list(obj)) {
+      if (is_json_class(obj))
+        objects <<- c(objects, list(obj))
+      sapply(obj, gather_objs)
+    }
+    invisible(NULL)
+  }
+
+  objects <- list()
+
+  gather_objs(x)
+
+  objects
+}
+
+get_object_spec <- function(x) {
+
+  assert_that(is.list(x),
+              all(sapply(x, is_json_class)))
+
+  all_classes <- unique(sapply(x, get_json_subclass))
+  obj_spec <- stats::setNames(vector(mode = "list",
+                                     length = length(all_classes)),
+                              all_classes)
+
+  lapply(x, function(obj) {
+    old <- obj_spec[[get_json_subclass(obj)]]
+    new <- lapply(obj, class)
+    all <- union(names(old), names(new))
+    obj_spec[[get_json_subclass(obj)]] <<- stats::setNames(
+      lapply(all, function(nme) unique(c(old[[nme]], new[[nme]]))), all)
+    invisible(NULL)
+  })
+
+  obj_spec
+}
+
+assign_reference <- function(obj, spec, objects) {
+  res <- mapply(function(x, y) {
+    if (isTRUE(class(x) == "integer") && "json_class" %in% y) {
+      z <- objects[[x]]
+      assert_that(x == z[["@id"]],
+                  isTRUE(get_json_subclass(z) == setdiff(y,
+                    c("json_class", "integer"))))
+      z
+    } else
+      x
+  }, obj, spec[names(obj)], SIMPLIFY = FALSE)
+
+  new_json_class(res, class = get_json_subclass(obj))
+}
+
+traverse_list <- function(x, specs, lookup) {
   if (is.list(x)) {
-    if (!is.null(names(x)))
-      x <- x[names(x) != "@id"]
-    lapply(x, remove_id)
-  } else
-    x
+    if (is_json_class(x)) {
+      x <- assign_reference(x[names(x) != "@id"],
+                            specs[[get_json_subclass(x)]],
+                            lookup)
+      x <- new_json_class(lapply(x, traverse_list, specs, lookup),
+                          class = get_json_subclass(x))
+    } else {
+      x <- lapply(x, traverse_list, specs, lookup)
+    }
+  }
+
+  x
 }

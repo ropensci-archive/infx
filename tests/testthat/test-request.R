@@ -12,11 +12,33 @@ test_that("id fields are stripped", {
               foobar = list(`@type` = "bar",
                             `@id` = 3L,
                             j = "k"))
+  jsn <- resolve_references(as_json_class(lst))
+
 
   expect_true(any(grepl("@id", names(unlist(lst)))))
-  expect_false(any(grepl("@id", names(unlist(remove_id(lst))))))
-  expect_identical(remove_id(lst), remove_id(remove_id(lst)))
-  expect_identical(remove_id("a"), "a")
-  expect_identical(remove_id(list(a = "a", `@id` = 1L)), list(a = "a"))
-  expect_identical(remove_id(list(`@id` = 1L)), setNames(list(), character()))
+  expect_false(any(grepl("@id", names(unlist(jsn)))))
+  expect_identical(jsn, resolve_references(jsn))
+  expect_identical(
+    resolve_references(as_json_class(list(
+      `@type` = "foo", `@id` = 1L, a = "a"))),
+    json_class(a = "a", class = "foo"))
+})
+
+test_that("references are resolved", {
+  lst <- list(list(`@type` = "foo",
+                   `@id` = 1L,
+                   a = "b",
+                   c = "d",
+                   e = list(`@type` = "bar",
+                            `@id` = 2L,
+                            f = "g")),
+              list(`@type` = "foo",
+                   `@id` = 3L,
+                   a = "h",
+                   c = "i",
+                   e = 2L))
+  jsn <- resolve_references(as_json_class(lst))
+
+  expect_identical(lst[[2]][["e"]], 2L)
+  expect_identical(jsn[[2]][["e"]], jsn[[1]][["e"]])
 })
