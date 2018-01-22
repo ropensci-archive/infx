@@ -36,6 +36,22 @@ test_that("samples can be listed", {
   expect_identical(get_common_subclass(samp_2), "Sample")
   expect_true(all(sapply(samp_2, has_json_subclass, "Sample")))
   expect_equal(length(samp_2), 2L)
+
+  wells <- list_wells(tok, plates[[1]])
+
+  samp_1 <- list_samples(tok, wells[[1]])
+  expect_is(samp_1, "Sample")
+  expect_is(samp_1, "json_vec")
+  expect_identical(get_common_subclass(samp_1), "Sample")
+  expect_true(all(sapply(samp_1, has_json_subclass, "Sample")))
+  expect_equal(length(samp_1), 1L)
+
+  samp_2 <- list_samples(tok, wells[c(1, 2)])
+  expect_is(samp_2, "Sample")
+  expect_is(samp_2, "json_vec")
+  expect_identical(get_common_subclass(samp_2), "Sample")
+  expect_true(all(sapply(samp_2, has_json_subclass, "Sample")))
+  expect_equal(length(samp_2), 2L)
 })
 
 test_that("sample types can be listed", {

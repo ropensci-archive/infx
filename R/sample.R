@@ -67,5 +67,25 @@ list_samples.Plate <- function(token, x, ...)
 #' @rdname list_samples
 #' @export
 #' 
+list_samples.WellIdentifier <- function(token, x, ...) {
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  res <- lapply(x, function(well) {
+    assert_that(has_json_subclass(well[["plateIdentifier"]],
+                                  "PlateIdentifier"))
+    well[["plateIdentifier"]] <- Filter(Negate(is.null),
+                                        well[["plateIdentifier"]])
+    request_openbis("getWellSample", list(token, well),
+                    "IScreeningApiServer")
+  })
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_samples
+#' @export
+#' 
 list_sample_types <- function(token)
   request_openbis("listSampleTypes", token)

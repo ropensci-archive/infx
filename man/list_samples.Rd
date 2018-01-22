@@ -6,6 +6,7 @@
 \alias{list_samples.Experiment}
 \alias{list_samples.PlateIdentifier}
 \alias{list_samples.Plate}
+\alias{list_samples.WellIdentifier}
 \alias{list_sample_types}
 \title{List samples}
 \usage{
@@ -18,6 +19,8 @@ list_samples(token, x, ...)
 \method{list_samples}{PlateIdentifier}(token, x, ...)
 
 \method{list_samples}{Plate}(token, x, ...)
+
+\method{list_samples}{WellIdentifier}(token, x, ...)
 
 list_sample_types(token)
 }

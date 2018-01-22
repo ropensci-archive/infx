@@ -43,7 +43,8 @@ skip <- c("VisibleToUser", "OnBehalfOfUser")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "list_projects",
           "listExperiments", "listExperimentTypes",
-          "listSamplesForExperiment", "getPlateSample", "listSampleTypes",
+          "listSamplesForExperiment", "getPlateSample", "getWellSample",
+          "listSampleTypes",
           "listDataSetTypes",
           "listPlates", "listPlateWells")
 

@@ -22,6 +22,9 @@ test_that("id fields are stripped", {
     resolve_references(as_json_class(list(
       `@type` = "foo", `@id` = 1L, a = "a"))),
     json_class(a = "a", class = "foo"))
+  expect_identical(
+    resolve_references(as_json_class(list(`@type` = "foo", `@id` = 1L))),
+    as_json_class(list(`@type` = "foo")))
 })
 
 test_that("references are resolved", {

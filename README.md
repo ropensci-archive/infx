@@ -397,7 +397,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given plateIdentifier, return the corresponding Sample.
         -   arguments: java.lang.String sessionToken, PlateIdentifier plateIdentifier
         -   returntype: Sample
-    -   \[ \] getWellSample:
+    -   \[x\] getWellSample:
         -   description: For a given wellIdentifier, return the corresponding Sample including properties.
         -   arguments: java.lang.String sessionToken, WellIdentifier wellIdentifier
         -   returntype: Sample
