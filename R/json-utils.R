@@ -46,6 +46,38 @@ has_fields.json_class <- function(x, fields, ...)
 has_fields.json_vec <- function(x, fields, ...)
   all(sapply(x, has_fields, fields))
 
+#' Remove NULL entries
+#'
+#' Recursively remove all NULL fields from a nested list structure while
+#' preserving `json_class` and `json_vec` class attributes.
+#' 
+#' @param x Object to process.
+#' 
+#' @rdname remove_null
+#'  
+#' @examples
+#' tmp <- json_class(a = json_class(b = "c", d = NULL, class = "foo"),
+#'                   e = json_class(f = "g", class = "bar"),
+#'                   h = NULL,
+#'                   class = "foobar")
+#' print(tmp, 2)
+#' print(remove_null(tmp), 2)
+#' 
+#' @export
+#' 
+remove_null <- function(x) {
+  if (is.list(x)) {
+    tmp <- Filter(Negate(is.null), lapply(x, remove_null))
+    if (is_json_class(x))
+      new_json_class(tmp, class = get_json_subclass(x))
+    else if (is_json_vec(x))
+      new_json_vec(tmp)
+    else
+      tmp
+  } else
+    x
+}
+
 #' Print JSON objects
 #'
 #' Inspired by the ast printing function of Hadley's `lobstr` package and

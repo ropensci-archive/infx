@@ -25,6 +25,31 @@ test_that("json objects can be checked for fields", {
   expect_error(has_fields(list(a = 1), "a"))
 })
 
+test_that("NULL fields can be filtered", {
+  tmp <- json_class(a = json_class(b = "c", d = NULL, class = "foo"),
+                    e = json_class(f = "g", class = "bar"),
+                    h = NULL,
+                    class = "foobar")
+  tmp <- json_vec(tmp, tmp)
+
+  expect_false(any(sapply(tmp, is.null)))
+  expect_true(any(sapply(tmp[[1]], is.null)))
+  expect_true(any(sapply(tmp[[1]]$a, is.null)))
+  expect_false(any(sapply(tmp[[1]]$e, is.null)))
+
+  tmp <- remove_null(tmp)
+  expect_false(any(sapply(tmp, is.null)))
+  expect_false(any(sapply(tmp[[1]], is.null)))
+  expect_false(any(sapply(tmp[[1]]$a, is.null)))
+  expect_false(any(sapply(tmp[[1]]$e, is.null)))
+
+  expect_true(is_json_vec(tmp))
+  expect_true(has_json_subclass(tmp, "foobar"))
+  expect_identical(get_common_subclass(tmp), "foobar")
+  expect_true(all(sapply(tmp, is_json_class)))
+})
+
+
 test_that("json objects can be printed", {
   expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
                 "█─foo \n└─a")
