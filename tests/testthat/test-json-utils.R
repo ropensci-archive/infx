@@ -44,7 +44,6 @@ test_that("NULL fields can be filtered", {
   expect_false(any(sapply(tmp[[1]]$e, is.null)))
 
   expect_true(is_json_vec(tmp))
-  expect_true(has_json_subclass(tmp, "foobar"))
   expect_identical(get_common_subclass(tmp), "foobar")
   expect_true(all(sapply(tmp, is_json_class)))
 })

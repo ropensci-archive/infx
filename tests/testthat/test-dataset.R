@@ -2,7 +2,7 @@ context("dataset")
 
 test_that("datasets can be listed", {
   exp_ids <- list_experiment_ids(tok)
-  samples <- list_samples(tok, plate_1[c(1, 2)])
+  samples <- list_samples(tok, exp_ids[c(1, 2)])
 
   ds_1 <- list_datasets(tok, samples[[1]])
   expect_is(ds_1, "DataSet")
