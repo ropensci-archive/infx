@@ -1,9 +1,13 @@
 
 #' List datasets
 #'
-#' Given a login token, all available datasets are listed.
+#' Given a login token, all available datasets are listed for the given
+#' experiment(s) or sample(s). Additionally it can be specified whether parent
+#' or child datasets are to be included as well.
 #' 
 #' @inheritParams logout_openbis
+#' @param x Object to limit search for datasets with.
+#' @param include Whether to include parent/child datasets as well.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
 #' `areOnlyDirectlyConnectedIncluded`, which is currently fixed to `TRUE`. The
@@ -53,6 +57,31 @@ list_datasets.Sample <- function(token,
 
     request_openbis("listDataSets", list(token, x, include))
   }
+}
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.Experiment <- function(token,
+                                     x,
+                                     include = c(NA, "children", "parents",
+                                                 "all"),
+                                     ...) {
+
+  include <- match.arg(include)
+  x <- remove_null(x)
+
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
+  if (is.na(include))
+    include <- list()
+  else if (include == "all")
+    include <- list("CHILDREN", "PARENTS")
+  else
+    include <- list(toupper(include))
+
+  request_openbis("listDataSetsForExperiments", list(token, x, include))
 }
 
 #' List dataset types

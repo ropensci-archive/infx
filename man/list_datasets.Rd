@@ -3,18 +3,28 @@
 \name{list_datasets}
 \alias{list_datasets}
 \alias{list_datasets.Sample}
+\alias{list_datasets.Experiment}
 \title{List datasets}
 \usage{
 list_datasets(token, x, ...)
 
 \method{list_datasets}{Sample}(token, x, include = c(NA, "children",
   "parents", "all"), ...)
+
+\method{list_datasets}{Experiment}(token, x, include = c(NA, "children",
+  "parents", "all"), ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
+
+\item{x}{Object to limit search for datasets with.}
+
+\item{include}{Whether to include parent/child datasets as well.}
 }
 \description{
-Given a login token, all available datasets are listed.
+Given a login token, all available datasets are listed for the given
+experiment(s) or sample(s). Additionally it can be specified whether parent
+or child datasets are to be included as well.
 }
 \section{TODO}{
  The API function \code{listDataSetsForSample()} has a parameter

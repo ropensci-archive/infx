@@ -84,27 +84,27 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Lists attachments of specified sample.
         -   arguments: java.lang.String sessionToken, ISampleId sampleId, boolean allVersions
         -   returntype: java.util.List&lt;Attachment&gt;
-    -   \[ \] listDataSets:
+    -   \[x\] listDataSets:
         -   description: Return all data sets attached to the given samples.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Sample&gt; samples
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] listDataSets:
+    -   \[x\] listDataSets:
         -   description: Return all data sets attached to the given samples with connections.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Sample&gt; samples, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] listDataSetsForExperiments:
+    -   \[x\] listDataSetsForExperiments:
         -   description: Return all data sets attached to the given experiments with connections.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Experiment&gt; experiments, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] ~~listDataSetsForExperimentsOnBehalfOfUser~~:
+    -   \[x\] ~~listDataSetsForExperimentsOnBehalfOfUser~~:
         -   description: Return all data sets attached to the given experiments with connections that the user userId is allowed to see.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Experiment&gt; experiments, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet, java.lang.String userId
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] listDataSetsForSample:
+    -   \[x\] listDataSetsForSample:
         -   description: Return the data sets attached to the specified sample, optionally including child samples.
         -   arguments: java.lang.String sessionToken, Sample sample, boolean areOnlyDirectlyConnectedIncluded
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] ~~listDataSetsOnBehalfOfUser~~:
+    -   \[x\] ~~listDataSetsOnBehalfOfUser~~:
         -   description: Return all data sets attached to the given samples with connections that the user userId is allowed to see.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Sample&gt; samples, java.util.EnumSet&lt;DataSet.Connections&gt; connectionsToGet, java.lang.String userId
         -   returntype: java.util.List&lt;DataSet&gt;
@@ -364,15 +364,15 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns meta data for all reporting plugins which deliver a table.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ReportDescription&gt;
-    -   \[ \] putDataSet:
+    -   \[ \] ~~putDataSet~~:
         -   description: Upload a new data set to the DSS.
         -   arguments: java.lang.String sessionToken, NewDataSetDTO newDataset, java.io.InputStream inputStream
         -   returntype: java.lang.String
-    -   \[ \] putFileSliceToSessionWorkspace:
+    -   \[ \] ~~putFileSliceToSessionWorkspace~~:
         -   description: Upload a file slice to the user's session workspace.
         -   arguments: java.lang.String sessionToken, java.lang.String filePath, long slicePosition, java.io.InputStream sliceInputStream
         -   returntype: long
-    -   \[ \] putFileToSessionWorkspace:
+    -   \[ \] ~~putFileToSessionWorkspace~~:
         -   description: Upload a new file to the user's session workspace.
         -   arguments: java.lang.String sessionToken, java.lang.String filePath, java.io.InputStream inputStream
         -   returntype: long
