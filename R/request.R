@@ -157,8 +157,7 @@ assign_reference <- function(obj, spec, objects) {
     if (isTRUE(class(x) == "integer") && "json_class" %in% y) {
       z <- objects[[x]]
       assert_that(x == z[["@id"]],
-                  isTRUE(get_json_subclass(z) == setdiff(y,
-                    c("json_class", "integer"))))
+                  isTRUE(get_json_subclass(z) %in% y))
       z
     } else
       x
