@@ -4,6 +4,7 @@
 \alias{list_datasets}
 \alias{list_datasets.Sample}
 \alias{list_datasets.Experiment}
+\alias{list_datasets.character}
 \title{List datasets}
 \usage{
 list_datasets(token, x, ...)
@@ -12,6 +13,9 @@ list_datasets(token, x, ...)
   "parents", "all"), ...)
 
 \method{list_datasets}{Experiment}(token, x, include = c(NA, "children",
+  "parents", "all"), ...)
+
+\method{list_datasets}{character}(token, x, include = c(NA, "children",
   "parents", "all"), ...)
 }
 \arguments{
@@ -23,8 +27,8 @@ list_datasets(token, x, ...)
 }
 \description{
 Given a login token, all available datasets are listed for the given
-experiment(s) or sample(s). Additionally it can be specified whether parent
-or child datasets are to be included as well.
+experiment(s), sample(s) or dataset code(s). Additionally it can be
+specified whether parent or child datasets are to be included as well.
 }
 \section{TODO}{
  The API function \code{listDataSetsForSample()} has a parameter

@@ -2,8 +2,8 @@
 #' List datasets
 #'
 #' Given a login token, all available datasets are listed for the given
-#' experiment(s) or sample(s). Additionally it can be specified whether parent
-#' or child datasets are to be included as well.
+#' experiment(s), sample(s) or dataset code(s). Additionally it can be
+#' specified whether parent or child datasets are to be included as well.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets with.
@@ -35,10 +35,10 @@ list_datasets.Sample <- function(token,
                                  include = c(NA, "children", "parents", "all"),
                                  ...) {
 
-  include <- match.arg(include)
+  include <- resolve_fetch_opts(include)
   x <- remove_null(x)
 
-  if (is.na(include)) {
+  if (length(include) == 0L) {
 
     if (!is_json_vec(x))
       request_openbis("listDataSetsForSample", list(token, x, TRUE))
@@ -46,11 +46,6 @@ list_datasets.Sample <- function(token,
       request_openbis("listDataSets", list(token, x))
 
   } else {
-
-    if (include == "all")
-      include <- list("CHILDREN", "PARENTS")
-    else
-      include <- list(toupper(include))
 
     if (!is_json_vec(x))
       x <- as_json_vec(x)
@@ -67,21 +62,30 @@ list_datasets.Experiment <- function(token,
                                      include = c(NA, "children", "parents",
                                                  "all"),
                                      ...) {
-
-  include <- match.arg(include)
   x <- remove_null(x)
 
   if (!is_json_vec(x))
     x <- as_json_vec(x)
 
-  if (is.na(include))
-    include <- list()
-  else if (include == "all")
-    include <- list("CHILDREN", "PARENTS")
-  else
-    include <- list(toupper(include))
+  request_openbis("listDataSetsForExperiments",
+                  list(token, x, resolve_fetch_opts(include)))
+}
 
-  request_openbis("listDataSetsForExperiments", list(token, x, include))
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.character <- function(token,
+                                    x,
+                                    include = c(NA, "children", "parents",
+                                                "all"),
+                                    ...) {
+
+  include <- resolve_fetch_opts(include)
+
+  if (length(include) == 2L)
+    request_openbis("getDataSetMetaData", list(token, as.list(x)))
+  else
+    request_openbis("getDataSetMetaData", list(token, as.list(x), include))
 }
 
 #' List dataset types
@@ -96,3 +100,15 @@ list_datasets.Experiment <- function(token,
 #' 
 list_dataset_types <- function(token)
   request_openbis("listDataSetTypes", token)
+
+resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
+
+  x <- match.arg(x)
+
+  if (is.na(x))
+    list()
+  else if (x == "all")
+    list("CHILDREN", "PARENTS")
+  else
+    list(toupper(x))
+}
