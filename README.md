@@ -36,11 +36,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns a filtered list of allSamples containing those samples which are visible to userId.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;Sample&gt; allSamples, java.lang.String userId
         -   returntype: java.util.List&lt;Sample&gt;
-    -   \[ \] getDataSetMetaData:
+    -   \[x\] getDataSetMetaData:
         -   description: Returns meta data for all specified data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] getDataSetMetaData:
+    -   \[x\] getDataSetMetaData:
         -   description: Returns meta data for all specified data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes, java.util.EnumSet&lt;DataSetFetchOption&gt; fetchOptions
         -   returntype: java.util.List&lt;DataSet&gt;

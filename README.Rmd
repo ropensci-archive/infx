@@ -46,7 +46,7 @@ done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listExperiments", "listExperimentTypes",
           "listSamplesForExperiment", "getPlateSample", "getWellSample",
           "listSampleTypes",
-          "listDataSets", "listDataSetTypes",
+          "listDataSets", "getDataSetMetaData", "listDataSetTypes",
           "listPlates", "listPlateWells")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
