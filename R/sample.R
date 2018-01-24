@@ -73,11 +73,7 @@ list_samples.WellIdentifier <- function(token, x, ...) {
     x <- as_json_vec(x)
 
   res <- lapply(x, function(well) {
-    assert_that(has_json_subclass(well[["plateIdentifier"]],
-                                  "PlateIdentifier"))
-    well[["plateIdentifier"]] <- Filter(Negate(is.null),
-                                        well[["plateIdentifier"]])
-    request_openbis("getWellSample", list(token, well),
+    request_openbis("getWellSample", list(token, remove_null(well)),
                     "IScreeningApiServer")
   })
 
