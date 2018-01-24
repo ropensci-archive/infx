@@ -39,20 +39,18 @@ list_datasets.Sample <- function(token,
   include <- resolve_fetch_opts(include)
   x <- remove_null(x)
 
+  if (!is_json_vec(x))
+    x <- as_json_vec(x)
+
   if (length(include) == 0L) {
 
-    if (!is_json_vec(x))
-      request_openbis("listDataSetsForSample", list(token, x, TRUE))
+    if (length(x) == 1L)
+      request_openbis("listDataSetsForSample", list(token, x[[1]], TRUE))
     else
       request_openbis("listDataSets", list(token, x))
 
-  } else {
-
-    if (!is_json_vec(x))
-      x <- as_json_vec(x)
-
+  } else
     request_openbis("listDataSets", list(token, x, include))
-  }
 }
 
 #' @rdname list_datasets
