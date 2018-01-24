@@ -56,7 +56,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns the materials with specified identifiers (i.e.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;MaterialIdentifier&gt; materialIdentifier
         -   returntype: java.util.List&lt;Material&gt;
-    -   \[ \] getMetaproject:
+    -   \[ \] ~~getMetaproject~~:
         -   description: Returns all entities tagged with given metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId
         -   returntype: MetaprojectAssignments
@@ -72,15 +72,15 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns true if session with the specified token is still active, false otherwise.
         -   arguments: java.lang.String sessionToken
         -   returntype: boolean
-    -   \[ \] listAttachmentsForExperiment:
+    -   \[ \] ~~listAttachmentsForExperiment~~:
         -   description: Lists attachments of specified experiment.
         -   arguments: java.lang.String sessionToken, IExperimentId experimentId, boolean allVersions
         -   returntype: java.util.List&lt;Attachment&gt;
-    -   \[ \] listAttachmentsForProject:
+    -   \[ \] ~~listAttachmentsForProject~~:
         -   description: Lists attachments of specified project.
         -   arguments: java.lang.String sessionToken, IProjectId projectId, boolean allVersions
         -   returntype: java.util.List&lt;Attachment&gt;
-    -   \[ \] listAttachmentsForSample:
+    -   \[ \] ~~listAttachmentsForSample~~:
         -   description: Lists attachments of specified sample.
         -   arguments: java.lang.String sessionToken, ISampleId sampleId, boolean allVersions
         -   returntype: java.util.List&lt;Attachment&gt;
@@ -136,7 +136,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns all experiment types.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ExperimentType&gt;
-    -   \[ \] listMetaprojects:
+    -   \[ \] ~~listMetaprojects~~:
         -   description: Lists all metaprojects belonging to current user.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject&gt;
