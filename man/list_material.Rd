@@ -7,19 +7,26 @@
 \usage{
 list_material(token, x)
 
-material_id(code, type = "gene")
+material_id(code, type = "gene", mode = c("generic", "screening"))
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{x}{A (vector of) MaterialIdentifier object(s).}
+
+\item{type}{The material type (possible values depend on mode).}
+
+\item{mode}{Switch between generic and screening material id objects.}
 }
 \description{
 List all materials available on the queried openBIS instance for a given
 set of material id objects. Unfortunately there is no way for the available
 API version to list material id objects. These have to be instantiated by
 the user, using the function \code{material_id()}. A material id object is
-defined by a material code and a material type. Current types are
+defined by a material code and a material type. Furthermore, two different
+types of material id objects are used for different API sections:
+\code{MaterialIdentifierGeneric} and \code{MaterialIdentifierScreening}. Current
+types for generic material object ids are
 }
 \details{
 \itemize{
@@ -34,6 +41,14 @@ defined by a material code and a material type. Current types are
 \item sirna
 }
 
-The construction of material codes depends on material type, for example for
-genes, the code is an ENTREZ id.
+and for generic screening object ids
+\itemize{
+\item compound
+\item gene
+\item oligo
+}
+
+The construction of material codes depends on material type. Genes, for
+example are identified with Entrez gene ids (e.g. 2475 for MTOR), while for
+compounds, a manufacturer name is used.
 }

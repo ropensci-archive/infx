@@ -21,6 +21,15 @@ test_that("material ids can be created", {
   expect_error(material_id(1:3, type = c("gene", "gene")))
   expect_error(material_id(1:3, type = 1:3))
   expect_error(material_id(1:3, type = "gen"))
+
+  material <- material_id(2475L, mode = "screening")
+  expect_is(material, "MaterialIdentifierScreening")
+  expect_is(material, "json_vec")
+  expect_identical(get_common_subclass(material),
+                   "MaterialIdentifierScreening")
+  expect_true(all(sapply(material, has_json_subclass,
+              "MaterialIdentifierScreening")))
+  expect_equal(length(material), 1L)
 })
 
 test_that("materials can be listed", {
