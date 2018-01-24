@@ -40,7 +40,9 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
 
 ```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
 skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
-          "^remove", "^update", "put", "Metaproject", "Attachments")
+          "^remove", "^update", "put", "Metaproject", "Attachments",
+          "SpacesWithProjects", "Vocabularies", "WebAppSettings", "Query",
+          "Queries", "Aggregation", "TableReport")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listProjects",
           "listExperiments", "listExperimentTypes",

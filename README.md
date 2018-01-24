@@ -168,11 +168,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns all sample types.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;SampleType&gt;
-    -   \[ \] listSpacesWithProjectsAndRoleAssignments:
+    -   \[ \] ~~listSpacesWithProjectsAndRoleAssignments~~:
         -   description: Returns all spaces of specified database instance enriched with their projects and role assignments.
         -   arguments: java.lang.String sessionToken, java.lang.String databaseInstanceCodeOrNull
         -   returntype: java.util.List&lt;SpaceWithProjectsAndRoleAssignments&gt;
-    -   \[ \] listVocabularies:
+    -   \[ \] ~~listVocabularies~~:
         -   description: Returns all available vocabularies together with the contained terms.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;Vocabulary&gt;
@@ -237,7 +237,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Deletes an existing metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId
         -   returntype: void
-    -   \[ \] getWebAppSettings:
+    -   \[ \] ~~getWebAppSettings~~:
         -   description: Returns the persistent settings for a given custom web app.
         -   arguments: java.lang.String sessionToken, java.lang.String webAppId
         -   returntype: WebAppSettings
@@ -245,7 +245,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Removes given entities from an existing metaproject.
         -   arguments: java.lang.String sessionToken, IMetaprojectId metaprojectId, MetaprojectAssignmentsIds assignmentsToRemove
         -   returntype: void
-    -   \[ \] setWebAppSettings:
+    -   \[ \] ~~setWebAppSettings~~:
         -   description: Sets the persistent settings for a given custom web app.
         -   arguments: java.lang.String sessionToken, WebAppSettings webAppSettings
         -   returntype: void
@@ -266,19 +266,19 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Creates for the specified data sets a report.
         -   arguments: java.lang.String sessionToken, java.lang.String dataStoreCode, java.lang.String serviceKey, java.util.List&lt;java.lang.String&gt; dataSetCodes
         -   returntype: QueryTableModel
-    -   \[ \] executeQuery:
+    -   \[ \] ~~executeQuery~~:
         -   description: Executes specified query using specified parameter bindings.
         -   arguments: java.lang.String sessionToken, long queryID, java.util.Map&lt;java.lang.String,java.lang.String&gt; parameterBindings
         -   returntype: QueryTableModel
-    -   \[ \] listAggregationServices:
+    -   \[ \] ~~listAggregationServices~~:
         -   description: Returns metadata for all aggregation and ingestion services.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;AggregationServiceDescription&gt;
-    -   \[ \] listQueries:
+    -   \[ \] ~~listQueries~~:
         -   description: Lists all queries available for the user of the specified session.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;QueryDescription&gt;
-    -   \[ \] listTableReportDescriptions:
+    -   \[ \] ~~listTableReportDescriptions~~:
         -   description: Returns meta data for all reporting plugins which deliver a table.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ReportDescription&gt;
@@ -286,7 +286,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Logout the session with the specified session token.
         -   arguments: java.lang.String sessionToken
         -   returntype: void
-    -   \[ \] tryToAuthenticateAtQueryServer:
+    -   \[ \] ~~tryToAuthenticateAtQueryServer~~:
         -   description: Tries to authenticate specified user with specified password.
         -   arguments: java.lang.String userID, java.lang.String userPassword
         -   returntype: java.lang.String
@@ -344,7 +344,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Get the validation script for the specified data set type.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetTypeOrNull
         -   returntype: java.lang.String
-    -   \[ \] listAggregationServices:
+    -   \[ \] ~~listAggregationServices~~:
         -   description: Returns metadata for all aggregation services.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;AggregationServiceDescription&gt;
@@ -360,7 +360,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path, boolean isRecursive
         -   returntype: FileInfoDssDTO\[\]
-    -   \[ \] listTableReportDescriptions:
+    -   \[ \] ~~listTableReportDescriptions~~:
         -   description: Returns meta data for all reporting plugins which deliver a table.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ReportDescription&gt;
