@@ -100,3 +100,57 @@ list_wells.PlateIdentifier <- function(token, x, ...) {
 #' 
 list_wells.Plate <- function(token, x, ...)
   list_wells(token, plate_to_plateid(x))
+
+#' List plate/well references
+#'
+#' Given a login token, all wells available to the corresponding user on the
+#' queried openBIS instance, which are associated with any of the given
+#' material(s), are listed. If multiple material ids are searched for (e.g. a
+#' `json_vec` of `MaterialIdentifierScreening`), an API call for each
+#' object has to be made. The search can be limited to a single experiment,
+#' specified either as `Experiment` or `ExperimentIdentifier`
+#' 
+#' @inheritParams logout_openbis
+#' @param material_id Material id(s) corresponding to which wells are searched
+#' for a collection of `MaterialIdentifierScreening` is expected.
+#' @param experiment_id Additionally, the search can be limited to a single
+#' experiment, specified either as `Experiment` or `ExperimentIdentifier`.
+#' @param include_datasets Logical switch indicating whether to also return
+#' the connected image and image analysis data sets.
+#' 
+#' @export
+#' 
+list_plate_well_ref <- function(token,
+                                material_id,
+                                experiment_id = NULL,
+                                include_datasets = FALSE) {
+
+  if (!is_json_vec(material_id))
+    material_id <- as_json_vec(material_id)
+
+  assert_that(all(sapply(material_id, has_json_subclass,
+                         "MaterialIdentifierScreening")))
+
+  if (is.null(experiment_id)) {
+
+    res <- lapply(material_id, function(mat)
+      request_openbis("listPlateWells", list(token, mat, include_datasets),
+                      "IScreeningApiServer"))
+  } else {
+
+    if (is_json_vec(experiment_id))
+      experiment_id <- as_json_class(experiment_id)
+
+    if (has_json_subclass(experiment_id, "Experiment"))
+      experiment_id <- exp_to_expid(experiment_id)
+
+    assert_that(has_json_subclass(experiment_id, "ExperimentIdentifier"))
+
+    res <- lapply(material_id, function(mat)
+      request_openbis("listPlateWells", list(token, experiment_id, mat,
+                                             include_datasets),
+                      "IScreeningApiServer"))
+  }
+
+  as_json_vec(do.call(c, res))
+}
