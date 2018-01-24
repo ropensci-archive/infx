@@ -14,6 +14,8 @@ material_id(code, type = "gene", mode = c("generic", "screening"))
 
 \item{x}{A (vector of) MaterialIdentifier object(s).}
 
+\item{code}{The material code for which an id object is created.}
+
 \item{type}{The material type (possible values depend on mode).}
 
 \item{mode}{Switch between generic and screening material id objects.}
