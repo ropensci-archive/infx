@@ -16,6 +16,7 @@ reference:
       - list_wells
       - list_samples
       - list_datasets
+      - list_material
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
     contents: 

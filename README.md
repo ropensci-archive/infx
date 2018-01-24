@@ -52,7 +52,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns the URL for the default data store server for this openBIS AS.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.lang.String
-    -   \[ \] getMaterialByCodes:
+    -   \[x\] getMaterialByCodes:
         -   description: Returns the materials with specified identifiers (i.e.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;MaterialIdentifier&gt; materialIdentifier
         -   returntype: java.util.List&lt;Material&gt;
