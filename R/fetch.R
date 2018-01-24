@@ -168,7 +168,9 @@ fetch_plate <- function(token,
                         plate_id,
                         file_regex) {
 
-  ds <- list_plate_datasets(token, plate_id)
+  ds <- list_datasets(token, list_samples(token,
+                                          create_plate_id(plate_id,
+                                                          token = token)))
 
   ds <- extract_dataset(ds, type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
                         most_recent = TRUE)[[1]]
@@ -253,7 +255,8 @@ fetch_meta <- function(token,
 #' 
 extract_dataset <- function(ds, type = NULL, most_recent = FALSE) {
 
-  if (is_json_class(ds)) ds <- list(ds)
+  if (!is_json_vec(ds))
+    ds <- as_json_vec(ds)
 
   assert_that(all(sapply(ds, has_json_subclass, "DataSet")),
               length(ds) >= 1L)

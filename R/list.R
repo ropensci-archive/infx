@@ -14,36 +14,6 @@
 list_projects <- function(token)
   request_openbis("listProjects", token)
 
-#' @title Get data sets for a plate
-#'
-#' @description Given a plate id (barcode), the corresponding sample object is
-#' fetched using [get_plate_sample] and all available datasets for this sample
-#' are queried.
-#' 
-#' @inheritParams get_plate_sample
-#' 
-#' @return List, containing (among others), fields \"code\", and
-#' \"dataSetTypeCode\".
-#' 
-#' @export
-#' 
-list_plate_datasets <- function(token,
-                                plate_id) {
-
-  sample <- get_plate_sample(token, plate_id)
-
-  assert_that(length(sample) == 1L)
-
-  sample <- sample[[1]]
-  assert_that(has_json_subclass(sample, "Sample"))
-
-  request_openbis("listDataSetsForSample",
-                  list(token,
-                       sample[c("id", "permId", "identifier", "properties",
-                                "retrievedFetchOptions")],
-                       TRUE))
-}
-
 #' @title Get data sets for a set of experiments
 #'
 #' @description Given a set of experiments as a data.frame, the corresponding

@@ -34,13 +34,6 @@ test_that("openbis downloads can be created", {
                     "retrievedFetchOptions") %in% names(samp[[1]])))
   expect_equal(length(samp[[1]][["permId"]]), 1L)
 
-  expect_is(ds <- list_plate_datasets(tok, "BB02-2E"), "json_vec")
-  expect_true(all(sapply(ds, is_json_class)))
-  expect_true(all(sapply(ds, has_json_subclass, "DataSet")))
-  expect_gte(length(ds), 1L)
-  expect_equal(2 * length(ds),
-               length(unlist(lapply(ds, `[`, c("code", "dataSetTypeCode")))))
-
   expect_is(files <- list_files(tok, "20160921085125038-3519900"), "json_vec")
   expect_true(all(sapply(files, is_json_class)))
   expect_true(all(sapply(files, has_json_subclass, "FileInfoDssDTO")))
