@@ -8,6 +8,7 @@
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets with.
 #' @param include Whether to include parent/child datasets as well.
+#' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
 #' `areOnlyDirectlyConnectedIncluded`, which is currently fixed to `TRUE`. The

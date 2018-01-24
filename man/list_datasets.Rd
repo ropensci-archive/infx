@@ -23,6 +23,8 @@ list_datasets(token, x, ...)
 
 \item{x}{Object to limit search for datasets with.}
 
+\item{...}{Generic compatibility.}
+
 \item{include}{Whether to include parent/child datasets as well.}
 }
 \description{

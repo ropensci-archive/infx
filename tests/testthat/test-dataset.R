@@ -25,7 +25,7 @@ test_that("datasets can be listed", {
   expect_is(ds_3, "json_vec")
   expect_identical(get_common_subclass(ds_3), "DataSet")
   expect_true(all(sapply(ds_3, has_json_subclass, "DataSet")))
-  expect_gte(length(ds_3), length(ds_2))
+  expect_gte(length(ds_3), length(ds_1))
   expect_true(all(sapply(lapply(ds_3, `[[`, "retrievedConnections"),
                          identical, list("PARENTS", "CHILDREN"))))
 
@@ -52,7 +52,7 @@ test_that("datasets can be listed", {
   expect_is(ds_3, "json_vec")
   expect_identical(get_common_subclass(ds_3), "DataSet")
   expect_true(all(sapply(ds_3, has_json_subclass, "DataSet")))
-  expect_gte(length(ds_3), length(ds_2))
+  expect_gte(length(ds_3), length(ds_1))
   expect_true(all(sapply(lapply(ds_3, `[[`, "retrievedConnections"),
                          identical, list("PARENTS", "CHILDREN"))))
 
