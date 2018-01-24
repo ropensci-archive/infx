@@ -14,37 +14,6 @@
 list_projects <- function(token)
   request_openbis("listProjects", token)
 
-#' @title Get data sets for a set of experiments
-#'
-#' @description Given a set of experiments as a data.frame, the corresponding
-#' data sets are queried. Can be slow if several experiments are included in
-#' the query.
-#' 
-#' @inheritParams logout_openbis
-#' @param experiment A data.frame representing a set of experiments.
-#' 
-#' @return List, containing (among others), entries \"code\" and
-#' \"dataSetTypeCode\".
-#' 
-#' @export
-#' 
-list_exp_datasets <- function(token,
-                              experiment) {
-
-  if (has_json_subclass(experiment, "Experiment"))
-    experiment <- list(experiment)
-
-  assert_that(all(sapply(experiment, has_json_subclass, "Experiment")),
-              length(experiment) >= 1L)
-
-  request_openbis("listDataSetsForExperiments",
-                  list(token,
-                       lapply(experiment, `[`,
-                              c("id", "permId", "identifier", "properties",
-                                "experimentTypeCode")),
-                       list("CHILDREN")))
-}
-
 #' @title Get files for a data set
 #'
 #' @description Given a data set code, the corresponding files are queried.

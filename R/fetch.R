@@ -219,7 +219,7 @@ fetch_meta <- function(token,
 
   assert_that(length(exp) == 1L)
 
-  ds <- list_exp_datasets(token, exp)
+  ds <- list_datasets(token, exp)
 
   ds <- extract_dataset(ds, type = "HCS_ANALYSIS_WELL_REPORT_CSV")
 
