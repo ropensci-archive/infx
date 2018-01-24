@@ -158,7 +158,7 @@ fetch_files <- function(token,
 #' and filtered by a regular expression applied to file names. 
 #' 
 #' @param file_regex The plate barcode of interest.
-#' @inheritParams get_plate_sample
+#' @inheritParams create_plate_id
 #' 
 #' @return A list of downloaded file data (raw).
 #' 

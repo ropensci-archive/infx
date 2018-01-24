@@ -26,14 +26,6 @@ test_that("openbis downloads can be created", {
   expect_lt(length(plates_exp), length(plates))
   expect_error(list_plates(tok, "foo"))
 
-  expect_is(samp <- get_plate_sample(tok, "BB02-2E"), "json_vec")
-  expect_s3_class(samp, "json_vec")
-  expect_s3_class(samp, "Sample")
-  expect_true(has_json_subclass(samp[[1]], "Sample"))
-  expect_true(all(c("id", "permId", "identifier", "properties",
-                    "retrievedFetchOptions") %in% names(samp[[1]])))
-  expect_equal(length(samp[[1]][["permId"]]), 1L)
-
   expect_is(files <- list_files(tok, "20160921085125038-3519900"), "json_vec")
   expect_true(all(sapply(files, is_json_class)))
   expect_true(all(sapply(files, has_json_subclass, "FileInfoDssDTO")))

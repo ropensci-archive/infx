@@ -61,22 +61,3 @@ list_exp_datasets <- function(token,
 list_files <- function(token, data_id, folder = "original")
   request_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
                   "IDssServiceRpcGeneric")
-
-#' @title Get sample object of plate
-#'
-#' @description Given a plate id (barcode), the corresponding plate space is
-#' determined using [list_plates] and the sample object representing the given
-#' plate is queried.
-#' 
-#' @inheritParams create_plate_id
-#' 
-#' @return List, containing (among others), entries \"id\", \"permId\",
-#' \"identifier\", \"properties\", \"retrievedFetchOptions\".
-#' 
-#' @export
-#' 
-get_plate_sample <- function(token, plate_id, space_code = NULL)
-  request_openbis("getPlateSample",
-                  list(token,
-                       create_plate_id(plate_id, space_code, token)),
-                  "IScreeningApiServer")
