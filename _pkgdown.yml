@@ -17,6 +17,10 @@ reference:
       - list_samples
       - list_datasets
       - list_material
+  - title: Download urls
+    desc: Download urls for datasets can be determined
+    contents:
+      - list_datastores
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
     contents: 

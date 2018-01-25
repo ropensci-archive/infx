@@ -42,7 +42,8 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
 skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
           "^remove", "^update", "put", "Metaproject", "Attachments",
           "SpacesWithProjects", "Vocabularies", "WebAppSettings", "Query",
-          "Queries", "Aggregation", "TableReport", "RoleSet")
+          "Queries", "Aggregation", "TableReport", "RoleSet",
+          "getSessionToken", "shuffle")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listProjects",
           "listExperiments", "listExperimentTypes",
