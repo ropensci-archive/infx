@@ -5,6 +5,8 @@
 \alias{list_datasets.Sample}
 \alias{list_datasets.Experiment}
 \alias{list_datasets.character}
+\alias{list_dataset_types}
+\alias{list_dataset_ids}
 \title{List datasets}
 \usage{
 list_datasets(token, x, ...)
@@ -17,6 +19,10 @@ list_datasets(token, x, ...)
 
 \method{list_datasets}{character}(token, x, include = c(NA, "children",
   "parents", "all"), ...)
+
+list_dataset_types(token)
+
+list_dataset_ids(token, codes)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -26,11 +32,17 @@ list_datasets(token, x, ...)
 \item{...}{Generic compatibility.}
 
 \item{include}{Whether to include parent/child datasets as well.}
+
+\item{codes}{Character vector of one or more dataset codes.}
 }
 \description{
 Given a login token, all available datasets are listed for the given
 experiment(s), sample(s) or dataset code(s). Additionally it can be
 specified whether parent or child datasets are to be included as well.
+\code{list_dataset_types()} lists all available data set types on the given
+openBIS instance and \code{list_dataset_id()} returns a list of dataset id
+objects corresponding to the supplied character vector of one or more
+dataset codes.
 }
 \section{TODO}{
  The API function \code{listDataSetsForSample()} has a parameter

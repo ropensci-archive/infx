@@ -92,3 +92,24 @@ test_that("dataset types can be listed", {
   expect_true(all(sapply(ds_types, has_json_subclass, "DataSetType")))
   expect_gte(length(ds_types), 1L)
 })
+
+test_that("dataset ids can be listed", {
+  exp_ids <- list_experiment_ids(tok)
+  samples <- list_samples(tok, exp_ids[[1]])
+  ds <- list_datasets(tok, samples[[1]])
+  codes <- sapply(ds, `[[`, "code")
+
+  dsid_1 <- list_dataset_id(tok, codes[[1]])
+  expect_is(dsid_1, "DatasetIdentifier")
+  expect_is(dsid_1, "json_vec")
+  expect_identical(get_common_subclass(dsid_1), "DatasetIdentifier")
+  expect_true(all(sapply(dsid_1, has_json_subclass, "DatasetIdentifier")))
+  expect_gte(length(dsid_1), 1L)
+
+  dsid_2 <- list_dataset_id(tok, codes[1:2])
+  expect_is(dsid_2, "DatasetIdentifier")
+  expect_is(dsid_2, "json_vec")
+  expect_identical(get_common_subclass(dsid_2), "DatasetIdentifier")
+  expect_true(all(sapply(dsid_2, has_json_subclass, "DatasetIdentifier")))
+  expect_gte(length(dsid_2), 1L)
+})

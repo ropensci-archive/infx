@@ -4,10 +4,15 @@
 #' Given a login token, all available datasets are listed for the given
 #' experiment(s), sample(s) or dataset code(s). Additionally it can be
 #' specified whether parent or child datasets are to be included as well.
+#' `list_dataset_types()` lists all available data set types on the given
+#' openBIS instance and `list_dataset_id()` returns a list of dataset id
+#' objects corresponding to the supplied character vector of one or more
+#' dataset codes.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets with.
 #' @param include Whether to include parent/child datasets as well.
+#' @param codes Character vector of one or more dataset codes.
 #' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
@@ -87,14 +92,7 @@ list_datasets.character <- function(token,
     request_openbis("getDataSetMetaData", list(token, as.list(x), include))
 }
 
-#' List dataset types
-#'
-#' Given a login token, all available dataset types are listed.
-#' 
-#' @inheritParams logout_openbis
-#' 
-#' @return A a list of DataSetType objects.
-#' 
+#' @rdname list_datasets
 #' @export
 #' 
 list_dataset_types <- function(token)
@@ -110,4 +108,13 @@ resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
     list("CHILDREN", "PARENTS")
   else
     list(toupper(x))
+}
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_dataset_ids <- function(token, codes) {
+  assert_that(is.character(codes))
+  request_openbis("getDatasetIdentifiers", list(token, as.list(codes)),
+                  "IScreeningApiServer")
 }
