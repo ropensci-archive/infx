@@ -13,7 +13,6 @@ reference:
       - list_projects
       - list_experiments
       - list_plates
-      - list_wells
       - list_samples
       - list_datasets
       - list_material

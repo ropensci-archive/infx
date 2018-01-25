@@ -1,30 +1,59 @@
 
-#' List plates
+#' List wells/plates
 #'
-#' Given a login token, all plates available to the corresponding user on the
-#' queried openBIS instance are listed for one or more experiment(s). If
-#' multiple experiments are used for limiting the search (e.g. a `json_vec` of
-#' experiments), an API call for each object has to be made. If no experiments
-#' are specified, all available plates are returned.
+#' Using `list_plates()`, all plates available to the user (corresponding to
+#' the given login token) on the queried openBIS instance are listed for one
+#' or more experiment(s). If multiple experiments are used for limiting the
+#' search (e.g. a `json_vec` of experiments), an API call for each object has
+#' to be made. If no experiments are specified, all available plates are
+#' returned.
+#' 
+#' Wells can be listed with `list_wells()`, which given a login token, lists
+#' all wells available to the corresponding user on the queried openBIS
+#' instance for one or more plate(s). If multiple plates are searched for
+#' (e.g. a `json_vec` of plates), an API call for each object has to be made.
+#' 
+#' A convenience function that allows for the conversion of plate objects into
+#' plate id objects is available as `plate_to_plateid()`. This function does
+#' not incur an API call and can act on both a single plate object or a vector
+#' of plate objects (passed as a `json_vec` object) and will return a
+#' `json_vec` object of type `PlateIdentifier`.
+#' 
+#' Finally, `list_plate_well_ref()` can list well references (as
+#' `PlateWellReferenceWithDatasets` objects) corresponding to materials. This
+#' can be used to find all wells that contain a certain material (for example
+#' a gene knockdown or a specific compound used for a knockdown). If multiple
+#' material ids are searched for (e.g. a `json_vec` of
+#' `MaterialIdentifierScreening`), an API call for each object has to be made.
+#' The search can be limited to a single experiment,  specified either as
+#' `Experiment` or `ExperimentIdentifier`. As a further argument, the switch
+#' `include_datasets` specifies whether the connected image and image analysis
+#' data sets should be returned as well.
 #' 
 #' @inheritParams logout_openbis
-#' @param x Object to limit the number of returned plates, e.g. a set of
-#' `ExperimentIdentifier` or `Experiment` objects. The default is NULL, which
-#' will fetch all available plates.
+#' @param x Object to limit the number of returned wells or plates.
 #' @param ... Generic compatibility
+#' @param material_id Material id(s) corresponding to which wells are searched
+#' for a collection of `MaterialIdentifierScreening` is expected.
+#' @param experiment_id Additionally, the search can be limited to a single
+#' experiment, specified either as `Experiment` or `ExperimentIdentifier`.
+#' @param include_datasets Logical switch indicating whether to also return
+#' the connected image and image analysis data sets.
+#' 
+#' @rdname list_plate_well
 #' 
 #' @export
 #' 
 list_plates <- function(token, x = NULL, ...)
   UseMethod("list_plates", x)
 
-#' @rdname list_plates
+#' @rdname list_plate_well
 #' @export
 #' 
 list_plates.NULL <- function(token, x, ...)
   request_openbis("listPlates", token, "IScreeningApiServer")
 
-#' @rdname list_plates
+#' @rdname list_plate_well
 #' @export
 #' 
 list_plates.ExperimentIdentifier <- function(token, x, ...) {
@@ -38,13 +67,16 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
   as_json_vec(do.call(c, res))
 }
 
-#' @rdname list_plates
+#' @rdname list_plate_well
 #' @export
 #' 
 list_plates.Experiment <- function(token, x, ...) {
   list_plates(token, exp_to_expid(x))
 }
 
+#' @rdname list_plate_well
+#' @export
+#' 
 plate_to_plateid <- function(x) {
 
   convert <- function(x)
@@ -58,29 +90,18 @@ plate_to_plateid <- function(x) {
               has_fields(x, fields))
 
   if (is_json_class(x))
-    convert(x)
+    new_json_vec(convert(x))
   else
     as_json_vec(lapply(x, convert))
 }
 
-#' List wells
-#'
-#' Given a login token, all wells available to the corresponding user on the
-#' queried openBIS instance are listed for one or more plate(s). If multiple
-#' plates are searched for (e.g. a `json_vec` of plates), an API call for each
-#' object has to be made.
-#' 
-#' @inheritParams logout_openbis
-#' @param x Object to limit the number of returned wells, e.g. a set of
-#' `PlateIdentifier` or `Plate` objects.
-#' @param ... Generic compatibility
-#' 
+#' @rdname list_plate_well
 #' @export
 #' 
 list_wells <- function(token, x = NULL, ...)
   UseMethod("list_wells", x)
 
-#' @rdname list_wells
+#' @rdname list_plate_well
 #' @export
 #' 
 list_wells.PlateIdentifier <- function(token, x, ...) {
@@ -95,29 +116,13 @@ list_wells.PlateIdentifier <- function(token, x, ...) {
   as_json_vec(do.call(c, res))
 }
 
-#' @rdname list_wells
+#' @rdname list_plate_well
 #' @export
 #' 
 list_wells.Plate <- function(token, x, ...)
   list_wells(token, plate_to_plateid(x))
 
-#' List plate/well references
-#'
-#' Given a login token, all wells available to the corresponding user on the
-#' queried openBIS instance, which are associated with any of the given
-#' material(s), are listed. If multiple material ids are searched for (e.g. a
-#' `json_vec` of `MaterialIdentifierScreening`), an API call for each
-#' object has to be made. The search can be limited to a single experiment,
-#' specified either as `Experiment` or `ExperimentIdentifier`
-#' 
-#' @inheritParams logout_openbis
-#' @param material_id Material id(s) corresponding to which wells are searched
-#' for a collection of `MaterialIdentifierScreening` is expected.
-#' @param experiment_id Additionally, the search can be limited to a single
-#' experiment, specified either as `Experiment` or `ExperimentIdentifier`.
-#' @param include_datasets Logical switch indicating whether to also return
-#' the connected image and image analysis data sets.
-#' 
+#' @rdname list_plate_well
 #' @export
 #' 
 list_plate_well_ref <- function(token,
