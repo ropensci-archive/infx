@@ -12,9 +12,9 @@ reference:
     contents: 
       - list_projects
       - list_experiments
-      - list_plates
       - list_samples
       - list_datasets
+      - list_plates
       - list_material
   - title: Download urls
     desc: Download urls for datasets can be determined

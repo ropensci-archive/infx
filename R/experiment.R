@@ -10,7 +10,11 @@
 #' 
 #' The two utility functions `list_experiment_ids()` and
 #' `list_experiment_types()` list all available experiment ids and experiment
-#' types of the queried openBIS instance.
+#' types of the queried openBIS instance. Furthermore, experiment objects can
+#' be converted to experiment id objects using `exp_to_expid()`. This function
+#' does not incur an API call and can act on both a single experiment object
+#' or a vector of experiment objects (passed as a `json_vec` object) and will
+#' return a `json_vec` object of type `ExperimentIdentifier`.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned experiments, e.g. a set of
@@ -77,6 +81,29 @@ list_experiment_ids <- function(token)
 list_experiment_types <- function(token)
   request_openbis("listExperimentTypes", token)
 
+#' @rdname list_experiments
+#' @export
+#' 
+exp_to_expid <- function(x) {
+
+  convert <- function(x) {
+    id <- unlist(strsplit(sub("^/", "", x[["identifier"]]), "/"))
+    assert_that(length(id) == 3L)
+    json_class(permId = x[["permId"]], spaceCode = id[1], projectCode = id[2],
+               experimentCode = id[3], class = "ExperimentIdentifier")
+  }
+
+  fields <- c("permId", "identifier")
+
+  assert_that(inherits(x, "Experiment"),
+              has_fields(x, fields))
+
+  if (is_json_class(x))
+    new_json_vec(convert(x))
+  else
+    as_json_vec(lapply(x, convert))
+}
+
 exp_id_str <- function(x, ...)
   UseMethod("exp_id_str")
 
@@ -100,24 +127,4 @@ exp_id_str.Experiment <- function(x, ...) {
     x <- as_json_vec(x)
 
   lapply(x, `[[`, "identifier")
-}
-
-exp_to_expid <- function(x) {
-
-  convert <- function(x) {
-    id <- unlist(strsplit(sub("^/", "", x[["identifier"]]), "/"))
-    assert_that(length(id) == 3L)
-    json_class(permId = x[["permId"]], spaceCode = id[1], projectCode = id[2],
-               experimentCode = id[3], class = "ExperimentIdentifier")
-  }
-
-  fields <- c("permId", "identifier")
-
-  assert_that(inherits(x, "Experiment"),
-              has_fields(x, fields))
-
-  if (is_json_class(x))
-    convert(x)
-  else
-    as_json_vec(lapply(x, convert))
 }

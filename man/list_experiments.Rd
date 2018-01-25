@@ -6,6 +6,7 @@
 \alias{list_experiments.Project}
 \alias{list_experiment_ids}
 \alias{list_experiment_types}
+\alias{exp_to_expid}
 \title{List experiments}
 \usage{
 list_experiments(token, x, ...)
@@ -19,6 +20,8 @@ list_experiments(token, x, ...)
 list_experiment_ids(token)
 
 list_experiment_types(token)
+
+exp_to_expid(x)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -44,5 +47,9 @@ available), an API call per experiment type has to be made.
 \details{
 The two utility functions \code{list_experiment_ids()} and
 \code{list_experiment_types()} list all available experiment ids and experiment
-types of the queried openBIS instance.
+types of the queried openBIS instance. Furthermore, experiment objects can
+be converted to experiment id objects using \code{exp_to_expid()}. This function
+does not incur an API call and can act on both a single experiment object
+or a vector of experiment objects (passed as a \code{json_vec} object) and will
+return a \code{json_vec} object of type \code{ExperimentIdentifier}.
 }
