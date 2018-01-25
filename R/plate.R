@@ -145,11 +145,11 @@ list_plate_well_ref <- function(token,
                       "IScreeningApiServer"))
   } else {
 
+    if (get_common_subclass(experiment_id) == "Experiment")
+      experiment_id <- exp_to_expid(experiment_id)
+
     if (is_json_vec(experiment_id))
       experiment_id <- as_json_class(experiment_id)
-
-    if (has_json_subclass(experiment_id, "Experiment"))
-      experiment_id <- exp_to_expid(experiment_id)
 
     assert_that(has_json_subclass(experiment_id, "ExperimentIdentifier"))
 
