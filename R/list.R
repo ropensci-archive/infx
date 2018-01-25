@@ -1,7 +1,7 @@
 
 #' List projects
 #'
-#' List all projects available on the queries openBIS instance. A project forms
+#' List all projects available on the queried openBIS instance. A project forms
 #' one of the most basic entities in the organizational hierarchy of openBIS.
 #' One or more projects are contained in each space (the topmost
 #' organizational entity) and each project consists of one or several
@@ -13,6 +13,17 @@
 #' 
 list_projects <- function(token)
   request_openbis("listProjects", token)
+
+#' List data store servers
+#'
+#' List all data store servers registered this openBIS server instance.
+#' 
+#' @inheritParams logout_openbis
+#' 
+#' @export
+#' 
+list_datastores <- function(token)
+  request_openbis("listDataStores", token)
 
 #' @title Get files for a data set
 #'

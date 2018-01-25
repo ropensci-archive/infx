@@ -10,7 +10,7 @@ list_projects(token)
 \item{token}{Login token as created by \code{login_openbis()}.}
 }
 \description{
-List all projects available on the queries openBIS instance. A project forms
+List all projects available on the queried openBIS instance. A project forms
 one of the most basic entities in the organizational hierarchy of openBIS.
 One or more projects are contained in each space (the topmost
 organizational entity) and each project consists of one or several

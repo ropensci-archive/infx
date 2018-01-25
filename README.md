@@ -112,7 +112,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns all data set types.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;DataSetType&gt;
-    -   \[ \] listDataStores:
+    -   \[x\] listDataStores:
         -   description: Lists all DSS server registered this openBIS server instance.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;DataStore&gt;
@@ -144,7 +144,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Lists all metaprojects belonging to specified user.
         -   arguments: java.lang.String sessionToken, java.lang.String userId
         -   returntype: java.util.List&lt;ch.systemsx.cisd.openbis.generic.shared.basic.dto.Metaproject&gt;
-    -   \[ \] listNamedRoleSets:
+    -   \[ \] ~~listNamedRoleSets~~:
         -   description: Returns all named role sets.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.Map&lt;java.lang.String,java.util.Set&lt;Role&gt;&gt;
