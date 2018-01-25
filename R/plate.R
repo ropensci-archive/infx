@@ -90,9 +90,11 @@ plate_to_plateid <- function(x) {
               has_fields(x, fields))
 
   if (is_json_class(x))
-    new_json_vec(convert(x))
+    res <- convert(x)
   else
-    as_json_vec(lapply(x, convert))
+    res <- lapply(x, convert)
+
+  as_json_vec(res)
 }
 
 #' @rdname list_plate_well
