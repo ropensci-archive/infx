@@ -17,7 +17,7 @@ reference:
       - list_plates
       - list_material
   - title: Download urls
-    desc: Download urls for datasets can be determined
+    desc: Determine download urls for datasets
     contents:
       - list_datastores
   - title: JSON objects in R

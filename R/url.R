@@ -34,17 +34,25 @@ list_datastore_urls <- function(token, data_set = NULL) {
 
     assert_that(is.character(data_set))
 
-    urls <- request_openbis("getDataStoreBaseURLs", list(token,
-                                                         as.list(data_set)))
-    res <- unlist(lapply(urls, function(url) {
-      assert_that(has_json_subclass(url, "DataStoreURLForDataSets"),
-                  has_fields(url, c("dataStoreURL", "dataSetCodes")))
-      codes <- as.character(url[["dataSetCodes"]])
-      stats::setNames(rep(url[["dataStoreURL"]], length(codes)), codes)
-    }))
+    if (length(data_set) == 1L) {
 
-    assert_that(setequal(names(res), data_set))
+      urls <- request_openbis("tryGetDataStoreBaseURL", list(token, data_set))
+      assert_that(!is.null(urls))
+      stats::setNames(urls, data_set)
 
-    res[data_set]
+    } else {
+
+      urls <- request_openbis("getDataStoreBaseURLs", list(token,
+                                                           as.list(data_set)))
+      res <- unlist(lapply(urls, function(url) {
+        assert_that(has_json_subclass(url, "DataStoreURLForDataSets"),
+                    has_fields(url, c("dataStoreURL", "dataSetCodes")))
+        codes <- as.character(url[["dataSetCodes"]])
+        stats::setNames(rep(url[["dataStoreURL"]], length(codes)), codes)
+      }))
+
+      assert_that(setequal(names(res), data_set))
+      res[data_set]
+    }
   }
 }

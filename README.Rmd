@@ -54,7 +54,8 @@ done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listDataStores",
           "listPlates", "listPlateWells",
           "getMaterialByCodes",
-          "getDataStoreBaseURLs", "getDefaultPutDataStoreBaseURL")
+          "getDataStoreBaseURLs", "getDefaultPutDataStoreBaseURL",
+          "tryGetDataStoreBaseURL")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",

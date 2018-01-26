@@ -208,7 +208,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return all samples that match the search criteria and that a particular user is allowed to see.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria, java.util.EnumSet&lt;SampleFetchOption&gt; fetchOptions, java.lang.String userId
         -   returntype: java.util.List&lt;Sample&gt;
-    -   \[ \] tryGetDataStoreBaseURL:
+    -   \[x\] tryGetDataStoreBaseURL:
         -   description: Returns the download URL for the data store of specified data set or null if such data set does not exist.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode
         -   returntype: java.lang.String
