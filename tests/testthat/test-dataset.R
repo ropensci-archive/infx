@@ -99,14 +99,14 @@ test_that("dataset ids can be listed", {
   ds <- list_datasets(tok, samples[[1]])
   codes <- sapply(ds, `[[`, "code")
 
-  dsid_1 <- list_dataset_id(tok, codes[[1]])
+  dsid_1 <- list_dataset_ids(tok, codes[[1]])
   expect_is(dsid_1, "DatasetIdentifier")
   expect_is(dsid_1, "json_vec")
   expect_identical(get_common_subclass(dsid_1), "DatasetIdentifier")
   expect_true(all(sapply(dsid_1, has_json_subclass, "DatasetIdentifier")))
   expect_gte(length(dsid_1), 1L)
 
-  dsid_2 <- list_dataset_id(tok, codes[1:2])
+  dsid_2 <- list_dataset_ids(tok, codes[1:2])
   expect_is(dsid_2, "DatasetIdentifier")
   expect_is(dsid_2, "json_vec")
   expect_identical(get_common_subclass(dsid_2), "DatasetIdentifier")

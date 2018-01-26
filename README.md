@@ -44,11 +44,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns meta data for all specified data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes, java.util.EnumSet&lt;DataSetFetchOption&gt; fetchOptions
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] getDataStoreBaseURLs:
+    -   \[x\] getDataStoreBaseURLs:
         -   description: Returns the download URL for the data store of specified data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; dataSetCodes
         -   returntype: java.util.List&lt;DataStoreURLForDataSets&gt;
-    -   \[ \] getDefaultPutDataStoreBaseURL:
+    -   \[x\] getDefaultPutDataStoreBaseURL:
         -   description: Returns the URL for the default data store server for this openBIS AS.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.lang.String
@@ -291,7 +291,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   arguments: java.lang.String userID, java.lang.String userPassword
         -   returntype: java.lang.String
 -   [IWebInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IWebInformationService.html)
-    -   \[ \] getSessionToken:
+    -   \[ \] ~~getSessionToken~~:
         -   description: Returns the server side session token for the current HTTP session.
         -   arguments:
         -   returntype: java.lang.String
@@ -376,12 +376,12 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Upload a new file to the user's session workspace.
         -   arguments: java.lang.String sessionToken, java.lang.String filePath, java.io.InputStream inputStream
         -   returntype: long
-    -   \[ \] shuffleDataSet:
+    -   \[ \] ~~shuffleDataSet~~:
         -   description: Moves specified data set to specified share.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String shareId
         -   returntype: void
 -   [IScreeningApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/screening/shared/api/v1/IScreeningApiServer.html)
-    -   \[ \] getDatasetIdentifiers:
+    -   \[x\] getDatasetIdentifiers:
         -   description: Converts a given list of dataset codes to dataset identifiers.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; datasetCodes
         -   returntype: java.util.List&lt;IDatasetIdentifier&gt;

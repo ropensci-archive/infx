@@ -118,3 +118,22 @@ list_dataset_ids <- function(token, codes) {
   request_openbis("getDatasetIdentifiers", list(token, as.list(codes)),
                   "IScreeningApiServer")
 }
+
+dataset_code <- function(x, ...)
+  UseMethod("dataset_code")
+
+dataset_code.DataSet <- function(x, ...) {
+  assert_that(has_fields(x, "code"))
+  if (is_json_vec(x))
+    sapply(x, `[[`, "code")
+  else
+    x[["code"]]
+}
+
+dataset_code.DatasetIdentifier <- function(x, ...) {
+  assert_that(has_fields(x, "datasetCode"))
+  if (is_json_vec(x))
+    sapply(x, `[[`, "datasetCode")
+  else
+    x[["datasetCode"]]
+}
