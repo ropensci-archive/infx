@@ -202,3 +202,25 @@ test_that("json_vec helpers work", {
     structure(list("b"), class = c("foo", "json_class"))),
     class = c("json_vec"))))
 })
+
+test_that("json vecs can be rep'd", {
+  cls_b <- json_class(a = "b", c = "d", class = "foo")
+  cls_e <- json_class(a = "e", c = "f", class = "foo")
+
+  cls_2 <- rep(c(cls_b, cls_e), 2)
+
+  expect_is(cls_2, "foo")
+  expect_is(cls_2, "json_vec")
+  expect_identical(cls_2[[1]], cls_2[[3]])
+  expect_identical(cls_2[[2]], cls_2[[4]])
+  expect_equal(length(cls_2), 4L)
+
+  cls_4 <- rep(c(cls_b, cls_e), 2, each = 2)
+
+  expect_is(cls_4, "foo")
+  expect_is(cls_4, "json_vec")
+  expect_identical(cls_4[[1]], cls_4[[2]])
+  expect_identical(cls_4[[1]], cls_4[[5]])
+  expect_identical(cls_4[1:2], cls_4[5:6])
+  expect_equal(length(cls_4), 8L)
+})

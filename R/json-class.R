@@ -259,3 +259,9 @@ get_json_subclass <- function(x) {
 
 #' @export
 c.json_class <- function(x, ...) c(as_json_vec(x), json_vec(...))
+
+#' @export
+rep.json_class <- function(x, ...) {
+  x <- as_json_vec(x)
+  as_json_vec(NextMethod())
+}

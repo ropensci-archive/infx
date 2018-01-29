@@ -220,3 +220,6 @@ get_common_subclass.default <- function(x, ...) error_default(x)
 
 #' @export
 c.json_vec <- function(x, ...) as_json_vec(NextMethod())
+
+#' @export
+rep.json_vec <- function(x, ...) as_json_vec(NextMethod())
