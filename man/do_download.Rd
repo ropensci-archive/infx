@@ -11,8 +11,8 @@ do_download(token, data_id, files = NULL, rep = 2)
 
 \item{data_id}{Data set code.}
 
-\item{files}{Files objects as produced by \link{list_files} describing the files
-to be downloaded. If NULL, all available files of this data_id will be
+\item{files}{Files objects as produced by \link{list_files_old} describing the
+files to be downloaded. If NULL, all available files of this data_id will be
 fetched (as long as there are less than 10).}
 
 \item{rep}{The number of times failed downloads are repeated.}
@@ -22,8 +22,8 @@ A list of raw vectors holding the downloaded data.
 }
 \description{
 Given a data set code and a small set (<= 10) of file paths
-(as returned from \link{list_files}), a download link is generated for each file
-by \link{get_download}. The downloads are preformed asynchronously.
+(as returned from \link{list_files_old}), a download link is generated for each
+file by \link{get_download}. The downloads are preformed asynchronously.
 }
 \section{TODO}{
  use file checksums instead of length for checking file

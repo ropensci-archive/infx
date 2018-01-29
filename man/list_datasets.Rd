@@ -7,6 +7,8 @@
 \alias{list_datasets.character}
 \alias{list_dataset_types}
 \alias{list_dataset_ids}
+\alias{list_files}
+\alias{list_files.character}
 \title{List datasets}
 \usage{
 list_datasets(token, x, ...)
@@ -23,17 +25,26 @@ list_datasets(token, x, ...)
 list_dataset_types(token)
 
 list_dataset_ids(token, codes)
+
+list_files(token, x, ...)
+
+\method{list_files}{character}(token, x, path = "", recursive = TRUE)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
 
-\item{x}{Object to limit search for datasets with.}
+\item{x}{Object to limit search for datasets/files with.}
 
 \item{...}{Generic compatibility.}
 
 \item{include}{Whether to include parent/child datasets as well.}
 
 \item{codes}{Character vector of one or more dataset codes.}
+
+\item{path}{A (vector of) file path(s) to be searched within a dataset.}
+
+\item{recursive}{A (vector of) logicals, indicating whether to list files
+recursively.}
 }
 \description{
 Given a login token, all available datasets are listed for the given
@@ -43,6 +54,11 @@ specified whether parent or child datasets are to be included as well.
 openBIS instance and \code{list_dataset_id()} returns a list of dataset id
 objects corresponding to the supplied character vector of one or more
 dataset codes.
+}
+\details{
+The function \code{list_files()} lists files associated with one or more
+dataset(s), which can be specified with codes or \code{DataSet}/
+\code{DatasetIdentifier} objects.
 }
 \section{TODO}{
  The API function \code{listDataSetsForSample()} has a parameter

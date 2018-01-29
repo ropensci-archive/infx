@@ -9,10 +9,17 @@
 #' objects corresponding to the supplied character vector of one or more
 #' dataset codes.
 #' 
+#' The function `list_files()` lists files associated with one or more
+#' dataset(s), which can be specified with codes or `DataSet`/
+#' `DatasetIdentifier` objects.
+#' 
 #' @inheritParams logout_openbis
-#' @param x Object to limit search for datasets with.
+#' @param x Object to limit search for datasets/files with.
 #' @param include Whether to include parent/child datasets as well.
 #' @param codes Character vector of one or more dataset codes.
+#' @param path A (vector of) file path(s) to be searched within a dataset.
+#' @param recursive A (vector of) logicals, indicating whether to list files
+#' recursively.
 #' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
@@ -136,4 +143,33 @@ dataset_code.DatasetIdentifier <- function(x, ...) {
     sapply(x, `[[`, "datasetCode")
   else
     x[["datasetCode"]]
+}
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_files <- function(token, x, ...)
+  UseMethod("list_files", x)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_files.character <- function(token, x, path = "", recursive = TRUE) {
+
+  max_length <- max(length(x), length(path), length(recursive))
+
+  assert_that(length(x) == max_length || length(x) == 1L,
+              length(path) == max_length || length(path) == 1L,
+              length(recursive) == max_length || length(recursive) == 1L)
+
+  x <- rep(x, max_length)
+  path <- rep(path, max_length)
+  recursive <- rep(recursive, max_length)
+
+  res <- mapply(function(a, b, c) {
+    request_openbis("listFilesForDataSet", list(token, a, b, c),
+                    "IDssServiceRpcGeneric")
+  }, x, path, recursive)
+
+  as_json_vec(do.call(c, res))
 }

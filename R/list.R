@@ -27,6 +27,6 @@ list_projects <- function(token)
 #' 
 #' @export
 #' 
-list_files <- function(token, data_id, folder = "original")
+list_files_old <- function(token, data_id, folder = "original")
   request_openbis("listFilesForDataSet", list(token, data_id, folder, TRUE),
                   "IDssServiceRpcGeneric")

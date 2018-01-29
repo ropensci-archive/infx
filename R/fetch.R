@@ -19,12 +19,12 @@ get_download <- function(token, data_id, file)
 #' @title Download files
 #'
 #' @description Given a data set code and a small set (<= 10) of file paths
-#' (as returned from [list_files]), a download link is generated for each file
-#' by [get_download]. The downloads are preformed asynchronously.
+#' (as returned from [list_files_old]), a download link is generated for each
+#' file by [get_download]. The downloads are preformed asynchronously.
 #' 
 #' @inheritParams get_download
-#' @param files Files objects as produced by [list_files] describing the files
-#' to be downloaded. If NULL, all available files of this data_id will be
+#' @param files Files objects as produced by [list_files_old] describing the
+#' files to be downloaded. If NULL, all available files of this data_id will be
 #' fetched (as long as there are less than 10).
 #' @param rep The number of times failed downloads are repeated.
 #' 
@@ -44,7 +44,7 @@ do_download <- function(token,
                         rep = 2) {
 
   if (is.null(files))
-    files <- list_files(token, data_id)
+    files <- list_files_old(token, data_id)
   else if (has_json_subclass(files, "FileInfoDssDTO"))
     files <- list(files)
 
@@ -175,7 +175,7 @@ fetch_plate <- function(token,
   ds <- extract_dataset(ds, type = "HCS_ANALYSIS_CELL_FEATURES_CC_MAT",
                         most_recent = TRUE)[[1]]
 
-  files <- list_files(token, ds[["code"]])
+  files <- list_files_old(token, ds[["code"]])
 
   files <- files[!sapply(files, `[[`, "isDirectory") &
                  grepl(file_regex,
@@ -229,7 +229,7 @@ fetch_meta <- function(token,
 
   ds <- extract_dataset(ds, most_recent = TRUE)[[1]]
 
-  files <- list_files(token, ds[["code"]])
+  files <- list_files_old(token, ds[["code"]])
   assert_that(length(files) >= 1L)
 
   res <- do_download(token, ds[["code"]], files)
