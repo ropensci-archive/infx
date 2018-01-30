@@ -16,11 +16,6 @@
 #' or a vector of experiment objects (passed as a `json_vec` object) and will
 #' return a `json_vec` object of type `ExperimentIdentifier`.
 #' 
-#' Experiment metadata can be fetched using `list_experiment_metadata()`,
-#' which accepts either a set of `Experiment` or `ExperimentIdentifier`
-#' objects and returns all corresponding metadata as `json_vec` of
-#' `ExperimentImageMetadata` objects.
-#' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned experiments, e.g. a set of
 #' `ExperimentIdentifier` or `Project` objects.
@@ -129,27 +124,3 @@ exp_id_str.Experiment <- function(x, ...) {
 
   lapply(as_json_vec(x), `[[`, "identifier")
 }
-
-#' @rdname list_experiments
-#' @export
-#' 
-list_experiment_metadata <- function(token, x, ...)
-  UseMethod("list_experiment_metadata", x)
-
-#' @rdname list_experiments
-#' @export
-#' 
-list_experiment_metadata.ExperimentIdentifier <- function(token, x, ...) {
-
-  res <- lapply(as_json_vec(x), function(y)
-    request_openbis("getExperimentImageMetadata", list(token, y),
-                    "IScreeningApiServer"))
-
-  as_json_vec(do.call(c, res))
-}
-
-#' @rdname list_experiments
-#' @export
-#' 
-list_experiment_metadata.Experiment <- function(token, x, ...)
-  list_experiment_metadata(token, exp_to_expid(x))
