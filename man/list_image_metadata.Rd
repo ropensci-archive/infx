@@ -2,9 +2,18 @@
 % Please edit documentation in R/image.R
 \name{list_image_metadata}
 \alias{list_image_metadata}
+\alias{list_image_metadata.ExperimentIdentifier}
+\alias{list_image_metadata.Experiment}
+\alias{list_image_metadata.ImageDatasetReference}
 \title{List image metadata}
 \usage{
 list_image_metadata(token, x, ...)
+
+\method{list_image_metadata}{ExperimentIdentifier}(token, x, ...)
+
+\method{list_image_metadata}{Experiment}(token, x, ...)
+
+\method{list_image_metadata}{ImageDatasetReference}(token, x, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -16,7 +25,10 @@ list_image_metadata(token, x, ...)
 }
 \description{
 Experiment metadata can be fetched using \code{list_image_metadata()},
-which accepts either a set of \code{Experiment} or \code{ExperimentIdentifier}
-objects and returns all corresponding metadata as \code{json_vec} of
-\code{ExperimentImageMetadata} objects.
+which accepts either a set of \code{Experiment}, \code{ExperimentIdentifier} or
+\code{ImageDatasetReference} objects and returns all corresponding meta data as
+\code{json_vec} of either \code{ExperimentImageMetadata}, in case experiment objects
+were used or \code{ImageDatasetMetadata} objects, in case
+\code{ImageDatasetReference} objects were used for calling
+\code{list_image_metadata()}.
 }

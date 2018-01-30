@@ -425,11 +425,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given set of plates (given by space / plate bar code), provide the list of all data sets containing feature vectors for each of these plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;FeatureVectorDatasetReference&gt;
-    -   \[ \] listImageDatasets:
+    -   \[x\] listImageDatasets:
         -   description: For a given set of plates provide the list of all data sets containing images for each of these plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;ImageDatasetReference&gt;
-    -   \[ \] listImageMetadata:
+    -   \[x\] listImageMetadata:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listImageMetadata(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IImageDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;ImageDatasetMetadata&gt;
@@ -538,7 +538,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return image representation formats available for the specified image data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;DatasetImageRepresentationFormats&gt;
-    -   \[ \] listImageMetadata:
+    -   \[x\] listImageMetadata:
         -   description: For a given set of image data sets, provide all image channels that have been acquired and the available (natural) image size(s).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IImageDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;ImageDatasetMetadata&gt;
