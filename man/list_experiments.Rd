@@ -7,6 +7,8 @@
 \alias{list_experiment_ids}
 \alias{list_experiment_types}
 \alias{exp_to_expid}
+\alias{list_experiment_metadata}
+\alias{list_experiment_metadata.ExperimentIdentifier}
 \title{List experiments}
 \usage{
 list_experiments(token, x, ...)
@@ -22,6 +24,10 @@ list_experiment_ids(token)
 list_experiment_types(token)
 
 exp_to_expid(x)
+
+list_experiment_metadata(token, x, ...)
+
+\method{list_experiment_metadata}{ExperimentIdentifier}(token, x, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}

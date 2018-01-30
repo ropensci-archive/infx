@@ -115,18 +115,30 @@ exp_id_str.ExperimentIdentifier <- function(x, ...) {
 
   assert_that(has_fields(x, fields))
 
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
-
-  lapply(x, function(y) paste0("/", y[fields], collapse = ""))
+  lapply(as_json_vec(x), function(y) paste0("/", y[fields], collapse = ""))
 }
 
 exp_id_str.Experiment <- function(x, ...) {
 
   assert_that(has_fields(x, "identifier"))
 
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
+  lapply(as_json_vec(x), `[[`, "identifier")
+}
 
-  lapply(x, `[[`, "identifier")
+#' @rdname list_experiments
+#' @export
+#' 
+list_experiment_metadata <- function(token, x, ...)
+  UseMethod("list_experiment_metadata", x)
+
+#' @rdname list_experiments
+#' @export
+#' 
+list_experiment_metadata.ExperimentIdentifier <- function(token, x, ...) {
+
+  res <- lapply(as_json_vec(x), function(y)
+    request_openbis("getExperimentImageMetadata", list(token, y),
+                    "IScreeningApiServer"))
+
+  as_json_vec(do.call(c, res))
 }

@@ -65,3 +65,23 @@ test_that("experiment ids can be listed", {
   expect_true(all(sapply(exp_ids, has_json_subclass, "ExperimentIdentifier")))
   expect_gte(length(exp_ids), 1L)
 })
+
+test_that("experiment metadata can be listed", {
+  exp_ids <- list_experiment_ids(tok)
+
+  meta_1 <- list_experiment_metadata(tok, exp_ids[[1]])
+  expect_is(meta_1, "ExperimentImageMetadata")
+  expect_is(meta_1, "json_vec")
+  expect_identical(get_common_subclass(meta_1), "ExperimentImageMetadata")
+  expect_true(all(sapply(meta_1, has_json_subclass,
+                         "ExperimentImageMetadata")))
+  expect_gte(length(meta_1), 1L)
+
+  meta_2 <- list_experiment_metadata(tok, exp_ids[1:2])
+  expect_is(meta_2, "ExperimentImageMetadata")
+  expect_is(meta_2, "json_vec")
+  expect_identical(get_common_subclass(meta_2), "ExperimentImageMetadata")
+  expect_true(all(sapply(meta_2, has_json_subclass,
+                         "ExperimentImageMetadata")))
+  expect_gte(length(meta_2), length(meta_1))
+})
