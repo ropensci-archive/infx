@@ -84,4 +84,8 @@ test_that("experiment metadata can be listed", {
   expect_true(all(sapply(meta_2, has_json_subclass,
                          "ExperimentImageMetadata")))
   expect_gte(length(meta_2), length(meta_1))
+
+  exps <- list_experiments(tok, exp_ids[1:2])
+  expect_identical(list_experiment_metadata(tok, exps[[1]]), meta_1)
+  expect_identical(list_experiment_metadata(tok, exps[1:2]), meta_2)
 })

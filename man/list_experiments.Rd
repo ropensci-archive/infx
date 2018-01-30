@@ -9,6 +9,7 @@
 \alias{exp_to_expid}
 \alias{list_experiment_metadata}
 \alias{list_experiment_metadata.ExperimentIdentifier}
+\alias{list_experiment_metadata.Experiment}
 \title{List experiments}
 \usage{
 list_experiments(token, x, ...)
@@ -28,6 +29,8 @@ exp_to_expid(x)
 list_experiment_metadata(token, x, ...)
 
 \method{list_experiment_metadata}{ExperimentIdentifier}(token, x, ...)
+
+\method{list_experiment_metadata}{Experiment}(token, x, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -58,4 +61,9 @@ be converted to experiment id objects using \code{exp_to_expid()}. This function
 does not incur an API call and can act on both a single experiment object
 or a vector of experiment objects (passed as a \code{json_vec} object) and will
 return a \code{json_vec} object of type \code{ExperimentIdentifier}.
+
+Experiment metadata can be fetched using \code{list_experiment_metadata()},
+which accepts either a set of \code{Experiment} or \code{ExperimentIdentifier}
+objects and returns all corresponding metadata as \code{json_vec} of
+\code{ExperimentImageMetadata} objects.
 }
