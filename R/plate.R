@@ -40,7 +40,7 @@
 #' @param ... Generic compatibility
 #' @param material_id Material id(s) corresponding to which wells are searched
 #' for a collection of `MaterialIdentifierScreening` is expected.
-#' @param experiment_id Additionally, the search can be limited to a single
+#' @param experiment Additionally, the search can be limited to a single
 #' experiment, specified either as `Experiment` or `ExperimentIdentifier`.
 #' @param include_datasets Logical switch indicating whether to also return
 #' the connected image and image analysis data sets.
@@ -134,7 +134,7 @@ list_wells.Plate <- function(token, x, ...)
 #' 
 list_plate_well_ref <- function(token,
                                 material_id,
-                                experiment_id = NULL,
+                                experiment = NULL,
                                 include_datasets = FALSE) {
 
   if (!is_json_vec(material_id))
@@ -143,23 +143,23 @@ list_plate_well_ref <- function(token,
   assert_that(all(sapply(material_id, has_json_subclass,
                          "MaterialIdentifierScreening")))
 
-  if (is.null(experiment_id)) {
+  if (is.null(experiment)) {
 
     res <- lapply(material_id, function(mat)
       request_openbis("listPlateWells", list(token, mat, include_datasets),
                       "IScreeningApiServer"))
   } else {
 
-    if (get_common_subclass(experiment_id) == "Experiment")
-      experiment_id <- exp_to_expid(experiment_id)
+    if (get_common_subclass(experiment) == "Experiment")
+      experiment <- exp_to_expid(experiment)
 
-    if (is_json_vec(experiment_id))
-      experiment_id <- as_json_class(experiment_id)
+    if (is_json_vec(experiment))
+      experiment <- as_json_class(experiment)
 
-    assert_that(has_json_subclass(experiment_id, "ExperimentIdentifier"))
+    assert_that(has_json_subclass(experiment, "ExperimentIdentifier"))
 
     res <- lapply(material_id, function(mat)
-      request_openbis("listPlateWells", list(token, experiment_id, mat,
+      request_openbis("listPlateWells", list(token, experiment, mat,
                                              include_datasets),
                       "IScreeningApiServer"))
   }

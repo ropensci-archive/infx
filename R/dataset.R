@@ -4,6 +4,15 @@
 #' Given a login token, all available datasets are listed for the given
 #' experiment(s), sample(s) or dataset code(s). Additionally it can be
 #' specified whether parent or child datasets are to be included as well.
+#' For the above object types, `list_datasets()` returns sets of `DataSet`
+#' objects. If `list_datasets()` is dispatched on plate objects (`Plate`,
+#' `PlateIdentifier` or `PlateMetadata`), `ImageDatasetReference` objects are
+#' returned. Similarly, if `MaterialIdentifierScreening` objects are used
+#' as input, `PlateWellReferenceWithDatasets` objects are returned, which each
+#' contain `ImageDatasetReference` and `FeatureVectorDatasetReference` objects.
+#' Both `ImageDatasetReference` and `FeatureVectorDatasetReference` implement
+#' the `IDatasetIdentifier` interface, just as `DatasetIdentifier` does.
+#' 
 #' `list_dataset_types()` lists all available data set types on the given
 #' openBIS instance and `list_dataset_id()` returns a list of dataset id
 #' objects corresponding to the supplied character vector of one or more
@@ -12,6 +21,8 @@
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
 #' @param include Whether to include parent/child datasets as well.
+#' @param experiment When searching for datasets associated with materials,
+#' the search can be limited to a single experiment.
 #' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
@@ -90,6 +101,39 @@ list_datasets.character <- function(token,
   else
     request_openbis("getDataSetMetaData", list(token, as.list(x), include))
 }
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.PlateIdentifier <- function(token, x, ...)
+  request_openbis("listImageDatasets", list(token, as_json_vec(x)),
+                  "IScreeningApiServer")
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.Plate <- function(token, x, ...)
+  request_openbis("listImageDatasets", list(token, as_json_vec(x)),
+                  "IScreeningApiServer")
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.PlateMetadata <- function(token, x, ...)
+  request_openbis("listImageDatasets", list(token, as_json_vec(x)),
+                  "IScreeningApiServer")
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.MaterialIdentifierScreening <- function(token,
+                                                      x,
+                                                      experiment = NULL,
+                                                      ...) {
+
+  list_plate_well_ref(token, x, experiment, include_datasets = TRUE)
+}
+
 
 #' @rdname list_datasets
 #' @export

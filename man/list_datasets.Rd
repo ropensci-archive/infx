@@ -5,6 +5,10 @@
 \alias{list_datasets.Sample}
 \alias{list_datasets.Experiment}
 \alias{list_datasets.character}
+\alias{list_datasets.PlateIdentifier}
+\alias{list_datasets.Plate}
+\alias{list_datasets.PlateMetadata}
+\alias{list_datasets.MaterialIdentifierScreening}
 \alias{list_dataset_types}
 \alias{list_dataset_ids}
 \alias{list_dataset_ids.character}
@@ -22,6 +26,15 @@ list_datasets(token, x, ...)
 \method{list_datasets}{character}(token, x, include = c(NA, "children",
   "parents", "all"), ...)
 
+\method{list_datasets}{PlateIdentifier}(token, x, ...)
+
+\method{list_datasets}{Plate}(token, x, ...)
+
+\method{list_datasets}{PlateMetadata}(token, x, ...)
+
+\method{list_datasets}{MaterialIdentifierScreening}(token, x,
+  experiment = NULL, ...)
+
 list_dataset_types(token)
 
 list_dataset_ids(token, x, ...)
@@ -38,11 +51,24 @@ list_dataset_ids(token, x, ...)
 \item{...}{Generic compatibility.}
 
 \item{include}{Whether to include parent/child datasets as well.}
+
+\item{experiment}{When searching for datasets associated with materials,
+the search can be limited to a single experiment.}
 }
 \description{
 Given a login token, all available datasets are listed for the given
 experiment(s), sample(s) or dataset code(s). Additionally it can be
 specified whether parent or child datasets are to be included as well.
+For the above object types, \code{list_datasets()} returns sets of \code{DataSet}
+objects. If \code{list_datasets()} is dispatched on plate objects (\code{Plate},
+\code{PlateIdentifier} or \code{PlateMetadata}), \code{ImageDatasetReference} objects are
+returned. Similarly, if \code{MaterialIdentifierScreening} objects are used
+as input, \code{PlateWellReferenceWithDatasets} objects are returned, which each
+contain \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} objects.
+Both \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} implement
+the \code{IDatasetIdentifier} interface, just as \code{DatasetIdentifier} does.
+}
+\details{
 \code{list_dataset_types()} lists all available data set types on the given
 openBIS instance and \code{list_dataset_id()} returns a list of dataset id
 objects corresponding to the supplied character vector of one or more

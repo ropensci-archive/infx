@@ -31,7 +31,7 @@ list_wells(token, x = NULL, ...)
 
 \method{list_wells}{Plate}(token, x, ...)
 
-list_plate_well_ref(token, material_id, experiment_id = NULL,
+list_plate_well_ref(token, material_id, experiment = NULL,
   include_datasets = FALSE)
 
 list_plate_metadata(token, x, ...)
@@ -50,7 +50,7 @@ list_plate_metadata(token, x, ...)
 \item{material_id}{Material id(s) corresponding to which wells are searched
 for a collection of \code{MaterialIdentifierScreening} is expected.}
 
-\item{experiment_id}{Additionally, the search can be limited to a single
+\item{experiment}{Additionally, the search can be limited to a single
 experiment, specified either as \code{Experiment} or \code{ExperimentIdentifier}.}
 
 \item{include_datasets}{Logical switch indicating whether to also return
