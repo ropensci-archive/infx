@@ -56,7 +56,9 @@ done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "getMaterialByCodes",
           "getDataStoreBaseURLs", "getDefaultPutDataStoreBaseURL",
           "tryGetDataStoreBaseURL",
-          "listFilesForDataSet")
+          "listFilesForDataSet",
+          "getDownloadUrlForFileForDataSet",
+          "getDownloadUrlForFileForDataSetWithTimeout")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",

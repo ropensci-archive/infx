@@ -308,19 +308,19 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Delete a file or directory in the session workspace.
         -   arguments: java.lang.String sessionToken, java.lang.String path
         -   returntype: boolean
-    -   \[ \] getDownloadUrlForFileForDataSet:
+    -   \[x\] getDownloadUrlForFileForDataSet:
         -   description: Returns an URL from which the requested file.
         -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder
         -   returntype: java.lang.String
-    -   \[ \] getDownloadUrlForFileForDataSet:
+    -   \[x\] getDownloadUrlForFileForDataSet:
         -   description: Returns an URL from which the requested file of the specified data set can be downloaded.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path
         -   returntype: java.lang.String
-    -   \[ \] getDownloadUrlForFileForDataSetWithTimeout:
+    -   \[x\] getDownloadUrlForFileForDataSetWithTimeout:
         -   description: Returns an URL from which the requested file.
         -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder, long validityDurationInSeconds
         -   returntype: java.lang.String
-    -   \[ \] getDownloadUrlForFileForDataSetWithTimeout:
+    -   \[x\] getDownloadUrlForFileForDataSetWithTimeout:
         -   description: Returns an URL from which the requested file of the specified data set can be downloaded.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path, long validityDurationInSeconds
         -   returntype: java.lang.String

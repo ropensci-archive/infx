@@ -4,18 +4,23 @@
 #' `list_datastores()` lists all data store servers registered this openBIS
 #' server instance and `list_datastore_urls()` returns the base urls of the
 #' data store servers that host the supplied datasets (or that of the default
-#' data store server in case no data set is supplied).
+#' data store server in case no data set is supplied). Download urls of files
+#' can be listed using the function `list_download_urls()`.
 #' 
 #' @inheritParams logout_openbis
 #' @param data_set Set of datasets (specified as dataset codes, `DataSet` or
 #' `DatasetIdentifier` objects) or NULL.
+#' @param timeout Time-span (in seconds) for which the file download link
+#' should be valid.
 #' 
+#' @rdname list_urls
+
 #' @export
 #' 
 list_datastores <- function(token)
   request_openbis("listDataStores", token)
 
-#' @rdname list_datastores
+#' @rdname list_urls
 #' @export
 #' 
 list_datastore_urls <- function(token, data_set = NULL) {
@@ -54,5 +59,102 @@ list_datastore_urls <- function(token, data_set = NULL) {
       assert_that(setequal(names(res), data_set))
       res[data_set]
     }
+  }
+}
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls <- function(token, x, ...)
+  UseMethod("list_download_urls", x)
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.character <- function(token,
+                                         x,
+                                         path,
+                                         timeout = NA,
+                                         ...) {
+
+  assert_that(is.character(path))
+
+  max_length <- max(length(x), length(path))
+
+  if (max_length > 1L) {
+
+    if (length(x) == 1L)
+      x <- rep(x, max_length)
+
+    if (length(path) == 1L)
+      path <- rep(path, max_length)
+
+    assert_that(length(x) == length(path))
+  }
+
+  if (is.na(timeout)) {
+
+    mapply(function(a, b) {
+      request_openbis("getDownloadUrlForFileForDataSet", list(token, a, b),
+                      "IDssServiceRpcGeneric")
+    }, x, path)
+
+  } else {
+
+    assert_that(is.numeric(timeout))
+
+    mapply(function(a, b) {
+      request_openbis("getDownloadUrlForFileForDataSetWithTimeout",
+                      list(token, a, b, timeout),
+                      "IDssServiceRpcGeneric")
+    }, x, path)
+  }
+}
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.DataSet <- function(token,
+                                       x,
+                                       path,
+                                       timeout = NA,
+                                       ...) {
+
+  list_download_urls(token, dataset_code(x), path, timeout)
+}
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.DatasetIdentifier <- function(token,
+                                                 x,
+                                                 path,
+                                                 timeout = NA,
+                                                 ...) {
+
+  list_download_urls(token, dataset_code(x), path, timeout)
+}
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
+
+  if (is.na(timeout)) {
+
+    res <- sapply(as_json_vec(x), function(y) {
+      request_openbis("getDownloadUrlForFileForDataSet", list(token, y),
+                      "IDssServiceRpcGeneric")
+    })
+
+  } else {
+
+    assert_that(is.numeric(timeout))
+
+    res <- sapply(as_json_vec(x), function(y) {
+      request_openbis("getDownloadUrlForFileForDataSetWithTimeout",
+                      list(token, y, timeout),
+                      "IDssServiceRpcGeneric")
+    })
   }
 }
