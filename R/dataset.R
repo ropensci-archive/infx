@@ -173,3 +173,15 @@ list_files.character <- function(token, x, path = "", recursive = TRUE) {
 
   as_json_vec(do.call(c, res))
 }
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_files.DataSet <- function(token, x, path = "", recursive = TRUE)
+  list_files(token, dataset_code(x), path, recursive)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_files.DatasetIdentifier <- function(token, x, path = "", recursive = TRUE)
+  list_files(token, dataset_code(x), path, recursive)

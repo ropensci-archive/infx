@@ -9,6 +9,8 @@
 \alias{list_dataset_ids}
 \alias{list_files}
 \alias{list_files.character}
+\alias{list_files.DataSet}
+\alias{list_files.DatasetIdentifier}
 \title{List datasets}
 \usage{
 list_datasets(token, x, ...)
@@ -29,6 +31,11 @@ list_dataset_ids(token, codes)
 list_files(token, x, ...)
 
 \method{list_files}{character}(token, x, path = "", recursive = TRUE)
+
+\method{list_files}{DataSet}(token, x, path = "", recursive = TRUE)
+
+\method{list_files}{DatasetIdentifier}(token, x, path = "",
+  recursive = TRUE)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
