@@ -43,7 +43,8 @@ skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
           "^remove", "^update", "put", "Metaproject", "Attachments",
           "SpacesWithProjects", "Vocabularies", "WebAppSettings", "Query",
           "Queries", "Aggregation", "TableReport", "RoleSet",
-          "getSessionToken", "shuffle", "listAllShares", "getValidationScript")
+          "getSessionToken", "shuffle", "listAllShares", "getValidationScript",
+          "getPathToDataSet", "getFileFromSessionWorkspace")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listProjects",
           "listExperiments", "listExperimentTypes",

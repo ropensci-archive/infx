@@ -332,15 +332,15 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Deprecated.  use getDownloadUrlForFileForDataSet(String, String, String).
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path
         -   returntype: java.io.InputStream
-    -   \[ \] getFileFromSessionWorkspace:
+    -   \[ \] ~~getFileFromSessionWorkspace~~:
         -   description: Download a file from the user's session workspace.
         -   arguments: java.lang.String sessionToken, java.lang.String filePath
         -   returntype: java.io.InputStream
-    -   \[ \] getPathToDataSet:
+    -   \[ \] ~~getPathToDataSet~~:
         -   description: Get a path to the data set.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String overrideStoreRootPathOrNull
         -   returntype: java.lang.String
-    -   \[ \] getValidationScript:
+    -   \[ \] ~~getValidationScript~~:
         -   description: Get the validation script for the specified data set type.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetTypeOrNull
         -   returntype: java.lang.String
@@ -348,7 +348,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns metadata for all aggregation services.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;AggregationServiceDescription&gt;
-    -   \[ \] listAllShares:
+    -   \[ \] ~~listAllShares~~:
         -   description: Lists all shares.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ShareInfo&gt;

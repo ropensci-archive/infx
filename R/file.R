@@ -31,9 +31,11 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
 
   max_length <- max(length(x), length(path), length(recursive))
 
-  x <- check_rep(x, max_length)
-  path <- check_rep(path, max_length)
-  recursive <- check_rep(recursive, max_length)
+  if (max_length > 1L) {
+    x <- check_rep(x, max_length)
+    path <- check_rep(path, max_length)
+    recursive <- check_rep(recursive, max_length)
+  }
 
   res <- mapply(function(a, b, c) {
     request_openbis("listFilesForDataSet", list(token, a, b, c),

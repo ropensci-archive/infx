@@ -203,9 +203,20 @@ test_that("json_vec helpers work", {
     class = c("json_vec"))))
 })
 
-test_that("json vecs can be rep'd", {
+test_that("base generics ork for json vecs", {
   cls_b <- json_class(a = "b", c = "d", class = "foo")
   cls_e <- json_class(a = "e", c = "f", class = "foo")
+
+  cls_be <- c(cls_b, cls_e)
+  expect_is(cls_be, "foo")
+  expect_is(cls_be, "json_vec")
+  expect_equal(length(cls_be), 2L)
+
+  cls_be[[2]] <- cls_b
+  expect_is(cls_be, "foo")
+  expect_is(cls_be, "json_vec")
+  expect_equal(length(cls_be), 2L)
+  expect_identical(cls_be[[1]], cls_be[[2]])
 
   cls_2 <- rep(c(cls_b, cls_e), 2)
 
