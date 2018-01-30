@@ -10,6 +10,9 @@
 \alias{list_wells.PlateIdentifier}
 \alias{list_wells.Plate}
 \alias{list_plate_well_ref}
+\alias{list_plate_metadata}
+\alias{list_plate_metadata.PlateIdentifier}
+\alias{list_plate_metadata.Plate}
 \title{List wells/plates}
 \usage{
 list_plates(token, x = NULL, ...)
@@ -30,6 +33,12 @@ list_wells(token, x = NULL, ...)
 
 list_plate_well_ref(token, material_id, experiment_id = NULL,
   include_datasets = FALSE)
+
+list_plate_metadata(token, x, ...)
+
+\method{list_plate_metadata}{PlateIdentifier}(token, x, ...)
+
+\method{list_plate_metadata}{Plate}(token, x, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -67,7 +76,7 @@ not incur an API call and can act on both a single plate object or a vector
 of plate objects (passed as a \code{json_vec} object) and will return a
 \code{json_vec} object of type \code{PlateIdentifier}.
 
-Finally, \code{list_plate_well_ref()} can list well references (as
+\code{list_plate_well_ref()} can list well references (as
 \code{PlateWellReferenceWithDatasets} objects) corresponding to materials. This
 can be used to find all wells that contain a certain material (for example
 a gene knockdown or a specific compound used for a knockdown). If multiple
@@ -77,4 +86,9 @@ The search can be limited to a single experiment,  specified either as
 \code{Experiment} or \code{ExperimentIdentifier}. As a further argument, the switch
 \code{include_datasets} specifies whether the connected image and image analysis
 data sets should be returned as well.
+
+All metadata corresponding to a plate (specified as a set of \code{Plate} or
+\code{PlateIdentifier} objects) can be fetched using \code{list_plate_metadata()}.
+The returned \code{PlateMetadata} objects also contain a list of corresponding
+\code{WellMetadata} objects.
 }

@@ -385,11 +385,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Converts a given list of dataset codes to dataset identifiers.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;java.lang.String&gt; datasetCodes
         -   returntype: java.util.List&lt;IDatasetIdentifier&gt;
-    -   \[ \] getExperimentImageMetadata:
+    -   \[x\] getExperimentImageMetadata:
         -   description: Returns aggregated metadata for all images/plates within one experiment.
         -   arguments: java.lang.String sessionToken, ExperimentIdentifier experimentIdentifer
         -   returntype: ExperimentImageMetadata
-    -   \[ \] getPlateMetadataList:
+    -   \[x\] getPlateMetadataList:
         -   description: Fetches the contents of a given list of plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;PlateMetadata&gt;

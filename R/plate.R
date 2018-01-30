@@ -19,7 +19,7 @@
 #' of plate objects (passed as a `json_vec` object) and will return a
 #' `json_vec` object of type `PlateIdentifier`.
 #' 
-#' Finally, `list_plate_well_ref()` can list well references (as
+#' `list_plate_well_ref()` can list well references (as
 #' `PlateWellReferenceWithDatasets` objects) corresponding to materials. This
 #' can be used to find all wells that contain a certain material (for example
 #' a gene knockdown or a specific compound used for a knockdown). If multiple
@@ -29,6 +29,11 @@
 #' `Experiment` or `ExperimentIdentifier`. As a further argument, the switch
 #' `include_datasets` specifies whether the connected image and image analysis
 #' data sets should be returned as well.
+#' 
+#' All metadata corresponding to a plate (specified as a set of `Plate` or
+#' `PlateIdentifier` objects) can be fetched using `list_plate_metadata()`.
+#' The returned `PlateMetadata` objects also contain a list of corresponding
+#' `WellMetadata` objects.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned wells or plates.
@@ -161,3 +166,23 @@ list_plate_well_ref <- function(token,
 
   as_json_vec(do.call(c, res))
 }
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_plate_metadata <- function(token, x, ...)
+  UseMethod("list_plate_metadata", x)
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_plate_metadata.PlateIdentifier <- function(token, x, ...)
+  request_openbis("getPlateMetadataList", list(token, as_json_vec(x)),
+                  "IScreeningApiServer")
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_plate_metadata.Plate <- function(token, x, ...)
+  request_openbis("getPlateMetadataList", list(token, plate_to_plateid(x)),
+                  "IScreeningApiServer")

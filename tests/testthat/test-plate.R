@@ -95,3 +95,26 @@ test_that("well/plate refs can be listed", {
                    list_plate_well_ref(tok, mat[[1]],
                                        list_experiments(tok, exp_ids[1])))
 })
+
+test_that("plate metadata be listed", {
+  exp_ids <- list_experiment_ids(tok)
+  plates <- list_plates(tok, exp_ids[[1]])
+  plate_ids <- plate_to_plateid(plates)
+
+  meta_1 <- list_plate_metadata(tok, plate_ids[[1]])
+  expect_is(meta_1, "PlateMetadata")
+  expect_is(meta_1, "json_vec")
+  expect_identical(get_common_subclass(meta_1), "PlateMetadata")
+  expect_true(all(sapply(meta_1, has_json_subclass, "PlateMetadata")))
+  expect_equal(length(meta_1), 1L)
+
+  meta_2 <- list_plate_metadata(tok, plate_ids[1:2])
+  expect_is(meta_2, "PlateMetadata")
+  expect_is(meta_2, "json_vec")
+  expect_identical(get_common_subclass(meta_2), "PlateMetadata")
+  expect_true(all(sapply(meta_2, has_json_subclass, "PlateMetadata")))
+  expect_equal(length(meta_2), 2L)
+
+  expect_identical(list_plate_metadata(tok, plates[[1]]), meta_1)
+  expect_identical(list_plate_metadata(tok, plates[1:2]), meta_2)
+})
