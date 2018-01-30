@@ -1,7 +1,8 @@
 context("openbis downloader")
 
 test_that("openbis downloads can be created", {
-  expect_is(files <- list_files(tok, "20160921085125038-3519900"), "json_vec")
+  expect_is(files <- list_files_old(tok, "20160921085125038-3519900"),
+                                    "json_vec")
   expect_type(link <- get_download(tok, "20160921085125038-3519900",
                                    files[[2]][["pathInDataSet"]]),
               "character")
@@ -16,7 +17,7 @@ test_that("openbis downloads can be executed", {
   expect_type(dat[[1]], "raw")
   expect_equal(names(dat), "InfectXKinomeData-OutputPMM.csv")
 
-  files <- list_files(tok, "20160921085125038-3519900")
+  files <- list_files_old(tok, "20160921085125038-3519900")
 
   expect_error(do_download(tok, "20160921085125038-3519900", "foo"))
   expect_error(do_download(tok, "20160921085125038-3519900", files))

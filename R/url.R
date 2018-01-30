@@ -12,9 +12,13 @@
 #' `DatasetIdentifier` objects) or NULL.
 #' @param timeout Time-span (in seconds) for which the file download link
 #' should be valid.
+#' @param x Object representing a (set of) dataset(s), e.g. a vector of dataset
+#' codes, or a set of `DataSet`s or `DatasetIdentifier`s.
+#' @param path A character vector of file paths within datasets.
+#' @param ... Generic compatibility.
 #' 
 #' @rdname list_urls
-
+#' 
 #' @export
 #' 
 list_datastores <- function(token)
