@@ -246,12 +246,18 @@ print_json_class <- function(x,
           indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
         )
       } else if (cur_depth <= max_depth) {
-        c(indent(rest[[1]], paste0(if (unnamed_parent) layout$c else layout$t,
-                                   layout$h), paste0(layout$v,  " ")),
-          unlist(lapply(rest[-c(1, length(rest))], indent,
-                        paste0(layout$j, layout$h), paste0(layout$v,  " "))),
-          indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
-        )
+        if (length(rest) == 1L) {
+          indent(rest[[1]], paste0(if (!unnamed_parent) layout$h, layout$h),
+                 "  ")
+        } else {
+          c(indent(rest[[1]],
+                   paste0(if (unnamed_parent) layout$c else layout$t,
+                          layout$h), paste0(layout$v,  " ")),
+            unlist(lapply(rest[-c(1, length(rest))], indent,
+                          paste0(layout$j, layout$h), paste0(layout$v,  " "))),
+            indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
+          )
+        }
       } else {
         "..."
       }

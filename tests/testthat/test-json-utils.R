@@ -89,9 +89,18 @@ test_that("json objects can be printed", {
                         structure(list("b"), class = c("bar", "json_class")))),
               class = c("foo", "json_class")), depth = 3, fancy = FALSE),
     "\\-+-c = c \n  \\-X-bar", fixed = TRUE)
+
+  expect_output(print(json_class(c = "d", e = list(json_class(a = "b",
+                                                              class = "foo")),
+                                 class = "bar"), 2L),
+                "└─e = ──█─foo")
+  expect_output(print(json_class(c = "d", list(json_class(a = "b",
+                                                          class = "foo")),
+                                 class = "bar"), 2L),
+                "└──█─foo")
 })
 
-test_that("json_vec printing work", {
+test_that("json_vec printing works", {
   expect_output(print(
     structure(list(structure(list("a"), class = c("foo", "json_class"))),
               class = c("json_vec"))),
