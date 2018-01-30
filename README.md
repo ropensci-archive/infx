@@ -352,11 +352,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Lists all shares.
         -   arguments: java.lang.String sessionToken
         -   returntype: java.util.List&lt;ShareInfo&gt;
-    -   \[ \] listFilesForDataSet:
+    -   \[x\] listFilesForDataSet:
         -   description: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
         -   arguments: java.lang.String sessionToken, DataSetFileDTO fileOrFolder
         -   returntype: FileInfoDssDTO\[\]
-    -   \[ \] listFilesForDataSet:
+    -   \[x\] listFilesForDataSet:
         -   description: Get an array of FileInfoDss objects that describe the file-system structure of the data set.
         -   arguments: java.lang.String sessionToken, java.lang.String dataSetCode, java.lang.String path, boolean isRecursive
         -   returntype: FileInfoDssDTO\[\]
