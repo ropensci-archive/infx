@@ -112,6 +112,9 @@ test_that("dataset ids can be listed", {
   expect_identical(get_common_subclass(dsid_2), "DatasetIdentifier")
   expect_true(all(sapply(dsid_2, has_json_subclass, "DatasetIdentifier")))
   expect_gte(length(dsid_2), 1L)
+
+  expect_identical(list_dataset_ids(tok, ds[[1]]), dsid_1)
+  expect_identical(list_dataset_ids(tok, ds[1:2]), dsid_2)
 })
 
 test_that("files can be listed", {

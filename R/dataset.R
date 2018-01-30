@@ -7,7 +7,7 @@
 #' `list_dataset_types()` lists all available data set types on the given
 #' openBIS instance and `list_dataset_id()` returns a list of dataset id
 #' objects corresponding to the supplied character vector of one or more
-#' dataset codes.
+#' dataset codes or set of `DataSet` objects.
 #' 
 #' The function `list_files()` lists files associated with one or more
 #' dataset(s), which can be specified with codes or `DataSet`/
@@ -120,11 +120,21 @@ resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
 #' @rdname list_datasets
 #' @export
 #' 
-list_dataset_ids <- function(token, codes) {
-  assert_that(is.character(codes))
-  request_openbis("getDatasetIdentifiers", list(token, as.list(codes)),
+list_dataset_ids <- function(token, x, ...)
+  UseMethod("list_dataset_ids", x)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_dataset_ids.character <- function(token, x, ...)
+  request_openbis("getDatasetIdentifiers", list(token, as.list(x)),
                   "IScreeningApiServer")
-}
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_dataset_ids.DataSet <- function(token, x, ...)
+  list_dataset_ids(token, dataset_code(x))
 
 dataset_code <- function(x, ...)
   UseMethod("dataset_code")
@@ -154,7 +164,7 @@ list_files <- function(token, x, ...)
 #' @rdname list_datasets
 #' @export
 #' 
-list_files.character <- function(token, x, path = "", recursive = TRUE) {
+list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
 
   max_length <- max(length(x), length(path), length(recursive))
 
@@ -177,11 +187,17 @@ list_files.character <- function(token, x, path = "", recursive = TRUE) {
 #' @rdname list_datasets
 #' @export
 #' 
-list_files.DataSet <- function(token, x, path = "", recursive = TRUE)
+list_files.DataSet <- function(token, x, path = "", recursive = TRUE, ...)
   list_files(token, dataset_code(x), path, recursive)
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_files.DatasetIdentifier <- function(token, x, path = "", recursive = TRUE)
+list_files.DatasetIdentifier <- function(token,
+                                         x,
+                                         path = "",
+                                         recursive = TRUE,
+                                         ...) {
+
   list_files(token, dataset_code(x), path, recursive)
+}
