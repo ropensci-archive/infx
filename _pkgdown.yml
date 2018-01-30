@@ -19,6 +19,7 @@ reference:
   - title: Download urls
     desc: Determine download urls for datasets
     contents:
+      - list_files
       - list_datastores
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
