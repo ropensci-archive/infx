@@ -166,15 +166,18 @@ list_files <- function(token, x, ...)
 #' 
 list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
 
+  check_rep <- function(vec, len) {
+    if (length(vec) == 1L)
+      vec <- rep(vec, len)
+    assert_that(length(vec) == len || length(vec) == 1L)
+    vec
+  }
+
   max_length <- max(length(x), length(path), length(recursive))
 
-  assert_that(length(x) == max_length || length(x) == 1L,
-              length(path) == max_length || length(path) == 1L,
-              length(recursive) == max_length || length(recursive) == 1L)
-
-  x <- rep(x, max_length)
-  path <- rep(path, max_length)
-  recursive <- rep(recursive, max_length)
+  x <- check_rep(x, max_length)
+  path <- check_rep(path, max_length)
+  recursive <- check_rep(recursive, max_length)
 
   res <- mapply(function(a, b, c) {
     request_openbis("listFilesForDataSet", list(token, a, b, c),
@@ -200,4 +203,17 @@ list_files.DatasetIdentifier <- function(token,
                                          ...) {
 
   list_files(token, dataset_code(x), path, recursive)
+}
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_files.DataSetFileDTO <- function(token, x, ...) {
+
+  res <- lapply(as_json_vec(x), function(y) {
+    request_openbis("listFilesForDataSet", list(token, y),
+                    "IDssServiceRpcGeneric")
+  })
+
+  as_json_vec(do.call(c, res))
 }

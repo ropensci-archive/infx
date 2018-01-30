@@ -123,7 +123,7 @@ test_that("files can be listed", {
   ds <- list_datasets(tok, samples[[1]])
   codes <- sapply(ds, `[[`, "code")
 
-  files_1 <- list_files(tok, codes[[2]])
+  files_1 <- list_files(tok, codes[2])
   expect_is(files_1, "FileInfoDssDTO")
   expect_is(files_1, "json_vec")
   expect_identical(get_common_subclass(files_1), "FileInfoDssDTO")
@@ -144,4 +144,17 @@ test_that("files can be listed", {
 
   expect_identical(list_files(tok, ids[[1]]), files_1)
   expect_identical(list_files(tok, ids[1:2]), files_2)
+
+  ds_file_1 <- json_class(dataSetCode = codes[2],
+                          path = "",
+                          isRecursive = TRUE,
+                          class = "DataSetFileDTO")
+  ds_file_2 <- c(ds_file_1,
+                 json_class(dataSetCode = codes[3],
+                            path = "",
+                            isRecursive = TRUE,
+                            class = "DataSetFileDTO"))
+
+  expect_identical(list_files(tok, ds_file_1), files_1)
+  expect_identical(list_files(tok, ds_file_2), files_2)
 })
