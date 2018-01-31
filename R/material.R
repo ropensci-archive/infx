@@ -48,6 +48,7 @@
 #' @param mode Switch between generic and screening material id objects.
 #' @param material_type A `MaterialTypeIdentifierScreening` object to restrict
 #' the material listing to a certain type of materials.
+#' @param ... Generic compatibility.
 #' 
 #' @examples
 #' \dontrun{

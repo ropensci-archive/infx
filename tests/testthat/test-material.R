@@ -68,10 +68,10 @@ test_that("materials can be listed", {
   expect_true(all(sapply(mat_2, has_subclass, "PlateWellMaterialMapping")))
   expect_equal(length(mat_2), 2L)
 
-  expect_identical(list_material(tok, plate_ids[[1]]), mat_1)
+  expect_identical(list_material(tok, plate_ids[[2]]), mat_1)
   expect_identical(list_material(tok, plate_ids[1:2]), mat_2)
 
-  expect_identical(list_material(tok, plate_meta[[1]]), mat_1)
+  expect_identical(list_material(tok, plate_meta[[2]]), mat_1)
   expect_identical(list_material(tok, plate_meta[1:2]), mat_2)
 
   genes <- json_class(materialTypeCode = "GENE",
