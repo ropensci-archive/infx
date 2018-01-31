@@ -30,22 +30,22 @@ test_that("common subclass can be determined", {
   expect_false(has_common_subclass("a"))
   expect_error(has_common_subclass())
 
-  expect_equal(get_common_subclass(
+  expect_equal(get_subclass(
     list(structure(list("a"), class = c("foo", "json_class")),
          structure(list("b"), class = c("foo", "json_class")))), "foo")
-  expect_equal(get_common_subclass(
+  expect_equal(get_subclass(
     list(structure(list("a"), class = c("foo", "json_class")))), "foo")
-  expect_error(get_common_subclass(
+  expect_error(get_subclass(
     list(structure(list("a"), class = c("foo", "json_class")),
          structure(list("b"), class = c("bar", "json_class")))))
-  expect_error(get_common_subclass(
+  expect_error(get_subclass(
     list(structure(list("a"), class = "foo"),
          structure(list("b"), class = "foo"))))
-  expect_equal(get_common_subclass(
+  expect_equal(get_subclass(
     list(structure(list("a"), class = c("foo", "bar", "json_class")),
          structure(list("b"), class = c("foo", "bar", "json_class")))),
     c("foo", "bar"))
-  expect_error(get_common_subclass(
+  expect_error(get_subclass(
     list(structure(list("a"), class = c("foo", "bar", "json_class")),
          structure(list("b"), class = c("bar", "foo", "json_class")))))
 })
@@ -100,60 +100,60 @@ test_that("json_vec helpers work", {
     structure(list("a"), class = c("foo", "json_class")),
     structure(list("b"), class = c("foo", "bar", "json_class")))))
 
-  expect_equal(get_common_subclass(
+  expect_equal(get_subclass(
     structure(list("a"), class = c("foo", "json_class"))), "foo")
-  expect_equal(get_common_subclass(
+  expect_equal(get_subclass(
     structure(list("a"), class = c("foo", "bar", "json_class"))),
     c("foo", "bar"))
-  expect_error(get_common_subclass("a"))
-  expect_error(get_common_subclass(structure(list("a"), class = c("foo"))))
-  expect_error(get_common_subclass(structure(list("a"),
+  expect_error(get_subclass("a"))
+  expect_error(get_subclass(structure(list("a"), class = c("foo"))))
+  expect_error(get_subclass(structure(list("a"),
                class = c("foo", "bar"))))
-  expect_equal(get_common_subclass(list(
+  expect_equal(get_subclass(list(
     structure(list("a"), class = c("foo", "json_class")),
     structure(list("b"), class = c("foo", "json_class")))), "foo")
-  expect_equal(get_common_subclass(list(
+  expect_equal(get_subclass(list(
     structure(list("a"), class = c("foo", "bar", "json_class")),
     structure(list("b"), class = c("foo", "bar", "json_class")))),
     c("foo", "bar"))
-  expect_error(get_common_subclass(list(
+  expect_error(get_subclass(list(
     structure(list("a"), class = c("foo", "bar", "json_class")),
     structure(list("b"), class = c("bar", "foo", "json_class")))))
-  expect_error(get_common_subclass(list(
+  expect_error(get_subclass(list(
     structure(list("a"), class = c("foo", "json_class")),
     structure(list("b"), class = c("bar", "json_class")))))
-  expect_error(get_common_subclass(list(
+  expect_error(get_subclass(list(
     structure(list("a"), class = c("json_class")),
     structure(list("b"), class = c("json_class")))))
-  expect_error(get_common_subclass(list(
+  expect_error(get_subclass(list(
     structure(list("a"), class = c("foo")),
     structure(list("b"), class = c("foo")))))
-  expect_equal(get_common_subclass(json_vec(
+  expect_equal(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "json_class")))), c("foo"))
-  expect_equal(get_common_subclass(json_vec(
+  expect_equal(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "json_class")),
     structure(list("b"), class = c("foo", "json_class")))), c("foo"))
-  expect_equal(get_common_subclass(json_vec(
+  expect_equal(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "bar", "json_class")),
     structure(list("b"), class = c("foo", "bar", "json_class")))),
     c("foo", "bar"))
-  expect_error(get_common_subclass(json_vec(
+  expect_error(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "bar", "json_class")),
     structure(list("b"), class = c("foo", "json_class")))))
-  expect_error(get_common_subclass(json_vec(
+  expect_error(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "bar", "json_class")),
     structure(list("b"), class = c("bar", "foo", "json_class")))))
-  expect_error(get_common_subclass(json_vec(
+  expect_error(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "bar")),
     structure(list("b"), class = c("foo", "bar", "json_class")))))
-  expect_error(get_common_subclass(json_vec(
+  expect_error(get_subclass(json_vec(
     structure(list("a"), class = c("foo")),
     structure(list("b"), class = c("foo")))))
-  expect_error(get_common_subclass(json_vec(
+  expect_error(get_subclass(json_vec(
     structure(list("a"), class = c("foo", "json_class")),
     structure(list("b"), class = c("bar", "json_class")))))
 
-  expect_error(get_common_subclass(c("a", "b")))
+  expect_error(get_subclass(c("a", "b")))
 
   expect_true(is.json_vec(json_vec(
     structure(list("a"), class = c("foo", "json_class")),

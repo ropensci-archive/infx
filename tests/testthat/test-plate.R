@@ -4,7 +4,7 @@ test_that("plates can be listed", {
   plate <- list_plates(tok)
   expect_is(plate, "Plate")
   expect_is(plate, "json_vec")
-  expect_identical(get_common_subclass(plate), "Plate")
+  expect_identical(get_subclass(plate), "Plate")
   expect_true(all(sapply(plate, has_subclass, "Plate")))
   expect_gte(length(plate), 1L)
 
@@ -14,14 +14,14 @@ test_that("plates can be listed", {
   plate_1 <- list_plates(tok, exp_ids[[1]])
   expect_is(plate_1, "Plate")
   expect_is(plate_1, "json_vec")
-  expect_identical(get_common_subclass(plate_1), "Plate")
+  expect_identical(get_subclass(plate_1), "Plate")
   expect_true(all(sapply(plate_1, has_subclass, "Plate")))
   expect_gte(length(plate_1), 1L)
 
   plate_2 <- list_plates(tok, exp_ids[c(1, 2)])
   expect_is(plate_2, "Plate")
   expect_is(plate_2, "json_vec")
-  expect_identical(get_common_subclass(plate_2), "Plate")
+  expect_identical(get_subclass(plate_2), "Plate")
   expect_true(all(sapply(plate_2, has_subclass, "Plate")))
   expect_gte(length(plate_2), length(plate_1))
 
@@ -36,14 +36,14 @@ test_that("wells can be listed", {
   wells_1 <- list_wells(tok, plate[[1]])
   expect_is(wells_1, "WellIdentifier")
   expect_is(wells_1, "json_vec")
-  expect_identical(get_common_subclass(wells_1), "WellIdentifier")
+  expect_identical(get_subclass(wells_1), "WellIdentifier")
   expect_true(all(sapply(wells_1, has_subclass, "WellIdentifier")))
   expect_equal(length(wells_1), 384L)
 
   wells_2 <- list_wells(tok, plate[c(1, 2)])
   expect_is(wells_2, "WellIdentifier")
   expect_is(wells_2, "json_vec")
-  expect_identical(get_common_subclass(wells_2), "WellIdentifier")
+  expect_identical(get_subclass(wells_2), "WellIdentifier")
   expect_true(all(sapply(wells_2, has_subclass, "WellIdentifier")))
   expect_equal(length(wells_2), 768L)
 })
@@ -54,7 +54,7 @@ test_that("well/plate refs can be listed", {
   ref_1 <- list_plate_well_ref(tok, mat[[1]])
   expect_is(ref_1, "PlateWellReferenceWithDatasets")
   expect_is(ref_1, "json_vec")
-  expect_identical(get_common_subclass(ref_1),
+  expect_identical(get_subclass(ref_1),
                    "PlateWellReferenceWithDatasets")
   expect_true(all(sapply(ref_1, has_subclass,
                          "PlateWellReferenceWithDatasets")))
@@ -63,7 +63,7 @@ test_that("well/plate refs can be listed", {
   ref_2 <- list_plate_well_ref(tok, mat)
   expect_is(ref_2, "PlateWellReferenceWithDatasets")
   expect_is(ref_2, "json_vec")
-  expect_identical(get_common_subclass(ref_2),
+  expect_identical(get_subclass(ref_2),
                    "PlateWellReferenceWithDatasets")
   expect_true(all(sapply(ref_2, has_subclass,
                          "PlateWellReferenceWithDatasets")))
@@ -75,7 +75,7 @@ test_that("well/plate refs can be listed", {
   ref_1_exp <- list_plate_well_ref(tok, mat[[1]], exp_ids[[1]])
   expect_is(ref_1_exp, "PlateWellReferenceWithDatasets")
   expect_is(ref_1_exp, "json_vec")
-  expect_identical(get_common_subclass(ref_1_exp),
+  expect_identical(get_subclass(ref_1_exp),
                    "PlateWellReferenceWithDatasets")
   expect_true(all(sapply(ref_1_exp, has_subclass,
                          "PlateWellReferenceWithDatasets")))
@@ -85,7 +85,7 @@ test_that("well/plate refs can be listed", {
   ref_2_exp <- list_plate_well_ref(tok, mat, exp_ids[[1]])
   expect_is(ref_2_exp, "PlateWellReferenceWithDatasets")
   expect_is(ref_2_exp, "json_vec")
-  expect_identical(get_common_subclass(ref_2_exp),
+  expect_identical(get_subclass(ref_2_exp),
                    "PlateWellReferenceWithDatasets")
   expect_true(all(sapply(ref_2_exp, has_subclass,
                          "PlateWellReferenceWithDatasets")))
@@ -104,14 +104,14 @@ test_that("plate metadata be listed", {
   meta_1 <- list_plate_metadata(tok, plate_ids[[1]])
   expect_is(meta_1, "PlateMetadata")
   expect_is(meta_1, "json_vec")
-  expect_identical(get_common_subclass(meta_1), "PlateMetadata")
+  expect_identical(get_subclass(meta_1), "PlateMetadata")
   expect_true(all(sapply(meta_1, has_subclass, "PlateMetadata")))
   expect_equal(length(meta_1), 1L)
 
   meta_2 <- list_plate_metadata(tok, plate_ids[1:2])
   expect_is(meta_2, "PlateMetadata")
   expect_is(meta_2, "json_vec")
-  expect_identical(get_common_subclass(meta_2), "PlateMetadata")
+  expect_identical(get_subclass(meta_2), "PlateMetadata")
   expect_true(all(sapply(meta_2, has_subclass, "PlateMetadata")))
   expect_equal(length(meta_2), 2L)
 

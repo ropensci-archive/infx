@@ -140,7 +140,7 @@ identical(foo_vec, c(a, b))
 identical(as.list(foo_vec), list(a, b))
 ```
 
-Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_common_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and it alias `is.json_vec()`), which can be used to check whether
+Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and it alias `is.json_vec()`), which can be used to check whether
 
   * all child elements are of the same sub-class
   * all child elements are properly formed `json_class` objects
@@ -151,8 +151,8 @@ Utility functions available for `json_vec` objects include `has_common_subclass(
 ```{r vec-utils}
 has_common_subclass(list(a, b))
 
-get_common_subclass(list(a, b))
-get_common_subclass(foo_vec)
+get_subclass(list(a, b))
+get_subclass(foo_vec)
 
 is_json_vec(foo_vec)
 is_json_vec(list(a, b))

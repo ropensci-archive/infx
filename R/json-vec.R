@@ -34,7 +34,7 @@ new_json_vec <- function(x) {
 
   assert_that(has_common_subclass(x))
 
-  res <- structure(x, class = c(get_common_subclass(x), "json_vec"))
+  res <- structure(x, class = c(get_subclass(x), "json_vec"))
 
   assert_that(is_json_vec(res))
 
@@ -100,7 +100,7 @@ as.list.json_vec <- function(x, ...) {
 #' Testing whether a list structure consists of `json_class` objects which are
 #' of the same sub-class can be done with `has_common_subclass()` and this
 #' shared sub-class can be extracted, using the S3 generic function
-#' `get_common_subclass()`.
+#' `get_subclass()`.
 #'
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
@@ -117,7 +117,7 @@ as.list.json_vec <- function(x, ...) {
 #' is_json_vec(a)
 #' 
 #' has_common_subclass(vec)
-#' get_common_subclass(vec)
+#' get_subclass(vec)
 #' 
 #' @export
 #' 
@@ -142,7 +142,7 @@ is.json_vec <- is_json_vec
 #' 
 has_subclass.json_vec <- function(x, class, ...) {
   assert_that(is.character(class))
-  isTRUE(all(class == get_common_subclass(x)))
+  isTRUE(all(class == get_subclass(x)))
 }
 
 #' @rdname json_vec_validate
@@ -161,21 +161,7 @@ has_common_subclass <- function(x) {
 #' @rdname json_vec_validate
 #' @export
 #' 
-get_common_subclass <- function(x, ...) {
-  UseMethod("get_common_subclass")
-}
-
-#' @rdname json_vec_validate
-#' @export
-#' 
-get_common_subclass.json_class <- function(x, ...) {
-  get_subclass(x)
-}
-
-#' @rdname json_vec_validate
-#' @export
-#' 
-get_common_subclass.list <- function(x, ...) {
+get_subclass.list <- function(x, ...) {
   assert_that(has_common_subclass(x))
   unlist(unique(lapply(x, get_subclass)))
 }
@@ -183,15 +169,8 @@ get_common_subclass.list <- function(x, ...) {
 #' @rdname json_vec_validate
 #' @export
 #' 
-get_common_subclass.json_vec <- function(x, ...) {
-  assert_that(is_json_vec(x))
+get_subclass.json_vec <- function(x, ...)
   setdiff(class(x), "json_vec")
-}
-
-#' @rdname json_vec_validate
-#' @export
-#' 
-get_common_subclass.default <- function(x, ...) error_default(x)
 
 #' @export
 `[.json_vec` <- function(x, i, ...) {
@@ -201,9 +180,9 @@ get_common_subclass.default <- function(x, ...) error_default(x)
 #' @export
 `[<-.json_vec` <- function(x, i, ..., value) {
 
-  sub_class <- get_common_subclass(x)
+  sub_class <- get_subclass(x)
 
-  assert_that(get_common_subclass(value) == sub_class)
+  assert_that(get_subclass(value) == sub_class)
 
   if (is_json_class(value))
     value <- list(value)
@@ -221,7 +200,7 @@ get_common_subclass.default <- function(x, ...) error_default(x)
 #' @export
 `[[<-.json_vec` <- function(x, i, ..., value) {
 
-  assert_that(get_subclass(value) == get_common_subclass(x))
+  assert_that(get_subclass(value) == get_subclass(x))
 
   NextMethod()
 }

@@ -5,11 +5,8 @@
 \alias{is.json_vec}
 \alias{has_subclass.json_vec}
 \alias{has_common_subclass}
-\alias{get_common_subclass}
-\alias{get_common_subclass.json_class}
-\alias{get_common_subclass.list}
-\alias{get_common_subclass.json_vec}
-\alias{get_common_subclass.default}
+\alias{get_subclass.list}
+\alias{get_subclass.json_vec}
 \title{Validate JSON object vectors}
 \usage{
 is_json_vec(x)
@@ -20,15 +17,9 @@ is.json_vec(x)
 
 has_common_subclass(x)
 
-get_common_subclass(x, ...)
+\method{get_subclass}{list}(x, ...)
 
-\method{get_common_subclass}{json_class}(x, ...)
-
-\method{get_common_subclass}{list}(x, ...)
-
-\method{get_common_subclass}{json_vec}(x, ...)
-
-\method{get_common_subclass}{default}(x, ...)
+\method{get_subclass}{json_vec}(x, ...)
 }
 \arguments{
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
@@ -51,7 +42,7 @@ determined for the children.
 Testing whether a list structure consists of \code{json_class} objects which are
 of the same sub-class can be done with \code{has_common_subclass()} and this
 shared sub-class can be extracted, using the S3 generic function
-\code{get_common_subclass()}.
+\code{get_subclass()}.
 }
 \examples{
 a <- structure(list("a"), class = c("foo", "json_class"))
@@ -63,6 +54,6 @@ is_json_vec(vec)
 is_json_vec(a)
 
 has_common_subclass(vec)
-get_common_subclass(vec)
+get_subclass(vec)
 
 }

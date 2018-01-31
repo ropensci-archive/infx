@@ -4,7 +4,7 @@ test_that("material ids can be created", {
   material <- material_id(2475L, type = "gene")
   expect_is(material, "MaterialIdentifierGeneric")
   expect_is(material, "json_vec")
-  expect_identical(get_common_subclass(material), "MaterialIdentifierGeneric")
+  expect_identical(get_subclass(material), "MaterialIdentifierGeneric")
   expect_true(all(sapply(material, has_subclass,
               "MaterialIdentifierGeneric")))
   expect_equal(length(material), 1L)
@@ -13,7 +13,7 @@ test_that("material ids can be created", {
   materials <- material_id(1:3, type = c("gene", "gene", "gene"))
   expect_is(materials, "MaterialIdentifierGeneric")
   expect_is(materials, "json_vec")
-  expect_identical(get_common_subclass(materials), "MaterialIdentifierGeneric")
+  expect_identical(get_subclass(materials), "MaterialIdentifierGeneric")
   expect_true(all(sapply(materials, has_subclass,
               "MaterialIdentifierGeneric")))
   expect_equal(length(materials), 3L)
@@ -25,7 +25,7 @@ test_that("material ids can be created", {
   material <- material_id(2475L, mode = "screening")
   expect_is(material, "MaterialIdentifierScreening")
   expect_is(material, "json_vec")
-  expect_identical(get_common_subclass(material),
+  expect_identical(get_subclass(material),
                    "MaterialIdentifierScreening")
   expect_true(all(sapply(material, has_subclass,
               "MaterialIdentifierScreening")))
@@ -38,7 +38,7 @@ test_that("materials can be listed", {
   mat_1 <- list_material(tok, materials[[1]])
   expect_is(mat_1, "MaterialGeneric")
   expect_is(mat_1, "json_vec")
-  expect_identical(get_common_subclass(mat_1), "MaterialGeneric")
+  expect_identical(get_subclass(mat_1), "MaterialGeneric")
   expect_true(all(sapply(mat_1, has_subclass,
               "MaterialGeneric")))
   expect_equal(length(mat_1), 1L)
@@ -46,7 +46,7 @@ test_that("materials can be listed", {
   mat_2 <- list_material(tok, materials)
   expect_is(mat_2, "MaterialGeneric")
   expect_is(mat_2, "json_vec")
-  expect_identical(get_common_subclass(mat_2), "MaterialGeneric")
+  expect_identical(get_subclass(mat_2), "MaterialGeneric")
   expect_true(all(sapply(mat_2, has_subclass,
               "MaterialGeneric")))
   expect_equal(length(mat_2), 2L)
