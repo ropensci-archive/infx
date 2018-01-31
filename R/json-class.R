@@ -246,7 +246,7 @@ has_subclass.json_class <- function(x, class, ...) {
 #' @rdname json_class_validate
 #' @export
 #' 
-has_subclass.default <- function(x, class) FALSE
+has_subclass.default <- function(x, class, ...) FALSE
 
 #' @rdname json_class_validate
 #' @export

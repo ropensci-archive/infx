@@ -21,7 +21,7 @@ has_subclass(x, class, ...)
 
 \method{has_subclass}{json_class}(x, class, ...)
 
-\method{has_subclass}{default}(x, class)
+\method{has_subclass}{default}(x, class, ...)
 
 get_subclass(x)
 
