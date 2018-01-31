@@ -9,6 +9,14 @@
 \alias{list_datasets.Plate}
 \alias{list_datasets.PlateMetadata}
 \alias{list_datasets.MaterialIdentifierScreening}
+\alias{list_datasets.DatasetIdentifier}
+\alias{list_datasets.DataSet}
+\alias{list_datasets.DatasetReference}
+\alias{list_datasets.FeatureVectorDatasetReference}
+\alias{list_datasets.FeatureVectorDatasetWellReference}
+\alias{list_datasets.ImageDatasetReference}
+\alias{list_datasets.MicroscopyImageReference}
+\alias{list_datasets.PlateImageReference}
 \alias{list_dataset_types}
 \alias{list_dataset_ids}
 \alias{list_dataset_ids.character}
@@ -38,6 +46,24 @@ list_datasets(token, x, ...)
 \method{list_datasets}{MaterialIdentifierScreening}(token, x,
   experiment = NULL, ...)
 
+list_datasets.DatasetIdentifier(token, x, wells = NULL, channels, ...)
+
+\method{list_datasets}{DataSet}(token, x, wells = NULL, channels, ...)
+
+list_datasets.DatasetReference(token, x, wells = NULL, channels, ...)
+
+list_datasets.FeatureVectorDatasetReference(token, x, wells = NULL, channels,
+  ...)
+
+list_datasets.FeatureVectorDatasetWellReference(token, x, wells = NULL,
+  channels, ...)
+
+list_datasets.ImageDatasetReference(token, x, wells = NULL, channels, ...)
+
+list_datasets.MicroscopyImageReference(token, x, wells = NULL, channels, ...)
+
+list_datasets.PlateImageReference(token, x, wells = NULL, channels, ...)
+
 list_dataset_types(token)
 
 list_dataset_ids(token, x, ...)
@@ -61,6 +87,12 @@ datasets (default) are to be listed.}
 
 \item{experiment}{When searching for datasets associated with materials,
 the search can be limited to a single experiment.}
+
+\item{wells}{A (set of) \code{WellPosition} object(s) to limit the dataset
+listing to.}
+
+\item{channel}{A character vector with imaging channel names to limit the
+dataset listing to.}
 }
 \description{
 Given a login token, all available datasets are listed for the given
@@ -76,6 +108,12 @@ Both \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} imple
 the \code{IDatasetIdentifier} interface, just as \code{DatasetIdentifier} does.
 }
 \details{
+Whenever \code{list_datasets()} is dispatched on a dataset id or dataset
+reference object, the resulting object type depends on whether a (set of)
+\code{WellPosition} object(s) were specified as \code{wells} argument. For its
+default value (NULL), a set of \code{MicroscopyImageReference} objects is
+returned, while \code{PlateImageReference} objects are returned otherwise.
+
 \code{list_dataset_types()} lists all available data set types on the given
 openBIS instance and \code{list_dataset_id()} returns a list of dataset id
 objects corresponding to the supplied character vector of one or more

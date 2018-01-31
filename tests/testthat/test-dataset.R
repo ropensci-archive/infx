@@ -83,6 +83,29 @@ test_that("datasets can be listed", {
   expect_identical(ds_3[[1]][["retrievedConnections"]],
                    list("PARENTS", "CHILDREN"))
 
+  mat <- material_id(c(2475L, 3832L), mode = "screening")
+
+  ds_1 <- list_datasets(tok, mat[[1]], exp_ids[[1]])
+  expect_is(ds_1, "PlateWellReferenceWithDatasets")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1),
+                   "PlateWellReferenceWithDatasets")
+  expect_true(all(sapply(ds_1, has_subclass,
+                         "PlateWellReferenceWithDatasets")))
+  expect_gte(length(ds_1), 1L)
+  img_ref <- ds_1[[1]][["imageDatasetReferences"]][[1]]
+  expect_is(img_ref, "ImageDatasetReference")
+  expect_is(img_ref, "json_class")
+
+  ds_2 <- list_datasets(tok, mat[1:2], exp_ids[[1]])
+  expect_is(ds_2, "PlateWellReferenceWithDatasets")
+  expect_is(ds_2, "json_vec")
+  expect_identical(get_subclass(ds_2),
+                   "PlateWellReferenceWithDatasets")
+  expect_true(all(sapply(ds_2, has_subclass,
+                         "PlateWellReferenceWithDatasets")))
+  expect_gte(length(ds_2), length(ds_1))
+
   plates <- list_plates(tok, exp_ids[[1]])
   plate_ids <- plate_to_plateid(plates)
   meta <- list_plate_metadata(tok, plate_ids[1:2])
@@ -107,28 +130,39 @@ test_that("datasets can be listed", {
   expect_identical(list_datasets(tok, meta[[1]]), ds_1)
   expect_identical(list_datasets(tok, meta[1:2]), ds_2)
 
-  mat <- material_id(c(2475L, 3832L), mode = "screening")
+  dsids <- list_dataset_ids(tok, sapply(ds_2, `[[`, "datasetCode"))
 
-  ds_1 <- list_datasets(tok, mat[[1]], exp_ids[[1]])
-  expect_is(ds_1, "PlateWellReferenceWithDatasets")
+  ds_1 <- list_datasets(tok, dsids[[1]], channels = "DAPI")
+  expect_is(ds_1, "MicroscopyImageReference")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1),
-                   "PlateWellReferenceWithDatasets")
-  expect_true(all(sapply(ds_1, has_subclass,
-                         "PlateWellReferenceWithDatasets")))
-  expect_gte(length(ds_1), 1L)
-  img_ref <- ds_1[[1]][["imageDatasetReferences"]][[1]]
-  expect_is(img_ref, "ImageDatasetReference")
-  expect_is(img_ref, "json_class")
+  expect_identical(get_subclass(ds_1), "MicroscopyImageReference")
+  expect_true(all(sapply(ds_1, has_subclass, "MicroscopyImageReference")))
+  expect_equal(length(ds_1), 9L)
 
-  ds_2 <- list_datasets(tok, mat[1:2], exp_ids[[1]])
-  expect_is(ds_2, "PlateWellReferenceWithDatasets")
+  ds_2 <- list_datasets(tok, dsids[1:2], channels = "DAPI")
+  expect_is(ds_2, "MicroscopyImageReference")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2),
-                   "PlateWellReferenceWithDatasets")
-  expect_true(all(sapply(ds_2, has_subclass,
-                         "PlateWellReferenceWithDatasets")))
-  expect_gte(length(ds_2), length(ds_1))
+  expect_identical(get_subclass(ds_2), "MicroscopyImageReference")
+  expect_true(all(sapply(ds_2, has_subclass, "MicroscopyImageReference")))
+  expect_equal(length(ds_2), 18L)
+
+  ds_3 <- list_datasets(tok, dsids[[1]], channels = c("DAPI", "GFP"))
+  expect_is(ds_3, "MicroscopyImageReference")
+  expect_is(ds_3, "json_vec")
+  expect_identical(get_subclass(ds_3), "MicroscopyImageReference")
+  expect_true(all(sapply(ds_3, has_subclass, "MicroscopyImageReference")))
+  expect_equal(length(ds_3), 18L)
+
+  # check Dataset
+  expect_identical(list_datasets(tok,
+                                 list_datasets(tok,
+                                               ds_1[[1]][["datasetCode"]]),
+                                 channels = "DAPI"), ds_1)
+  # check MicroscopyImageReference
+  expect_identical(list_datasets(tok, ds_1[[1]], channels = "DAPI"), ds_1)
+  # check ImageDatasetReference
+  expect_identical(list_datasets(tok, list_datasets(tok, plates[[1]]),
+                                 channels = "DAPI"), ds_1)
 })
 
 test_that("dataset types can be listed", {

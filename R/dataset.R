@@ -13,6 +13,12 @@
 #' Both `ImageDatasetReference` and `FeatureVectorDatasetReference` implement
 #' the `IDatasetIdentifier` interface, just as `DatasetIdentifier` does.
 #' 
+#' Whenever `list_datasets()` is dispatched on a dataset id or dataset
+#' reference object, the resulting object type depends on whether a (set of)
+#' `WellPosition` object(s) were specified as `wells` argument. For its
+#' default value (NULL), a set of `MicroscopyImageReference` objects is
+#' returned, while `PlateImageReference` objects are returned otherwise.  
+#' 
 #' `list_dataset_types()` lists all available data set types on the given
 #' openBIS instance and `list_dataset_id()` returns a list of dataset id
 #' objects corresponding to the supplied character vector of one or more
@@ -26,6 +32,10 @@
 #' @param type For listing image datasets, it can be specified, whether only
 #' raw image datasets, only segmentation image datasets or any kind of image
 #' datasets (default) are to be listed.
+#' @param wells A (set of) `WellPosition` object(s) to limit the dataset
+#' listing to.
+#' @param channel A character vector with imaging channel names to limit the
+#' dataset listing to.
 #' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
@@ -143,6 +153,88 @@ list_datasets.MaterialIdentifierScreening <- function(token,
   list_plate_well_ref(token, x, experiment, include_datasets = TRUE)
 }
 
+#' @keywords internal
+#' @export
+#' 
+list_img_ref <- function(token, x, wells = NULL, channels, ...)
+  UseMethod("list_img_ref", wells)
+
+#' @keywords internal
+#' @export
+#' 
+list_img_ref.NULL <- function(token, x, wells, channels, ...) {
+
+  x <- as_json_vec(x)
+
+  if (length(channels) > 1L)
+    channels <- as.list(channels)
+
+  res <- lapply(x, function(z)
+    request_openbis("listImageReferences", list(token, z, channels),
+                    "IDssServiceRpcScreening"))
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @keywords internal
+#' @export
+#' 
+list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
+
+  x <- as_json_vec(x)
+  wells <- as_json_vec(wells)
+
+  if (length(channels) > 1L)
+    channels <- as.list(channels)
+
+  res <- lapply(x, function(z)
+    request_openbis("listPlateImageReferences",
+                    list(token, z, wells, channels),
+                    "IDssServiceRpcScreening"))
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.DatasetIdentifier <- list_img_ref
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.DataSet <- function(token, x, wells = NULL, channels, ...)
+  list_datasets(token, list_dataset_ids(token, x), wells, channels, ...)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.DatasetReference <- list_img_ref
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.FeatureVectorDatasetReference <- list_img_ref
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.FeatureVectorDatasetWellReference <- list_img_ref
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.ImageDatasetReference <- list_img_ref
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.MicroscopyImageReference <- list_img_ref
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.PlateImageReference <- list_img_ref
 
 #' @rdname list_datasets
 #' @export
