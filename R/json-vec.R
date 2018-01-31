@@ -129,7 +129,7 @@ is_json_vec <- function(x) {
          all(sapply(x, is_json_class)) &&
          has_common_subclass(x) &&
          all(setdiff(class(x), "json_vec") ==
-             unlist(unique(lapply(x, get_json_subclass)))))
+             unlist(unique(lapply(x, get_subclass)))))
 }
 
 #' @rdname json_vec_validate
@@ -153,7 +153,7 @@ has_common_subclass <- function(x) {
   if (is_json_class(x))
     TRUE
   else if (all(sapply(x, is_json_class)))
-    isTRUE(length(unique(lapply(x, get_json_subclass))) == 1L)
+    isTRUE(length(unique(lapply(x, get_subclass))) == 1L)
   else
     FALSE
 }
@@ -169,7 +169,7 @@ get_common_subclass <- function(x, ...) {
 #' @export
 #' 
 get_common_subclass.json_class <- function(x, ...) {
-  get_json_subclass(x)
+  get_subclass(x)
 }
 
 #' @rdname json_vec_validate
@@ -177,7 +177,7 @@ get_common_subclass.json_class <- function(x, ...) {
 #' 
 get_common_subclass.list <- function(x, ...) {
   assert_that(has_common_subclass(x))
-  unlist(unique(lapply(x, get_json_subclass)))
+  unlist(unique(lapply(x, get_subclass)))
 }
 
 #' @rdname json_vec_validate
@@ -221,7 +221,7 @@ get_common_subclass.default <- function(x, ...) error_default(x)
 #' @export
 `[[<-.json_vec` <- function(x, i, ..., value) {
 
-  assert_that(get_json_subclass(value) == get_common_subclass(x))
+  assert_that(get_subclass(value) == get_common_subclass(x))
 
   NextMethod()
 }

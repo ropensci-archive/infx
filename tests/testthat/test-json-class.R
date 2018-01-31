@@ -102,15 +102,15 @@ test_that("json objects can be tested", {
 })
 
 test_that("json subclass can be determined", {
-  expect_error(get_json_subclass("a"))
-  expect_error(get_json_subclass(list(`@type` = "foo", "a", "b")))
+  expect_error(get_subclass("a"))
+  expect_error(get_subclass(list(`@type` = "foo", "a", "b")))
   expect_equal(
-    get_json_subclass(as_json_class(list(`@type` = "foo", "a", "b"))), "foo")
-  expect_equal(get_json_subclass(structure(list("a", "b"),
+    get_subclass(as_json_class(list(`@type` = "foo", "a", "b"))), "foo")
+  expect_equal(get_subclass(structure(list("a", "b"),
                                            class = c("foo", "json_class"))),
                "foo")
   expect_equal(
-    get_json_subclass(structure(list("a", "b"),
+    get_subclass(structure(list("a", "b"),
                                 class = c("foo", "bar", "json_class"))),
     c("foo", "bar"))
 })

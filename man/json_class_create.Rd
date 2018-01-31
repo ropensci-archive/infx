@@ -82,7 +82,7 @@ cls <- as_json_class(lst)
 
 print(cls)
 is_json_class(cls)
-get_json_subclass(cls)
+get_subclass(cls)
 
 identical(rm_json_class(cls), lst)
 

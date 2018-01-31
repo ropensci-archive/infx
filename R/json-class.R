@@ -45,7 +45,7 @@
 #' 
 #' print(cls)
 #' is_json_class(cls)
-#' get_json_subclass(cls)
+#' get_subclass(cls)
 #' 
 #' identical(rm_json_class(cls), lst)
 #' 
@@ -139,7 +139,7 @@ rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
 
       if (restore_type) {
         assert_that(!"@type" %in% names(x))
-        x <- c(`@type` = get_json_subclass(x), unclass(x))
+        x <- c(`@type` = get_subclass(x), unclass(x))
       } else
         x <- unclass(x)
     }
@@ -178,7 +178,7 @@ as.list.json_class <- function(x,
 #' The latter function tests whether an object has a specific JSON class
 #' attached. In order to recursively test a `json_class` object for being
 #' properly formed, the function `check_json_class()` can be used. In order to
-#' retrieve the sub-class to a `json_class` object, `get_json_subclass()` can
+#' retrieve the sub-class to a `json_class` object, `get_subclass()` can
 #' be used.
 #' 
 #' @param x Object to process.
@@ -193,7 +193,7 @@ as.list.json_class <- function(x,
 #' 
 #' print(cls)
 #' is_json_class(cls)
-#' get_json_subclass(cls)
+#' get_subclass(cls)
 #' 
 #' identical(rm_json_class(cls), lst)
 #' 
@@ -239,7 +239,7 @@ has_subclass <- function(x, class, ...)
 #' 
 has_subclass.json_class <- function(x, class, ...) {
   assert_that(is.character(class))
-  isTRUE(all(class == get_json_subclass(x)))
+  isTRUE(all(class == get_subclass(x)))
 }
 
 #' @rdname json_class_validate
@@ -250,12 +250,14 @@ has_subclass.default <- function(x, class) FALSE
 #' @rdname json_class_validate
 #' @export
 #' 
-get_json_subclass <- function(x) {
+get_subclass <- function(x)
+  UseMethod("get_subclass")
 
-  assert_that(is_json_class(x))
-
+#' @rdname json_class_validate
+#' @export
+#' 
+get_subclass.json_class <- function(x)
   setdiff(class(x), "json_class")
-}
 
 #' @export
 `[.json_class` <- function(x, i, ...) {

@@ -7,7 +7,8 @@
 \alias{has_subclass}
 \alias{has_subclass.json_class}
 \alias{has_subclass.default}
-\alias{get_json_subclass}
+\alias{get_subclass}
+\alias{get_subclass.json_class}
 \title{Validate JSON class objects}
 \usage{
 is_json_class(x)
@@ -22,7 +23,9 @@ has_subclass(x, class, ...)
 
 \method{has_subclass}{default}(x, class)
 
-get_json_subclass(x)
+get_subclass(x)
+
+\method{get_subclass}{json_class}(x)
 }
 \arguments{
 \item{x}{Object to process.}
@@ -43,7 +46,7 @@ proper \code{json_class} object, meaning that:
 The latter function tests whether an object has a specific JSON class
 attached. In order to recursively test a \code{json_class} object for being
 properly formed, the function \code{check_json_class()} can be used. In order to
-retrieve the sub-class to a \code{json_class} object, \code{get_json_subclass()} can
+retrieve the sub-class to a \code{json_class} object, \code{get_subclass()} can
 be used.
 }
 }
@@ -53,7 +56,7 @@ cls <- as_json_class(lst)
 
 print(cls)
 is_json_class(cls)
-get_json_subclass(cls)
+get_subclass(cls)
 
 identical(rm_json_class(cls), lst)
 

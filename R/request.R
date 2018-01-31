@@ -135,16 +135,16 @@ get_object_spec <- function(x) {
   assert_that(is.list(x),
               all(sapply(x, is_json_class)))
 
-  all_classes <- unique(sapply(x, get_json_subclass))
+  all_classes <- unique(sapply(x, get_subclass))
   obj_spec <- stats::setNames(vector(mode = "list",
                                      length = length(all_classes)),
                               all_classes)
 
   lapply(x, function(obj) {
-    old <- obj_spec[[get_json_subclass(obj)]]
+    old <- obj_spec[[get_subclass(obj)]]
     new <- lapply(obj, class)
     all <- union(names(old), names(new))
-    obj_spec[[get_json_subclass(obj)]] <<- stats::setNames(
+    obj_spec[[get_subclass(obj)]] <<- stats::setNames(
       lapply(all, function(nme) unique(c(old[[nme]], new[[nme]]))), all)
     invisible(NULL)
   })
@@ -157,23 +157,23 @@ assign_reference <- function(obj, spec, objects) {
     if (isTRUE(class(x) == "integer") && "json_class" %in% y) {
       z <- objects[[x]]
       assert_that(x == z[["@id"]],
-                  isTRUE(get_json_subclass(z) %in% y))
+                  isTRUE(get_subclass(z) %in% y))
       z
     } else
       x
   }, obj, spec[names(obj)], SIMPLIFY = FALSE)
 
-  new_json_class(res, class = get_json_subclass(obj))
+  new_json_class(res, class = get_subclass(obj))
 }
 
 traverse_list <- function(x, specs, lookup) {
   if (is.list(x)) {
     if (is_json_class(x)) {
       x <- assign_reference(x[names(x) != "@id"],
-                            specs[[get_json_subclass(x)]],
+                            specs[[get_subclass(x)]],
                             lookup)
       x <- new_json_class(lapply(x, traverse_list, specs, lookup),
-                          class = get_json_subclass(x))
+                          class = get_subclass(x))
     } else {
       x <- lapply(x, traverse_list, specs, lookup)
     }

@@ -91,7 +91,7 @@ identical(as.list(json_class, keep_asis = FALSE),
           rm_json_class(json_class))
 ```
 
-In addition to functions for creating and destroying `json_class` objects, several utility functions for `json_class` are provided as well. `is_json_class()` (and its alias `is.json_class()`) tests whether the object in question is a list inheriting the class attribute `json_class` and has at least one more class attribute in front of `json_class`, which is expected in last place (within the class vector). Similarly, `check_json_class()` can be used to recursively test a list structure to make sure that every node inheriting the `json_class` class attribute is a properly formed `json_class` object. Finally, the two functions `get_json_subclass()` and `has_subclass()` can be used to extract the sub-class and test whether a given `json_class` object has a specific sub-class.
+In addition to functions for creating and destroying `json_class` objects, several utility functions for `json_class` are provided as well. `is_json_class()` (and its alias `is.json_class()`) tests whether the object in question is a list inheriting the class attribute `json_class` and has at least one more class attribute in front of `json_class`, which is expected in last place (within the class vector). Similarly, `check_json_class()` can be used to recursively test a list structure to make sure that every node inheriting the `json_class` class attribute is a properly formed `json_class` object. Finally, the two functions `get_subclass()` and `has_subclass()` can be used to extract the sub-class and test whether a given `json_class` object has a specific sub-class.
 
 ```{r test}
 test <- structure(list(a = structure(list(b = "c"),
@@ -106,7 +106,7 @@ is_json_class(test$a)
 is_json_class(test$d)
 
 has_subclass(test, "foobar")
-get_json_subclass(test)
+get_subclass(test)
 ```
 
 The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are width, length and a logical flag for turning off fancy printing (color is disabled and UTF box characters are replaced with ASCI characters).
