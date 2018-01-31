@@ -24,6 +24,8 @@ has_common_subclass(x)
 \arguments{
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
 
+\item{class}{Class name to check for.}
+
 \item{...}{Individual \code{json_class} objects, or generic compatibility}
 }
 \description{

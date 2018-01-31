@@ -33,6 +33,8 @@ get_subclass(x)
 \item{recursive}{Recursively apply the function.}
 
 \item{class}{JSON sub-class name.}
+
+\item{...}{Generic compatibility.}
 }
 \description{
 The functions \code{is_json_class()} and \code{has_subclass()} test whether an

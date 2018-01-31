@@ -45,8 +45,8 @@ do_download <- function(token,
 
   if (is.null(files))
     files <- list_files_old(token, data_id)
-  else if (has_subclass(files, "FileInfoDssDTO"))
-    files <- list(files)
+  else
+    files <- as_json_vec(files)
 
   assert_that(all(sapply(files, has_subclass, "FileInfoDssDTO")),
               length(files) <= 10L)

@@ -104,6 +104,7 @@ as.list.json_vec <- function(x, ...) {
 #'
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
+#' @param class Class name to check for.
 #' 
 #' @rdname json_vec_validate
 #' 

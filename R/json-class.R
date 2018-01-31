@@ -184,6 +184,7 @@ as.list.json_class <- function(x,
 #' @param x Object to process.
 #' @param class JSON sub-class name.
 #' @param recursive Recursively apply the function.
+#' @param ... Generic compatibility.
 #' 
 #' @rdname json_class_validate
 #'  
