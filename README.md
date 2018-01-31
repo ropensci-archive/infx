@@ -457,11 +457,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For the given plateIdentifier find all wells that are connected to it.
         -   arguments: java.lang.String sessionToken, PlateIdentifier plateIdentifier
         -   returntype: java.util.List&lt;WellIdentifier&gt;
-    -   \[ \] listRawImageDatasets:
+    -   \[x\] listRawImageDatasets:
         -   description: For a given set of plates provide the list of all data sets containing raw images for each of these plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;ImageDatasetReference&gt;
-    -   \[ \] listSegmentationImageDatasets:
+    -   \[x\] listSegmentationImageDatasets:
         -   description: For a given set of plates provide the list of all data sets containing segmentation images for each of these plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;ImageDatasetReference&gt;

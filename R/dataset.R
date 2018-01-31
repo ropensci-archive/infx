@@ -23,6 +23,9 @@
 #' @param include Whether to include parent/child datasets as well.
 #' @param experiment When searching for datasets associated with materials,
 #' the search can be limited to a single experiment.
+#' @param type For listing image datasets, it can be specified, whether only
+#' raw image datasets, only segmentation image datasets or any kind of image
+#' datasets (default) are to be listed.
 #' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
@@ -102,26 +105,32 @@ list_datasets.character <- function(token,
     request_openbis("getDataSetMetaData", list(token, as.list(x), include))
 }
 
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.PlateIdentifier <- function(token, x, ...)
-  request_openbis("listImageDatasets", list(token, as_json_vec(x)),
-                  "IScreeningApiServer")
+list_img_ds <- function(token, x, type = c(NA, "raw", "segmentation"), ...) {
+
+  type <- match.arg(type)
+
+  fun <- switch(match.arg(type),
+                `NA` = "listImageDatasets",
+                raw = "listRawImageDatasets",
+                segmentation = "listSegmentationImageDatasets")
+
+  request_openbis(fun, list(token, as_json_vec(x)), "IScreeningApiServer")
+}
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.Plate <- function(token, x, ...)
-  request_openbis("listImageDatasets", list(token, as_json_vec(x)),
-                  "IScreeningApiServer")
+list_datasets.PlateIdentifier <- list_img_ds
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.PlateMetadata <- function(token, x, ...)
-  request_openbis("listImageDatasets", list(token, as_json_vec(x)),
-                  "IScreeningApiServer")
+list_datasets.Plate <- list_img_ds
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.PlateMetadata <- list_img_ds
 
 #' @rdname list_datasets
 #' @export

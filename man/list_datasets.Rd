@@ -26,11 +26,14 @@ list_datasets(token, x, ...)
 \method{list_datasets}{character}(token, x, include = c(NA, "children",
   "parents", "all"), ...)
 
-\method{list_datasets}{PlateIdentifier}(token, x, ...)
+\method{list_datasets}{PlateIdentifier}(token, x, type = c(NA, "raw",
+  "segmentation"), ...)
 
-\method{list_datasets}{Plate}(token, x, ...)
+\method{list_datasets}{Plate}(token, x, type = c(NA, "raw", "segmentation"),
+  ...)
 
-\method{list_datasets}{PlateMetadata}(token, x, ...)
+\method{list_datasets}{PlateMetadata}(token, x, type = c(NA, "raw",
+  "segmentation"), ...)
 
 \method{list_datasets}{MaterialIdentifierScreening}(token, x,
   experiment = NULL, ...)
@@ -51,6 +54,10 @@ list_dataset_ids(token, x, ...)
 \item{...}{Generic compatibility.}
 
 \item{include}{Whether to include parent/child datasets as well.}
+
+\item{type}{For listing image datasets, it can be specified, whether only
+raw image datasets, only segmentation image datasets or any kind of image
+datasets (default) are to be listed.}
 
 \item{experiment}{When searching for datasets associated with materials,
 the search can be limited to a single experiment.}
