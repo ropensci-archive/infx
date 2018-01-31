@@ -433,7 +433,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listImageMetadata(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IImageDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;ImageDatasetMetadata&gt;
-    -   \[ \] listPlateMaterialMapping:
+    -   \[x\] listPlateMaterialMapping:
         -   description: For a given list of plates, return the mapping of plate wells to materials contained in each well.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates, MaterialTypeIdentifier materialTypeIdentifierOrNull
         -   returntype: java.util.List&lt;PlateWellMaterialMapping&gt;
