@@ -140,7 +140,7 @@ list_plate_well_ref <- function(token,
   if (!is_json_vec(material_id))
     material_id <- as_json_vec(material_id)
 
-  assert_that(all(sapply(material_id, has_json_subclass,
+  assert_that(all(sapply(material_id, has_subclass,
                          "MaterialIdentifierScreening")))
 
   if (is.null(experiment)) {
@@ -156,7 +156,7 @@ list_plate_well_ref <- function(token,
     if (is_json_vec(experiment))
       experiment <- as_json_class(experiment)
 
-    assert_that(has_json_subclass(experiment, "ExperimentIdentifier"))
+    assert_that(has_subclass(experiment, "ExperimentIdentifier"))
 
     res <- lapply(material_id, function(mat)
       request_openbis("listPlateWells", list(token, experiment, mat,

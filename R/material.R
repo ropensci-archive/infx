@@ -43,7 +43,7 @@ list_material <- function(token, x) {
   if (!is_json_vec(x))
     x <- as_json_vec(x)
 
-  assert_that(all(sapply(x, has_json_subclass, "MaterialIdentifierGeneric")))
+  assert_that(all(sapply(x, has_subclass, "MaterialIdentifierGeneric")))
 
   request_openbis("getMaterialByCodes", list(token, x))
 }

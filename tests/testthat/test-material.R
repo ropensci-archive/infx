@@ -5,7 +5,7 @@ test_that("material ids can be created", {
   expect_is(material, "MaterialIdentifierGeneric")
   expect_is(material, "json_vec")
   expect_identical(get_common_subclass(material), "MaterialIdentifierGeneric")
-  expect_true(all(sapply(material, has_json_subclass,
+  expect_true(all(sapply(material, has_subclass,
               "MaterialIdentifierGeneric")))
   expect_equal(length(material), 1L)
   expect_identical(material_id(2475L), material_id(2475L, type = "gene"))
@@ -14,7 +14,7 @@ test_that("material ids can be created", {
   expect_is(materials, "MaterialIdentifierGeneric")
   expect_is(materials, "json_vec")
   expect_identical(get_common_subclass(materials), "MaterialIdentifierGeneric")
-  expect_true(all(sapply(materials, has_json_subclass,
+  expect_true(all(sapply(materials, has_subclass,
               "MaterialIdentifierGeneric")))
   expect_equal(length(materials), 3L)
 
@@ -27,7 +27,7 @@ test_that("material ids can be created", {
   expect_is(material, "json_vec")
   expect_identical(get_common_subclass(material),
                    "MaterialIdentifierScreening")
-  expect_true(all(sapply(material, has_json_subclass,
+  expect_true(all(sapply(material, has_subclass,
               "MaterialIdentifierScreening")))
   expect_equal(length(material), 1L)
 })
@@ -39,7 +39,7 @@ test_that("materials can be listed", {
   expect_is(mat_1, "MaterialGeneric")
   expect_is(mat_1, "json_vec")
   expect_identical(get_common_subclass(mat_1), "MaterialGeneric")
-  expect_true(all(sapply(mat_1, has_json_subclass,
+  expect_true(all(sapply(mat_1, has_subclass,
               "MaterialGeneric")))
   expect_equal(length(mat_1), 1L)
 
@@ -47,7 +47,7 @@ test_that("materials can be listed", {
   expect_is(mat_2, "MaterialGeneric")
   expect_is(mat_2, "json_vec")
   expect_identical(get_common_subclass(mat_2), "MaterialGeneric")
-  expect_true(all(sapply(mat_2, has_json_subclass,
+  expect_true(all(sapply(mat_2, has_subclass,
               "MaterialGeneric")))
   expect_equal(length(mat_2), 2L)
 })

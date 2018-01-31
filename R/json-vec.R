@@ -140,6 +140,14 @@ is.json_vec <- is_json_vec
 #' @rdname json_vec_validate
 #' @export
 #' 
+has_subclass.json_vec <- function(x, class, ...) {
+  assert_that(is.character(class))
+  isTRUE(all(class == get_common_subclass(x)))
+}
+
+#' @rdname json_vec_validate
+#' @export
+#' 
 has_common_subclass <- function(x) {
 
   if (is_json_class(x))

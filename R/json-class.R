@@ -168,7 +168,7 @@ as.list.json_class <- function(x,
 
 #' Validate JSON class objects
 #'
-#' The functions `is_json_class()` and `has_json_subclass()` test whether an
+#' The functions `is_json_class()` and `has_subclass()` test whether an
 #' object is a JSON class object. The former tests whether an object is a
 #' proper `json_class` object, meaning that:
 #'   * it is a list
@@ -231,14 +231,21 @@ check_json_class <- function(x, recursive = TRUE) {
 #' @rdname json_class_validate
 #' @export
 #' 
-has_json_subclass <- function(x, class) {
+has_subclass <- function(x, class, ...)
+  UseMethod("has_subclass")
 
-  if (!is_json_class(x))
-    return(FALSE)
-
+#' @rdname json_class_validate
+#' @export
+#' 
+has_subclass.json_class <- function(x, class, ...) {
   assert_that(is.character(class))
   isTRUE(all(class == get_json_subclass(x)))
 }
+
+#' @rdname json_class_validate
+#' @export
+#' 
+has_subclass.default <- function(x, class) FALSE
 
 #' @rdname json_class_validate
 #' @export

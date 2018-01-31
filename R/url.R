@@ -54,7 +54,7 @@ list_datastore_urls <- function(token, data_set = NULL) {
       urls <- request_openbis("getDataStoreBaseURLs", list(token,
                                                            as.list(data_set)))
       res <- unlist(lapply(urls, function(url) {
-        assert_that(has_json_subclass(url, "DataStoreURLForDataSets"),
+        assert_that(has_subclass(url, "DataStoreURLForDataSets"),
                     has_fields(url, c("dataStoreURL", "dataSetCodes")))
         codes <- as.character(url[["dataSetCodes"]])
         stats::setNames(rep(url[["dataStoreURL"]], length(codes)), codes)

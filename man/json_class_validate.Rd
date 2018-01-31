@@ -4,7 +4,9 @@
 \alias{is_json_class}
 \alias{is.json_class}
 \alias{check_json_class}
-\alias{has_json_subclass}
+\alias{has_subclass}
+\alias{has_subclass.json_class}
+\alias{has_subclass.default}
 \alias{get_json_subclass}
 \title{Validate JSON class objects}
 \usage{
@@ -14,7 +16,11 @@ is.json_class(x)
 
 check_json_class(x, recursive = TRUE)
 
-has_json_subclass(x, class)
+has_subclass(x, class, ...)
+
+\method{has_subclass}{json_class}(x, class, ...)
+
+\method{has_subclass}{default}(x, class)
 
 get_json_subclass(x)
 }
@@ -26,7 +32,7 @@ get_json_subclass(x)
 \item{class}{JSON sub-class name.}
 }
 \description{
-The functions \code{is_json_class()} and \code{has_json_subclass()} test whether an
+The functions \code{is_json_class()} and \code{has_subclass()} test whether an
 object is a JSON class object. The former tests whether an object is a
 proper \code{json_class} object, meaning that:
 \itemize{

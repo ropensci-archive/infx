@@ -3,6 +3,7 @@
 \name{is_json_vec}
 \alias{is_json_vec}
 \alias{is.json_vec}
+\alias{has_subclass.json_vec}
 \alias{has_common_subclass}
 \alias{get_common_subclass}
 \alias{get_common_subclass.json_class}
@@ -14,6 +15,8 @@
 is_json_vec(x)
 
 is.json_vec(x)
+
+\method{has_subclass}{json_vec}(x, class, ...)
 
 has_common_subclass(x)
 

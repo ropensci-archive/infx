@@ -7,7 +7,7 @@ test_that("experiment metadata can be listed", {
   expect_is(meta_1, "ExperimentImageMetadata")
   expect_is(meta_1, "json_vec")
   expect_identical(get_common_subclass(meta_1), "ExperimentImageMetadata")
-  expect_true(all(sapply(meta_1, has_json_subclass,
+  expect_true(all(sapply(meta_1, has_subclass,
                          "ExperimentImageMetadata")))
   expect_gte(length(meta_1), 1L)
 
@@ -15,7 +15,7 @@ test_that("experiment metadata can be listed", {
   expect_is(meta_2, "ExperimentImageMetadata")
   expect_is(meta_2, "json_vec")
   expect_identical(get_common_subclass(meta_2), "ExperimentImageMetadata")
-  expect_true(all(sapply(meta_2, has_json_subclass,
+  expect_true(all(sapply(meta_2, has_subclass,
                          "ExperimentImageMetadata")))
   expect_gte(length(meta_2), length(meta_1))
 
@@ -30,7 +30,7 @@ test_that("experiment metadata can be listed", {
   expect_is(meta_1, "ImageDatasetMetadata")
   expect_is(meta_1, "json_vec")
   expect_identical(get_common_subclass(meta_1), "ImageDatasetMetadata")
-  expect_true(all(sapply(meta_1, has_json_subclass,
+  expect_true(all(sapply(meta_1, has_subclass,
                          "ImageDatasetMetadata")))
   expect_equal(length(meta_1), 1L)
 
@@ -38,7 +38,7 @@ test_that("experiment metadata can be listed", {
   expect_is(meta_2, "ImageDatasetMetadata")
   expect_is(meta_2, "json_vec")
   expect_identical(get_common_subclass(meta_2), "ImageDatasetMetadata")
-  expect_true(all(sapply(meta_2, has_json_subclass,
+  expect_true(all(sapply(meta_2, has_subclass,
                          "ImageDatasetMetadata")))
   expect_equal(length(meta_2), 2L)
 })

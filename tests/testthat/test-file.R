@@ -10,14 +10,14 @@ test_that("files can be listed", {
   expect_is(files_1, "FileInfoDssDTO")
   expect_is(files_1, "json_vec")
   expect_identical(get_common_subclass(files_1), "FileInfoDssDTO")
-  expect_true(all(sapply(files_1, has_json_subclass, "FileInfoDssDTO")))
+  expect_true(all(sapply(files_1, has_subclass, "FileInfoDssDTO")))
   expect_gte(length(files_1), 1L)
 
   files_2 <- list_files(tok, codes[2:3])
   expect_is(files_2, "FileInfoDssDTO")
   expect_is(files_2, "json_vec")
   expect_identical(get_common_subclass(files_2), "FileInfoDssDTO")
-  expect_true(all(sapply(files_2, has_json_subclass, "FileInfoDssDTO")))
+  expect_true(all(sapply(files_2, has_subclass, "FileInfoDssDTO")))
   expect_gte(length(files_2), length(files_1))
 
   expect_identical(list_files(tok, ds[[2]]), files_1)
