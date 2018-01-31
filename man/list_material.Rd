@@ -2,10 +2,22 @@
 % Please edit documentation in R/material.R
 \name{list_material}
 \alias{list_material}
+\alias{list_material.MaterialIdentifierGeneric}
+\alias{list_material.PlateIdentifier}
+\alias{list_material.PlateMetadata}
+\alias{list_material.Plate}
 \alias{material_id}
 \title{List materials}
 \usage{
-list_material(token, x)
+list_material(token, x, ...)
+
+\method{list_material}{MaterialIdentifierGeneric}(token, x, ...)
+
+\method{list_material}{PlateIdentifier}(token, x, material_type = NULL, ...)
+
+\method{list_material}{PlateMetadata}(token, x, material_type = NULL, ...)
+
+\method{list_material}{Plate}(token, x, material_type = NULL, ...)
 
 material_id(code, type = "gene", mode = c("generic", "screening"))
 }
@@ -13,6 +25,9 @@ material_id(code, type = "gene", mode = c("generic", "screening"))
 \item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{x}{A (vector of) MaterialIdentifier object(s).}
+
+\item{material_type}{A \code{MaterialTypeIdentifierScreening} object to restrict
+the material listing to a certain type of materials.}
 
 \item{code}{The material code for which an id object is created.}
 
@@ -53,4 +68,34 @@ and for generic screening object ids
 The construction of material codes depends on material type. Genes, for
 example are identified with Entrez gene ids (e.g. 2475 for MTOR), while for
 compounds, a manufacturer name is used.
+
+Whenever \code{list_material()} is dispatched on a (set of) material id
+object(s), a (set of) \code{MaterialGeneric} object(s) is returned. However if
+the dispatch occurs on plate objects (\code{Plate}, \code{PlateIdentifier} or
+\code{PlateMetadata}), a (set of) \code{PlateWellMaterialMapping} objects is returned.
+If \code{material_type} is not specified (i.e. \code{NULL}), the \code{mapping} field in
+the returned object might contain \code{NULL} for each well. While not mentioned
+in the openBis documentation, it is assumed that this occurs in a one to
+many mapping scenario (e.g. a well being linked to both an oligo and a
+gene). This can be overcome by specifying the type of the material of
+interest (see examples).
+}
+\examples{
+\dontrun{
+  tok <- login_openbis("username", "password")
+  exp_ids <- list_experiment_ids(tok)
+  plates <- list_plates(tok, exp_ids[[1]])
+
+  # contains (width x height) times NULL in mapping field
+  mat <- list_material(tok, plates[[2]])
+  print(mat[[1]], 2L)
+  
+  # we now restrict the listing to genes
+  genes <- json_class(materialTypeCode = "GENE",
+                      class = "MaterialTypeIdentifierScreening")
+  
+  mat <- list_material(tok, plates[[2]], genes)
+  print(mat[[1]]$mapping[[1]][[1]], 2L)
+}
+
 }
