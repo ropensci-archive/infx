@@ -166,6 +166,23 @@ test_that("dataset references can be listed", {
   # check ImageDatasetReference
   expect_identical(list_references(tok, list_references(tok, plates[[1]]),
                                    channels = "DAPI"), ds_1)
+
+  wells <- list_wells(tok, plate_ids[[1]])
+  well_pos <- as_json_vec(lapply(wells[1:2], `[[`, "wellPosition"))
+  ds_1 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
+                          channels = "DAPI")
+  expect_is(ds_1, "PlateImageReference")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1), "PlateImageReference")
+  expect_true(all(sapply(ds_1, has_subclass, "PlateImageReference")))
+  expect_equal(length(ds_1), 9L)
+
+  ds_2 <- list_references(tok, dsids[[1]], wells = well_pos, channels = "DAPI")
+  expect_is(ds_2, "PlateImageReference")
+  expect_is(ds_2, "json_vec")
+  expect_identical(get_subclass(ds_2), "PlateImageReference")
+  expect_true(all(sapply(ds_2, has_subclass, "PlateImageReference")))
+  expect_equal(length(ds_2), 18L)
 })
 
 test_that("dataset types can be listed", {
