@@ -21,7 +21,7 @@ as.json_vec(x, ...)
 
 \method{as_json_vec}{json_class}(x, ...)
 
-\method{as_json_vec}{list}(x, ...)
+\method{as_json_vec}{list}(x, force = FALSE, ...)
 
 \method{as_json_vec}{default}(x, force = FALSE, ...)
 

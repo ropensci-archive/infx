@@ -70,8 +70,12 @@ as_json_vec.json_class <- function(x, ...) {
 #' @rdname json_vec_create
 #' @export
 #' 
-as_json_vec.list <- function(x, ...) {
-  new_json_vec(x)
+as_json_vec.list <- function(x, force = FALSE, ...) {
+
+  if (force && !has_common_subclass(x))
+    x
+  else
+    new_json_vec(x)
 }
 
 #' @rdname json_vec_create
