@@ -5,16 +5,28 @@
 #' experiment(s), sample(s) or dataset code(s). Additionally it can be
 #' specified whether parent or child datasets are to be included as well.
 #' For the above object types, `list_datasets()` returns sets of `DataSet`
-#' objects. If `list_datasets()` is dispatched on plate objects (`Plate`,
-#' `PlateIdentifier` or `PlateMetadata`), `ImageDatasetReference` objects are
-#' returned. Similarly, if `MaterialIdentifierScreening` objects are used
-#' as input, `PlateWellReferenceWithDatasets` objects are returned, which each
-#' contain `ImageDatasetReference` and `FeatureVectorDatasetReference` objects.
-#' Both `ImageDatasetReference` and `FeatureVectorDatasetReference` implement
-#' the `IDatasetIdentifier` interface, just as `DatasetIdentifier` does.
+#' objects. Dataset id objects can be listed using `list_dataset_id()`.
 #' 
-#' Whenever `list_datasets()` is dispatched on a dataset id or dataset
-#' reference object, the resulting object type depends on whether a (set of)
+#' Several classes in addition to `DatasetIdentifier` implement the
+#' `IDatasetIdentifier` interface, including
+#' 
+#'   * `DatasetReference`
+#'   * `FeatureVectorDatasetReference`
+#'   * `FeatureVectorDatasetWellReference`
+#'   * `ImageDatasetReference`
+#'   * `MicroscopyImageReference`
+#'   * `PlateImageReference`
+#' 
+#' The above objects are returned by `list_references()` and the exact return
+#' type depends on the argument types. If `list_references()` is dispatched on
+#' plate objects (`Plate`, `PlateIdentifier` or `PlateMetadata`),
+#' `ImageDatasetReference` objects are returned. Similarly, if
+#' `MaterialIdentifierScreening` objects are used as input,
+#' `PlateWellReferenceWithDatasets` objects are returned, which each
+#' contain `ImageDatasetReference` and `FeatureVectorDatasetReference` objects.
+#' 
+#' Whenever `list_references()` is dispatched on (a) dataset id or dataset
+#' reference object(s), the resulting object type depends on whether a (set of)
 #' `WellPosition` object(s) were specified as `wells` argument. For its
 #' default value (NULL), a set of `MicroscopyImageReference` objects is
 #' returned, while `PlateImageReference` objects are returned otherwise.  
@@ -115,6 +127,31 @@ list_datasets.character <- function(token,
     request_openbis("getDataSetMetaData", list(token, as.list(x), include))
 }
 
+#' @rdname list_datasets
+#' @export
+#' 
+list_dataset_ids <- function(token, x, ...)
+  UseMethod("list_dataset_ids", x)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_dataset_ids.character <- function(token, x, ...)
+  request_openbis("getDatasetIdentifiers", list(token, as.list(x)),
+                  "IScreeningApiServer")
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_dataset_ids.DataSet <- function(token, x, ...)
+  list_dataset_ids(token, dataset_code(x))
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_references <- function(token, x, ...)
+  UseMethod("list_references", x)
+
 list_img_ds <- function(token, x, type = c(NA, "raw", "segmentation"), ...) {
 
   type <- match.arg(type)
@@ -130,25 +167,25 @@ list_img_ds <- function(token, x, type = c(NA, "raw", "segmentation"), ...) {
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.PlateIdentifier <- list_img_ds
+list_references.PlateIdentifier <- list_img_ds
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.Plate <- list_img_ds
+list_references.Plate <- list_img_ds
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.PlateMetadata <- list_img_ds
+list_references.PlateMetadata <- list_img_ds
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.MaterialIdentifierScreening <- function(token,
-                                                      x,
-                                                      experiment = NULL,
-                                                      ...) {
+list_references.MaterialIdentifierScreening <- function(token,
+                                                        x,
+                                                        experiment = NULL,
+                                                        ...) {
 
   list_plate_well_ref(token, x, experiment, include_datasets = TRUE)
 }
@@ -159,43 +196,43 @@ list_img_ref_wrapper <- function(token, x, wells = NULL, channels, ...)
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.DatasetIdentifier <- list_img_ref_wrapper
+list_references.DatasetIdentifier <- list_img_ref_wrapper
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.DataSet <- function(token, x, wells = NULL, channels, ...)
-  list_datasets(token, list_dataset_ids(token, x), wells, channels, ...)
+list_references.DataSet <- function(token, x, wells = NULL, channels, ...)
+  list_references(token, list_dataset_ids(token, x), wells, channels, ...)
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.DatasetReference <- list_img_ref_wrapper
+list_references.DatasetReference <- list_img_ref_wrapper
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.FeatureVectorDatasetReference <- list_img_ref_wrapper
+list_references.FeatureVectorDatasetReference <- list_img_ref_wrapper
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.FeatureVectorDatasetWellReference <- list_img_ref_wrapper
+list_references.FeatureVectorDatasetWellReference <- list_img_ref_wrapper
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.ImageDatasetReference <- list_img_ref_wrapper
+list_references.ImageDatasetReference <- list_img_ref_wrapper
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.MicroscopyImageReference <- list_img_ref_wrapper
+list_references.MicroscopyImageReference <- list_img_ref_wrapper
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_datasets.PlateImageReference <- list_img_ref_wrapper
+list_references.PlateImageReference <- list_img_ref_wrapper
 
 #' List image references
 #' 
@@ -256,37 +293,6 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 list_dataset_types <- function(token)
   request_openbis("listDataSetTypes", token)
 
-resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
-
-  x <- match.arg(x)
-
-  if (is.na(x))
-    list()
-  else if (x == "all")
-    list("CHILDREN", "PARENTS")
-  else
-    list(toupper(x))
-}
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_dataset_ids <- function(token, x, ...)
-  UseMethod("list_dataset_ids", x)
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_dataset_ids.character <- function(token, x, ...)
-  request_openbis("getDatasetIdentifiers", list(token, as.list(x)),
-                  "IScreeningApiServer")
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_dataset_ids.DataSet <- function(token, x, ...)
-  list_dataset_ids(token, dataset_code(x))
-
 #' Extract dataset code
 #' 
 #' Given a (set of) dataset object(s), for each one extract the dataset code
@@ -323,4 +329,16 @@ dataset_code.DatasetIdentifier <- function(x, ...) {
     sapply(x, `[[`, "datasetCode")
   else
     x[["datasetCode"]]
+}
+
+resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
+
+  x <- match.arg(x)
+
+  if (is.na(x))
+    list()
+  else if (x == "all")
+    list("CHILDREN", "PARENTS")
+  else
+    list(toupper(x))
 }

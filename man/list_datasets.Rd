@@ -5,22 +5,23 @@
 \alias{list_datasets.Sample}
 \alias{list_datasets.Experiment}
 \alias{list_datasets.character}
-\alias{list_datasets.PlateIdentifier}
-\alias{list_datasets.Plate}
-\alias{list_datasets.PlateMetadata}
-\alias{list_datasets.MaterialIdentifierScreening}
-\alias{list_datasets.DatasetIdentifier}
-\alias{list_datasets.DataSet}
-\alias{list_datasets.DatasetReference}
-\alias{list_datasets.FeatureVectorDatasetReference}
-\alias{list_datasets.FeatureVectorDatasetWellReference}
-\alias{list_datasets.ImageDatasetReference}
-\alias{list_datasets.MicroscopyImageReference}
-\alias{list_datasets.PlateImageReference}
-\alias{list_dataset_types}
 \alias{list_dataset_ids}
 \alias{list_dataset_ids.character}
 \alias{list_dataset_ids.DataSet}
+\alias{list_references}
+\alias{list_references.PlateIdentifier}
+\alias{list_references.Plate}
+\alias{list_references.PlateMetadata}
+\alias{list_references.MaterialIdentifierScreening}
+\alias{list_references.DatasetIdentifier}
+\alias{list_references.DataSet}
+\alias{list_references.DatasetReference}
+\alias{list_references.FeatureVectorDatasetReference}
+\alias{list_references.FeatureVectorDatasetWellReference}
+\alias{list_references.ImageDatasetReference}
+\alias{list_references.MicroscopyImageReference}
+\alias{list_references.PlateImageReference}
+\alias{list_dataset_types}
 \title{List datasets}
 \usage{
 list_datasets(token, x, ...)
@@ -34,48 +35,50 @@ list_datasets(token, x, ...)
 \method{list_datasets}{character}(token, x, include = c(NA, "children",
   "parents", "all"), ...)
 
-\method{list_datasets}{PlateIdentifier}(token, x, type = c(NA, "raw",
-  "segmentation"), ...)
-
-\method{list_datasets}{Plate}(token, x, type = c(NA, "raw", "segmentation"),
-  ...)
-
-\method{list_datasets}{PlateMetadata}(token, x, type = c(NA, "raw",
-  "segmentation"), ...)
-
-\method{list_datasets}{MaterialIdentifierScreening}(token, x,
-  experiment = NULL, ...)
-
-\method{list_datasets}{DatasetIdentifier}(token, x, wells = NULL, channels,
-  ...)
-
-\method{list_datasets}{DataSet}(token, x, wells = NULL, channels, ...)
-
-\method{list_datasets}{DatasetReference}(token, x, wells = NULL, channels,
-  ...)
-
-\method{list_datasets}{FeatureVectorDatasetReference}(token, x, wells = NULL,
-  channels, ...)
-
-\method{list_datasets}{FeatureVectorDatasetWellReference}(token, x,
-  wells = NULL, channels, ...)
-
-\method{list_datasets}{ImageDatasetReference}(token, x, wells = NULL,
-  channels, ...)
-
-\method{list_datasets}{MicroscopyImageReference}(token, x, wells = NULL,
-  channels, ...)
-
-\method{list_datasets}{PlateImageReference}(token, x, wells = NULL, channels,
-  ...)
-
-list_dataset_types(token)
-
 list_dataset_ids(token, x, ...)
 
 \method{list_dataset_ids}{character}(token, x, ...)
 
 \method{list_dataset_ids}{DataSet}(token, x, ...)
+
+list_references(token, x, ...)
+
+\method{list_references}{PlateIdentifier}(token, x, type = c(NA, "raw",
+  "segmentation"), ...)
+
+\method{list_references}{Plate}(token, x, type = c(NA, "raw", "segmentation"),
+  ...)
+
+\method{list_references}{PlateMetadata}(token, x, type = c(NA, "raw",
+  "segmentation"), ...)
+
+\method{list_references}{MaterialIdentifierScreening}(token, x,
+  experiment = NULL, ...)
+
+\method{list_references}{DatasetIdentifier}(token, x, wells = NULL, channels,
+  ...)
+
+\method{list_references}{DataSet}(token, x, wells = NULL, channels, ...)
+
+\method{list_references}{DatasetReference}(token, x, wells = NULL, channels,
+  ...)
+
+\method{list_references}{FeatureVectorDatasetReference}(token, x,
+  wells = NULL, channels, ...)
+
+\method{list_references}{FeatureVectorDatasetWellReference}(token, x,
+  wells = NULL, channels, ...)
+
+\method{list_references}{ImageDatasetReference}(token, x, wells = NULL,
+  channels, ...)
+
+\method{list_references}{MicroscopyImageReference}(token, x, wells = NULL,
+  channels, ...)
+
+\method{list_references}{PlateImageReference}(token, x, wells = NULL,
+  channels, ...)
+
+list_dataset_types(token)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -104,17 +107,32 @@ Given a login token, all available datasets are listed for the given
 experiment(s), sample(s) or dataset code(s). Additionally it can be
 specified whether parent or child datasets are to be included as well.
 For the above object types, \code{list_datasets()} returns sets of \code{DataSet}
-objects. If \code{list_datasets()} is dispatched on plate objects (\code{Plate},
-\code{PlateIdentifier} or \code{PlateMetadata}), \code{ImageDatasetReference} objects are
-returned. Similarly, if \code{MaterialIdentifierScreening} objects are used
-as input, \code{PlateWellReferenceWithDatasets} objects are returned, which each
-contain \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} objects.
-Both \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} implement
-the \code{IDatasetIdentifier} interface, just as \code{DatasetIdentifier} does.
+objects. Dataset id objects can be listed using \code{list_dataset_id()}.
 }
 \details{
-Whenever \code{list_datasets()} is dispatched on a dataset id or dataset
-reference object, the resulting object type depends on whether a (set of)
+Several classes in addition to \code{DatasetIdentifier} implement the
+\code{IDatasetIdentifier} interface, including
+\itemize{
+\item \code{DatasetReference}
+\itemize{
+\item \code{FeatureVectorDatasetReference}
+\item \code{FeatureVectorDatasetWellReference}
+\item \code{ImageDatasetReference}
+\item \code{MicroscopyImageReference}
+\item \code{PlateImageReference}
+}
+}
+
+The above objects are returned by \code{list_references()} and the exact return
+type depends on the argument types. If \code{list_references()} is dispatched on
+plate objects (\code{Plate}, \code{PlateIdentifier} or \code{PlateMetadata}),
+\code{ImageDatasetReference} objects are returned. Similarly, if
+\code{MaterialIdentifierScreening} objects are used as input,
+\code{PlateWellReferenceWithDatasets} objects are returned, which each
+contain \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} objects.
+
+Whenever \code{list_references()} is dispatched on (a) dataset id or dataset
+reference object(s), the resulting object type depends on whether a (set of)
 \code{WellPosition} object(s) were specified as \code{wells} argument. For its
 default value (NULL), a set of \code{MicroscopyImageReference} objects is
 returned, while \code{PlateImageReference} objects are returned otherwise.
