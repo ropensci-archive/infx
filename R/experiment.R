@@ -106,12 +106,23 @@ exp_to_expid <- function(x) {
   as_json_vec(res)
 }
 
+#' Extract experiment string
+#' 
+#' Experiments can be uniquely identified by a string made up of space code,
+#' project code and experiment code. This function extracts the relevant fields
+#' from experiment or experiment id objects and returns a vector of experiment
+#' strings.
+#' 
+#' @param x Experiment object(s).
+#' @param ... Generic compatibility.
+#' 
 #' @keywords internal
 #' @export
 #' 
 exp_id_str <- function(x, ...)
   UseMethod("exp_id_str")
 
+#' @rdname exp_id_str
 #' @keywords internal
 #' @export
 #' 
@@ -124,6 +135,7 @@ exp_id_str.ExperimentIdentifier <- function(x, ...) {
   lapply(as_json_vec(x), function(y) paste0("/", y[fields], collapse = ""))
 }
 
+#' @rdname exp_id_str
 #' @keywords internal
 #' @export
 #' 

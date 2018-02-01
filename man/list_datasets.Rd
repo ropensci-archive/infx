@@ -46,25 +46,28 @@ list_datasets(token, x, ...)
 \method{list_datasets}{MaterialIdentifierScreening}(token, x,
   experiment = NULL, ...)
 
-\method{list_datasets}{DatasetIdentifier}(token, x, wells = NULL, channels)
+\method{list_datasets}{DatasetIdentifier}(token, x, wells = NULL, channels,
+  ...)
 
 \method{list_datasets}{DataSet}(token, x, wells = NULL, channels, ...)
 
-\method{list_datasets}{DatasetReference}(token, x, wells = NULL, channels)
+\method{list_datasets}{DatasetReference}(token, x, wells = NULL, channels,
+  ...)
 
 \method{list_datasets}{FeatureVectorDatasetReference}(token, x, wells = NULL,
-  channels)
+  channels, ...)
 
 \method{list_datasets}{FeatureVectorDatasetWellReference}(token, x,
-  wells = NULL, channels)
+  wells = NULL, channels, ...)
 
 \method{list_datasets}{ImageDatasetReference}(token, x, wells = NULL,
-  channels)
+  channels, ...)
 
 \method{list_datasets}{MicroscopyImageReference}(token, x, wells = NULL,
-  channels)
+  channels, ...)
 
-\method{list_datasets}{PlateImageReference}(token, x, wells = NULL, channels)
+\method{list_datasets}{PlateImageReference}(token, x, wells = NULL, channels,
+  ...)
 
 list_dataset_types(token)
 

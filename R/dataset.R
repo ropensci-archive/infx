@@ -153,7 +153,7 @@ list_datasets.MaterialIdentifierScreening <- function(token,
   list_plate_well_ref(token, x, experiment, include_datasets = TRUE)
 }
 
-list_img_ref_wrapper <- function(token, x, wells = NULL, channels)
+list_img_ref_wrapper <- function(token, x, wells = NULL, channels, ...)
   list_img_ref(token, x, wells, channels)
 
 #' @rdname list_datasets
@@ -197,12 +197,22 @@ list_datasets.MicroscopyImageReference <- list_img_ref_wrapper
 #' 
 list_datasets.PlateImageReference <- list_img_ref_wrapper
 
+#' List image references
+#' 
+#' Used for double dispatching on the `list_datasets()` generic, list image
+#' reference objects either for a specific (set of) `WellPosition` object(s)
+#' or for the specified datasets in general.
+#' 
+#' @inheritParams list_datasets
+#' 
 #' @keywords internal
+#' 
 #' @export
 #' 
 list_img_ref <- function(token, x, wells = NULL, channels, ...)
   UseMethod("list_img_ref", wells)
 
+#' @rdname list_img_ref
 #' @keywords internal
 #' @export
 #' 
@@ -220,6 +230,7 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
   as_json_vec(do.call(c, res))
 }
 
+#' @rdname list_img_ref
 #' @keywords internal
 #' @export
 #' 
@@ -276,12 +287,21 @@ list_dataset_ids.character <- function(token, x, ...)
 list_dataset_ids.DataSet <- function(token, x, ...)
   list_dataset_ids(token, dataset_code(x))
 
+#' Extract dataset code
+#' 
+#' Given a (set of) dataset object(s), for each one extract the dataset code
+#' and return a character vector of codes.
+#' 
+#' @param x Dataset object(s).
+#' @param ... Generic compatibility.
+#' 
 #' @keywords internal
 #' @export
 #' 
 dataset_code <- function(x, ...)
   UseMethod("dataset_code")
 
+#' @rdname dataset_code
 #' @keywords internal
 #' @export
 #' 
@@ -293,6 +313,7 @@ dataset_code.DataSet <- function(x, ...) {
     x[["code"]]
 }
 
+#' @rdname dataset_code
 #' @keywords internal
 #' @export
 #' 
