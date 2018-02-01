@@ -46,23 +46,25 @@ list_datasets(token, x, ...)
 \method{list_datasets}{MaterialIdentifierScreening}(token, x,
   experiment = NULL, ...)
 
-list_datasets.DatasetIdentifier(token, x, wells = NULL, channels, ...)
+\method{list_datasets}{DatasetIdentifier}(token, x, wells = NULL, channels)
 
 \method{list_datasets}{DataSet}(token, x, wells = NULL, channels, ...)
 
-list_datasets.DatasetReference(token, x, wells = NULL, channels, ...)
+\method{list_datasets}{DatasetReference}(token, x, wells = NULL, channels)
 
-list_datasets.FeatureVectorDatasetReference(token, x, wells = NULL, channels,
-  ...)
+\method{list_datasets}{FeatureVectorDatasetReference}(token, x, wells = NULL,
+  channels)
 
-list_datasets.FeatureVectorDatasetWellReference(token, x, wells = NULL,
-  channels, ...)
+\method{list_datasets}{FeatureVectorDatasetWellReference}(token, x,
+  wells = NULL, channels)
 
-list_datasets.ImageDatasetReference(token, x, wells = NULL, channels, ...)
+\method{list_datasets}{ImageDatasetReference}(token, x, wells = NULL,
+  channels)
 
-list_datasets.MicroscopyImageReference(token, x, wells = NULL, channels, ...)
+\method{list_datasets}{MicroscopyImageReference}(token, x, wells = NULL,
+  channels)
 
-list_datasets.PlateImageReference(token, x, wells = NULL, channels, ...)
+\method{list_datasets}{PlateImageReference}(token, x, wells = NULL, channels)
 
 list_dataset_types(token)
 
@@ -91,7 +93,7 @@ the search can be limited to a single experiment.}
 \item{wells}{A (set of) \code{WellPosition} object(s) to limit the dataset
 listing to.}
 
-\item{channel}{A character vector with imaging channel names to limit the
+\item{channels}{A character vector with imaging channel names to limit the
 dataset listing to.}
 }
 \description{

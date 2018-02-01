@@ -34,7 +34,7 @@
 #' datasets (default) are to be listed.
 #' @param wells A (set of) `WellPosition` object(s) to limit the dataset
 #' listing to.
-#' @param channel A character vector with imaging channel names to limit the
+#' @param channels A character vector with imaging channel names to limit the
 #' dataset listing to.
 #' @param ... Generic compatibility.
 #' 
@@ -153,6 +153,50 @@ list_datasets.MaterialIdentifierScreening <- function(token,
   list_plate_well_ref(token, x, experiment, include_datasets = TRUE)
 }
 
+list_img_ref_wrapper <- function(token, x, wells = NULL, channels)
+  list_img_ref(token, x, wells, channels)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.DatasetIdentifier <- list_img_ref_wrapper
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.DataSet <- function(token, x, wells = NULL, channels, ...)
+  list_datasets(token, list_dataset_ids(token, x), wells, channels, ...)
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.DatasetReference <- list_img_ref_wrapper
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.FeatureVectorDatasetReference <- list_img_ref_wrapper
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.FeatureVectorDatasetWellReference <- list_img_ref_wrapper
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.ImageDatasetReference <- list_img_ref_wrapper
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.MicroscopyImageReference <- list_img_ref_wrapper
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_datasets.PlateImageReference <- list_img_ref_wrapper
+
 #' @keywords internal
 #' @export
 #' 
@@ -194,47 +238,6 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 
   as_json_vec(do.call(c, res))
 }
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.DatasetIdentifier <- list_img_ref
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.DataSet <- function(token, x, wells = NULL, channels, ...)
-  list_datasets(token, list_dataset_ids(token, x), wells, channels, ...)
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.DatasetReference <- list_img_ref
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.FeatureVectorDatasetReference <- list_img_ref
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.FeatureVectorDatasetWellReference <- list_img_ref
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.ImageDatasetReference <- list_img_ref
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.MicroscopyImageReference <- list_img_ref
-
-#' @rdname list_datasets
-#' @export
-#' 
-list_datasets.PlateImageReference <- list_img_ref
 
 #' @rdname list_datasets
 #' @export
