@@ -542,19 +542,19 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given set of image data sets, provide all image channels that have been acquired and the available (natural) image size(s).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IImageDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;ImageDatasetMetadata&gt;
-    -   \[ \] listImageReferences:
+    -   \[x\] listImageReferences:
         -   description: Lists microscopy image references for specified data set and channels.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;java.lang.String&gt; channels
         -   returntype: java.util.List&lt;MicroscopyImageReference&gt;
-    -   \[ \] listImageReferences:
+    -   \[x\] listImageReferences:
         -   description: Lists microscopy image references for specified data set and channel.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.lang.String channel
         -   returntype: java.util.List&lt;MicroscopyImageReference&gt;
-    -   \[ \] listPlateImageReferences:
+    -   \[x\] listPlateImageReferences:
         -   description: Lists plate image references for specified data set, list of well positions and channels.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;WellPosition&gt; wellPositions, java.util.List&lt;java.lang.String&gt; channels
         -   returntype: java.util.List&lt;PlateImageReference&gt;
-    -   \[ \] listPlateImageReferences:
+    -   \[x\] listPlateImageReferences:
         -   description: Lists plate image references for specified data set, list of well positions and channel.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;WellPosition&gt; wellPositions, java.lang.String channel
         -   returntype: java.util.List&lt;PlateImageReference&gt;

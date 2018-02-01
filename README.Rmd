@@ -63,7 +63,8 @@ done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "getExperimentImageMetadata", "getPlateMetadataList",
           "listImageDatasets", "listRawImageDatasets",
           "listSegmentationImageDatasets", "listImageMetadata",
-          "listPlateMaterialMapping")
+          "listPlateMaterialMapping",
+          "listImageReferences", "listPlateImageReferences")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
