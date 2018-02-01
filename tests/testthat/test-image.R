@@ -24,7 +24,7 @@ test_that("experiment metadata can be listed", {
   expect_identical(list_image_metadata(tok, exps[1:2]), meta_2)
 
   plates <- list_plates(tok, exp_ids[[1]])
-  img_ds <- list_datasets(tok, plates[1:2])
+  img_ds <- list_references(tok, plates[1:2])
 
   meta_1 <- list_image_metadata(tok, img_ds[[1]])
   expect_is(meta_1, "ImageDatasetMetadata")
