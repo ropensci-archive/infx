@@ -183,6 +183,14 @@ test_that("dataset references can be listed", {
   expect_identical(get_subclass(ds_2), "PlateImageReference")
   expect_true(all(sapply(ds_2, has_subclass, "PlateImageReference")))
   expect_equal(length(ds_2), 18L)
+
+  ds_3 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
+                          channels = c("DAPI", "GFP"))
+  expect_is(ds_3, "PlateImageReference")
+  expect_is(ds_3, "json_vec")
+  expect_identical(get_subclass(ds_3), "PlateImageReference")
+  expect_true(all(sapply(ds_3, has_subclass, "PlateImageReference")))
+  expect_equal(length(ds_3), 18L)
 })
 
 test_that("dataset types can be listed", {
