@@ -106,9 +106,15 @@ exp_to_expid <- function(x) {
   as_json_vec(res)
 }
 
+#' @keywords internal
+#' @export
+#' 
 exp_id_str <- function(x, ...)
   UseMethod("exp_id_str")
 
+#' @keywords internal
+#' @export
+#' 
 exp_id_str.ExperimentIdentifier <- function(x, ...) {
 
   fields <- c("spaceCode", "projectCode", "experimentCode")
@@ -118,6 +124,9 @@ exp_id_str.ExperimentIdentifier <- function(x, ...) {
   lapply(as_json_vec(x), function(y) paste0("/", y[fields], collapse = ""))
 }
 
+#' @keywords internal
+#' @export
+#' 
 exp_id_str.Experiment <- function(x, ...) {
 
   assert_that(has_fields(x, "identifier"))

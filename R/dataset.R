@@ -276,9 +276,15 @@ list_dataset_ids.character <- function(token, x, ...)
 list_dataset_ids.DataSet <- function(token, x, ...)
   list_dataset_ids(token, dataset_code(x))
 
+#' @keywords internal
+#' @export
+#' 
 dataset_code <- function(x, ...)
   UseMethod("dataset_code")
 
+#' @keywords internal
+#' @export
+#' 
 dataset_code.DataSet <- function(x, ...) {
   assert_that(has_fields(x, "code"))
   if (is_json_vec(x))
@@ -287,6 +293,9 @@ dataset_code.DataSet <- function(x, ...) {
     x[["code"]]
 }
 
+#' @keywords internal
+#' @export
+#' 
 dataset_code.DatasetIdentifier <- function(x, ...) {
   assert_that(has_fields(x, "datasetCode"))
   if (is_json_vec(x))
