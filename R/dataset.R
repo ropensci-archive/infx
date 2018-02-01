@@ -20,10 +20,12 @@
 #' The above objects are returned by `list_references()` and the exact return
 #' type depends on the argument types. If `list_references()` is dispatched on
 #' plate objects (`Plate`, `PlateIdentifier` or `PlateMetadata`),
-#' `ImageDatasetReference` objects are returned. Similarly, if
-#' `MaterialIdentifierScreening` objects are used as input,
-#' `PlateWellReferenceWithDatasets` objects are returned, which each
-#' contain `ImageDatasetReference` and `FeatureVectorDatasetReference` objects.
+#' `ImageDatasetReference` objects are returned (except if the type argument
+#' is set to `feature`, in which case, `FeatureVectorDatasetReference`
+#' object(s) are returned). Similarly, if `MaterialIdentifierScreening`
+#' objects are used as input, `PlateWellReferenceWithDatasets` objects are
+#' returned, which each contain `ImageDatasetReference` and
+#' `FeatureVectorDatasetReference` objects.
 #' 
 #' Whenever `list_references()` is dispatched on (a) dataset id or dataset
 #' reference object(s), the resulting object type depends on whether a (set of)
@@ -152,14 +154,18 @@ list_dataset_ids.DataSet <- function(token, x, ...)
 list_references <- function(token, x, ...)
   UseMethod("list_references", x)
 
-list_img_ds <- function(token, x, type = c(NA, "raw", "segmentation"), ...) {
+list_img_ds <- function(token,
+                        x,
+                        type = c(NA, "raw", "segmentation", "feature"),
+                        ...) {
 
   type <- match.arg(type)
 
   fun <- switch(match.arg(type),
                 `NA` = "listImageDatasets",
                 raw = "listRawImageDatasets",
-                segmentation = "listSegmentationImageDatasets")
+                segmentation = "listSegmentationImageDatasets",
+                feature = "listFeatureVectorDatasets")
 
   request_openbis(fun, list(token, as_json_vec(x)), "IScreeningApiServer")
 }

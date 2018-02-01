@@ -133,6 +133,13 @@ test_that("dataset references can be listed", {
   expect_identical(list_references(tok, meta[[1]]), ds_1)
   expect_identical(list_references(tok, meta[1:2]), ds_2)
 
+  ds_1 <- list_references(tok, plates[[1]], type = "feature")
+  expect_is(ds_1, "FeatureVectorDatasetReference")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1), "FeatureVectorDatasetReference")
+  expect_true(all(sapply(ds_1, has_subclass, "FeatureVectorDatasetReference")))
+  expect_gte(length(ds_1), 1L)
+
   dsids <- list_dataset_ids(tok, sapply(ds_2, `[[`, "datasetCode"))
 
   ds_1 <- list_references(tok, dsids[[1]], channels = "DAPI")

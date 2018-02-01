@@ -44,13 +44,13 @@ list_dataset_ids(token, x, ...)
 list_references(token, x, ...)
 
 \method{list_references}{PlateIdentifier}(token, x, type = c(NA, "raw",
-  "segmentation"), ...)
+  "segmentation", "feature"), ...)
 
-\method{list_references}{Plate}(token, x, type = c(NA, "raw", "segmentation"),
-  ...)
+\method{list_references}{Plate}(token, x, type = c(NA, "raw", "segmentation",
+  "feature"), ...)
 
 \method{list_references}{PlateMetadata}(token, x, type = c(NA, "raw",
-  "segmentation"), ...)
+  "segmentation", "feature"), ...)
 
 \method{list_references}{MaterialIdentifierScreening}(token, x,
   experiment = NULL, ...)
@@ -126,10 +126,12 @@ Several classes in addition to \code{DatasetIdentifier} implement the
 The above objects are returned by \code{list_references()} and the exact return
 type depends on the argument types. If \code{list_references()} is dispatched on
 plate objects (\code{Plate}, \code{PlateIdentifier} or \code{PlateMetadata}),
-\code{ImageDatasetReference} objects are returned. Similarly, if
-\code{MaterialIdentifierScreening} objects are used as input,
-\code{PlateWellReferenceWithDatasets} objects are returned, which each
-contain \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} objects.
+\code{ImageDatasetReference} objects are returned (except if the type argument
+is set to \code{feature}, in which case, \code{FeatureVectorDatasetReference}
+object(s) are returned). Similarly, if \code{MaterialIdentifierScreening}
+objects are used as input, \code{PlateWellReferenceWithDatasets} objects are
+returned, which each contain \code{ImageDatasetReference} and
+\code{FeatureVectorDatasetReference} objects.
 
 Whenever \code{list_references()} is dispatched on (a) dataset id or dataset
 reference object(s), the resulting object type depends on whether a (set of)

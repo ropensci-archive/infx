@@ -421,7 +421,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return the list of all experiments visible to user userId, along with their hierarchical context (space, project).
         -   arguments: java.lang.String sessionToken, java.lang.String userId
         -   returntype: java.util.List&lt;ExperimentIdentifier&gt;
-    -   \[ \] listFeatureVectorDatasets:
+    -   \[x\] listFeatureVectorDatasets:
         -   description: For a given set of plates (given by space / plate bar code), provide the list of all data sets containing feature vectors for each of these plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;FeatureVectorDatasetReference&gt;
