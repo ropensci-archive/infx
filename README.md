@@ -401,11 +401,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given wellIdentifier, return the corresponding Sample including properties.
         -   arguments: java.lang.String sessionToken, WellIdentifier wellIdentifier
         -   returntype: Sample
-    -   \[ \] listAvailableFeatureCodes:
+    -   \[x\] listAvailableFeatureCodes:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatureCodes(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] listAvailableFeatures:
+    -   \[x\] listAvailableFeatures:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatures(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;FeatureInformation&gt;
@@ -522,7 +522,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns the transformer factory for the specified channel and the experiment to which the specified data sets belong.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;IDatasetIdentifier&gt; dataSetIdentifiers, java.lang.String channel
         -   returntype: ch.systemsx.cisd.base.image.IImageTransformerFactory
-    -   \[ \] listAvailableFeatureCodes:
+    -   \[x\] listAvailableFeatureCodes:
         -   description: For a given set of feature vector data sets provide the list of all available features.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;java.lang.String&gt;
@@ -530,7 +530,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Deprecated.  Use listAvailableFeatureCodes(String, List) instead.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] listAvailableFeatures:
+    -   \[x\] listAvailableFeatures:
         -   description: For a given set of feature vector data sets provide the list of all available features.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;FeatureInformation&gt;
