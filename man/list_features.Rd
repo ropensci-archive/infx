@@ -9,11 +9,13 @@
 \alias{list_feature_codes.FeatureVectorDatasetWellReference}
 \title{List features}
 \usage{
-list_features(token, x, ...)
+list_features(token, x, feature_codes = NA, ...)
 
-\method{list_features}{FeatureVectorDatasetReference}(token, x, ...)
+\method{list_features}{FeatureVectorDatasetReference}(token, x,
+  feature_codes = NA, ...)
 
-\method{list_features}{FeatureVectorDatasetWellReference}(token, x, ...)
+\method{list_features}{FeatureVectorDatasetWellReference}(token, x,
+  feature_codes = NA, ...)
 
 list_feature_codes(token, x, ...)
 

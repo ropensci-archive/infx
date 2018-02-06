@@ -21,7 +21,7 @@
 list_features <- function(token, x, ...)
     UseMethod("list_features", x)
 
-list_feat <- function(token, x, ...)
+list_feats <- function(token, x, ...)
   request_openbis("listAvailableFeatures",
                   list(token, as_json_vec(remove_null(x))),
                   "IDssServiceRpcScreening")
@@ -29,12 +29,12 @@ list_feat <- function(token, x, ...)
 #' @rdname list_features
 #' @export
 #' 
-list_features.FeatureVectorDatasetReference <- list_feat
+list_features.FeatureVectorDatasetReference <- list_feats
 
 #' @rdname list_features
 #' @export
 #' 
-list_features.FeatureVectorDatasetWellReference <- list_feat
+list_features.FeatureVectorDatasetWellReference <- list_feats
 
 #' @rdname list_features
 #' @export
@@ -42,7 +42,7 @@ list_features.FeatureVectorDatasetWellReference <- list_feat
 list_feature_codes <- function(token, x, ...)
     UseMethod("list_feature_codes", x)
 
-list_feat_code <- function(token, x, ...)
+list_feat_codes <- function(token, x, ...)
   request_openbis("listAvailableFeatureCodes",
                   list(token, as_json_vec(remove_null(x))),
                   "IDssServiceRpcScreening")
@@ -50,9 +50,9 @@ list_feat_code <- function(token, x, ...)
 #' @rdname list_features
 #' @export
 #' 
-list_feature_codes.FeatureVectorDatasetReference <- list_feat_code
+list_feature_codes.FeatureVectorDatasetReference <- list_feat_codes
 
 #' @rdname list_features
 #' @export
 #' 
-list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_code
+list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
