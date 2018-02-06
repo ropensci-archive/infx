@@ -44,8 +44,9 @@ skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
           "SpacesWithProjects", "Vocabularies", "WebAppSettings", "Query",
           "Queries", "Aggregation", "TableReport", "RoleSet",
           "getSessionToken", "shuffle", "listAllShares", "getValidationScript",
-          "getPathToDataSet", "getFileFromSessionWorkspace", "getFeatureList")
-done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
+          "getPathToDataSet", "getFileFromSessionWorkspace", "getFeatureList",
+          "logoutScreening", "tryLoginScreening", "ImageTransformerFactory")
+done <- c("tryToAuthenticateForAllServices", "logout$", "isSessionActive",
           "listProjects",
           "listExperiments", "listExperimentTypes",
           "listSamplesForExperiment", "getPlateSample", "getWellSample",

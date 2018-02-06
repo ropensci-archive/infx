@@ -465,11 +465,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given set of plates provide the list of all data sets containing segmentation images for each of these plates.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends PlateIdentifier&gt; plates
         -   returntype: java.util.List&lt;ImageDatasetReference&gt;
-    -   \[ \] loadFeatures:
+    -   \[x\] loadFeatures:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeatures(String, List, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;FeatureVectorDatasetReference&gt; featureDatasets, java.util.List&lt;java.lang.String&gt; featureCodes
         -   returntype: java.util.List&lt;FeatureVectorDataset&gt;
-    -   \[ \] loadFeaturesForDatasetWellReferences:
+    -   \[x\] loadFeaturesForDatasetWellReferences:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeaturesForDatasetWellReferences(String, List, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;FeatureVectorDatasetWellReference&gt; datasetWellReferences, java.util.List&lt;java.lang.String&gt; featureCodes
         -   returntype: java.util.List&lt;FeatureVectorWithDescription&gt;
@@ -505,11 +505,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadThumbnailImagesBase64(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[x\] logoutScreening:
+    -   \[ \] ~~logoutScreening~~:
         -   description: Logout the session with the specified session token.
         -   arguments: java.lang.String sessionToken
         -   returntype: void
-    -   \[ \] tryLoginScreening:
+    -   \[ \] ~~tryLoginScreening~~:
         -   description: Authenticates the user with a given password.
         -   arguments: java.lang.String userId, java.lang.String userPassword
         -   returntype: java.lang.String
@@ -518,7 +518,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return the feature codes of a specified feature list for a specified feature vector data set
         -   arguments: java.lang.String sessionToken, IFeatureVectorDatasetIdentifier featureDataset, java.lang.String featureListCode
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] getImageTransformerFactoryOrNull:
+    -   \[ \] ~~getImageTransformerFactoryOrNull~~:
         -   description: Returns the transformer factory for the specified channel and the experiment to which the specified data sets belong.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;IDatasetIdentifier&gt; dataSetIdentifiers, java.lang.String channel
         -   returntype: ch.systemsx.cisd.base.image.IImageTransformerFactory
@@ -558,11 +558,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Lists plate image references for specified data set, list of well positions and channel.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;WellPosition&gt; wellPositions, java.lang.String channel
         -   returntype: java.util.List&lt;PlateImageReference&gt;
-    -   \[ \] loadFeatures:
+    -   \[x\] loadFeatures:
         -   description: Conceptually, for a given list of data well references (i.e.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;FeatureVectorDatasetReference&gt; featureDatasets, java.util.List&lt;java.lang.String&gt; featureCodes
         -   returntype: java.util.List&lt;FeatureVectorDataset&gt;
-    -   \[ \] loadFeaturesForDatasetWellReferences:
+    -   \[x\] loadFeaturesForDatasetWellReferences:
         -   description: Conceptually, for a given list of dataset well references (i.e.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;FeatureVectorDatasetWellReference&gt; datasetWellReferences, java.util.List&lt;java.lang.String&gt; featureCodes
         -   returntype: java.util.List&lt;FeatureVectorWithDescription&gt;
@@ -654,7 +654,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Returns the same images as loadThumbnailImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] saveImageTransformerFactory:
+    -   \[ \] ~~saveImageTransformerFactory~~:
         -   description: Saves the specified transformer factory for the specified channel of the specified data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;IDatasetIdentifier&gt; dataSetIdentifiers, java.lang.String channel, ch.systemsx.cisd.base.image.IImageTransformerFactory transformerFactory
         -   returntype: void
