@@ -1,14 +1,5 @@
 context("list misc objects")
 
-test_that("projects can be listed", {
-  proj <- list_projects(tok)
-  expect_is(proj, "Project")
-  expect_is(proj, "json_vec")
-  expect_identical(get_subclass(proj), "Project")
-  expect_true(all(sapply(proj, has_subclass, "Project")))
-  expect_gte(length(proj), 1L)
-})
-
 test_that("openbis downloads can be created", {
   expect_is(plates <- list_plates(tok), "json_vec")
   expect_gte(length(plates), 1L)
