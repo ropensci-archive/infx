@@ -1,2 +1,2 @@
 
-logout(tok)
+logout_openbis(tok)
