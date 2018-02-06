@@ -514,7 +514,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   arguments: java.lang.String userId, java.lang.String userPassword
         -   returntype: java.lang.String
 -   [IDssServiceRpcScreening](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/screening/shared/api/v1/IDssServiceRpcScreening.html)
-    -   \[ \] getFeatureList:
+    -   \[ \] ~~getFeatureList~~:
         -   description: Return the feature codes of a specified feature list for a specified feature vector data set
         -   arguments: java.lang.String sessionToken, IFeatureVectorDatasetIdentifier featureDataset, java.lang.String featureListCode
         -   returntype: java.util.List&lt;java.lang.String&gt;

@@ -14,7 +14,7 @@
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to specify the set of feature vector data sets of interest.
-#' @param ... Generic compatibility
+#' @param ... Generic compatibility 
 #' 
 #' @export
 #' 
@@ -56,3 +56,89 @@ list_feature_codes.FeatureVectorDatasetReference <- list_feat_codes
 #' @export
 #' 
 list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
+
+#' Fetch feature data
+#'
+#' For a given set of feature vector data sets, `fetch_features()` fetches
+#' feature data for the specified feature codes, or for all available features
+#' in case the argument `feature_codes` is not specified (or `NA`). If
+#' for different data sets different sets of features are available,
+#' the union of the features of all data sets is searched for. The returned
+#' object is of type `FeatureVectorDataset`, which for each entry contains a
+#' `FeatureVectorDatasetReference` and a set of `FeatureVector`(s), one for
+#' each well.
+#' 
+#' If only a limited set of wells is of interest, the search can be limited by
+#' dispatching `fetch_features()` on a (set of)
+#' `FeatureVectorDatasetWellReference` objects.
+#' 
+#' @inheritParams logout_openbis
+#' @param x Object to specify the set of feature vector data sets of interest.
+#' @param feature_codes A character vector of feature codes or NA (all
+#' available feature codes).
+#' @param ... Generic compatibility
+#' 
+#' @section TODO Even though there exists a constructor for
+#' `FeatureVectorDatasetWellReference` objects, which takes two arguments, one
+#' for the corresponding `FeatureVectorDatasetReference` object and one for
+#' a `WellPosition` objects, this does not work. Furthermore, class information
+#' cannot be supplied as this will cause an error as well (hence the use of
+#' `rm_json_class()`). Why the function `loadFeaturesForDatasetWellReferences`
+#' behaves this way is currently unclear.
+#' 
+#' @export
+#' 
+fetch_features <- function(token, x, feature_codes = NA, ...)
+    UseMethod("fetch_features", x)
+
+#' @rdname fetch_features
+#' @export
+#' 
+fetch_features.FeatureVectorDatasetReference <- function(token,
+                                                         x,
+                                                         feature_codes = NA,
+                                                         ...) {
+  x <- as_json_vec(remove_null(x))
+
+  if (length(feature_codes) == 1L && is.na(feature_codes)) {
+    feature_codes <- list_feature_codes(token, x)
+  } else {
+    assert_that(is.character(feature_codes))
+    feature_codes <- as.list(feature_codes)
+  }
+
+  request_openbis("loadFeatures", list(token, x, feature_codes),
+                  "IDssServiceRpcScreening")
+}
+
+#' @rdname fetch_features
+#' @export
+#' 
+fetch_features.FeatureVectorDatasetWellReference <- function(
+  token,
+  x,
+  feature_codes = NA,
+  ...) {
+
+  x <- as_json_vec(x)
+
+  fields <- c("datasetCode", "datastoreServerUrl", "plate",
+              "experimentIdentifier", "plateGeometry", "registrationDate",
+              "properties", "wellPosition")
+
+  assert_that(has_fields(x, fields))
+
+  x <- lapply(lapply(x, `[`, fields), rm_json_class, recursive = FALSE,
+              restore_type = FALSE)
+
+  if (length(feature_codes) == 1L && is.na(feature_codes)) {
+    feature_codes <- list_feature_codes(token, x)
+  } else {
+    assert_that(is.character(feature_codes))
+    feature_codes <- as.list(feature_codes)
+  }
+
+  request_openbis("loadFeaturesForDatasetWellReferences",
+                  list(token, x, feature_codes),
+                  "IDssServiceRpcScreening")
+}

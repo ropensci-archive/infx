@@ -44,7 +44,7 @@ skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
           "SpacesWithProjects", "Vocabularies", "WebAppSettings", "Query",
           "Queries", "Aggregation", "TableReport", "RoleSet",
           "getSessionToken", "shuffle", "listAllShares", "getValidationScript",
-          "getPathToDataSet", "getFileFromSessionWorkspace")
+          "getPathToDataSet", "getFileFromSessionWorkspace", "getFeatureList")
 done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listProjects",
           "listExperiments", "listExperimentTypes",
@@ -66,7 +66,8 @@ done <- c("tryToAuthenticateForAllServices", "logout", "isSessionActive",
           "listPlateMaterialMapping",
           "listImageReferences", "listPlateImageReferences",
           "listFeatureVectorDatasets",
-          "listAvailableFeatures", "listAvailableFeatureCodes")
+          "listAvailableFeatures", "listAvailableFeatureCodes",
+          "loadFeatures", "loadFeaturesForDatasetWellReferences")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
