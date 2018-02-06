@@ -78,7 +78,7 @@ list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
 #' available feature codes).
 #' @param ... Generic compatibility
 #' 
-#' @section TODO Even though there exists a constructor for
+#' @section TODO: Even though there exists a constructor for
 #' `FeatureVectorDatasetWellReference` objects, which takes two arguments, one
 #' for the corresponding `FeatureVectorDatasetReference` object and one for
 #' a `WellPosition` objects, this does not work. Furthermore, class information

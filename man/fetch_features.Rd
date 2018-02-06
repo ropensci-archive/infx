@@ -39,3 +39,13 @@ If only a limited set of wells is of interest, the search can be limited by
 dispatching \code{fetch_features()} on a (set of)
 \code{FeatureVectorDatasetWellReference} objects.
 }
+\section{TODO}{
+ Even though there exists a constructor for
+\code{FeatureVectorDatasetWellReference} objects, which takes two arguments, one
+for the corresponding \code{FeatureVectorDatasetReference} object and one for
+a \code{WellPosition} objects, this does not work. Furthermore, class information
+cannot be supplied as this will cause an error as well (hence the use of
+\code{rm_json_class()}). Why the function \code{loadFeaturesForDatasetWellReferences}
+behaves this way is currently unclear.
+}
+
