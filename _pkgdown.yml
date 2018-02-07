@@ -10,12 +10,12 @@ reference:
   - title: List openBIS objects
     desc: Query openBIS for objects used to organize datasets
     contents: 
-      - list_projects
-      - list_experiments
-      - list_samples
       - list_datasets
-      - list_plates
+      - list_experiments
       - list_material
+      - list_plates
+      - list_projects
+      - list_samples
   - title: Download urls
     desc: Determine download urls for datasets
     contents:
