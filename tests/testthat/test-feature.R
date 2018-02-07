@@ -1,8 +1,6 @@
 context("list features")
 
 test_that("features and feature codes can be listed", {
-  exp_ids <- list_experiment_ids(tok)
-  plates <- list_plates(tok, exp_ids[[1]])
   refs <- list_references(tok, plates[[1]], type = "feature")
 
   feat_1 <- list_features(tok, refs[[1]])
@@ -26,8 +24,6 @@ test_that("features and feature codes can be listed", {
 })
 
 test_that("features can be fetched", {
-  exp_ids <- list_experiment_ids(tok)
-  plates <- list_plates(tok, exp_ids[[1]])
   refs <- list_references(tok, plates[[1]], type = "feature")
   feats <- list_features(tok, refs[[1]])
 

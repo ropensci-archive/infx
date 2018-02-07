@@ -1,9 +1,6 @@
 context("dataset")
 
 test_that("datasets can be listed", {
-  exp_ids <- list_experiment_ids(tok)
-  samples <- list_samples(tok, exp_ids[c(1, 2)])
-
   ds_1 <- list_datasets(tok, samples[[1]])
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
@@ -28,8 +25,6 @@ test_that("datasets can be listed", {
   expect_gte(length(ds_3), length(ds_1))
   expect_true(all(sapply(lapply(ds_3, `[[`, "retrievedConnections"),
                          identical, list("PARENTS", "CHILDREN"))))
-
-  experiments <- list_experiments(tok, exp_ids[1:2])
 
   ds_1 <- list_datasets(tok, experiments[[1]])
   expect_is(ds_1, "DataSet")
@@ -85,7 +80,6 @@ test_that("datasets can be listed", {
 })
 
 test_that("dataset references can be listed", {
-  exp_ids <- list_experiment_ids(tok)
   mat <- material_id(c(2475L, 3832L), mode = "screening")
 
   ds_1 <- list_references(tok, mat[[1]], exp_ids[[1]])
@@ -109,10 +103,6 @@ test_that("dataset references can be listed", {
                          "PlateWellReferenceWithDatasets")))
   expect_gte(length(ds_2), length(ds_1))
 
-  plates <- list_plates(tok, exp_ids[[1]])
-  plate_ids <- plate_to_plateid(plates)
-  meta <- list_plate_metadata(tok, plate_ids[1:2])
-
   ds_1 <- list_references(tok, plates[[1]])
   expect_is(ds_1, "ImageDatasetReference")
   expect_is(ds_1, "json_vec")
@@ -127,11 +117,13 @@ test_that("dataset references can be listed", {
   expect_true(all(sapply(ds_2, has_subclass, "ImageDatasetReference")))
   expect_equal(length(ds_2), 2L)
 
+  plate_ids <- plate_to_plateid(plates)
+
   expect_identical(list_references(tok, plate_ids[[1]]), ds_1)
   expect_identical(list_references(tok, plate_ids[1:2]), ds_2)
 
-  expect_identical(list_references(tok, meta[[1]]), ds_1)
-  expect_identical(list_references(tok, meta[1:2]), ds_2)
+  expect_identical(list_references(tok, plate_meta[[1]]), ds_1)
+  expect_identical(list_references(tok, plate_meta[1:2]), ds_2)
 
   ds_1 <- list_references(tok, plates[[1]], type = "feature")
   expect_is(ds_1, "FeatureVectorDatasetReference")
@@ -174,7 +166,6 @@ test_that("dataset references can be listed", {
   expect_identical(list_references(tok, list_references(tok, plates[[1]]),
                                    channels = "DAPI"), ds_1)
 
-  wells <- list_wells(tok, plate_ids[[1]])
   well_pos <- as_json_vec(lapply(wells[1:2], `[[`, "wellPosition"))
   ds_1 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
                           channels = "DAPI")
@@ -210,8 +201,6 @@ test_that("dataset types can be listed", {
 })
 
 test_that("dataset ids can be listed", {
-  exp_ids <- list_experiment_ids(tok)
-  samples <- list_samples(tok, exp_ids[[1]])
   ds <- list_datasets(tok, samples[[1]])
   codes <- sapply(ds, `[[`, "code")
 

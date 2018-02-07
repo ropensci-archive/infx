@@ -14,19 +14,15 @@ test_that("data store urls can be listed", {
   expect_is(url, "character")
   expect_equal(length(url), 1L)
 
-  exp_ids <- list_experiment_ids(tok)
-  samples <- list_samples(tok, exp_ids[[1]])
-  ds <- list_datasets(tok, samples[[1]])
-
-  url_1 <- list_datastore_urls(tok, ds[[1]])
+  url_1 <- list_datastore_urls(tok, datasets[[1]])
   expect_is(url_1, "character")
   expect_equal(length(url_1), 1L)
 
-  url_2 <- list_datastore_urls(tok, ds[1:2])
+  url_2 <- list_datastore_urls(tok, datasets[1:2])
   expect_is(url_2, "character")
   expect_equal(length(url_2), 2L)
 
-  codes <- sapply(ds, `[[`, "code")
+  codes <- sapply(datasets, `[[`, "code")
 
   url_1 <- list_datastore_urls(tok, codes[1])
   expect_is(url_1, "character")
@@ -47,10 +43,7 @@ test_that("data store urls can be listed", {
 })
 
 test_that("dataset download urls can be generated", {
-  exp_ids <- list_experiment_ids(tok)
-  samples <- list_samples(tok, exp_ids[[1]])
-  ds <- list_datasets(tok, samples[[1]])
-  codes <- sapply(ds, `[[`, "code")
+  codes <- sapply(datasets, `[[`, "code")
 
   ds_file <- json_class(dataSetCode = codes[2],
                         path = "",
@@ -74,12 +67,12 @@ test_that("dataset download urls can be generated", {
   expect_length(url_to, 1L)
   expect_true(grepl("^https://", url_to))
 
-  url_1 <- list_download_urls(tok, ds[[2]], paths[1])
+  url_1 <- list_download_urls(tok, datasets[[2]], paths[1])
   expect_is(url_1, "character")
   expect_length(url_1, 1L)
   expect_true(grepl("^https://", url_1))
 
-  url_2 <- list_download_urls(tok, ds[[2]], paths[1:2])
+  url_2 <- list_download_urls(tok, datasets[[2]], paths[1:2])
   expect_is(url_2, "character")
   expect_length(url_2, 2L)
   expect_true(all(grepl("^https://", url_2)))

@@ -1,8 +1,6 @@
 context("image")
 
 test_that("experiment metadata can be listed", {
-  exp_ids <- list_experiment_ids(tok)
-
   meta_1 <- list_image_metadata(tok, exp_ids[[1]])
   expect_is(meta_1, "ExperimentImageMetadata")
   expect_is(meta_1, "json_vec")
@@ -19,11 +17,9 @@ test_that("experiment metadata can be listed", {
                          "ExperimentImageMetadata")))
   expect_gte(length(meta_2), length(meta_1))
 
-  exps <- list_experiments(tok, exp_ids[1:2])
   expect_identical(list_image_metadata(tok, exps[[1]]), meta_1)
   expect_identical(list_image_metadata(tok, exps[1:2]), meta_2)
 
-  plates <- list_plates(tok, exp_ids[[1]])
   img_ds <- list_references(tok, plates[1:2])
 
   meta_1 <- list_image_metadata(tok, img_ds[[1]])

@@ -1,9 +1,6 @@
 context("experiment")
 
 test_that("experiments can be listed", {
-  exp_ids <- list_experiment_ids(tok)
-  experiments <- list_experiments(tok, exp_ids[1:2])
-
   expect_is(experiments, "Experiment")
   expect_is(experiments, "json_vec")
   expect_identical(get_subclass(experiments), "Experiment")
@@ -21,8 +18,7 @@ test_that("experiments can be listed", {
                                 json_class(a = 1, b = 2,
                                            class = "ExperimentIdentifier")))
 
-  proj <- list_projects(tok)
-  experiments <- list_experiments(tok, proj[1:2],
+  experiments <- list_experiments(tok, projects[1:2],
                                   json_class(code = "SIRNA_HCS",
                                              class = "ExperimentType"))
   expect_is(experiments, "Experiment")
@@ -31,18 +27,18 @@ test_that("experiments can be listed", {
   expect_true(all(sapply(experiments, has_subclass, "Experiment")))
   expect_gte(length(experiments), 1L)
 
-  experiments <- list_experiments(tok, proj[[1]])
+  experiments <- list_experiments(tok, projects[[1]])
   expect_is(experiments, "Experiment")
   expect_is(experiments, "json_vec")
   expect_identical(get_subclass(experiments), "Experiment")
   expect_true(all(sapply(experiments, has_subclass, "Experiment")))
   expect_gte(length(experiments), 1L)
 
-  expect_identical(list_experiments(tok, proj[[1]],
+  expect_identical(list_experiments(tok, projects[[1]],
                                     json_class(code = "SIRNA_HCS",
                                                class = "ExperimentType"),
                                     "DataSets"),
-                   list_experiments(tok, proj[[1]],
+                   list_experiments(tok, projects[[1]],
                                     json_class(code = "SIRNA_HCS",
                                                class = "ExperimentType"),
                                     "Samples"))
@@ -58,7 +54,6 @@ test_that("experiment types can be listed", {
 })
 
 test_that("experiment ids can be listed", {
-  exp_ids <- list_experiment_ids(tok)
   expect_is(exp_ids, "ExperimentIdentifier")
   expect_is(exp_ids, "json_vec")
   expect_identical(get_subclass(exp_ids), "ExperimentIdentifier")

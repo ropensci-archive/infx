@@ -1,10 +1,7 @@
 context("file")
 
 test_that("files can be listed", {
-  exp_ids <- list_experiment_ids(tok)
-  samples <- list_samples(tok, exp_ids[[1]])
-  ds <- list_datasets(tok, samples[[1]])
-  codes <- sapply(ds, `[[`, "code")
+  codes <- sapply(datasets, `[[`, "code")
 
   files_1 <- list_files(tok, codes[2])
   expect_is(files_1, "FileInfoDssDTO")
@@ -20,8 +17,8 @@ test_that("files can be listed", {
   expect_true(all(sapply(files_2, has_subclass, "FileInfoDssDTO")))
   expect_gte(length(files_2), length(files_1))
 
-  expect_identical(list_files(tok, ds[[2]]), files_1)
-  expect_identical(list_files(tok, ds[2:3]), files_2)
+  expect_identical(list_files(tok, datasets[[2]]), files_1)
+  expect_identical(list_files(tok, datasets[2:3]), files_2)
 
   ids <- list_dataset_ids(tok, codes[2:3])
 
