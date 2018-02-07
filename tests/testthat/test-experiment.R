@@ -7,6 +7,8 @@ test_that("experiments can be listed", {
   expect_true(all(sapply(experiments, has_subclass, "Experiment")))
   expect_equal(length(experiments), 2L)
 
+  check_skip()
+
   experiments <- list_experiments(tok, exp_ids[[1]])
   expect_is(experiments, "Experiment")
   expect_is(experiments, "json_vec")
@@ -45,6 +47,9 @@ test_that("experiments can be listed", {
 })
 
 test_that("experiment types can be listed", {
+
+  check_skip()
+
   exp_type <- list_experiment_types(tok)
   expect_is(exp_type, "ExperimentType")
   expect_is(exp_type, "json_vec")

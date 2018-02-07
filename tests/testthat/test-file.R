@@ -1,6 +1,9 @@
 context("file")
 
 test_that("files can be listed", {
+
+  check_skip()
+
   codes <- sapply(datasets, `[[`, "code")
 
   files_1 <- list_files(tok, codes[2])

@@ -1,6 +1,9 @@
 context("urls can be determined")
 
 test_that("data store servers can be listed", {
+
+  check_skip()
+
   dss <- list_datastores(tok)
   expect_is(dss, "DataStore")
   expect_is(dss, "json_vec")
@@ -10,6 +13,9 @@ test_that("data store servers can be listed", {
 })
 
 test_that("data store urls can be listed", {
+
+  check_skip()
+
   url <- list_datastore_urls(tok)
   expect_is(url, "character")
   expect_equal(length(url), 1L)
@@ -43,6 +49,9 @@ test_that("data store urls can be listed", {
 })
 
 test_that("dataset download urls can be generated", {
+
+  check_skip()
+
   codes <- sapply(datasets, `[[`, "code")
 
   ds_file <- json_class(dataSetCode = codes[2],

@@ -1,11 +1,24 @@
 context("plate")
 
 test_that("plates can be listed", {
-  expect_is(plates, "Plate")
-  expect_is(plates, "json_vec")
-  expect_identical(get_subclass(plates), "Plate")
-  expect_true(all(sapply(plates, has_subclass, "Plate")))
-  expect_gte(length(plates), 1L)
+  plate_1 <- plates
+  expect_is(plate_1, "Plate")
+  expect_is(plate_1, "json_vec")
+  expect_identical(get_subclass(plate_1), "Plate")
+  expect_true(all(sapply(plate_1, has_subclass, "Plate")))
+  expect_gte(length(plate_1), 1L)
+
+  check_skip()
+
+  plate_2 <- list_plates(tok, exp_ids[c(1, 2)])
+  expect_is(plate_2, "Plate")
+  expect_is(plate_2, "json_vec")
+  expect_identical(get_subclass(plate_2), "Plate")
+  expect_true(all(sapply(plate_2, has_subclass, "Plate")))
+  expect_gte(length(plate_2), length(plate_1))
+
+  expect_identical(plate_1, list_plates(tok, experiments[[1]]))
+  expect_identical(plate_2, list_plates(tok, experiments[1:2]))
 
   plate <- list_plates(tok)
   expect_is(plate, "Plate")
@@ -13,25 +26,17 @@ test_that("plates can be listed", {
   expect_identical(get_subclass(plate), "Plate")
   expect_true(all(sapply(plate, has_subclass, "Plate")))
   expect_gte(length(plate), 1L)
-
-  plate_2 <- list_plates(tok, exp_ids[c(1, 2)])
-  expect_is(plate_2, "Plate")
-  expect_is(plate_2, "json_vec")
-  expect_identical(get_subclass(plate_2), "Plate")
-  expect_true(all(sapply(plate_2, has_subclass, "Plate")))
-  expect_gte(length(plate_2), length(plates))
-
-  expect_identical(plates, list_plates(tok, experiments[[1]]))
-  expect_identical(plate_2, list_plates(tok, experiments[1:2]))
 })
 
 test_that("wells can be listed", {
-  wells_1 <- list_wells(tok, plates[[1]])
+  wells_1 <- wells
   expect_is(wells_1, "WellIdentifier")
   expect_is(wells_1, "json_vec")
   expect_identical(get_subclass(wells_1), "WellIdentifier")
   expect_true(all(sapply(wells_1, has_subclass, "WellIdentifier")))
   expect_equal(length(wells_1), 384L)
+
+  check_skip()
 
   wells_2 <- list_wells(tok, plates[c(1, 2)])
   expect_is(wells_2, "WellIdentifier")
@@ -42,6 +47,9 @@ test_that("wells can be listed", {
 })
 
 test_that("well/plate refs can be listed", {
+
+  check_skip()
+
   mat <- material_id(c(2475L, 3832L), mode = "screening")
 
   ref_1 <- list_plate_well_ref(tok, mat[[1]])
@@ -86,6 +94,9 @@ test_that("well/plate refs can be listed", {
 })
 
 test_that("plate metadata be listed", {
+
+  check_skip()
+
   plate_ids <- plate_to_plateid(plates)
 
   meta_1 <- list_plate_metadata(tok, plate_ids[[1]])

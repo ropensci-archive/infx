@@ -1,6 +1,9 @@
 context("list features")
 
 test_that("features and feature codes can be listed", {
+
+  check_skip()
+
   refs <- list_references(tok, plates[[1]], type = "feature")
 
   feat_1 <- list_features(tok, refs[[1]])
@@ -24,6 +27,9 @@ test_that("features and feature codes can be listed", {
 })
 
 test_that("features can be fetched", {
+
+  check_skip()
+
   refs <- list_references(tok, plates[[1]], type = "feature")
   feats <- list_features(tok, refs[[1]])
 

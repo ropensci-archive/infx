@@ -1,13 +1,15 @@
 context("dataset")
 
 test_that("datasets can be listed", {
-  ds_1 <- list_datasets(tok, samples[[1]])
+  ds_1 <- datasets
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
   expect_identical(get_subclass(ds_1), "DataSet")
   expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
   expect_gte(length(ds_1), 1L)
   expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"), is.null)))
+
+  check_skip()
 
   ds_2 <- list_datasets(tok, samples[c(1, 2)])
   expect_is(ds_2, "DataSet")
@@ -80,6 +82,9 @@ test_that("datasets can be listed", {
 })
 
 test_that("dataset references can be listed", {
+
+  check_skip()
+
   mat <- material_id(c(2475L, 3832L), mode = "screening")
 
   ds_1 <- list_references(tok, mat[[1]], exp_ids[[1]])
@@ -192,6 +197,9 @@ test_that("dataset references can be listed", {
 })
 
 test_that("dataset types can be listed", {
+
+  check_skip()
+
   ds_types <- list_dataset_types(tok)
   expect_is(ds_types, "DataSetType")
   expect_is(ds_types, "json_vec")
@@ -201,8 +209,10 @@ test_that("dataset types can be listed", {
 })
 
 test_that("dataset ids can be listed", {
-  ds <- list_datasets(tok, samples[[1]])
-  codes <- sapply(ds, `[[`, "code")
+
+  check_skip()
+
+  codes <- sapply(datasets, `[[`, "code")
 
   dsid_1 <- list_dataset_ids(tok, codes[[1]])
   expect_is(dsid_1, "DatasetIdentifier")
@@ -218,6 +228,6 @@ test_that("dataset ids can be listed", {
   expect_true(all(sapply(dsid_2, has_subclass, "DatasetIdentifier")))
   expect_gte(length(dsid_2), 1L)
 
-  expect_identical(list_dataset_ids(tok, ds[[1]]), dsid_1)
-  expect_identical(list_dataset_ids(tok, ds[1:2]), dsid_2)
+  expect_identical(list_dataset_ids(tok, datasets[[1]]), dsid_1)
+  expect_identical(list_dataset_ids(tok, datasets[1:2]), dsid_2)
 })

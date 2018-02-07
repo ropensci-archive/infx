@@ -1,6 +1,9 @@
 context("list materials")
 
 test_that("material ids can be created", {
+
+  check_skip()
+
   material <- material_id(2475L, type = "gene")
   expect_is(material, "MaterialIdentifierGeneric")
   expect_is(material, "json_vec")
@@ -32,6 +35,9 @@ test_that("material ids can be created", {
 })
 
 test_that("materials can be listed", {
+
+  check_skip()
+
   materials <- material_id(c(2475L, 3832L))
 
   mat_1 <- list_material(tok, materials[[1]])
