@@ -106,16 +106,6 @@ test_that("features can be fetched", {
   expect_true(has_fields(feat_data_11[[1]], "values"))
   expect_equal(length(feat_data_11[[1]][["values"]]), 1L)
 
-  feat_data_21 <- fetch_features(tok, refs_well, codes[1])
-  expect_is(feat_data_21, "FeatureVectorWithDescription")
-  expect_is(feat_data_21, "json_vec")
-  expect_identical(get_subclass(feat_data_21), "FeatureVectorWithDescription")
-  expect_true(all(sapply(feat_data_21, has_subclass,
-                         "FeatureVectorWithDescription")))
-  expect_equal(length(feat_data_21), 2L)
-  expect_true(all(sapply(feat_data_21, has_fields, "values")))
-  expect_true(all(sapply(lapply(feat_data_21, `[[`, "values"), length) == 1L))
-
   feat_data_12 <- fetch_features(tok, refs_well[[1]], codes[1:2])
   expect_is(feat_data_12, "FeatureVectorWithDescription")
   expect_is(feat_data_12, "json_vec")
@@ -126,6 +116,26 @@ test_that("features can be fetched", {
   expect_true(has_fields(feat_data_12[[1]], "values"))
   expect_equal(length(feat_data_12[[1]][["values"]]), 2L)
 
+  feat_data_1 <- fetch_features(tok, refs_well[[1]])
+  expect_is(feat_data_12, "FeatureVectorWithDescription")
+  expect_is(feat_data_12, "json_vec")
+  expect_identical(get_subclass(feat_data_12), "FeatureVectorWithDescription")
+  expect_true(all(sapply(feat_data_12, has_subclass,
+                         "FeatureVectorWithDescription")))
+  expect_equal(length(feat_data_12), 1L)
+  expect_true(has_fields(feat_data_12[[1]], "values"))
+  expect_equal(length(feat_data_12[[1]][["values"]]), length(codes))
+
+  feat_data_21 <- fetch_features(tok, refs_well, codes[1])
+  expect_is(feat_data_21, "FeatureVectorWithDescription")
+  expect_is(feat_data_21, "json_vec")
+  expect_identical(get_subclass(feat_data_21), "FeatureVectorWithDescription")
+  expect_true(all(sapply(feat_data_21, has_subclass,
+                         "FeatureVectorWithDescription")))
+  expect_equal(length(feat_data_21), 2L)
+  expect_true(all(sapply(feat_data_21, has_fields, "values")))
+  expect_true(all(sapply(lapply(feat_data_21, `[[`, "values"), length) == 1L))
+
   feat_data_22 <- fetch_features(tok, refs_well, codes[1:2])
   expect_is(feat_data_22, "FeatureVectorWithDescription")
   expect_is(feat_data_22, "json_vec")
@@ -135,4 +145,14 @@ test_that("features can be fetched", {
   expect_equal(length(feat_data_22), 2L)
   expect_true(all(sapply(feat_data_22, has_fields, "values")))
   expect_true(all(sapply(lapply(feat_data_22, `[[`, "values"), length) == 2L))
+
+  feat_data_12 <- fetch_features(tok, refs_well[[1]], codes[1:2])
+  expect_is(feat_data_12, "FeatureVectorWithDescription")
+  expect_is(feat_data_12, "json_vec")
+  expect_identical(get_subclass(feat_data_12), "FeatureVectorWithDescription")
+  expect_true(all(sapply(feat_data_12, has_subclass,
+                         "FeatureVectorWithDescription")))
+  expect_equal(length(feat_data_12), 1L)
+  expect_true(has_fields(feat_data_12[[1]], "values"))
+  expect_equal(length(feat_data_12[[1]][["values"]]), 2L)
 })
