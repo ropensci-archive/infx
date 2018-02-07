@@ -14,8 +14,8 @@ test_that("samples can be listed", {
   expect_true(all(sapply(samp_2, has_subclass, "Sample")))
   expect_gte(length(samp_2), 1L)
 
-  expect_identical(samp_1, list_samples(tok, experiment[[1]]))
-  expect_identical(samp_2, list_samples(tok, experiment[1:2]))
+  expect_identical(samples, list_samples(tok, experiments[[1]]))
+  expect_identical(samp_2, list_samples(tok, experiments[1:2]))
 
   samp_1 <- list_samples(tok, plates[[1]])
   expect_is(samp_1, "Sample")

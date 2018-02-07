@@ -17,8 +17,8 @@ test_that("experiment metadata can be listed", {
                          "ExperimentImageMetadata")))
   expect_gte(length(meta_2), length(meta_1))
 
-  expect_identical(list_image_metadata(tok, exps[[1]]), meta_1)
-  expect_identical(list_image_metadata(tok, exps[1:2]), meta_2)
+  expect_identical(list_image_metadata(tok, experiments[[1]]), meta_1)
+  expect_identical(list_image_metadata(tok, experiments[1:2]), meta_2)
 
   img_ds <- list_references(tok, plates[1:2])
 
