@@ -133,7 +133,7 @@ objects are used as input, \code{PlateWellReferenceWithDatasets} objects are
 returned, which each contain \code{ImageDatasetReference} and
 \code{FeatureVectorDatasetReference} objects.
 
-Whenever \code{list_references()} is dispatched on (a) dataset id or dataset
+Whenever \code{list_references()} is dispatched on (a) dataset id(s) or dataset
 reference object(s), the resulting object type depends on whether a (set of)
 \code{WellPosition} object(s) were specified as \code{wells} argument. For its
 default value (NULL), a set of \code{MicroscopyImageReference} objects is

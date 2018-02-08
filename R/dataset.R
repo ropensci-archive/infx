@@ -27,7 +27,7 @@
 #' returned, which each contain `ImageDatasetReference` and
 #' `FeatureVectorDatasetReference` objects.
 #' 
-#' Whenever `list_references()` is dispatched on (a) dataset id or dataset
+#' Whenever `list_references()` is dispatched on (a) dataset id(s) or dataset
 #' reference object(s), the resulting object type depends on whether a (set of)
 #' `WellPosition` object(s) were specified as `wells` argument. For its
 #' default value (NULL), a set of `MicroscopyImageReference` objects is

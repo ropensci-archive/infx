@@ -16,7 +16,9 @@ Imports:
   curl,
   progress,
   tibble,
-  crayon
+  crayon,
+  magick,
+  base64enc
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true

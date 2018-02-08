@@ -473,27 +473,27 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadFeaturesForDatasetWellReferences(String, List, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;FeatureVectorDatasetWellReference&gt; datasetWellReferences, java.util.List&lt;java.lang.String&gt; featureCodes
         -   returntype: java.util.List&lt;FeatureVectorWithDescription&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, boolean) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, boolean convertToPng
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, IImageRepresentationFormatSelectionCriterion...) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, IImageRepresentationFormatSelectionCriterion... criteria
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, ImageRepresentationFormat) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, ImageSize) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageSize size
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, LoadImageConfiguration) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, LoadImageConfiguration configuration
         -   returntype: java.util.List&lt;java.lang.String&gt;
@@ -566,71 +566,71 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Conceptually, for a given list of dataset well references (i.e.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;FeatureVectorDatasetWellReference&gt; datasetWellReferences, java.util.List&lt;java.lang.String&gt; featureCodes
         -   returntype: java.util.List&lt;FeatureVectorWithDescription&gt;
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provide images for specified data set, list of well positions, channel, and optional thumb nail size.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;WellPosition&gt; wellPositions, java.lang.String channel, ImageSize thumbnailSizeOrNull
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provide images for specified microscopy data set, channel and optional thumb nail size.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.lang.String channel, ImageSize thumbnailSizeOrNull
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provide images for a given list of image references (given by data set code, well position, channel and tile).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provide images for a given list of image references (specified by data set code, well position, channel and tile).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, boolean convertToPng
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provides images for the specified list of image references (specified by data set code, well position, channel and tile) and image selection criteria.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, IImageRepresentationFormatSelectionCriterion... criteria
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provides images for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provide images (PNG encoded) for a given list of image references (given by data set code, well position, channel and tile).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageSize size
         -   returntype: java.io.InputStream
-    -   \[ \] loadImages:
+    -   \[ \] ~~loadImages~~:
         -   description: Provide images for a given list of image references (specified by data set code, well position, channel and tile).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, LoadImageConfiguration configuration
         -   returntype: java.io.InputStream
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, IDatasetIdentifier, List, String, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;WellPosition&gt; wellPositions, java.lang.String channel, ImageSize thumbnailSizeOrNull
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, IDatasetIdentifier, String, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.lang.String channel, ImageSize thumbnailSizeOrNull
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, List, boolean) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, boolean convertToPng
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, List, IImageRepresentationFormatSelectionCriterion...) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, IImageRepresentationFormatSelectionCriterion... criteria
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, List, ImageSize) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageSize size
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadImagesBase64:
+    -   \[x\] loadImagesBase64:
         -   description: Returns the same images as loadImages(String, List, ch.systemsx.cisd.openbis.plugin.screening.shared.api.v1.dto.LoadImageConfiguration) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, LoadImageConfiguration configuration
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadPhysicalThumbnails:
+    -   \[ \] ~~loadPhysicalThumbnails~~:
         -   description: The fast method to provide registered thumbnail images (without calculating them) for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.io.InputStream
@@ -638,11 +638,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: /\*\* Returns the same images as loadPhysicalThumbnails(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadThumbnailImages:
+    -   \[ \] ~~loadThumbnailImages~~:
         -   description: Provide thumbnail images for specified microscopy data set.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;java.lang.String&gt; channels
         -   returntype: java.io.InputStream
-    -   \[ \] loadThumbnailImages:
+    -   \[ \] ~~loadThumbnailImages~~:
         -   description: Provide thumbnail images for a given list of image references (specified by data set code, well position, channel and tile).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.io.InputStream
