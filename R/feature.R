@@ -128,15 +128,15 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
 
   assert_that(has_fields(x, fields))
 
-  x <- lapply(lapply(x, `[`, fields), rm_json_class, recursive = FALSE,
-              restore_type = FALSE)
-
   if (length(feature_codes) == 1L && is.na(feature_codes)) {
     feature_codes <- list_feature_codes(token, x)
   } else {
     assert_that(is.character(feature_codes))
     feature_codes <- as.list(feature_codes)
   }
+
+  x <- lapply(lapply(x, `[`, fields), rm_json_class, recursive = FALSE,
+              restore_type = FALSE)
 
   request_openbis("loadFeaturesForDatasetWellReferences",
                   list(token, x, feature_codes),

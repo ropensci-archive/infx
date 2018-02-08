@@ -123,14 +123,14 @@ test_that("features can be fetched", {
   expect_equal(length(feat_data_12[[1]][["values"]]), 2L)
 
   feat_data_1 <- fetch_features(tok, refs_well[[1]])
-  expect_is(feat_data_12, "FeatureVectorWithDescription")
-  expect_is(feat_data_12, "json_vec")
-  expect_identical(get_subclass(feat_data_12), "FeatureVectorWithDescription")
-  expect_true(all(sapply(feat_data_12, has_subclass,
+  expect_is(feat_data_1, "FeatureVectorWithDescription")
+  expect_is(feat_data_1, "json_vec")
+  expect_identical(get_subclass(feat_data_1), "FeatureVectorWithDescription")
+  expect_true(all(sapply(feat_data_1, has_subclass,
                          "FeatureVectorWithDescription")))
-  expect_equal(length(feat_data_12), 1L)
-  expect_true(has_fields(feat_data_12[[1]], "values"))
-  expect_equal(length(feat_data_12[[1]][["values"]]), length(codes))
+  expect_equal(length(feat_data_1), 1L)
+  expect_true(has_fields(feat_data_1[[1]], "values"))
+  expect_equal(length(feat_data_1[[1]][["values"]]), length(codes))
 
   feat_data_21 <- fetch_features(tok, refs_well, codes[1])
   expect_is(feat_data_21, "FeatureVectorWithDescription")

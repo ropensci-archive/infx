@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends:
-  R (>= 3.4.1)
+  R (>= 3.0.0)
 Imports:
   R.matlab,
   readr,
@@ -21,9 +21,9 @@ License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
-    testthat (>= 2.0.0),
-    knitr,
-    rmarkdown
+  testthat (>= 2.0.0),
+  knitr,
+  rmarkdown
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
