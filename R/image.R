@@ -46,7 +46,37 @@ list_image_metadata.ImageDatasetReference <- function(token, x, ...)
 
 #' Fetch images
 #'
-#' Download Base64 encoded images as strings.
+#' Dispatch is - as per openBis implementation - possible on any object that
+#' implements the `IDatasetIdentifier` interface. However objects referencing
+#' feature are not connected to image datasets and therefore dispatch on
+#' `FeatureVectorDatasetReference` and `FeatureVectorDatasetWellReference`
+#' is not enabled. The highest level of control over which images are retrieves
+#' is achieved with `PlateImageReference` objects, which specify an image
+#' dataset, a well, a tile and a channel.
+#' 
+#' `MicroscopyImageReference` objects contain channel information (as well as
+#' tile information, which is not taken into account though). Therefore a
+#' (list of) `WellPosition` object(s) has/have to be specified, for which then
+#' all tiles are fetched for the given imaging channel. If the inputed list of
+#' `MicroscopyImageReference` objects contain instances that only differ in
+#' tile number, redundancies are filtered out. An API call is necessary for
+#' each non-redundant object.
+#' 
+#' Finally, `DatasetIdentifier`, `DatasetReference` and `ImageDatasetReference`
+#' objects are all handled identically. For each of the specified datasets,
+#' an imaging channel has to be provided and whenever the dataset is associated
+#' with an entire plate, a (list of) `WellPosition` object(s) as well. If the
+#' dataset is associated with a single well, the `well_positions` can be left
+#' at its default value (NULL). If several datasets are passed, an API call is
+#' necessary per dataset. Possible redundancies are not checked for.
+#' 
+#' Images are retrieved as Base64 encoded strings, which are converted to
+#' binary using [base64enc::base64decode()] and subsequently read by
+#' [magick::image_read()]. Attached to the image(s) is the information with
+#' based on which they/it were/was retrieved , including dataset object, well
+#' positions (where applicable) and channel (where applicable). This results
+#' in a list with length corresponding to the number of API calls that were
+#' necessary.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned images
@@ -186,6 +216,10 @@ fetch_images.PlateImageReference <- function(token,
     }
 
     res <- request_openbis("loadImagesBase64", list(token, x, settings),
+                           "IDssServiceRpcScreening")
+
+    res <- request_openbis("listAvailableImageRepresentationFormats",
+                           list(token, x),
                            "IDssServiceRpcScreening")
   }
 

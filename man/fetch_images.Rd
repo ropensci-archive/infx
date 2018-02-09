@@ -46,5 +46,36 @@ images are returned in full size.}
 png. If NULL or FALSE, the image is returned in the format it is stored.}
 }
 \description{
-Download Base64 encoded images as strings.
+Dispatch is - as per openBis implementation - possible on any object that
+implements the \code{IDatasetIdentifier} interface. However objects referencing
+feature are not connected to image datasets and therefore dispatch on
+\code{FeatureVectorDatasetReference} and \code{FeatureVectorDatasetWellReference}
+is not enabled. The highest level of control over which images are retrieves
+is achieved with \code{PlateImageReference} objects, which specify an image
+dataset, a well, a tile and a channel.
+}
+\details{
+\code{MicroscopyImageReference} objects contain channel information (as well as
+tile information, which is not taken into account though). Therefore a
+(list of) \code{WellPosition} object(s) has/have to be specified, for which then
+all tiles are fetched for the given imaging channel. If the inputed list of
+\code{MicroscopyImageReference} objects contain instances that only differ in
+tile number, redundancies are filtered out. An API call is necessary for
+each non-redundant object.
+
+Finally, \code{DatasetIdentifier}, \code{DatasetReference} and \code{ImageDatasetReference}
+objects are all handled identically. For each of the specified datasets,
+an imaging channel has to be provided and whenever the dataset is associated
+with an entire plate, a (list of) \code{WellPosition} object(s) as well. If the
+dataset is associated with a single well, the \code{well_positions} can be left
+at its default value (NULL). If several datasets are passed, an API call is
+necessary per dataset. Possible redundancies are not checked for.
+
+Images are retrieved as Base64 encoded strings, which are converted to
+binary using \code{\link[base64enc:base64decode]{base64enc::base64decode()}} and subsequently read by
+\code{\link[magick:image_read]{magick::image_read()}}. Attached to the image(s) is the information with
+based on which they/it were/was retrieved , including dataset object, well
+positions (where applicable) and channel (where applicable). This results
+in a list with length corresponding to the number of API calls that were
+necessary.
 }
