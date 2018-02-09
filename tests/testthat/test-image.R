@@ -95,8 +95,10 @@ test_that("image data can be fetched", {
   expect_true(all(sapply(unlist(lapply(img_121, `[[`, "data")),
                          class) == "magick-image"))
 
+  micro_ref <- list_references(tok, ds_ids[[1]], channels = "DAPI")
+
   # test MicroscopyImageReference for full images
-  img_111 <- fetch_images(tok, micro_ref[[1]], "DAPI", well_pos[[1]])
+  img_111 <- fetch_images(tok, micro_ref[[1]], well_pos[[1]])
   expect_equal(length(img_111), 1L)
   expect_equal(length(img_111[[1]][["data"]]), 9L)
   expect_true(all(sapply(img_111[[1]][["data"]], class) == "magick-image"))

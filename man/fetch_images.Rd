@@ -28,6 +28,15 @@ fetch_images(token, x, ...)
 \item{x}{Object to limit the number of returned images}
 
 \item{...}{Generic compatibility}
+
+\item{channels}{A character vector of imaging channels}
+
+\item{well_positions}{A (list of) \code{WellPosition} objects. If the object
+passed as argument x already contains well position information this can
+be NULL.}
+
+\item{image_size}{Either a single \code{ImageSize} object or NULL, in which case
+images are returned in full size.}
 }
 \description{
 Download Base64 encoded images as strings.

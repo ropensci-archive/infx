@@ -51,6 +51,12 @@ list_image_metadata.ImageDatasetReference <- function(token, x, ...)
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned images
 #' @param ... Generic compatibility
+#' @param channels A character vector of imaging channels
+#' @param well_positions A (list of) `WellPosition` objects. If the object
+#' passed as argument x already contains well position information this can
+#' be NULL.
+#' @param image_size Either a single `ImageSize` object or NULL, in which case
+#' images are returned in full size.
 #' 
 #' @export
 #' 
