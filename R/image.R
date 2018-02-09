@@ -95,7 +95,8 @@ list_image_metadata.ImageDatasetReference <- function(token, x, ...)
 #' and a flag for forcing the returned format to png. OpenBis also supports
 #' pre-defined image transformations to be applied to the images before they
 #' are sent to the requesting party. These transformations can be requested by
-#' a code (options are listed in `ImageRepresentationFormat` objects). However,
+#' a code (options are listed in `ImageRepresentationFormat` objects or in
+#' `ImageChannel` objects attached to `ImageDatasetMetadata` objects). However,
 #' as no such transformations appear to be defined, this is currently not
 #' implemented.
 #' 
@@ -208,7 +209,7 @@ fetch_images.PlateImageReference <- function(token,
   assert_that(is.logical(force_png),
               length(force_png) == 1L)
 
-  if (!force_png && is.null(image_size) && is.null(image_transformation)) {
+  if (!force_png && is.null(image_size)) {
 
     res <- request_openbis("loadImagesBase64", list(token, x),
                            "IDssServiceRpcScreening")
