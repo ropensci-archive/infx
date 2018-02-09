@@ -4,7 +4,11 @@
 \alias{list_image_metadata}
 \alias{list_image_metadata.ExperimentIdentifier}
 \alias{list_image_metadata.Experiment}
+\alias{list_image_metadata.DatasetIdentifier}
+\alias{list_image_metadata.DatasetReference}
 \alias{list_image_metadata.ImageDatasetReference}
+\alias{list_image_metadata.MicroscopyImageReference}
+\alias{list_image_metadata.PlateImageReference}
 \title{List image metadata}
 \usage{
 list_image_metadata(token, x, ...)
@@ -13,7 +17,20 @@ list_image_metadata(token, x, ...)
 
 \method{list_image_metadata}{Experiment}(token, x, ...)
 
-\method{list_image_metadata}{ImageDatasetReference}(token, x, ...)
+\method{list_image_metadata}{DatasetIdentifier}(token, x, type = c("metadata",
+  "format"), ...)
+
+\method{list_image_metadata}{DatasetReference}(token, x, type = c("metadata",
+  "format"), ...)
+
+\method{list_image_metadata}{ImageDatasetReference}(token, x,
+  type = c("metadata", "format"), ...)
+
+\method{list_image_metadata}{MicroscopyImageReference}(token, x,
+  type = c("metadata", "format"), ...)
+
+\method{list_image_metadata}{PlateImageReference}(token, x,
+  type = c("metadata", "format"), ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -22,13 +39,21 @@ list_image_metadata(token, x, ...)
 \code{ExperimentIdentifier} or \code{Project} objects.}
 
 \item{...}{Generic compatibility}
+
+\item{type}{Switch to specify the type of meta data objects to be returned.}
 }
 \description{
-Experiment metadata can be fetched using \code{list_image_metadata()},
-which accepts either a set of \code{Experiment}, \code{ExperimentIdentifier} or
-\code{ImageDatasetReference} objects and returns all corresponding meta data as
-\code{json_vec} of either \code{ExperimentImageMetadata}, in case experiment objects
-were used or \code{ImageDatasetMetadata} objects, in case
-\code{ImageDatasetReference} objects were used for calling
-\code{list_image_metadata()}.
+Experiment level image meta data is listed using \code{list_image_metadata()},
+which accepts either a (set of) \code{Experiment} or \code{ExperimentIdentifier}
+object(s) and returns all corresponding meta data as \code{json_vec} of
+\code{ExperimentImageMetadata} (objects).
+}
+\details{
+Experiment level image meta data can be listed by passing a (set of)
+object(s), which implement the \code{IDatasetIdentifier} interface and are
+connected to image datasets (this rules out feature vector datasets). Two
+different types of meta data objects are returned, depending on the \code{type}
+argument: if it is set to \code{metadata} (default), objects of type
+\code{ImageDatasetMetadata} and it it is set to \code{format}, objects of type
+\code{DatasetImageRepresentationFormats} are returned.
 }

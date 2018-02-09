@@ -1,17 +1,23 @@
 
 #' List image metadata
 #'
-#' Experiment metadata can be fetched using `list_image_metadata()`,
-#' which accepts either a set of `Experiment`, `ExperimentIdentifier` or
-#' `ImageDatasetReference` objects and returns all corresponding meta data as
-#' `json_vec` of either `ExperimentImageMetadata`, in case experiment objects
-#' were used or `ImageDatasetMetadata` objects, in case
-#' `ImageDatasetReference` objects were used for calling
-#' `list_image_metadata()`.
+#' Experiment level image meta data is listed using `list_image_metadata()`,
+#' which accepts either a (set of) `Experiment` or `ExperimentIdentifier`
+#' object(s) and returns all corresponding meta data as `json_vec` of
+#' `ExperimentImageMetadata` (objects).
+#' 
+#' Experiment level image meta data can be listed by passing a (set of)
+#' object(s), which implement the `IDatasetIdentifier` interface and are
+#' connected to image datasets (this rules out feature vector datasets). Two
+#' different types of meta data objects are returned, depending on the `type`
+#' argument: if it is set to `metadata` (default), objects of type
+#' `ImageDatasetMetadata` and it it is set to `format`, objects of type
+#' `DatasetImageRepresentationFormats` are returned.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned experiments, e.g. a set of
 #' `ExperimentIdentifier` or `Project` objects.
+#' @param type Switch to specify the type of meta data objects to be returned.
 #' @param ... Generic compatibility
 #' 
 #' @export
@@ -37,12 +43,40 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
 list_image_metadata.Experiment <- function(token, x, ...)
   list_image_metadata(token, exp_to_expid(x))
 
+fetch_img_meta <- function(token, x, type = c("metadata", "format"), ...) {
+
+  fun <- switch(match.arg(type),
+                metadata = "listImageMetadata",
+                format = "listAvailableImageRepresentationFormats")
+
+  request_openbis(fun, list(token, as_json_vec(x)), "IDssServiceRpcScreening")
+}
+
 #' @rdname list_image_metadata
 #' @export
 #' 
-list_image_metadata.ImageDatasetReference <- function(token, x, ...)
-  request_openbis("listImageMetadata", list(token, as_json_vec(x)),
-                  "IDssServiceRpcScreening")
+list_image_metadata.DatasetIdentifier <- fetch_img_meta
+
+#' @rdname list_image_metadata
+#' @export
+#' 
+list_image_metadata.DatasetReference <- fetch_img_meta
+
+#' @rdname list_image_metadata
+#' @export
+#' 
+list_image_metadata.ImageDatasetReference <- fetch_img_meta
+
+#' @rdname list_image_metadata
+#' @export
+#' 
+list_image_metadata.MicroscopyImageReference <- fetch_img_meta
+
+#' @rdname list_image_metadata
+#' @export
+#' 
+list_image_metadata.PlateImageReference <- fetch_img_meta
+
 
 #' Fetch images
 #'

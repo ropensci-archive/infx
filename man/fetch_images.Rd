@@ -85,7 +85,8 @@ only options controlling the returned images are an argument for image size
 and a flag for forcing the returned format to png. OpenBis also supports
 pre-defined image transformations to be applied to the images before they
 are sent to the requesting party. These transformations can be requested by
-a code (options are listed in \code{ImageRepresentationFormat} objects). However,
+a code (options are listed in \code{ImageRepresentationFormat} objects or in
+\code{ImageChannel} objects attached to \code{ImageDatasetMetadata} objects). However,
 as no such transformations appear to be defined, this is currently not
 implemented.
 }

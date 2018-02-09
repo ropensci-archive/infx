@@ -40,6 +40,22 @@ test_that("experiment metadata can be listed", {
   expect_true(all(sapply(meta_2, has_subclass,
                          "ImageDatasetMetadata")))
   expect_equal(length(meta_2), 2L)
+
+  meta_1 <- list_image_metadata(tok, img_ds[[1]], "format")
+  expect_is(meta_1, "DatasetImageRepresentationFormats")
+  expect_is(meta_1, "json_vec")
+  expect_identical(get_subclass(meta_1), "DatasetImageRepresentationFormats")
+  expect_true(all(sapply(meta_1, has_subclass,
+                         "DatasetImageRepresentationFormats")))
+  expect_equal(length(meta_1), 1L)
+
+  meta_2 <- list_image_metadata(tok, img_ds[1:2], "format")
+  expect_is(meta_2, "DatasetImageRepresentationFormats")
+  expect_is(meta_2, "json_vec")
+  expect_identical(get_subclass(meta_2), "DatasetImageRepresentationFormats")
+  expect_true(all(sapply(meta_2, has_subclass,
+                         "DatasetImageRepresentationFormats")))
+  expect_equal(length(meta_2), 2L)
 })
 
 test_that("image data can be fetched", {
