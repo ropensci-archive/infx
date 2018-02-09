@@ -79,3 +79,14 @@ positions (where applicable) and channel (where applicable). This results
 in a list with length corresponding to the number of API calls that were
 necessary.
 }
+\section{TODO}{
+ For dispatch on \code{PlateImageReference} objects, currently the
+only options controlling the returned images are an argument for image size
+and a flag for forcing the returned format to png. OpenBis also supports
+pre-defined image transformations to be applied to the images before they
+are sent to the requesting party. These transformations can be requested by
+a code (options are listed in \code{ImageRepresentationFormat} objects). However,
+as no such transformations appear to be defined, this is currently not
+implemented.
+}
+
