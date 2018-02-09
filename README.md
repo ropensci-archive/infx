@@ -409,7 +409,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableFeatures(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;FeatureInformation&gt;
-    -   \[ \] listAvailableImageRepresentationFormats:
+    -   \[x\] listAvailableImageRepresentationFormats:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.listAvailableImageRepresentationFormats(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;DatasetImageRepresentationFormats&gt;
@@ -534,7 +534,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: For a given set of feature vector data sets provide the list of all available features.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IFeatureVectorDatasetIdentifier&gt; featureDatasets
         -   returntype: java.util.List&lt;FeatureInformation&gt;
-    -   \[ \] listAvailableImageRepresentationFormats:
+    -   \[x\] listAvailableImageRepresentationFormats:
         -   description: Return image representation formats available for the specified image data sets.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;? extends IDatasetIdentifier&gt; imageDatasets
         -   returntype: java.util.List&lt;DatasetImageRepresentationFormats&gt;

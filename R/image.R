@@ -261,10 +261,6 @@ fetch_images.PlateImageReference <- function(token,
 
     res <- request_openbis("loadImagesBase64", list(token, x, settings),
                            "IDssServiceRpcScreening")
-
-    res <- request_openbis("listAvailableImageRepresentationFormats",
-                           list(token, x),
-                           "IDssServiceRpcScreening")
   }
 
   assert_that(length(res) == length(x))
