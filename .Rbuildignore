@@ -6,3 +6,4 @@
 ^docs$
 ^.*\.sublime-(project|workspace)$
 ^_pkgdown\.yml$
+^appveyor\.yml$
