@@ -57,6 +57,8 @@ list_image_metadata.ImageDatasetReference <- function(token, x, ...)
 #' be NULL.
 #' @param image_size Either a single `ImageSize` object or NULL, in which case
 #' images are returned in full size.
+#' @param force_png Logical switch for making sure the returned image is a
+#' png. If NULL or FALSE, the image is returned in the format it is stored.
 #' 
 #' @export
 #' 
@@ -152,4 +154,44 @@ fetch_images.MicroscopyImageReference <- function(token,
   channels <- sapply(x, `[[`, "channel")
 
   fetch_img_for_ds(token, x, channels, well_positions, image_size, ...)
+}
+
+#' @rdname fetch_images
+#' @export
+#' 
+fetch_images.PlateImageReference <- function(token,
+                                             x,
+                                             image_size = NULL,
+                                             force_png = FALSE,
+                                             ...) {
+  x <- as_json_vec(x)
+
+  assert_that(is.logical(force_png),
+              length(force_png) == 1L)
+
+  if (!force_png && is.null(image_size) && is.null(image_transformation)) {
+
+    res <- request_openbis("loadImagesBase64", list(token, x),
+                           "IDssServiceRpcScreening")
+
+  } else {
+
+    settings <- json_class(desiredImageFormatPng = force_png,
+                           class = "LoadImageConfiguration")
+
+    if (!is.null(image_size)) {
+      image_size <- as_json_class(image_size)
+      assert_that(has_subclass(image_size, "ImageSize"))
+      settings[["desiredImageSize"]] <- image_size
+    }
+
+    res <- request_openbis("loadImagesBase64", list(token, x, settings),
+                           "IDssServiceRpcScreening")
+  }
+
+  assert_that(length(res) == length(x))
+
+  mapply(function(a, b) {
+    list(data_set = b, data = magick::image_read(base64enc::base64decode(a)))
+  }, res, x, SIMPLIFY = FALSE)
 }

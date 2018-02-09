@@ -6,6 +6,7 @@
 \alias{fetch_images.DatasetReference}
 \alias{fetch_images.ImageDatasetReference}
 \alias{fetch_images.MicroscopyImageReference}
+\alias{fetch_images.PlateImageReference}
 \title{Fetch images}
 \usage{
 fetch_images(token, x, ...)
@@ -21,6 +22,9 @@ fetch_images(token, x, ...)
 
 \method{fetch_images}{MicroscopyImageReference}(token, x,
   well_positions = NULL, image_size = NULL, ...)
+
+\method{fetch_images}{PlateImageReference}(token, x, image_size = NULL,
+  force_png = FALSE, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -37,6 +41,9 @@ be NULL.}
 
 \item{image_size}{Either a single \code{ImageSize} object or NULL, in which case
 images are returned in full size.}
+
+\item{force_png}{Logical switch for making sure the returned image is a
+png. If NULL or FALSE, the image is returned in the format it is stored.}
 }
 \description{
 Download Base64 encoded images as strings.

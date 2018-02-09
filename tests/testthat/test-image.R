@@ -94,6 +94,8 @@ test_that("image data can be fetched", {
   expect_true(all(sapply(lapply(img_121, `[[`, "data"), length) == 9L))
   expect_true(all(sapply(unlist(lapply(img_121, `[[`, "data")),
                          class) == "magick-image"))
+  expect_true(all(sapply(lapply(img_121[[1]][["data"]], magick::image_info),
+                  `[[`, "width") == 300L))
 
   micro_ref <- list_references(tok, ds_ids[[1]], channels = "DAPI")
 
@@ -104,4 +106,34 @@ test_that("image data can be fetched", {
   expect_true(all(sapply(img_111[[1]][["data"]], class) == "magick-image"))
   expect_true(all(sapply(lapply(img_111[[1]][["data"]], magick::image_info),
                   `[[`, "width") > 300L))
+
+  # test PlateImageReference
+  pi_ref <- list_references(tok, ds_ids[[1]], wells = well_pos[[1]],
+                            channels = c("DAPI", "GFP"))
+
+  img_1 <- fetch_images(tok, pi_ref[[1]])
+  expect_equal(length(img_1), 1L)
+  expect_equal(length(img_1[[1]][["data"]]), 1L)
+  expect_true(class(img_1[[1]][["data"]]) == "magick-image")
+  expect_true(magick::image_info(img_1[[1]][["data"]])[["width"]] > 300L)
+
+  img_2 <- fetch_images(tok, pi_ref[1:2])
+  expect_equal(length(img_2), 2L)
+  expect_true(all(sapply(lapply(img_2, `[[`, "data"), length) == 1L))
+  expect_true(all(sapply(lapply(img_2, `[[`, "data"),
+                         class) == "magick-image"))
+  expect_true(all(sapply(lapply(lapply(img_2, `[[`, "data"),
+                         magick::image_info), `[[`, "width") > 300L))
+
+  img_1 <- fetch_images(tok, pi_ref[[1]], force_png = TRUE)
+  expect_equal(length(img_1), 1L)
+  expect_equal(length(img_1[[1]][["data"]]), 1L)
+  expect_true(class(img_1[[1]][["data"]]) == "magick-image")
+  expect_true(magick::image_info(img_1[[1]][["data"]])[["format"]] == "PNG")
+
+  img_1 <- fetch_images(tok, pi_ref[[1]], image_size = img_size)
+  expect_equal(length(img_1), 1L)
+  expect_equal(length(img_1[[1]][["data"]]), 1L)
+  expect_true(class(img_1[[1]][["data"]]) == "magick-image")
+  expect_true(magick::image_info(img_1[[1]][["data"]])[["width"]] == 300L)
 })
