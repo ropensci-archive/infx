@@ -50,13 +50,8 @@ test_that("NULL fields can be filtered", {
 
 
 test_that("json objects can be printed", {
-  expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
-                "█─foo \n└─a")
   expect_output(print(structure(list("a"), class = c("foo", "json_class")),
                       length = 1L), "...")
-  expect_output(print(structure(list(a = "a", "b"),
-                                class = c("foo", "json_class"))),
-                "├─a = a \n└─b")
   expect_output(print(structure(list(a = "a", b = list(c = "d", e = "f")),
                                 class = c("foo", "json_class"))),
                 "[c = d, e = f]")
@@ -66,6 +61,20 @@ test_that("json objects can be printed", {
   expect_output(print(structure(list(a = "a", b = c("d", "f")),
                                 class = c("foo", "json_class"))),
                 "(d, f)")
+  expect_output(print(
+    structure(list(a = "a",
+                   list(c = "c",
+                        structure(list("b"), class = c("bar", "json_class")))),
+              class = c("foo", "json_class")), depth = 3, fancy = FALSE),
+    "\\-+-c = c \n  \\-X-bar", fixed = TRUE)
+
+  skip_on_appveyor()
+
+  expect_output(print(structure(list("a"), class = c("foo", "json_class"))),
+                "█─foo \n└─a")
+  expect_output(print(structure(list(a = "a", "b"),
+                                class = c("foo", "json_class"))),
+                "├─a = a \n└─b")
   expect_output(print(
     structure(list(a = "a",
                    list(structure(list("b"), class = c("bar", "json_class")),
@@ -83,13 +92,6 @@ test_that("json objects can be printed", {
                         structure(list("b"), class = c("bar", "json_class")))),
               class = c("foo", "json_class")), depth = 3),
     "└─┬─c = c \n  └─█─bar")
-  expect_output(print(
-    structure(list(a = "a",
-                   list(c = "c",
-                        structure(list("b"), class = c("bar", "json_class")))),
-              class = c("foo", "json_class")), depth = 3, fancy = FALSE),
-    "\\-+-c = c \n  \\-X-bar", fixed = TRUE)
-
   expect_output(print(json_class(c = "d", e = list(json_class(a = "b",
                                                               class = "foo")),
                                  class = "bar"), 2L),
@@ -101,6 +103,9 @@ test_that("json objects can be printed", {
 })
 
 test_that("json_vec printing works", {
+
+  skip_on_appveyor()
+
   expect_output(print(
     structure(list(structure(list("a"), class = c("foo", "json_class"))),
               class = c("json_vec"))),
