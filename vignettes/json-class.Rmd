@@ -112,10 +112,10 @@ get_subclass(test)
 The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are width, length and a logical flag for turning off fancy printing (color is disabled and UTF box characters are replaced with ASCI characters).
 
 ```{r base-generics}
-json_class
-print(json_class, depth = 2L)
-print(json_class, depth = 2L, length = 4L)
-print(json_class, depth = 2L, fancy = FALSE)
+json_class[[1]]
+print(json_class[[1]], depth = 2L)
+print(json_class[[1]], depth = 2L, length = 4L)
+print(json_class[[1]], depth = 2L, fancy = FALSE)
 ```
 
 ## Using vectors of `json_class` objects

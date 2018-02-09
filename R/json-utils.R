@@ -234,7 +234,8 @@ print_json_class <- function(x,
                                            max_depth = max_depth,
                                            layout = layout), SIMPLIFY = FALSE),
                     layout$key(nme),
-                    paste(rep(" ", nchar(nme)), collapse = ""))
+                    sapply(nchar(nme),
+                           function(n) paste(rep(" ", n), collapse = "")))
       } else
         rest <- "..."
 
