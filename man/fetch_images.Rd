@@ -56,9 +56,12 @@ feature are not connected to image datasets and therefore dispatch on
 is not enabled. The highest level of control over which images are retrieves
 is achieved with \code{PlateImageReference} objects, which specify an image
 dataset, a well, a tile and a channel. The returned image format can be
-modified by either passing an \code{ImageRepresentationFormat} object or
-by specifying one or both of the \code{image_size} (expects an \code{ImageSize}
-object) and \code{force_png} (logical switch) arguments.
+modified by either passing an \code{ImageRepresentationFormat} object as the
+\code{format} argument, by passing a single/list of format selection criterion
+objects, which will be used to filter the available image
+representation format objects or by specifying one or both of the
+\code{image_size} (expects an \code{ImageSize} object) and \code{force_png} (logical
+switch) arguments.
 }
 \details{
 \code{MicroscopyImageReference} objects contain channel information (as well as
@@ -85,15 +88,24 @@ positions (where applicable) and channel (where applicable). This results
 in a list with length corresponding to the number of API calls that were
 necessary.
 }
-\section{TODO}{
- For dispatch on \code{PlateImageReference} objects, currently the
-only options controlling the returned images are an argument for image size
-and a flag for forcing the returned format to png. OpenBis also supports
-pre-defined image transformations to be applied to the images before they
-are sent to the requesting party. These transformations can be requested by
-a code (options are listed in \code{ImageRepresentationFormat} objects or in
-\code{ImageChannel} objects attached to \code{ImageDatasetMetadata} objects). However,
-as no such transformations appear to be defined, this is currently not
-implemented.
+\section{TODO 1}{
+ For dispatch on \code{PlateImageReference} objects, currently
+the only options controlling the returned images are an argument for image
+size and a flag for forcing the returned format to png. OpenBis also
+supports  pre-defined image transformations to be applied to the images
+before they are sent to the requesting party. These transformations can be
+requested by a code (options are listed in \code{ImageRepresentationFormat}
+objects or in \code{ImageChannel} objects attached to \code{ImageDatasetMetadata}
+objects). However, as no such transformations appear to be defined, this is
+currently not implemented.
+}
+
+\section{TODO 2}{
+ When filtering \code{ImageRepresentationFormat} objects
+associated with a dataset, only \code{SizeCriterion} objects can be used. The
+remaining criteria (\code{ColorDepthCriterion}, \code{FileTypeCriterion} and
+\code{OriginalCriterion}) are currently disabled as they extend the abstract
+class \code{AbstractFormatSelectionCriterion}, which causes an issue with JSON
+deserialization.
 }
 

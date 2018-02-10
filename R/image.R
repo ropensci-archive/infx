@@ -87,9 +87,12 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' is not enabled. The highest level of control over which images are retrieves
 #' is achieved with `PlateImageReference` objects, which specify an image
 #' dataset, a well, a tile and a channel. The returned image format can be
-#' modified by either passing an `ImageRepresentationFormat` object or
-#' by specifying one or both of the `image_size` (expects an `ImageSize`
-#' object) and `force_png` (logical switch) arguments.
+#' modified by either passing an `ImageRepresentationFormat` object as the
+#' `format` argument, by passing a single/list of format selection criterion
+#' objects, which will be used to filter the available image
+#' representation format objects or by specifying one or both of the
+#' `image_size` (expects an `ImageSize` object) and `force_png` (logical
+#' switch) arguments.
 #' 
 #' `MicroscopyImageReference` objects contain channel information (as well as
 #' tile information, which is not taken into account though). Therefore a
@@ -129,15 +132,22 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' @param format If not NULL, a single `ImageRepresentationFormat` object.
 #' Cannot be combined with non-default `image_size` and `force_png` arguments.
 #' 
-#' @section TODO: For dispatch on `PlateImageReference` objects, currently the
-#' only options controlling the returned images are an argument for image size
-#' and a flag for forcing the returned format to png. OpenBis also supports
-#' pre-defined image transformations to be applied to the images before they
-#' are sent to the requesting party. These transformations can be requested by
-#' a code (options are listed in `ImageRepresentationFormat` objects or in
-#' `ImageChannel` objects attached to `ImageDatasetMetadata` objects). However,
-#' as no such transformations appear to be defined, this is currently not
-#' implemented.
+#' @section TODO 1: For dispatch on `PlateImageReference` objects, currently
+#' the only options controlling the returned images are an argument for image
+#' size and a flag for forcing the returned format to png. OpenBis also
+#' supports  pre-defined image transformations to be applied to the images
+#' before they are sent to the requesting party. These transformations can be
+#' requested by a code (options are listed in `ImageRepresentationFormat`
+#' objects or in `ImageChannel` objects attached to `ImageDatasetMetadata`
+#' objects). However, as no such transformations appear to be defined, this is
+#' currently not implemented.
+#' 
+#' @section TODO 2: When filtering `ImageRepresentationFormat` objects
+#' associated with a dataset, only `SizeCriterion` objects can be used. The
+#' remaining criteria (`ColorDepthCriterion`, `FileTypeCriterion` and
+#' `OriginalCriterion`) are currently disabled as they extend the abstract
+#' class `AbstractFormatSelectionCriterion`, which causes an issue with JSON
+#' deserialization.
 #' 
 #' @export
 #' 
@@ -249,29 +259,46 @@ fetch_images.PlateImageReference <- function(token,
   assert_that(is.logical(force_png),
               length(force_png) == 1L)
 
-  if (!force_png && is.null(image_size)) {
+  if (!force_png && is.null(image_size) && is.null(format)) {
 
-    agruments <- list(token, x)
+    agruments <- list(sessionToken = token, imageReferences = x)
 
-  } else if (force_png || !is.null(image_size)) {
+  } else if (is.null(format) && (force_png || !is.null(image_size))) {
 
-    settings <- json_class(desiredImageFormatPng = force_png,
-                           class = "LoadImageConfiguration")
-
-    if (!is.null(image_size)) {
-      image_size <- as_json_class(image_size)
-      assert_that(has_subclass(image_size, "ImageSize"))
-      settings[["desiredImageSize"]] <- image_size
+    if (force_png  && is.null(image_size))
+      agruments <- list(sessionToken = token, imageReferences = x,
+                        convertToPng = force_png)
+    else if (!force_png  && !is.null(image_size))
+      agruments <- list(sessionToken = token, imageReferences = x,
+                        size = image_size)
+    else {
+      settings <- json_class(desiredImageFormatPng = force_png,
+                             desiredImageSize = image_size,
+                             class = "LoadImageConfiguration")
+      agruments <- list(sessionToken = token, imageReferences = x,
+                        configuration = settings)
     }
 
-    agruments <- list(token, x, settings)
+  } else if (!is.null(format) && !force_png && is.null(image_size)) {
 
-  } else if (!is.null(format)) {
+    format_criteria <- c("SizeCriterion")
 
-    format <- as_json_class(format)
-    assert_that(has_subclass(format, "ImageRepresentationFormat"))
+    if (has_subclass(format, "ImageRepresentationFormat"))
+      agruments <- list(sessionToken = token, imageReferences = x,
+                        format = as_json_class(remove_null(format)))
+    else if (is.list(format)) {
 
-    agruments <- list(token, x, format)
+      if (is_json_class(format))
+        format <- list(format)
+
+      assert_that(all(sapply(format, function(form) {
+        any(sapply(format_criteria,
+                   function(crit) has_subclass(form, crit)))
+      })))
+
+      agruments <- list(sessionToken = token, imageReferences = x,
+                        criteria = format)
+    }
 
   } else
     stop("invalid combination of arguments image_size, force_png and format.")
