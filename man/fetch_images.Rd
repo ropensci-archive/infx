@@ -24,7 +24,7 @@ fetch_images(token, x, ...)
   well_positions = NULL, image_size = NULL, ...)
 
 \method{fetch_images}{PlateImageReference}(token, x, image_size = NULL,
-  force_png = FALSE, ...)
+  force_png = FALSE, format = NULL, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -44,6 +44,9 @@ images are returned in full size.}
 
 \item{force_png}{Logical switch for making sure the returned image is a
 png. If NULL or FALSE, the image is returned in the format it is stored.}
+
+\item{format}{If not NULL, a single \code{ImageRepresentationFormat} object.
+Cannot be combined with non-default \code{image_size} and \code{force_png} arguments.}
 }
 \description{
 Dispatch is - as per openBis implementation - possible on any object that
@@ -52,7 +55,10 @@ feature are not connected to image datasets and therefore dispatch on
 \code{FeatureVectorDatasetReference} and \code{FeatureVectorDatasetWellReference}
 is not enabled. The highest level of control over which images are retrieves
 is achieved with \code{PlateImageReference} objects, which specify an image
-dataset, a well, a tile and a channel.
+dataset, a well, a tile and a channel. The returned image format can be
+modified by either passing an \code{ImageRepresentationFormat} object or
+by specifying one or both of the \code{image_size} (expects an \code{ImageSize}
+object) and \code{force_png} (logical switch) arguments.
 }
 \details{
 \code{MicroscopyImageReference} objects contain channel information (as well as

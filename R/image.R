@@ -86,7 +86,10 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' `FeatureVectorDatasetReference` and `FeatureVectorDatasetWellReference`
 #' is not enabled. The highest level of control over which images are retrieves
 #' is achieved with `PlateImageReference` objects, which specify an image
-#' dataset, a well, a tile and a channel.
+#' dataset, a well, a tile and a channel. The returned image format can be
+#' modified by either passing an `ImageRepresentationFormat` object or
+#' by specifying one or both of the `image_size` (expects an `ImageSize`
+#' object) and `force_png` (logical switch) arguments.
 #' 
 #' `MicroscopyImageReference` objects contain channel information (as well as
 #' tile information, which is not taken into account though). Therefore a
@@ -123,6 +126,8 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' images are returned in full size.
 #' @param force_png Logical switch for making sure the returned image is a
 #' png. If NULL or FALSE, the image is returned in the format it is stored.
+#' @param format If not NULL, a single `ImageRepresentationFormat` object.
+#' Cannot be combined with non-default `image_size` and `force_png` arguments.
 #' 
 #' @section TODO: For dispatch on `PlateImageReference` objects, currently the
 #' only options controlling the returned images are an argument for image size
@@ -237,6 +242,7 @@ fetch_images.PlateImageReference <- function(token,
                                              x,
                                              image_size = NULL,
                                              force_png = FALSE,
+                                             format = NULL,
                                              ...) {
   x <- as_json_vec(x)
 
@@ -245,10 +251,9 @@ fetch_images.PlateImageReference <- function(token,
 
   if (!force_png && is.null(image_size)) {
 
-    res <- request_openbis("loadImagesBase64", list(token, x),
-                           "IDssServiceRpcScreening")
+    agruments <- list(token, x)
 
-  } else {
+  } else if (force_png || !is.null(image_size)) {
 
     settings <- json_class(desiredImageFormatPng = force_png,
                            class = "LoadImageConfiguration")
@@ -259,9 +264,20 @@ fetch_images.PlateImageReference <- function(token,
       settings[["desiredImageSize"]] <- image_size
     }
 
-    res <- request_openbis("loadImagesBase64", list(token, x, settings),
-                           "IDssServiceRpcScreening")
-  }
+    agruments <- list(token, x, settings)
+
+  } else if (!is.null(format)) {
+
+    format <- as_json_class(format)
+    assert_that(has_subclass(format, "ImageRepresentationFormat"))
+
+    agruments <- list(token, x, format)
+
+  } else
+    stop("invalid combination of arguments image_size, force_png and format.")
+
+  res <- request_openbis("loadImagesBase64", agruments,
+                         "IDssServiceRpcScreening")
 
   assert_that(length(res) == length(x))
 
