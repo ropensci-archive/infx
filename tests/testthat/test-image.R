@@ -168,8 +168,7 @@ test_that("image data can be fetched", {
   expect_equal(length(img_1), 1L)
   expect_equal(length(img_1[[1]][["data"]]), 1L)
   expect_true(class(img_1[[1]][["data"]]) == "magick-image")
-  expect_true(magick::image_info(img_1[[1]][["data"]])[["width"]] ==
-    img_rep[["width"]])
+  expect_true(magick::image_info(img_1[[1]][["data"]])[["width"]] < 300L)
 
   size <- json_class(width = 100,
                      height = 100,
