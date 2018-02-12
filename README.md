@@ -497,11 +497,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadImagesBase64(String, List, LoadImageConfiguration) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, LoadImageConfiguration configuration
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadPhysicalThumbnailsBase64:
+    -   \[x\] loadPhysicalThumbnailsBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadPhysicalThumbnailsBase64(String, List, ImageRepresentationFormat) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadThumbnailImagesBase64:
+    -   \[x\] loadThumbnailImagesBase64:
         -   description: Groups the specified objects by a data store code and calls IDssServiceRpcScreening.loadThumbnailImagesBase64(String, List) method for each group of objects on appropriate data store server.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.util.List&lt;java.lang.String&gt;
@@ -634,7 +634,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: The fast method to provide registered thumbnail images (without calculating them) for the specified list of image references (specified by data set code, well position, channel and tile) and specified image representation format.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.io.InputStream
-    -   \[ \] loadPhysicalThumbnailsBase64:
+    -   \[x\] loadPhysicalThumbnailsBase64:
         -   description: /\*\* Returns the same images as loadPhysicalThumbnails(String, List, ImageRepresentationFormat) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences, ImageRepresentationFormat format
         -   returntype: java.util.List&lt;java.lang.String&gt;
@@ -646,11 +646,11 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Provide thumbnail images for a given list of image references (specified by data set code, well position, channel and tile).
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.io.InputStream
-    -   \[ \] loadThumbnailImagesBase64:
+    -   \[x\] loadThumbnailImagesBase64:
         -   description: Returns the same images as loadThumbnailImages(String, IDatasetIdentifier, List) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, IDatasetIdentifier dataSetIdentifier, java.util.List&lt;java.lang.String&gt; channels
         -   returntype: java.util.List&lt;java.lang.String&gt;
-    -   \[ \] loadThumbnailImagesBase64:
+    -   \[x\] loadThumbnailImagesBase64:
         -   description: Returns the same images as loadThumbnailImages(String, List) but the result is a list of base64 encoded strings that contain the image data.
         -   arguments: java.lang.String sessionToken, java.util.List&lt;PlateImageReference&gt; imageReferences
         -   returntype: java.util.List&lt;java.lang.String&gt;

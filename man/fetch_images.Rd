@@ -12,19 +12,19 @@
 fetch_images(token, x, ...)
 
 \method{fetch_images}{DatasetIdentifier}(token, x, channels,
-  well_positions = NULL, image_size = NULL, ...)
+  well_positions = NULL, image_size = NULL, thumbnails = FALSE, ...)
 
 \method{fetch_images}{DatasetReference}(token, x, channels,
-  well_positions = NULL, image_size = NULL, ...)
+  well_positions = NULL, image_size = NULL, thumbnails = FALSE, ...)
 
 \method{fetch_images}{ImageDatasetReference}(token, x, channels,
-  well_positions = NULL, image_size = NULL, ...)
+  well_positions = NULL, image_size = NULL, thumbnails = FALSE, ...)
 
 \method{fetch_images}{MicroscopyImageReference}(token, x,
-  well_positions = NULL, image_size = NULL, ...)
+  well_positions = NULL, image_size = NULL, thumbnails = FALSE, ...)
 
 \method{fetch_images}{PlateImageReference}(token, x, image_size = NULL,
-  force_png = FALSE, format = NULL, ...)
+  force_png = FALSE, format = NULL, thumbnails = FALSE, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -42,11 +42,16 @@ be NULL.}
 \item{image_size}{Either a single \code{ImageSize} object or NULL, in which case
 images are returned in full size.}
 
+\item{thumbnails}{Logical switch; if TRUE, thumbnail images are retrieved
+in which case the arguments \code{well_positions} and \code{image_size} are expected
+to be at their default values.}
+
 \item{force_png}{Logical switch for making sure the returned image is a
 png. If NULL or FALSE, the image is returned in the format it is stored.}
 
 \item{format}{If not NULL, a single \code{ImageRepresentationFormat} object.
-Cannot be combined with non-default \code{image_size} and \code{force_png} arguments.}
+Cannot be combined with non-default \code{image_size}, \code{force_png} and \code{format}
+arguments.}
 }
 \description{
 Dispatch is - as per openBis implementation - possible on any object that

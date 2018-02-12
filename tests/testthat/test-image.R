@@ -75,7 +75,8 @@ test_that("image data can be fetched", {
                   `[[`, "width") == 300L))
 
   # test plate DatasetIdentifier with CLUSTER_JOB_LOGS type
-  expect_error(fetch_images(tok, ds_ids[[2]], "DAPI", well_pos[[1]], img_size))
+  expect_error(fetch_images(tok, ds_ids[[2]], "DAPI", well_pos[[1]], img_size),
+               "Dataset .* not found in the imaging database.")
 
   img_ds <- list_references(tok, plates[1:2])
 
@@ -98,9 +99,38 @@ test_that("image data can be fetched", {
 
   # test plate ImageDatasetReference for no specific wells
   expect_warning(img_110 <- fetch_images(tok, img_ds[[1]], "DAPI", NULL,
-                                         img_size))
+                                         img_size),
+                 "no images found")
   expect_equal(length(img_110), 1L)
   expect_equal(length(img_110[[1]][["data"]]), 0L)
+
+  # test plate ImageDatasetReference for thumbnails
+  expect_warning(img_110 <- fetch_images(tok, img_ds[[1]], "DAPI",
+                                         thumbnails = TRUE),
+                 "no thumbnails found")
+  expect_equal(length(img_110), 1L)
+  expect_equal(length(img_110[[1]][["data"]]), 0L)
+
+  # test plate ImageDatasetReference for thumbnails
+  expect_warning(img_120 <- fetch_images(tok, img_ds[[1]], c("DAPI", "GFP"),
+                                         thumbnails = TRUE),
+                 "no thumbnails found")
+  expect_equal(length(img_120), 1L)
+  expect_equal(length(img_120[[1]][["data"]]), 0L)
+
+  # test plate ImageDatasetReference for thumbnails
+  expect_warning(img_210 <- fetch_images(tok, img_ds[1:2], "DAPI",
+                                         thumbnails = TRUE),
+                 "no thumbnails found")
+  expect_equal(length(img_210), 2L)
+  expect_true(all(sapply(lapply(img_210, `[[`, "data"), length) == 0L))
+
+  # test plate ImageDatasetReference for thumbnails
+  expect_warning(img_220 <- fetch_images(tok, img_ds[1:2], c("DAPI", "GFP"),
+                                         thumbnails = TRUE),
+                 "no thumbnails found")
+  expect_equal(length(img_220), 2L)
+  expect_true(all(sapply(lapply(img_220, `[[`, "data"), length) == 0L))
 
   micro_ref <- list_references(tok, ds_ids[[1]], channels = c("DAPI", "GFP"))
 
@@ -183,4 +213,16 @@ test_that("image data can be fetched", {
 
   expect_error(fetch_images(tok, pi_ref[[1]], format = img_rep,
                             image_size = img_size))
+
+  thumb_1 <- fetch_images(tok, pi_ref[[1]], thumbnails = TRUE)
+  expect_equal(length(thumb_1), 1L)
+  expect_equal(length(thumb_1[[1]][["data"]]), 0L)
+
+  thumb_2 <- fetch_images(tok, pi_ref[1:2], thumbnails = TRUE)
+  expect_equal(length(thumb_2), 2L)
+  expect_true(all(sapply(lapply(thumb_2, `[[`, "data"), length) == 0L))
+
+  expect_error(fetch_images(tok, pi_ref[[1]], format = img_rep,
+                            thumbnails = TRUE),
+               "ch.systemsx.cisd.common.exceptions.UserFailureException")
 })
