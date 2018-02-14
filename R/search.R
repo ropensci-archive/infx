@@ -99,7 +99,8 @@ any_field_match_clause <- function(desired_value) {
 
   assert_that(is.character(desired_value), length(desired_value) == 1L)
 
-  json_class(desiredValue = desired_value,
+  json_class(fieldType = as.character(match_clause_field_type("any_field")),
+             desiredValue = desired_value,
              class = "AnyFieldMatchClause")
 }
 

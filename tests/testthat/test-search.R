@@ -48,4 +48,14 @@ test_that("search for datasets", {
   expect_identical(get_subclass(ds_n), "DataSet")
   expect_true(all(sapply(ds_n, has_subclass, "DataSet")))
   expect_gte(length(ds_n), 1L)
+
+  sc <- search_criteria(any_field_match_clause("20111223114629018-318033"))
+
+  ds_1 <- search_openbis(tok, sc, "data_set")
+
+  expect_is(ds_1, "DataSet")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1), "DataSet")
+  expect_equal(length(ds_1), 1L)
+  expect_true(has_subclass(ds_1[[1]], "DataSet"))
 })
