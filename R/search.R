@@ -28,18 +28,22 @@ search_openbis <- function(token,
 
 #' @export
 search_criteria <- function(clauses,
-                            operator = search_operator("all"),
+                            operator = search_operator(),
                             sub_criteria = NULL) {
+
+  is_clause <- function(x) {
+    is_json_class(x) && all(get_subclass(x) %in% c("MatchClause",
+                                                   "PropertyMatchClause",
+                                                   "AnyPropertyMatchClause",
+                                                   "AnyFieldMatchClause",
+                                                   "AttributeMatchClause",
+                                                   "TimeAttributeMatchClause"))
+  }
 
   if (is_json_class(clauses))
     clauses <- list(clauses)
 
-  clause_types <- c("MatchClause", "PropertyMatchClause",
-                    "AnyPropertyMatchClause", "AnyFieldMatchClause",
-                    "AttributeMatchClause", "TimeAttributeMatchClause")
-
-  assert_that(all(sapply(clauses, function(x) is_json_class(x) &&
-                                    get_subclass(x) %in% clause_types)),
+  assert_that(all(sapply(clauses, is_clause)),
               is_json_class(operator),
               has_subclass(operator, "SearchOperator"))
 
@@ -52,20 +56,15 @@ search_criteria <- function(clauses,
 }
 
 #' @export
-match_clause <- function(field_code,
-                         desired_value,
-                         field_type = c("property", "attribute", "any_field",
-                                        "any_property"),
-                         compare_mode = c("eq", "lte", "gte")) {
+match_clause <- function(desired_value,
+                         field_code,
+                         field_type = match_clause_field_type(),
+                         compare_mode = compare_mode()) {
 
-  field_type <- toupper(match.arg(field_type))
-  compare_mode <- switch(match.arg(compare_mode),
-                         eq = "EQUALS",
-                         lte = "LESS_THAN_OR_EQUAL",
-                         gte = "GREATER_THAN_OR_EQUAL")
-
-  assert_that(is.character(field_code), length(field_code) == 1L,
-              is.character(desired_value), length(desired_value) == 1L)
+  assert_that(is.character(desired_value), length(desired_value) == 1L,
+              is.character(field_code), length(field_code) == 1L,
+              has_subclass(field_type, "MatchClauseFieldType"),
+              has_subclass(compare_mode, "CompareMode"))
 
   json_class(fieldType = field_type, fieldCode = field_code,
              desiredValue = desired_value, compareMode = compare_mode,
@@ -108,7 +107,8 @@ attribute_match_clause <- function(desired_value,
   assert_that(is.character(desired_value), length(desired_value) == 1L,
               has_subclass(attribute, "MatchClauseAttribute"))
 
-  json_class(attribute = as.character(as_json_class(attribute)),
+  json_class(fieldType = as.character(match_clause_field_type("attribute")),
+             attribute = as.character(as_json_class(attribute)),
              desiredValue = desired_value,
              class = "AttributeMatchClause")
 }
