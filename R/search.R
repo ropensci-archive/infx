@@ -118,17 +118,18 @@ time_attribute_match_clause <- function(
   desired_date = Sys.Date(),
   attribute = match_clause_time_attribute(),
   timezone = 0L,
-  compare_mode = compare_mode("lte")) {
+  compare_mode = compare_mode()) {
 
   assert_that(has_subclass(attribute, "MatchClauseTimeAttribute"),
               has_subclass(compare_mode, "CompareMode"),
               is.integer(timezone), timezone <= 12L, timezone >= -12L,
-              inherits(desired_date, "date"))
+              inherits(desired_date, "Date"))
 
-  json_class(attribute = as.character(as_json_class(attribute)),
-             desiredDate = format(desired_date, "%Y-%m-%d"),
-             timezone = timezone,
-             mode = as.character(as_json_class(compare_mode)),
+  json_class(fieldType = as.character(match_clause_field_type("attribute")),
+             attribute = as.character(as_json_class(attribute)),
+             desiredValue = format(desired_date, "%Y-%m-%d"),
+             timeZone = timezone,
+             compareMode = as.character(as_json_class(compare_mode)),
              class = "TimeAttributeMatchClause")
 }
 
