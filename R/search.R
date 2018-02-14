@@ -78,9 +78,24 @@ property_match_clause <- function(desired_value,
   assert_that(is.character(property_code), length(property_code) == 1L,
               is.character(desired_value), length(desired_value) == 1L)
 
-  json_class(propertyCode = property_code, desiredValue = desired_value,
+  json_class(fieldType = as.character(match_clause_field_type("property")),
+             propertyCode = property_code,
+             desiredValue = desired_value,
              class = "PropertyMatchClause")
 }
+
+#' @export
+list_property_types <- function(token, with_relations = FALSE) {
+
+  assert_that(is.logical(with_relations), length(with_relations) == 1L)
+
+  res <- request_openbis("listPropertyTypes", list(token, with_relations))
+
+  classes <- sapply(res, get_subclass)
+
+  lapply(split(res, classes), as_json_vec)
+}
+
 
 #' @export
 any_property_match_clause <- function(desired_value) {
