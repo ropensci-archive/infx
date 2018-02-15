@@ -28,7 +28,7 @@ search_openbis <- function(token,
 
 #' @export
 search_criteria <- function(clauses,
-                            operator = search_operator(),
+                            operator = "all",
                             sub_criteria = NULL) {
 
   is_clause <- function(x) {
@@ -43,9 +43,9 @@ search_criteria <- function(clauses,
   if (is_json_class(clauses))
     clauses <- list(clauses)
 
-  assert_that(all(sapply(clauses, is_clause)),
-              is_json_class(operator),
-              has_subclass(operator, "SearchOperator"))
+  assert_that(all(sapply(clauses, is_clause)))
+
+  operator <- select_search_operator(operator)
 
   if (is.null(sub_criteria))
     json_class(operator = as.character(operator), matchClauses = clauses,
@@ -65,38 +65,33 @@ clause <- function(desired_value,
                                    "TimeAttributeMatchClause"),
                    field_type = NULL,
                    field_code = NULL,
-                   mode = compare_mode(),
+                   mode = "eq",
                    ...) {
 
   clause_type <- match.arg(clause_type)
 
-  if (is.null(field_type)) {
-    field_type <- switch(clause_type,
-                         PropertyMatchClause = field_type("property"),
-                         AnyPropertyMatchClause = field_type("any_property"),
-                         AnyFieldMatchClause = field_type("any_field"),
-                         AttributeMatchClause = field_type("attribute"),
-                         TimeAttributeMatchClause = field_type("attribute"),
-                         stop("Specify field_type for MatchClause clauses."))
-  }
+  field_type <- if (is.null(field_type))
+    select_field_type(switch(clause_type,
+                             PropertyMatchClause = "property",
+                             AnyPropertyMatchClause = "any_property",
+                             AnyFieldMatchClause = "any_field",
+                             AttributeMatchClause = "attribute",
+                             TimeAttributeMatchClause = "attribute",
+                             stop("Specify field_type for MatchClause.")))
+  else
+    select_field_type(field_type)
 
-  assert_that(is.character(desired_value), length(desired_value) == 1L,
-              has_subclass(field_type, "MatchClauseFieldType"),
-              has_subclass(mode, "CompareMode"))
+  mode <- select_compare_mode(mode)
+
+  assert_that(is.character(desired_value), length(desired_value) == 1L)
 
   if (is.null(field_code)) {
-    json_class(fieldType = as.character(as_json_class(field_type)),
-               desiredValue = desired_value,
-               compareMode = as.character(as_json_class(mode)),
-               ...,
-               class = clause_type)
+    json_class(fieldType = field_type, desiredValue = desired_value,
+               compareMode = mode, ..., class = clause_type)
   } else {
     assert_that(is.character(field_code), length(field_code) == 1L)
-    json_class(fieldType = as.character(as_json_class(field_type)),
-               fieldCode = field_code,
-               desiredValue = desired_value,
-               compareMode = as.character(as_json_class(mode)),
-               ...,
+    json_class(fieldType = field_type, fieldCode = field_code,
+               desiredValue = desired_value, compareMode = mode, ...,
                class = clause_type)
   }
 }
@@ -118,61 +113,43 @@ any_field_clause <- function(desired_value)
   clause(desired_value, "AnyFieldMatchClause")
 
 #' @export
-attribute_clause <- function(desired_value, attribute = attribute()) {
-
-  assert_that(has_subclass(attribute, "MatchClauseAttribute"))
-
+attribute_clause <- function(desired_value, attribute = "code")
   clause(desired_value, "AttributeMatchClause",
-         attribute = as.character(as_json_class(attribute)))
-}
+         attribute = select_attribute(attribute))
 
 #' @export
 time_attribute_clause <- function(desired_date = Sys.Date(),
-                                  attribute = time_attribute(),
+                                  attribute = "registration",
                                   timezone = 0L,
-                                  mode = compare_mode()) {
+                                  mode = "eq") {
 
-  assert_that(has_subclass(attribute, "MatchClauseTimeAttribute"),
-              is.integer(timezone), timezone <= 12L, timezone >= -12L,
+  assert_that(is.integer(timezone), timezone <= 12L, timezone >= -12L,
               inherits(desired_date, "Date"))
 
   clause(format(desired_date, "%Y-%m-%d"), "TimeAttributeMatchClause",
          mode = mode, timeZone = timezone,
-         attribute = as.character(as_json_class(attribute)))
+         attribute = select_time_attribute(attribute))
 }
 
 #' @export
-field_type <- function(x = "property") {
-
-  json_class(match.arg(toupper(x),
-                       c("PROPERTY", "ATTRIBUTE", "ANY_FIELD",
-                         "ANY_PROPERTY")),
-             class = "MatchClauseFieldType")
-}
+select_field_type <- function(x = "property")
+  match.arg(toupper(x),
+            c("PROPERTY", "ATTRIBUTE", "ANY_FIELD", "ANY_PROPERTY"))
 
 #' @export
-attribute <- function(x = "code") {
-
-  json_class(match.arg(toupper(x),
-                       c("CODE", "TYPE", "PERM_ID", "SPACE", "PROJECT",
-                         "PROJECT_PERM_ID", "METAPROJECT",
-                         "REGISTRATOR_USER_ID", "REGISTRATOR_FIRST_NAME",
-                         "REGISTRATOR_LAST_NAME", "REGISTRATOR_EMAIL",
-                         "MODIFIER_USER_ID", "MODIFIER_FIRST_NAME",
-                         "MODIFIER_LAST_NAME", "MODIFIER_EMAIL")),
-             class = "MatchClauseAttribute")
-}
+select_attribute <- function(x = "code")
+  match.arg(toupper(x),
+            c("CODE", "TYPE", "PERM_ID", "SPACE", "PROJECT", "PROJECT_PERM_ID",
+              "METAPROJECT", "REGISTRATOR_USER_ID", "REGISTRATOR_FIRST_NAME",
+              "REGISTRATOR_LAST_NAME", "REGISTRATOR_EMAIL", "MODIFIER_USER_ID",
+              "MODIFIER_FIRST_NAME", "MODIFIER_LAST_NAME", "MODIFIER_EMAIL"))
 
 #' @export
-time_attribute <- function(x = "registration") {
-
-  json_class(match.arg(toupper(x),
-                       c("REGISTRATION_DATE", "MODIFICATION_DATE")),
-             class = "MatchClauseTimeAttribute")
-}
+select_time_attribute <- function(x = "registration")
+  match.arg(toupper(x), c("REGISTRATION_DATE", "MODIFICATION_DATE"))
 
 #' @export
-compare_mode <- function(x = "eq") {
+select_compare_mode <- function(x = "eq") {
 
   mode <- switch(x,
                  eq = "EQUALS",
@@ -180,21 +157,17 @@ compare_mode <- function(x = "eq") {
                  gte = "GREATER_THAN_OR_EQUAL",
                  x)
 
-  json_class(match.arg(toupper(mode),
-                       c("EQUALS", "LESS_THAN_OR_EQUAL",
-                         "GREATER_THAN_OR_EQUAL")),
-             class = "CompareMode")
+  match.arg(toupper(mode),
+            c("EQUALS", "LESS_THAN_OR_EQUAL", "GREATER_THAN_OR_EQUAL"))
 }
 
 #' @export
-search_operator <- function(x = "all") {
+select_search_operator <- function(x = "all") {
 
   operator <- switch(x,
                      all = "MATCH_ALL_CLAUSES",
                      any = "MATCH_ANY_CLAUSES",
                      x)
 
-  json_class(match.arg(toupper(operator),
-                       c("MATCH_ALL_CLAUSES", "MATCH_ANY_CLAUSES")),
-             class = "SearchOperator")
+  match.arg(toupper(operator), c("MATCH_ALL_CLAUSES", "MATCH_ANY_CLAUSES"))
 }

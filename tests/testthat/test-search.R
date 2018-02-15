@@ -5,7 +5,7 @@ test_that("search for datasets", {
   check_skip()
 
   sc <- search_criteria(attribute_clause("20111223114629018-318033",
-                                         attribute("perm_id")))
+                                         "perm_id"))
 
   ds_1 <- search_openbis(tok, sc, "data_set")
 
