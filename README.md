@@ -180,7 +180,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Logout the session with the specified session token.
         -   arguments: java.lang.String sessionToken
         -   returntype: void
-    -   \[ \] searchForDataSets:
+    -   \[x\] searchForDataSets:
         -   description: Return all data sets matching specified search criteria.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
         -   returntype: java.util.List&lt;DataSet&gt;
@@ -188,19 +188,19 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
         -   description: Return all data sets matching specified search criteria and visible to user userId.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria, java.lang.String userId
         -   returntype: java.util.List&lt;DataSet&gt;
-    -   \[ \] searchForExperiments:
+    -   \[x\] searchForExperiments:
         -   description: Returns all experiments matching specified search criteria.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
         -   returntype: java.util.List&lt;Experiment&gt;
-    -   \[ \] searchForMaterials:
+    -   \[x\] searchForMaterials:
         -   description: Returns all material fulfilling specified search criteria.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
         -   returntype: java.util.List&lt;Material&gt;
-    -   \[ \] searchForSamples:
+    -   \[x\] searchForSamples:
         -   description: Return all samples that match the search criteria.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria
         -   returntype: java.util.List&lt;Sample&gt;
-    -   \[ \] searchForSamples:
+    -   \[x\] searchForSamples:
         -   description: Return all samples that match the search criteria.
         -   arguments: java.lang.String sessionToken, SearchCriteria searchCriteria, java.util.EnumSet&lt;SampleFetchOption&gt; fetchOptions
         -   returntype: java.util.List&lt;Sample&gt;

@@ -73,7 +73,7 @@ done <- c("tryToAuthenticateForAllServices", "logout$", "isSessionActive",
           "listAvailableFeatures", "listAvailableFeatureCodes",
           "loadFeatures", "loadFeaturesForDatasetWellReferences",
           "loadImagesBase64", "loadThumbnailImagesBase64",
-          "loadPhysicalThumbnailsBase64")
+          "loadPhysicalThumbnailsBase64", "^search.+s$")
 
 api <- c("generic/shared/api/v1/IGeneralInformationService.html",
          "generic/shared/api/v1/IGeneralInformationChangingService.html",
