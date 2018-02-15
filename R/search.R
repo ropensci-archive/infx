@@ -56,100 +56,104 @@ search_criteria <- function(clauses,
 }
 
 #' @export
-match_clause <- function(desired_value,
-                         field_code,
-                         field_type = match_clause_field_type(),
-                         compare_mode = compare_mode()) {
+clause <- function(desired_value,
+                   clause_type = c("MatchClause",
+                                   "PropertyMatchClause",
+                                   "AnyPropertyMatchClause",
+                                   "AnyFieldMatchClause",
+                                   "AttributeMatchClause",
+                                   "TimeAttributeMatchClause"),
+                   field_type = NULL,
+                   field_code = NULL,
+                   mode = compare_mode(),
+                   ...) {
+
+  clause_type <- match.arg(clause_type)
+
+  if (is.null(field_type)) {
+    field_type <- switch(clause_type,
+                         PropertyMatchClause = field_type("property"),
+                         AnyPropertyMatchClause = field_type("any_property"),
+                         AnyFieldMatchClause = field_type("any_field"),
+                         AttributeMatchClause = field_type("attribute"),
+                         TimeAttributeMatchClause = field_type("attribute"),
+                         stop("Specify field_type for MatchClause clauses."))
+  }
 
   assert_that(is.character(desired_value), length(desired_value) == 1L,
-              is.character(field_code), length(field_code) == 1L,
               has_subclass(field_type, "MatchClauseFieldType"),
-              has_subclass(compare_mode, "CompareMode"))
+              has_subclass(mode, "CompareMode"))
 
-  json_class(fieldType = field_type, fieldCode = field_code,
-             desiredValue = desired_value, compareMode = compare_mode,
-             class = "MatchClause")
+  if (is.null(field_code)) {
+    json_class(fieldType = as.character(as_json_class(field_type)),
+               desiredValue = desired_value,
+               compareMode = as.character(as_json_class(mode)),
+               ...,
+               class = clause_type)
+  } else {
+    assert_that(is.character(field_code), length(field_code) == 1L)
+    json_class(fieldType = as.character(as_json_class(field_type)),
+               fieldCode = field_code,
+               desiredValue = desired_value,
+               compareMode = as.character(as_json_class(mode)),
+               ...,
+               class = clause_type)
+  }
 }
 
 #' @export
-property_match_clause <- function(desired_value,
-                                  property_code) {
+property_clause <- function(desired_value, property_code) {
 
-  assert_that(is.character(property_code), length(property_code) == 1L,
-              is.character(desired_value), length(desired_value) == 1L)
+  assert_that(is.character(property_code), length(property_code) == 1L)
 
-  json_class(fieldType = as.character(match_clause_field_type("property")),
-             propertyCode = property_code,
-             desiredValue = desired_value,
-             class = "PropertyMatchClause")
+  clause(desired_value, "PropertyMatchClause", propertyCode = property_code)
 }
 
 #' @export
-any_property_match_clause <- function(desired_value) {
+any_property_clause <- function(desired_value)
+  clause(desired_value, "AnyPropertyMatchClause")
 
-  assert_that(is.character(desired_value), length(desired_value) == 1L)
+#' @export
+any_field_clause <- function(desired_value)
+  clause(desired_value, "AnyFieldMatchClause")
 
-  json_class(fieldType = as.character(match_clause_field_type("any_property")),
-             desiredValue = desired_value,
-             class = "AnyPropertyMatchClause")
+#' @export
+attribute_clause <- function(desired_value, attribute = attribute()) {
+
+  assert_that(has_subclass(attribute, "MatchClauseAttribute"))
+
+  clause(desired_value, "AttributeMatchClause",
+         attribute = as.character(as_json_class(attribute)))
 }
 
 #' @export
-any_field_match_clause <- function(desired_value) {
-
-  assert_that(is.character(desired_value), length(desired_value) == 1L)
-
-  json_class(fieldType = as.character(match_clause_field_type("any_field")),
-             desiredValue = desired_value,
-             class = "AnyFieldMatchClause")
-}
-
-#' @export
-attribute_match_clause <- function(desired_value,
-                                   attribute = match_clause_attribute()) {
-
-  assert_that(is.character(desired_value), length(desired_value) == 1L,
-              has_subclass(attribute, "MatchClauseAttribute"))
-
-  json_class(fieldType = as.character(match_clause_field_type("attribute")),
-             attribute = as.character(as_json_class(attribute)),
-             desiredValue = desired_value,
-             class = "AttributeMatchClause")
-}
-
-#' @export
-time_attribute_match_clause <- function(
-  desired_date = Sys.Date(),
-  attribute = match_clause_time_attribute(),
-  timezone = 0L,
-  compare_mode = compare_mode()) {
+time_attribute_clause <- function(desired_date = Sys.Date(),
+                                  attribute = time_attribute(),
+                                  timezone = 0L,
+                                  mode = compare_mode()) {
 
   assert_that(has_subclass(attribute, "MatchClauseTimeAttribute"),
-              has_subclass(compare_mode, "CompareMode"),
               is.integer(timezone), timezone <= 12L, timezone >= -12L,
               inherits(desired_date, "Date"))
 
-  json_class(fieldType = as.character(match_clause_field_type("attribute")),
-             attribute = as.character(as_json_class(attribute)),
-             desiredValue = format(desired_date, "%Y-%m-%d"),
-             timeZone = timezone,
-             compareMode = as.character(as_json_class(compare_mode)),
-             class = "TimeAttributeMatchClause")
+  clause(format(desired_date, "%Y-%m-%d"), "TimeAttributeMatchClause",
+         mode = mode, timeZone = timezone,
+         attribute = as.character(as_json_class(attribute)))
 }
 
 #' @export
-match_clause_field_type <- function(field_type = "property") {
+field_type <- function(x = "property") {
 
-  json_class(match.arg(toupper(field_type),
+  json_class(match.arg(toupper(x),
                        c("PROPERTY", "ATTRIBUTE", "ANY_FIELD",
                          "ANY_PROPERTY")),
              class = "MatchClauseFieldType")
 }
 
 #' @export
-match_clause_attribute <- function(attribute = "code") {
+attribute <- function(x = "code") {
 
-  json_class(match.arg(toupper(attribute),
+  json_class(match.arg(toupper(x),
                        c("CODE", "TYPE", "PERM_ID", "SPACE", "PROJECT",
                          "PROJECT_PERM_ID", "METAPROJECT",
                          "REGISTRATOR_USER_ID", "REGISTRATOR_FIRST_NAME",
@@ -160,21 +164,21 @@ match_clause_attribute <- function(attribute = "code") {
 }
 
 #' @export
-match_clause_time_attribute <- function(attribute = "registration") {
+time_attribute <- function(x = "registration") {
 
-  json_class(match.arg(toupper(attribute),
+  json_class(match.arg(toupper(x),
                        c("REGISTRATION_DATE", "MODIFICATION_DATE")),
              class = "MatchClauseTimeAttribute")
 }
 
 #' @export
-compare_mode <- function(mode = "eq") {
+compare_mode <- function(x = "eq") {
 
-  mode <- switch(mode,
+  mode <- switch(x,
                  eq = "EQUALS",
                  lte = "LESS_THAN_OR_EQUAL",
                  gte = "GREATER_THAN_OR_EQUAL",
-                 mode)
+                 x)
 
   json_class(match.arg(toupper(mode),
                        c("EQUALS", "LESS_THAN_OR_EQUAL",
@@ -183,12 +187,12 @@ compare_mode <- function(mode = "eq") {
 }
 
 #' @export
-search_operator <- function(operator = "all") {
+search_operator <- function(x = "all") {
 
-  operator <- switch(operator,
+  operator <- switch(x,
                      all = "MATCH_ALL_CLAUSES",
                      any = "MATCH_ANY_CLAUSES",
-                     operator)
+                     x)
 
   json_class(match.arg(toupper(operator),
                        c("MATCH_ALL_CLAUSES", "MATCH_ANY_CLAUSES")),
