@@ -8,14 +8,11 @@ Depends:
 Imports:
   R.matlab,
   readr,
-  yaml,
-  methods,
   jsonlite,
   httr,
   assertthat,
   curl,
   progress,
-  tibble,
   crayon,
   magick,
   base64enc

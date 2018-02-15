@@ -8,7 +8,7 @@ test_that("the default error works", {
 })
 
 test_that("property types can be listed", {
-  pt <- list_property_types(token)
+  pt <- list_property_types(tok)
   expect_is(pt, "list")
   expect_equal(length(pt), 2L)
   expect_true(all(sapply(pt, is_json_vec)))
