@@ -75,3 +75,116 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
   as_json_vec(do.call(c, res))
 }
+
+#' Fetch files
+#'
+#' The function `fetch_files()` downloads files specified by a set of
+#' `FileInfoDssDTO` objects alongside one or several dataset objects.
+#' 
+#' @inheritParams logout_openbis
+#' @param x Object to specify which files to download.
+#' @param ... Generic compatibility.
+#' 
+#' @export
+#' 
+fetch_files <- function(token, x, ...)
+  UseMethod("fetch_files", x)
+
+#' @param data_sets Either a single dataset object (anything that has a
+#' `dataset_code()` method) or a set of objects of the same length as `x`.
+#' 
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.FileInfoDssDTO <- function(token,
+                                       x,
+                                       data_sets,
+                                       ...) {
+
+  x <- as_json_vec(x)
+
+  if (!is.character(data_sets))
+    data_sets <- dataset_code(data_sets)
+
+  max_length <- max(length(x), length(data_sets))
+
+  if (max_length > 1L) {
+
+    if (length(x) == 1L)
+      x <- rep(x, max_length)
+
+    if (length(data_sets) == 1L)
+      data_sets <- rep(data_sets, max_length)
+
+    assert_that(length(x) == length(data_sets))
+  }
+
+  dirs <- sapply(x, `[[`, "isDirectory")
+  if (any(dirs)) {
+    warning("cannot fetch directories, dropping paths\n  ",
+            paste(sapply(x[dirs], `[[`, "pathInDataSet"), collapse = "\n  "))
+    x <- x[!dirs]
+    data_sets <- data_sets[!dirs]
+  }
+
+  url_calls <- mapply(function(a, b) call("list_download_urls", token, a, b),
+                      data_sets, sapply(x, `[[`, "pathInDataSet"),
+                      SIMPLIFY = FALSE, USE.NAMES = FALSE)
+
+  res <- fetch_files_serial(url_calls,
+                            file_sizes = sapply(x, `[[`, "fileSize"),
+                            ...)
+
+  mapply(function(a, b, c) list(data_set = b, file = c, data = a),
+         res, data_sets, x)
+}
+
+#' @param urls Either a caracter vector or a list of calls that each yields an
+#' url when `eval`d.
+#' @param retry The number of tries for each url.
+#' @param file_sizes A vector of expected file sizes or NULL.
+#' @param done A function with a single argument which is applied to each
+#' downloaded file.
+#' 
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files_serial <- function(urls,
+                               retry = 2L,
+                               file_sizes = NULL,
+                               done = identity,
+                               ...) {
+
+  res <- vector("list", length(urls))
+
+  if (is.null(file_sizes))
+    file_sizes <- rep(NA, length(urls))
+  else
+    assert_that(all(as.integer(file_sizes) == file_sizes),
+                length(file_sizes) == length(urls))
+
+  repeat {
+
+    to_do <- sapply(res, is.null)
+    if (sum(to_do) == 0L)
+      break
+
+    retry <- retry - 1L
+    if (retry < 0L)
+      stop("data could not be fetched successfully.")
+
+    res[to_do] <- mapply(function(a, b) {
+      resp <- curl::curl_fetch_memory(eval(a))
+      if (resp$status_code != 200)
+        NULL
+      else if (!is.na(b) && length(resp$content) != b)
+        NULL
+      else
+        done(resp$content)
+    }, urls[to_do], file_sizes[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  }
+
+  assert_that(sapply(res, Negate(is.null)))
+
+  res
+}
