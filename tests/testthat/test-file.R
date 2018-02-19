@@ -83,7 +83,8 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_2[is_file], names(files_2), n_con = 1L))
+  expect_silent(fetch_files(tok, files_2[is_file], names(files_2)[is_file],
+                            n_con = 1L))
 
   files <- list_files(tok, "20120629084351794-603357")
   files <- files[grepl("Image\\.", sapply(files, `[[`, "pathInDataSet"))]
