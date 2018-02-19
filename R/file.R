@@ -238,28 +238,35 @@ fetch_files_parallel <- function(urls,
 
   add_download <- function(i) {
 
+    if (i < 1L || i > length(urls))
+      return(invisible(NULL))
+
     tries[i] <<- tries[i] - 1L
     if (tries[i] < 0L)
       stop("could not download file within ", n_try, " tries.")
 
     curl::curl_fetch_multi(
-      url = eval(url[[i]]),
+      url = eval(urls[[i]]),
       pool = pool,
       done = function(x) {
-        if (x$status_code != 200)
+        if (x$status_code != 200) {
           add_download(i)
-        else if (!is.na(sizes[i]) && length(resp$content) != sizes[i])
+        } else if (!is.na(sizes[i]) && length(x$content) != sizes[i]) {
           add_download(i)
-        else {
+        } else {
+          add_download(i + n_con)
           res[[i]] <<- done(x$content)
           if (length(urls) > 1L && !is.na(sizes[i]) && sizes[i] > 0L)
             pb$tick(if (is.null(file_sizes)) 1L else sizes[i])
         }
       },
       fail = function(x) {
+        message("fail: ", x)
         add_download(i)
       }
     )
+
+    invisible(NULL)
   }
 
   assert_that(is.function(done),
@@ -292,7 +299,7 @@ fetch_files_parallel <- function(urls,
 
   pool <- curl::new_pool(host_con = n_con)
 
-  for (j in seq_along(urls))
+  for (j in seq.int(n_con))
     add_download(j)
 
   curl::multi_run(pool = pool)

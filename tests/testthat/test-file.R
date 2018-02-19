@@ -84,4 +84,17 @@ test_that("files can be fetched", {
   }
 
   expect_silent(fetch_files(tok, files_2[is_file], names(files_2), n_con = 1L))
+
+  files <- list_files(tok, "20120629084351794-603357")
+  files <- files[grepl("Image\\.", sapply(files, `[[`, "pathInDataSet"))]
+
+  data <- fetch_files(tok, files, "20120629084351794-603357", n_con = 5L)
+  expect_length(data, length(files))
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("data_set", "file", "data"))
+    expect_is(data[[i]][["data_set"]], "character")
+    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "raw")
+  }
 })
