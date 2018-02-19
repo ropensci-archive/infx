@@ -96,6 +96,7 @@ fetch_files <- function(token, x, ...)
 
 #' @param data_sets Either a single dataset object (anything that has a
 #' `dataset_code()` method) or a set of objects of the same length as `x`.
+#' @param n_con The number of simultaneous connections.
 #' 
 #' @rdname fetch_files
 #' @export
@@ -103,7 +104,11 @@ fetch_files <- function(token, x, ...)
 fetch_files.FileInfoDssDTO <- function(token,
                                        x,
                                        data_sets,
+                                       n_con = 5L,
                                        ...) {
+
+  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
+  n_con <- as.integer(n_con)
 
   x <- as_json_vec(x)
 
@@ -135,9 +140,15 @@ fetch_files.FileInfoDssDTO <- function(token,
                       data_sets, sapply(x, `[[`, "pathInDataSet"),
                       SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  res <- fetch_files_serial(url_calls,
-                            file_sizes = sapply(x, `[[`, "fileSize"),
-                            ...)
+  res <- if (n_con <= 1L)
+    fetch_files_serial(url_calls,
+                       file_sizes = sapply(x, `[[`, "fileSize"),
+                       ...)
+  else
+    fetch_files_parallel(url_calls,
+                         file_sizes = sapply(x, `[[`, "fileSize"),
+                         n_con = n_con,
+                         ...)
 
   mapply(function(a, b, c) list(data_set = b, file = c, data = a),
          res, data_sets, x, SIMPLIFY = FALSE, USE.NAMES = FALSE)
@@ -158,8 +169,6 @@ fetch_files_serial <- function(urls,
                                file_sizes = NULL,
                                done = identity,
                                ...) {
-
-  res <- vector("list", length(urls))
 
   assert_that(is.function(done),
               length(n_try) == 1L, as.integer(n_try) == n_try)
@@ -185,6 +194,8 @@ fetch_files_serial <- function(urls,
     pb$tick(0)
   }
 
+  res <- vector("list", length(urls))
+
   repeat {
 
     to_do <- sapply(res, is.null)
@@ -209,6 +220,82 @@ fetch_files_serial <- function(urls,
       }
     }, urls[to_do], sizes[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
   }
+
+  assert_that(all(sapply(res, Negate(is.null))))
+
+  res
+}
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files_parallel <- function(urls,
+                                 n_try = 2L,
+                                 file_sizes = NULL,
+                                 done = identity,
+                                 n_con = 5L,
+                                 ...) {
+
+  add_download <- function(i) {
+
+    tries[i] <<- tries[i] - 1L
+    if (tries[i] < 0L)
+      stop("could not download file within ", n_try, " tries.")
+
+    curl::curl_fetch_multi(
+      url = eval(url[[i]]),
+      pool = pool,
+      done = function(x) {
+        if (x$status_code != 200)
+          add_download(i)
+        else if (!is.na(sizes[i]) && length(resp$content) != sizes[i])
+          add_download(i)
+        else {
+          res[[i]] <<- done(x$content)
+          if (length(urls) > 1L && !is.na(sizes[i]) && sizes[i] > 0L)
+            pb$tick(if (is.null(file_sizes)) 1L else sizes[i])
+        }
+      },
+      fail = function(x) {
+        add_download(i)
+      }
+    )
+  }
+
+  assert_that(is.function(done),
+              length(n_try) == 1L, as.integer(n_try) == n_try,
+              length(n_con) == 1L, as.integer(n_con) == n_con)
+
+  if (is.null(file_sizes))
+    sizes <- rep(NA, length(urls))
+  else {
+    assert_that(all(as.integer(file_sizes) == file_sizes),
+                length(file_sizes) == length(urls))
+    sizes <- as.integer(file_sizes)
+  }
+
+  if (length(urls) > 1L) {
+    tot <- if (is.null(file_sizes))
+      length(urls)
+    else
+      sum(sizes, na.rm = TRUE)
+
+    pb <- progress::progress_bar$new(
+      format = paste0("downloading [:bar] :percent in :elapsed"),
+      total = tot)
+
+    pb$tick(0)
+  }
+
+  res <- vector("list", length(urls))
+  tries <- rep(n_try, length(urls))
+
+  pool <- curl::new_pool(host_con = n_con)
+
+  for (j in seq_along(urls))
+    add_download(j)
+
+  curl::multi_run(pool = pool)
 
   assert_that(all(sapply(res, Negate(is.null))))
 

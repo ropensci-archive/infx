@@ -53,7 +53,7 @@ test_that("files can be fetched", {
   files_1 <- list_files(tok, codes[2])
   is_file <- !sapply(files_1, `[[`, "isDirectory")
 
-  expect_warning(data <- fetch_files(tok, files_1, codes[2]),
+  expect_warning(data <- fetch_files(tok, files_1, codes[2], n_con = 1L),
                  "cannot fetch directories")
   expect_length(data, sum(is_file))
   for (i in seq_along(data)) {
@@ -64,14 +64,15 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_1[is_file], codes[2]))
-  expect_error(fetch_files(tok, files_1[is_file], codes[2], n_try = 0L))
+  expect_silent(fetch_files(tok, files_1[is_file], codes[2], n_con = 1L))
+  expect_error(fetch_files(tok, files_1[is_file], codes[2], n_con = 1L,
+                           n_try = 0L))
 
   files_2 <- list_files(tok, codes[2:3])
   is_file <- !sapply(files_2, `[[`, "isDirectory")
 
-  expect_error(data <- fetch_files(tok, files_2, codes[2:3]))
-  expect_warning(data <- fetch_files(tok, files_2, names(files_2)),
+  expect_error(data <- fetch_files(tok, files_2, codes[2:3], n_con = 1L))
+  expect_warning(data <- fetch_files(tok, files_2, names(files_2), n_con = 1L),
                  "cannot fetch directories")
   expect_length(data, sum(is_file))
   for (i in seq_along(data)) {
@@ -82,5 +83,5 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_2[is_file], names(files_2)))
+  expect_silent(fetch_files(tok, files_2[is_file], names(files_2), n_con = 1L))
 })

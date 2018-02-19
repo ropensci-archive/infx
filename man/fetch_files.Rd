@@ -5,16 +5,20 @@
 \alias{fetch_files}
 \alias{fetch_files.FileInfoDssDTO}
 \alias{fetch_files_serial}
+\alias{fetch_files_parallel}
 \title{Split downloads}
 \usage{
 fetch_files(token, x, ...)
 
 fetch_files(token, x, ...)
 
-\method{fetch_files}{FileInfoDssDTO}(token, x, data_sets, ...)
+\method{fetch_files}{FileInfoDssDTO}(token, x, data_sets, n_con = 5L, ...)
 
 fetch_files_serial(urls, n_try = 2L, file_sizes = NULL, done = identity,
   ...)
+
+fetch_files_parallel(urls, n_try = 2L, file_sizes = NULL, done = identity,
+  n_con = 5L, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -25,6 +29,8 @@ fetch_files_serial(urls, n_try = 2L, file_sizes = NULL, done = identity,
 
 \item{data_sets}{Either a single dataset object (anything that has a
 \code{dataset_code()} method) or a set of objects of the same length as \code{x}.}
+
+\item{n_con}{The number of simultaneous connections.}
 
 \item{urls}{Either a caracter vector or a list of calls that each yields an
 url when \code{eval}d.}
