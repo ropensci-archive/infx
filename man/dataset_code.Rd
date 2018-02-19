@@ -4,6 +4,7 @@
 \alias{dataset_code}
 \alias{dataset_code.DataSet}
 \alias{dataset_code.DatasetIdentifier}
+\alias{dataset_code.DataSetFileDTO}
 \title{Extract dataset code}
 \usage{
 dataset_code(x, ...)
@@ -11,6 +12,8 @@ dataset_code(x, ...)
 \method{dataset_code}{DataSet}(x, ...)
 
 \method{dataset_code}{DatasetIdentifier}(x, ...)
+
+\method{dataset_code}{DataSetFileDTO}(x, ...)
 }
 \arguments{
 \item{x}{Dataset object(s).}

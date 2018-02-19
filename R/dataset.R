@@ -317,24 +317,29 @@ dataset_code <- function(x, ...)
 #' @keywords internal
 #' @export
 #' 
-dataset_code.DataSet <- function(x, ...) {
-  assert_that(has_fields(x, "code"))
-  if (is_json_vec(x))
-    sapply(x, `[[`, "code")
-  else
-    x[["code"]]
-}
+dataset_code.DataSet <- function(x, ...)
+  extract_field(x, "code")
 
 #' @rdname dataset_code
 #' @keywords internal
 #' @export
 #' 
-dataset_code.DatasetIdentifier <- function(x, ...) {
-  assert_that(has_fields(x, "datasetCode"))
+dataset_code.DatasetIdentifier <- function(x, ...)
+  extract_field(x, "datasetCode")
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.DataSetFileDTO <- function(x, ...)
+  extract_field(x, "dataSetCode")
+
+extract_field <- function(x, field) {
+  assert_that(has_fields(x, field))
   if (is_json_vec(x))
-    sapply(x, `[[`, "datasetCode")
+    sapply(x, `[[`, field)
   else
-    x[["datasetCode"]]
+    x[[field]]
 }
 
 resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {

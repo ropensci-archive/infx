@@ -40,9 +40,10 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
   res <- mapply(function(a, b, c) {
     request_openbis("listFilesForDataSet", list(token, a, b, c),
                     "IDssServiceRpcGeneric")
-  }, x, path, recursive)
+  }, x, path, recursive, SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  as_json_vec(do.call(c, res))
+  stats::setNames(as_json_vec(do.call(c, res)),
+                  rep(x, sapply(res, length)))
 }
 
 #' @rdname list_files
@@ -68,12 +69,15 @@ list_files.DatasetIdentifier <- function(token,
 #' 
 list_files.DataSetFileDTO <- function(token, x, ...) {
 
-  res <- lapply(as_json_vec(x), function(y) {
+  x <- as_json_vec(x)
+
+  res <- lapply(x, function(y) {
     request_openbis("listFilesForDataSet", list(token, y),
                     "IDssServiceRpcGeneric")
   })
 
-  as_json_vec(do.call(c, res))
+  stats::setNames(as_json_vec(do.call(c, res)),
+                  rep(dataset_code(x), sapply(res, length)))
 }
 
 #' Fetch files
@@ -136,12 +140,12 @@ fetch_files.FileInfoDssDTO <- function(token,
                             ...)
 
   mapply(function(a, b, c) list(data_set = b, file = c, data = a),
-         res, data_sets, x)
+         res, data_sets, x, SIMPLIFY = FALSE, USE.NAMES = FALSE)
 }
 
 #' @param urls Either a caracter vector or a list of calls that each yields an
 #' url when `eval`d.
-#' @param retry The number of tries for each url.
+#' @param n_try The number of tries for each url.
 #' @param file_sizes A vector of expected file sizes or NULL.
 #' @param done A function with a single argument which is applied to each
 #' downloaded file.
@@ -150,18 +154,36 @@ fetch_files.FileInfoDssDTO <- function(token,
 #' @export
 #' 
 fetch_files_serial <- function(urls,
-                               retry = 2L,
+                               n_try = 2L,
                                file_sizes = NULL,
                                done = identity,
                                ...) {
 
   res <- vector("list", length(urls))
 
+  assert_that(is.function(done),
+              length(n_try) == 1L, as.integer(n_try) == n_try)
+
   if (is.null(file_sizes))
-    file_sizes <- rep(NA, length(urls))
-  else
+    sizes <- rep(NA, length(urls))
+  else {
     assert_that(all(as.integer(file_sizes) == file_sizes),
                 length(file_sizes) == length(urls))
+    sizes <- as.integer(file_sizes)
+  }
+
+  if (length(urls) > 1L) {
+    tot <- if (is.null(file_sizes))
+      length(urls)
+    else
+      sum(sizes, na.rm = TRUE)
+
+    pb <- progress::progress_bar$new(
+      format = paste0("downloading [:bar] :percent in :elapsed"),
+      total = tot)
+
+    pb$tick(0)
+  }
 
   repeat {
 
@@ -169,8 +191,8 @@ fetch_files_serial <- function(urls,
     if (sum(to_do) == 0L)
       break
 
-    retry <- retry - 1L
-    if (retry < 0L)
+    n_try <- n_try - 1L
+    if (n_try < 0L)
       stop("data could not be fetched successfully.")
 
     res[to_do] <- mapply(function(a, b) {
@@ -179,12 +201,16 @@ fetch_files_serial <- function(urls,
         NULL
       else if (!is.na(b) && length(resp$content) != b)
         NULL
-      else
-        done(resp$content)
-    }, urls[to_do], file_sizes[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
+      else {
+        resp <- done(resp$content)
+        if (length(urls) > 1L && !is.na(b) && b > 0L)
+          pb$tick(if (is.null(file_sizes)) 1L else b)
+        resp
+      }
+    }, urls[to_do], sizes[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
   }
 
-  assert_that(sapply(res, Negate(is.null)))
+  assert_that(all(sapply(res, Negate(is.null))))
 
   res
 }

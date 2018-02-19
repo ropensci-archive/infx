@@ -13,7 +13,7 @@ fetch_files(token, x, ...)
 
 \method{fetch_files}{FileInfoDssDTO}(token, x, data_sets, ...)
 
-fetch_files_serial(urls, retry = 2L, file_sizes = NULL, done = identity,
+fetch_files_serial(urls, n_try = 2L, file_sizes = NULL, done = identity,
   ...)
 }
 \arguments{
@@ -29,7 +29,7 @@ fetch_files_serial(urls, retry = 2L, file_sizes = NULL, done = identity,
 \item{urls}{Either a caracter vector or a list of calls that each yields an
 url when \code{eval}d.}
 
-\item{retry}{The number of tries for each url.}
+\item{n_try}{The number of tries for each url.}
 
 \item{file_sizes}{A vector of expected file sizes or NULL.}
 
