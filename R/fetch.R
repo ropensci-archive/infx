@@ -105,8 +105,9 @@ do_download <- function(token,
 #' @description Download single cell datasets corresponding to a plate barcode
 #' and filtered by a regular expression applied to file names. 
 #' 
+#' @inheritParams logout_openbis
+#' @param plate_id Plate barcode.
 #' @param file_regex The plate barcode of interest.
-#' @inheritParams create_plate_id
 #' 
 #' @return A list of downloaded file data (raw).
 #' 
