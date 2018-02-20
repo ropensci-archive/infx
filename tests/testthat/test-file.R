@@ -51,11 +51,11 @@ test_that("files can be fetched", {
   codes <- sapply(datasets, `[[`, "code")
 
   files_1 <- list_files(tok, codes[2])
-  is_file <- !sapply(files_1, `[[`, "isDirectory")
+  is_file_1 <- !sapply(files_1, `[[`, "isDirectory")
 
   expect_warning(data <- fetch_files(tok, files_1, codes[2], n_con = 1L),
                  "cannot fetch directories")
-  expect_length(data, sum(is_file))
+  expect_length(data, sum(is_file_1))
   for (i in seq_along(data)) {
     expect_named(data[[i]], c("data_set", "file", "data"))
     expect_is(data[[i]][["data_set"]], "character")
@@ -64,17 +64,17 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_1[is_file], codes[2], n_con = 1L))
-  expect_error(fetch_files(tok, files_1[is_file], codes[2], n_con = 1L,
+  expect_silent(fetch_files(tok, files_1[is_file_1], codes[2], n_con = 1L))
+  expect_error(fetch_files(tok, files_1[is_file_1], codes[2], n_con = 1L,
                            n_try = 0L))
 
   files_2 <- list_files(tok, codes[2:3])
-  is_file <- !sapply(files_2, `[[`, "isDirectory")
+  is_file_2 <- !sapply(files_2, `[[`, "isDirectory")
 
   expect_error(data <- fetch_files(tok, files_2, codes[2:3], n_con = 1L))
   expect_warning(data <- fetch_files(tok, files_2, names(files_2), n_con = 1L),
                  "cannot fetch directories")
-  expect_length(data, sum(is_file))
+  expect_length(data, sum(is_file_2))
   for (i in seq_along(data)) {
     expect_named(data[[i]], c("data_set", "file", "data"))
     expect_is(data[[i]][["data_set"]], "character")
@@ -83,7 +83,7 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_2[is_file], names(files_2)[is_file],
+  expect_silent(fetch_files(tok, files_2[is_file_2], names(files_2)[is_file_2],
                             n_con = 1L))
 
   files <- list_files(tok, "20120629084351794-603357")
@@ -100,7 +100,7 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
-  paths <- sapply(files_1[is_file], `[[`, "pathInDataSet")
+  paths <- sapply(files_1[is_file_1], `[[`, "pathInDataSet")
   ds_file <- as_json_vec(lapply(paths, function(x) {
     json_class(dataSetCode = codes[2], path = x, isRecursive = FALSE,
                class = "DataSetFileDTO")
