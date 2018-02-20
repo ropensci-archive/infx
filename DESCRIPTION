@@ -1,8 +1,9 @@
 Package: infx
 Title: API access to the InfectX data repository
 Version: 0.0.0.9000
-Author: Nicolas Bennett
-Maintainer: Nicolas Bennett <nicolas.bennett@stat.math.ethz.ch>
+Authors@R: person("Nicolas", "Bennett",
+                  email = "nicolas.bennett@stat.math.ethz.ch",
+                  role = c("aut", "cre"))
 Description: Screening data from the InfectX/TargetInfectX experiments is
     stored in an openBIS instance to which this package provides API access.
 URL: https://nbenn.github.io/infx
