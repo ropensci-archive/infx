@@ -55,3 +55,69 @@ test_that("search for datasets", {
   expect_equal(length(ds_1), 1L)
   expect_true(has_subclass(ds_1[[1]], "DataSet"))
 })
+
+test_that("search for samples", {
+
+  check_skip()
+
+  sc <- search_criteria(attribute_clause("20121012090101856-1360590",
+                                         "perm_id"))
+
+  ds_1 <- search_openbis(tok, sc, "sample")
+  expect_is(ds_1, "Sample")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1), "Sample")
+  expect_equal(length(ds_1), 1L)
+  expect_true(has_subclass(ds_1[[1]], "Sample"))
+
+  ds_1 <- search_openbis(tok, sc, "sample", "properties")
+  expect_is(ds_1, "Sample")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1), "Sample")
+  expect_equal(length(ds_1), 1L)
+  expect_true(has_subclass(ds_1[[1]], "Sample"))
+})
+
+test_that("search with sub-criteria", {
+
+  check_skip()
+
+  exp <- search_sub_criteria(
+    search_criteria(attribute_clause("ADENO-AU-K1", "code")),
+    "experiment"
+  )
+
+  sc <- search_criteria(attribute_clause("PLATE", "type"),
+                        sub_criteria = exp)
+
+  ds_n <- search_openbis(tok, sc, "sample")
+
+  expect_is(ds_n, "Sample")
+  expect_is(ds_n, "json_vec")
+  expect_gte(length(ds_n), 1L)
+  for (i in seq_along(ds_n)) {
+    expect_is(ds_n[[i]], "Sample")
+    expect_is(ds_n[[i]], "json_class")
+    expect_match(ds_n[[i]][["experimentIdentifierOrNull"]], "ADENO-AU-K1")
+  }
+})
+
+test_that("search for material", {
+
+  check_skip()
+
+  mat_1 <- search_openbis(tok,
+    search_criteria(property_clause("MTOR", "GENE_SYMBOL")), "material")
+  expect_is(mat_1, "MaterialGeneric")
+  expect_is(mat_1, "json_vec")
+  expect_equal(length(mat_1), 1L)
+  expect_is(mat_1[[1]], "MaterialGeneric")
+  expect_is(mat_1[[1]], "json_class")
+
+  expect_identical(
+    search_openbis(tok, search_criteria(attribute_clause("2475")), "material"),
+    mat_1)
+  expect_identical(
+    search_openbis(tok, search_criteria(attribute_clause(2475)), "material"),
+    mat_1)
+})

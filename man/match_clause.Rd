@@ -12,7 +12,7 @@
 match_clause(desired_value, clause_type = c("MatchClause",
   "PropertyMatchClause", "AnyPropertyMatchClause", "AnyFieldMatchClause",
   "AttributeMatchClause", "TimeAttributeMatchClause"), field_type = NULL,
-  field_code = NULL, mode = "eq", ...)
+  mode = "eq", ...)
 
 property_clause(desired_value, property_code)
 
@@ -31,8 +31,6 @@ time_attribute_clause(desired_date = Sys.Date(), attribute = "registration",
 \item{clause_type}{The type of match clause.}
 
 \item{field_type}{The type of filed used in the comparison.}
-
-\item{field_code}{Code identifying a field to be used for the comparison.}
 
 \item{mode}{The comparison mode, can be \code{eq} (==), \code{lte} (<=) or \code{gte}
 (>=).}

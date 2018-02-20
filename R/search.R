@@ -70,12 +70,12 @@ search_openbis <- function(token,
 
     assert_that(fun == "searchForSamples")
 
-    fetch_options <- sapply(toupper(fetch_options), match.arg,
+    fetch_options <- lapply(toupper(fetch_options), match.arg,
                             c("BASIC", "PROPERTIES", "PARENTS", "CHILDREN",
                               "ANCESTORS", "DESCENDANTS", "CONTAINED",
                               "METAPROJECTS"))
 
-    params <- list(token, criteria, fetch_options)
+    params <- list(token, criteria, stats::setNames(fetch_options, NULL))
 
   } else {
 
@@ -155,16 +155,9 @@ search_sub_criteria <- function(criteria,
 #' @param desired_value The value used in the comparison.
 #' @param clause_type The type of match clause.
 #' @param field_type The type of filed used in the comparison.
-#' @param field_code Code identifying a field to be used for the comparison.
 #' @param mode The comparison mode, can be `eq` (==), `lte` (<=) or `gte`
 #' (>=).  
 #' @param ... Further arguments for creating the match clause.
-#' @param property_code Code identifying a property to be used for the
-#' comparison.
-#' @param attribute Name of the attribute to be used for the comparison.
-#' @param desired_date A date used for the comparison.
-#' @param timezone A string identifying the timezone of the specified date,
-#' examples include "+1", "-5", "0", etc.
 #' 
 #' @export
 #' 
@@ -176,7 +169,6 @@ match_clause <- function(desired_value,
                                          "AttributeMatchClause",
                                          "TimeAttributeMatchClause"),
                          field_type = NULL,
-                         field_code = NULL,
                          mode = "eq",
                          ...) {
 
@@ -203,19 +195,15 @@ match_clause <- function(desired_value,
   mode <- match.arg(toupper(mode),
                     c("EQUALS", "LESS_THAN_OR_EQUAL", "GREATER_THAN_OR_EQUAL"))
 
-  assert_that(is.character(desired_value), length(desired_value) == 1L)
+  assert_that(length(desired_value) == 1L)
 
-  if (is.null(field_code)) {
-    json_class(fieldType = field_type, desiredValue = desired_value,
-               compareMode = mode, ..., class = clause_type)
-  } else {
-    assert_that(is.character(field_code), length(field_code) == 1L)
-    json_class(fieldType = field_type, fieldCode = field_code,
-               desiredValue = desired_value, compareMode = mode, ...,
-               class = clause_type)
-  }
+  json_class(fieldType = field_type, desiredValue = desired_value,
+             compareMode = mode, ..., class = clause_type)
 }
 
+#' @param property_code Code identifying a property to be used for the
+#' comparison.
+#' 
 #' @rdname match_clause
 #' @export
 #' 
@@ -239,6 +227,8 @@ any_property_clause <- function(desired_value)
 any_field_clause <- function(desired_value)
   match_clause(desired_value, "AnyFieldMatchClause")
 
+#' @param attribute Name of the attribute to be used for the comparison.
+#' 
 #' @rdname match_clause
 #' @export
 #' 
@@ -255,6 +245,10 @@ attribute_clause <- function(desired_value, attribute = "code") {
   match_clause(desired_value, "AttributeMatchClause", attribute = attribute)
 }
 
+#' @param desired_date A date used for the comparison.
+#' @param timezone A string identifying the timezone of the specified date,
+#' examples include "+1", "-5", "0", etc.
+#' 
 #' @rdname match_clause
 #' @export
 #' 
