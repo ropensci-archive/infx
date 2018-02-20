@@ -320,12 +320,50 @@ dataset_code <- function(x, ...)
 dataset_code.DataSet <- function(x, ...)
   extract_field(x, "code")
 
+ds_code_ds_id <- function(x, ...)
+  extract_field(x, "datasetCode")
+
 #' @rdname dataset_code
 #' @keywords internal
 #' @export
 #' 
-dataset_code.DatasetIdentifier <- function(x, ...)
-  extract_field(x, "datasetCode")
+dataset_code.DatasetIdentifier <- ds_code_ds_id
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.DatasetReference <- ds_code_ds_id
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.FeatureVectorDatasetReference <- ds_code_ds_id
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.FeatureVectorDatasetWellReference <- ds_code_ds_id
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.ImageDatasetReference <- ds_code_ds_id
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.MicroscopyImageReference <- ds_code_ds_id
+
+#' @rdname dataset_code
+#' @keywords internal
+#' @export
+#' 
+dataset_code.PlateImageReference <- ds_code_ds_id
 
 #' @rdname dataset_code
 #' @keywords internal

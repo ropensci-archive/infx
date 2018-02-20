@@ -4,7 +4,7 @@ test_that("files can be listed", {
 
   check_skip()
 
-  codes <- sapply(datasets, `[[`, "code")
+  codes <- dataset_code(datasets)
 
   files_1 <- list_files(tok, codes[2])
   expect_named(files_1)
@@ -48,7 +48,7 @@ test_that("files can be fetched", {
 
   check_skip()
 
-  codes <- sapply(datasets, `[[`, "code")
+  codes <- dataset_code(datasets)
 
   files_1 <- list_files(tok, codes[2])
   is_file_1 <- !sapply(files_1, `[[`, "isDirectory")

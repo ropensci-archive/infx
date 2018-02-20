@@ -28,7 +28,7 @@ test_that("data store urls can be listed", {
   expect_is(url_2, "character")
   expect_equal(length(url_2), 2L)
 
-  codes <- sapply(datasets, `[[`, "code")
+  codes <- dataset_code(datasets)
 
   url_1 <- list_datastore_urls(tok, codes[1])
   expect_is(url_1, "character")
@@ -52,7 +52,7 @@ test_that("dataset download urls can be generated", {
 
   check_skip()
 
-  codes <- sapply(datasets, `[[`, "code")
+  codes <- dataset_code(datasets)
 
   ds_file <- json_class(dataSetCode = codes[2],
                         path = "",

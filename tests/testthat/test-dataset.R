@@ -212,7 +212,7 @@ test_that("dataset ids can be listed", {
 
   check_skip()
 
-  codes <- sapply(datasets, `[[`, "code")
+  codes <- dataset_code(datasets)
 
   dsid_1 <- list_dataset_ids(tok, codes[[1]])
   expect_is(dsid_1, "DatasetIdentifier")
@@ -230,4 +230,17 @@ test_that("dataset ids can be listed", {
 
   expect_identical(list_dataset_ids(tok, datasets[[1]]), dsid_1)
   expect_identical(list_dataset_ids(tok, datasets[1:2]), dsid_2)
+})
+
+test_that("dataset codes can be extracted", {
+
+  check_skip()
+
+  codes <- dataset_code(datasets)
+  expect_is(codes, "character")
+  expect_length(codes, length(datasets))
+
+  codes <- dataset_code(list_dataset_ids(tok, codes[1:2]))
+  expect_is(codes, "character")
+  expect_length(codes, 2L)
 })

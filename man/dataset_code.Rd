@@ -4,6 +4,12 @@
 \alias{dataset_code}
 \alias{dataset_code.DataSet}
 \alias{dataset_code.DatasetIdentifier}
+\alias{dataset_code.DatasetReference}
+\alias{dataset_code.FeatureVectorDatasetReference}
+\alias{dataset_code.FeatureVectorDatasetWellReference}
+\alias{dataset_code.ImageDatasetReference}
+\alias{dataset_code.MicroscopyImageReference}
+\alias{dataset_code.PlateImageReference}
 \alias{dataset_code.DataSetFileDTO}
 \title{Extract dataset code}
 \usage{
@@ -12,6 +18,18 @@ dataset_code(x, ...)
 \method{dataset_code}{DataSet}(x, ...)
 
 \method{dataset_code}{DatasetIdentifier}(x, ...)
+
+\method{dataset_code}{DatasetReference}(x, ...)
+
+\method{dataset_code}{FeatureVectorDatasetReference}(x, ...)
+
+\method{dataset_code}{FeatureVectorDatasetWellReference}(x, ...)
+
+\method{dataset_code}{ImageDatasetReference}(x, ...)
+
+\method{dataset_code}{MicroscopyImageReference}(x, ...)
+
+\method{dataset_code}{PlateImageReference}(x, ...)
 
 \method{dataset_code}{DataSetFileDTO}(x, ...)
 }
