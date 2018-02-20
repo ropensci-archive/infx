@@ -89,7 +89,8 @@ test_that("files can be fetched", {
   files <- list_files(tok, "20120629084351794-603357")
   files <- files[grepl("Image\\.", sapply(files, `[[`, "pathInDataSet"))]
 
-  data <- fetch_files(tok, files, "20120629084351794-603357", n_con = 5L)
+  expect_silent(data <- fetch_files(tok, files, "20120629084351794-603357",
+                                    n_con = 5L))
   expect_length(data, length(files))
   for (i in seq_along(data)) {
     expect_named(data[[i]], c("data_set", "file", "data"))
@@ -98,4 +99,28 @@ test_that("files can be fetched", {
     expect_s3_class(data[[i]][["file"]], "json_class")
     expect_is(data[[i]][["data"]], "raw")
   }
+
+  expect_silent(fetch_files_serial("https://httpbin.org/get", n_try = 1L))
+  expect_silent(fetch_files_serial(rep("https://httpbin.org/get", 2),
+                                  n_try = 1L))
+  expect_error(fetch_files_serial("https://httpbin.org/get", n_try = 1L,
+                                  file_sizes = 10L))
+  expect_error(fetch_files_serial("https://httpbin.org/status/500",
+                                  n_try = 1L))
+  expect_error(fetch_files_serial(rep("https://httpbin.org/get", 2),
+                                  n_try = 1L, file_sizes = c(10L, 10L)))
+  expect_error(fetch_files_serial(rep("https://httpbin.org/status/500", 2),
+                                  n_try = 1L))
+
+  expect_silent(fetch_files_parallel("https://httpbin.org/get", n_try = 1L))
+  expect_silent(fetch_files_parallel(rep("https://httpbin.org/get", 2),
+                                    n_try = 1L))
+  expect_error(fetch_files_parallel("https://httpbin.org/get", n_try = 1L,
+                                    file_sizes = 10L))
+  expect_error(fetch_files_parallel("https://httpbin.org/status/500",
+                                    n_try = 1L))
+  expect_error(fetch_files_parallel(rep("https://httpbin.org/get", 2),
+                                    n_try = 1L, file_sizes = c(10L, 10L)))
+  expect_error(fetch_files_parallel(rep("https://httpbin.org/status/500", 2),
+                                    n_try = 1L))
 })

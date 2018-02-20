@@ -107,10 +107,10 @@ fetch_files.FileInfoDssDTO <- function(token,
                                        n_con = 5L,
                                        ...) {
 
-  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
-  n_con <- as.integer(n_con)
-
   x <- as_json_vec(x)
+
+  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
+  n_con <- min(as.integer(n_con), length(x))
 
   if (!is.character(data_sets))
     data_sets <- dataset_code(data_sets)
@@ -249,21 +249,18 @@ fetch_files_parallel <- function(urls,
       url = eval(urls[[i]]),
       pool = pool,
       done = function(x) {
-        if (x$status_code != 200) {
+        if (x$status_code != 200)
           add_download(i)
-        } else if (!is.na(sizes[i]) && length(x$content) != sizes[i]) {
+        else if (!is.na(sizes[i]) && length(x$content) != sizes[i])
           add_download(i)
-        } else {
+        else {
           add_download(i + n_con)
           res[[i]] <<- done(x$content)
           if (length(urls) > 1L && !is.na(sizes[i]) && sizes[i] > 0L)
             pb$tick(if (is.null(file_sizes)) 1L else sizes[i])
         }
       },
-      fail = function(x) {
-        message("fail: ", x)
-        add_download(i)
-      }
+      fail = function(x) add_download(i)
     )
 
     invisible(NULL)
