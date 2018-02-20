@@ -7,6 +7,7 @@
 \alias{any_field_clause}
 \alias{attribute_clause}
 \alias{time_attribute_clause}
+\alias{list_property_types}
 \title{Create a match clause}
 \usage{
 match_clause(desired_value, clause_type = c("MatchClause",
@@ -24,6 +25,8 @@ attribute_clause(desired_value, attribute = "code")
 
 time_attribute_clause(desired_date = Sys.Date(), attribute = "registration",
   timezone = 0L, mode = "eq")
+
+list_property_types(token, with_relations = FALSE)
 }
 \arguments{
 \item{desired_value}{The value used in the comparison.}
@@ -46,6 +49,9 @@ comparison.}
 
 \item{timezone}{A string identifying the timezone of the specified date,
 examples include "+1", "-5", "0", etc.}
+
+\item{with_relations}{Logical switch indicating whether relations should
+be returned as well.}
 }
 \description{
 \code{SearchCriteria} objects, used for searching openBis, consist of one or
@@ -53,4 +59,13 @@ several match clauses. For more information on how to execute a search,
 see \code{\link[=search_openbis]{search_openbis()}}. A match clause, broadly speaking, consist of a
 given value, a field to which this value is compared to and a comparison
 operator (e.g. equality).
+}
+\details{
+In order to determine the possible values that can be supplied to
+\code{property_clause()} as \code{property_code}s, \code{list_property_types()} can be
+used. This function returns all property types available throughout the
+queried openBis instance. As objects of several types
+(\code{ControlledVocabularyPropertyType} and \code{PropertyType}) are returned as
+property types by the API, the resulting object is a list with each entry
+corresponding to a type and holding a set of object of the respective type.
 }

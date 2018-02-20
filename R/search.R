@@ -151,6 +151,14 @@ search_sub_criteria <- function(criteria,
 #' see [search_openbis()]. A match clause, broadly speaking, consist of a
 #' given value, a field to which this value is compared to and a comparison
 #' operator (e.g. equality).
+#' 
+#' In order to determine the possible values that can be supplied to
+#' `property_clause()` as `property_code`s, `list_property_types()` can be
+#' used. This function returns all property types available throughout the
+#' queried openBis instance. As objects of several types
+#' (`ControlledVocabularyPropertyType` and `PropertyType`) are returned as
+#' property types by the API, the resulting object is a list with each entry
+#' corresponding to a type and holding a set of object of the respective type.
 #'
 #' @param desired_value The value used in the comparison.
 #' @param clause_type The type of match clause.
@@ -265,4 +273,21 @@ time_attribute_clause <- function(desired_date = Sys.Date(),
 
   match_clause(format(desired_date, "%Y-%m-%d"), "TimeAttributeMatchClause",
                mode = mode, timeZone = timezone, attribute = attribute)
+}
+
+#' @param with_relations Logical switch indicating whether relations should
+#' be returned as well.
+#' 
+#' @rdname match_clause
+#' @export
+#' 
+list_property_types <- function(token, with_relations = FALSE) {
+
+  assert_that(is.logical(with_relations), length(with_relations) == 1L)
+
+  res <- request_openbis("listPropertyTypes", list(token, with_relations))
+
+  classes <- sapply(res, get_subclass)
+
+  lapply(split(res, classes), as_json_vec)
 }

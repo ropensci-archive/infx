@@ -16,10 +16,17 @@ reference:
       - list_plates
       - list_projects
       - list_samples
-  - title: Download urls
-    desc: Determine download urls for datasets
+      - search_openbis
+      - match_clause
+  - title: List/download openBIS resources
+    desc: List and fetch files, images and feature data
     contents:
+      - list_features
+      - fetch_features
       - list_files
+      - fetch_files
+      - list_image_metadata
+      - fetch_images
       - list_datastores
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
