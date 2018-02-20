@@ -50,6 +50,8 @@ comparison.}
 \item{timezone}{A string identifying the timezone of the specified date,
 examples include "+1", "-5", "0", etc.}
 
+\item{token}{Login token as created by \code{login_openbis()}.}
+
 \item{with_relations}{Logical switch indicating whether relations should
 be returned as well.}
 }

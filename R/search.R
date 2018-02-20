@@ -275,6 +275,7 @@ time_attribute_clause <- function(desired_date = Sys.Date(),
                mode = mode, timeZone = timezone, attribute = attribute)
 }
 
+#' @inheritParams logout_openbis
 #' @param with_relations Logical switch indicating whether relations should
 #' be returned as well.
 #' 
