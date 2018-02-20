@@ -100,6 +100,30 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
+  paths <- sapply(files_1[is_file], `[[`, "pathInDataSet")
+  ds_file <- as_json_vec(lapply(paths, function(x) {
+    json_class(dataSetCode = codes[2], path = x, isRecursive = FALSE,
+               class = "DataSetFileDTO")
+  }))
+
+  data <- fetch_files(tok, ds_file, n_con = 1L)
+  expect_length(data, length(ds_file))
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("file", "data"))
+    expect_s3_class(data[[i]][["file"]], "DataSetFileDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "raw")
+  }
+
+  data <- fetch_files(tok, ds_file, n_con = 2L)
+  expect_length(data, length(ds_file))
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("file", "data"))
+    expect_s3_class(data[[i]][["file"]], "DataSetFileDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "raw")
+  }
+
   expect_silent(fetch_files_serial("https://httpbin.org/get", n_try = 1L))
   expect_silent(fetch_files_serial(rep("https://httpbin.org/get", 2),
                                   n_try = 1L))

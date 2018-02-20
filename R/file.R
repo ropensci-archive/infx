@@ -94,9 +94,33 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 fetch_files <- function(token, x, ...)
   UseMethod("fetch_files", x)
 
+#' @param n_con The number of simultaneous connections.
+#' 
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.DataSetFileDTO <- function(token,
+                                       x,
+                                       n_con = 5L,
+                                       ...) {
+
+  x <- as_json_vec(x)
+
+  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
+  n_con <- min(as.integer(n_con), length(x))
+
+  url_calls <- lapply(x, function(y) call("list_download_urls", token, y))
+
+  res <- if (n_con <= 1L)
+    fetch_files_serial(url_calls, ...)
+  else
+    fetch_files_parallel(url_calls, n_con = n_con, ...)
+
+  mapply(list, file = x, data = res, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+}
+
 #' @param data_sets Either a single dataset object (anything that has a
 #' `dataset_code()` method) or a set of objects of the same length as `x`.
-#' @param n_con The number of simultaneous connections.
 #' 
 #' @rdname fetch_files
 #' @export
@@ -150,8 +174,8 @@ fetch_files.FileInfoDssDTO <- function(token,
                          n_con = n_con,
                          ...)
 
-  mapply(function(a, b, c) list(data_set = b, file = c, data = a),
-         res, data_sets, x, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  mapply(list, data_set = data_sets, file = x, data = res,
+         SIMPLIFY = FALSE, USE.NAMES = FALSE)
 }
 
 #' @param urls Either a caracter vector or a list of calls that each yields an
