@@ -5,6 +5,12 @@
 \alias{list_files.character}
 \alias{list_files.DataSet}
 \alias{list_files.DatasetIdentifier}
+\alias{list_files.DatasetReference}
+\alias{list_files.FeatureVectorDatasetReference}
+\alias{list_files.FeatureVectorDatasetWellReference}
+\alias{list_files.ImageDatasetReference}
+\alias{list_files.MicroscopyImageReference}
+\alias{list_files.PlateImageReference}
 \alias{list_files.DataSetFileDTO}
 \title{List files}
 \usage{
@@ -15,6 +21,24 @@ list_files(token, x, ...)
 \method{list_files}{DataSet}(token, x, path = "", recursive = TRUE, ...)
 
 \method{list_files}{DatasetIdentifier}(token, x, path = "",
+  recursive = TRUE, ...)
+
+\method{list_files}{DatasetReference}(token, x, path = "", recursive = TRUE,
+  ...)
+
+\method{list_files}{FeatureVectorDatasetReference}(token, x, path = "",
+  recursive = TRUE, ...)
+
+\method{list_files}{FeatureVectorDatasetWellReference}(token, x, path = "",
+  recursive = TRUE, ...)
+
+\method{list_files}{ImageDatasetReference}(token, x, path = "",
+  recursive = TRUE, ...)
+
+\method{list_files}{MicroscopyImageReference}(token, x, path = "",
+  recursive = TRUE, ...)
+
+\method{list_files}{PlateImageReference}(token, x, path = "",
   recursive = TRUE, ...)
 
 \method{list_files}{DataSetFileDTO}(token, x, ...)
@@ -33,6 +57,16 @@ recursively.}
 }
 \description{
 The function \code{list_files()} lists files associated with one or more
-dataset(s), which can be specified with codes or \code{DataSet}/
-\code{DatasetIdentifier} objects.
+dataset(s). Datasets can be specified as character vector of dataset codes
+and therefore all objects for which a \code{\link[=dataset_code]{dataset_code()}} method exists can
+be used to select datasets. In addition to these dataset-like objects,
+dispatch on \code{DataSetFileDTO} objects is possible as well.
+}
+\details{
+Furthermore, the file search can be limited to a certain path within the
+dataset and the search can be carried out recursively or non-recursively.
+A separate API call is necessary for each of the objects the dispatch
+occurs on. In case a set of objects is passed, the search-tuning arguments
+\code{path} and \code{recursive} have to be euther of length 1 or of the same length
+as \code{x}.
 }

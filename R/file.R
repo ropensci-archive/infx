@@ -2,8 +2,17 @@
 #' List files
 #'
 #' The function `list_files()` lists files associated with one or more
-#' dataset(s), which can be specified with codes or `DataSet`/
-#' `DatasetIdentifier` objects.
+#' dataset(s). Datasets can be specified as character vector of dataset codes
+#' and therefore all objects for which a [dataset_code()] method exists can
+#' be used to select datasets. In addition to these dataset-like objects,
+#' dispatch on `DataSetFileDTO` objects is possible as well.
+#' 
+#' Furthermore, the file search can be limited to a certain path within the
+#' dataset and the search can be carried out recursively or non-recursively.
+#' A separate API call is necessary for each of the objects the dispatch
+#' occurs on. In case a set of objects is passed, the search-tuning arguments
+#' `path` and `recursive` have to be euther of length 1 or of the same length
+#' as `x`.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
@@ -46,23 +55,48 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
                   rep(x, sapply(res, length)))
 }
 
-#' @rdname list_files
-#' @export
-#' 
-list_files.DataSet <- function(token, x, path = "", recursive = TRUE, ...)
+list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
   list_files(token, dataset_code(x), path, recursive)
 
 #' @rdname list_files
 #' @export
 #' 
-list_files.DatasetIdentifier <- function(token,
-                                         x,
-                                         path = "",
-                                         recursive = TRUE,
-                                         ...) {
+list_files.DataSet <- list_dataset_files
 
-  list_files(token, dataset_code(x), path, recursive)
-}
+#' @rdname list_files
+#' @export
+#' 
+list_files.DatasetIdentifier <- list_dataset_files
+
+#' @rdname list_files
+#' @export
+#' 
+list_files.DatasetReference <- list_dataset_files
+
+#' @rdname list_files
+#' @export
+#' 
+list_files.FeatureVectorDatasetReference <- list_dataset_files
+
+#' @rdname list_files
+#' @export
+#' 
+list_files.FeatureVectorDatasetWellReference <- list_dataset_files
+
+#' @rdname list_files
+#' @export
+#' 
+list_files.ImageDatasetReference <- list_dataset_files
+
+#' @rdname list_files
+#' @export
+#' 
+list_files.MicroscopyImageReference <- list_dataset_files
+
+#' @rdname list_files
+#' @export
+#' 
+list_files.PlateImageReference <- list_dataset_files
 
 #' @rdname list_files
 #' @export
