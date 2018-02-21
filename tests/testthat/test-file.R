@@ -124,6 +124,33 @@ test_that("files can be fetched", {
     expect_is(data[[i]][["data"]], "raw")
   }
 
+  data <- fetch_files(tok, codes[2])
+  expect_gte(length(data), 1L)
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("data_set", "file", "data"))
+    expect_is(data[[i]][["data_set"]], "character")
+    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "raw")
+  }
+
+  expect_identical(data, fetch_files(tok, codes[2], files_1[is_file_1]))
+
+  data <- fetch_files(tok, codes[2], file_regex = "\\.std(out|err)$")
+  expect_gte(length(data), 1L)
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("data_set", "file", "data"))
+    expect_is(data[[i]][["data_set"]], "character")
+    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "raw")
+  }
+})
+
+test_that("file fetchers work", {
+
+  check_skip()
+
   expect_silent(fetch_files_serial("https://httpbin.org/get", n_try = 1L))
   expect_silent(fetch_files_serial(rep("https://httpbin.org/get", 2),
                                   n_try = 1L))

@@ -116,17 +116,121 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
 #' Fetch files
 #'
-#' The function `fetch_files()` downloads files specified by a set of
-#' `FileInfoDssDTO` objects alongside one or several dataset objects.
+#' The function `fetch_files()` downloads files associated to a dataset.
+#' Whenever dispatch occurs on a set of datasets (can either be a character
+#' vector or any object for which a [dataset_code()] method exists), the set
+#' of files to be downloaded can either be passed as the `files` argument or
+#' all available files for that dataset are listed using [list_files()]
+#' (folders themselves are removed), and this set of files is filtered if a
+#' regular expression is passed as argument `file_regex`. The resulting set
+#' of `FileInfoDssDTO` objects alongside the corresponding dataset ids are then
+#' fetched, using `fetch_files()`. All named arguments passed as `...` are
+#' forwarded to [list_files()] and the `FileInfoDssDTO`-specific
+#' `fetch_files()` method.
+#' 
+#' In addition to datasets, dispatch can be on `FileInfoDssDTO` or
+#' `DataSetFileDTO` objects. In case of `FileInfoDssDTO` objects being passed,
+#' an additional character vector specifying the corresponding dataset ids is
+#' required, as `FileInfoDssDTO` objects do not contain any dataset identifying
+#' information. This character vector of dataset ids may be of length 1 or of
+#' the same length as the number of `FileInfoDssDTO` objects. Finally,
+#' `DataSetFileDTO` objects contain both path and dataset information so a
+#' single object uniquely identifies a file in a dataset.
+#' 
+#' File fetching may be carried out in serial or in parallel fashion,
+#' controlled by the `n_con` argument. If values `FALSE` or any integer `<= 1L`
+#' are passed, downloads are performed non-concurrently and otherwise the
+#' number of simultaneous connections is controlled by the integer passed as
+#' `n_con`.
+#' 
+#' The actual file fetching is done by `fetch_files_serial`/
+#' `fetch_files_parallel`, both of which accept a set of urls either as a
+#' character vector or a list of `call` objects (see [base::call()]). This is
+#' because file urls in openBIS have a limited lifetime and therefore must be
+#' used shortly after being created. In case a download fails, it is retried
+#' again up to the number of times specified as `n_try`. A vector of file sizes
+#' may be passed which is used to make sure the file was downloaded entirely.
+#' Finally, a function with a single argument can be passed as the argument
+#' `done`, which takes the downloaded data as input and does some processing.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to specify which files to download.
-#' @param ... Generic compatibility.
+#' @param ... Generic compatibility. May be passed to [list_files()] and/or
+#' `fetch_files_serial`/`fetch_files_parallel`.
+#' @param files Optional set of `FileInfoDssDTO` objects. If NULL, all files
+#' corresponding to the specified datasets are assumed.
+#' @param file_regex Regular expression applied to filenames. 
 #' 
 #' @export
 #' 
 fetch_files <- function(token, x, ...)
   UseMethod("fetch_files", x)
+
+fetch_dataset_files <- function(token,
+                                x,
+                                files = NULL,
+                                file_regex = NULL,
+                                ...) {
+
+  if (is.null(files)) {
+    files <- list_files(token, x, ...)
+    files <- files[!sapply(files, `[[`, "isDirectory")]
+  } else
+    assert_that(has_subclass(files, "FileInfoDssDTO"),
+                all(grepl("[0-9]+-[0-9]+", names(files))))
+
+  if (!is.null(file_regex)) {
+    assert_that(is.string(file_regex))
+    files <- files[grepl(file_regex, sapply(files, `[[`, "pathInDataSet"))]
+  }
+
+  fetch_files(token, files, names(files), ...)
+}
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.character <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.DataSet <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.DatasetIdentifier <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.DatasetReference <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.FeatureVectorDatasetReference <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.FeatureVectorDatasetWellReference <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.ImageDatasetReference <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.MicroscopyImageReference <- fetch_dataset_files
+
+#' @rdname fetch_files
+#' @export
+#' 
+fetch_files.PlateImageReference <- fetch_dataset_files
 
 #' @param n_con The number of simultaneous connections.
 #' 
@@ -229,7 +333,8 @@ fetch_files_serial <- function(urls,
                                ...) {
 
   assert_that(is.function(done),
-              length(n_try) == 1L, as.integer(n_try) == n_try)
+              length(n_try) == 1L, as.integer(n_try) == n_try,
+              all(is.character(url) | sapply(urls, is.call)))
 
   if (is.null(file_sizes))
     sizes <- rep(NA, length(urls))
@@ -326,7 +431,8 @@ fetch_files_parallel <- function(urls,
 
   assert_that(is.function(done),
               length(n_try) == 1L, as.integer(n_try) == n_try,
-              length(n_con) == 1L, as.integer(n_con) == n_con)
+              length(n_con) == 1L, as.integer(n_con) == n_con,
+              all(is.character(url) | sapply(urls, is.call)))
 
   if (is.null(file_sizes))
     sizes <- rep(NA, length(urls))

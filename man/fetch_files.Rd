@@ -2,6 +2,15 @@
 % Please edit documentation in R/file.R
 \name{fetch_files}
 \alias{fetch_files}
+\alias{fetch_files.character}
+\alias{fetch_files.DataSet}
+\alias{fetch_files.DatasetIdentifier}
+\alias{fetch_files.DatasetReference}
+\alias{fetch_files.FeatureVectorDatasetReference}
+\alias{fetch_files.FeatureVectorDatasetWellReference}
+\alias{fetch_files.ImageDatasetReference}
+\alias{fetch_files.MicroscopyImageReference}
+\alias{fetch_files.PlateImageReference}
 \alias{fetch_files.DataSetFileDTO}
 \alias{fetch_files.FileInfoDssDTO}
 \alias{fetch_files_serial}
@@ -9,6 +18,33 @@
 \title{Fetch files}
 \usage{
 fetch_files(token, x, ...)
+
+\method{fetch_files}{character}(token, x, files = NULL, file_regex = NULL,
+  ...)
+
+\method{fetch_files}{DataSet}(token, x, files = NULL, file_regex = NULL,
+  ...)
+
+\method{fetch_files}{DatasetIdentifier}(token, x, files = NULL,
+  file_regex = NULL, ...)
+
+\method{fetch_files}{DatasetReference}(token, x, files = NULL,
+  file_regex = NULL, ...)
+
+\method{fetch_files}{FeatureVectorDatasetReference}(token, x, files = NULL,
+  file_regex = NULL, ...)
+
+\method{fetch_files}{FeatureVectorDatasetWellReference}(token, x,
+  files = NULL, file_regex = NULL, ...)
+
+\method{fetch_files}{ImageDatasetReference}(token, x, files = NULL,
+  file_regex = NULL, ...)
+
+\method{fetch_files}{MicroscopyImageReference}(token, x, files = NULL,
+  file_regex = NULL, ...)
+
+\method{fetch_files}{PlateImageReference}(token, x, files = NULL,
+  file_regex = NULL, ...)
 
 \method{fetch_files}{DataSetFileDTO}(token, x, n_con = 5L, ...)
 
@@ -25,7 +61,13 @@ fetch_files_parallel(urls, n_try = 2L, file_sizes = NULL, done = identity,
 
 \item{x}{Object to specify which files to download.}
 
-\item{...}{Generic compatibility.}
+\item{...}{Generic compatibility. May be passed to \code{\link[=list_files]{list_files()}} and/or
+\code{fetch_files_serial}/\code{fetch_files_parallel}.}
+
+\item{files}{Optional set of \code{FileInfoDssDTO} objects. If NULL, all files
+corresponding to the specified datasets are assumed.}
+
+\item{file_regex}{Regular expression applied to filenames.}
 
 \item{n_con}{The number of simultaneous connections.}
 
@@ -43,6 +85,41 @@ url when \code{eval}d.}
 downloaded file.}
 }
 \description{
-The function \code{fetch_files()} downloads files specified by a set of
-\code{FileInfoDssDTO} objects alongside one or several dataset objects.
+The function \code{fetch_files()} downloads files associated to a dataset.
+Whenever dispatch occurs on a set of datasets (can either be a character
+vector or any object for which a \code{\link[=dataset_code]{dataset_code()}} method exists), the set
+of files to be downloaded can either be passed as the \code{files} argument or
+all available files for that dataset are listed using \code{\link[=list_files]{list_files()}}
+(folders themselves are removed), and this set of files is filtered if a
+regular expression is passed as argument \code{file_regex}. The resulting set
+of \code{FileInfoDssDTO} objects alongside the corresponding dataset ids are then
+fetched, using \code{fetch_files()}. All named arguments passed as \code{...} are
+forwarded to \code{\link[=list_files]{list_files()}} and the \code{FileInfoDssDTO}-specific
+\code{fetch_files()} method.
+}
+\details{
+In addition to datasets, dispatch can be on \code{FileInfoDssDTO} or
+\code{DataSetFileDTO} objects. In case of \code{FileInfoDssDTO} objects being passed,
+an additional character vector specifying the corresponding dataset ids is
+required, as \code{FileInfoDssDTO} objects do not contain any dataset identifying
+information. This character vector of dataset ids may be of length 1 or of
+the same length as the number of \code{FileInfoDssDTO} objects. Finally,
+\code{DataSetFileDTO} objects contain both path and dataset information so a
+single object uniquely identifies a file in a dataset.
+
+File fetching may be carried out in serial or in parallel fashion,
+controlled by the \code{n_con} argument. If values \code{FALSE} or any integer \code{<= 1L}
+are passed, downloads are performed non-concurrently and otherwise the
+number of simultaneous connections is controlled by the integer passed as
+\code{n_con}.
+
+The actual file fetching is done by \code{fetch_files_serial}/
+\code{fetch_files_parallel}, both of which accept a set of urls either as a
+character vector or a list of \code{call} objects (see \code{\link[base:call]{base::call()}}). This is
+because file urls in openBIS have a limited lifetime and therefore must be
+used shortly after being created. In case a download fails, it is retried
+again up to the number of times specified as \code{n_try}. A vector of file sizes
+may be passed which is used to make sure the file was downloaded entirely.
+Finally, a function with a single argument can be passed as the argument
+\code{done}, which takes the downloaded data as input and does some processing.
 }
