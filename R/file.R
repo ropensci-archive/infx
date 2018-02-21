@@ -334,7 +334,7 @@ fetch_files_serial <- function(urls,
 
   assert_that(is.function(done),
               length(n_try) == 1L, as.integer(n_try) == n_try,
-              all(is.character(url) | sapply(urls, is.call)))
+              all(is.character(urls) | sapply(urls, is.call)))
 
   if (is.null(file_sizes))
     sizes <- rep(NA, length(urls))
@@ -432,7 +432,7 @@ fetch_files_parallel <- function(urls,
   assert_that(is.function(done),
               length(n_try) == 1L, as.integer(n_try) == n_try,
               length(n_con) == 1L, as.integer(n_con) == n_con,
-              all(is.character(url) | sapply(urls, is.call)))
+              all(is.character(urls) | sapply(urls, is.call)))
 
   if (is.null(file_sizes))
     sizes <- rep(NA, length(urls))
