@@ -121,3 +121,12 @@ test_that("search for material", {
     search_openbis(tok, search_criteria(attribute_clause(2475)), "material"),
     mat_1)
 })
+
+test_that("property types can be listed", {
+  pt <- list_property_types(tok)
+  expect_is(pt, "list")
+  expect_equal(length(pt), 2L)
+  expect_true(all(sapply(pt, is_json_vec)))
+  expect_true(all(sapply(pt, get_subclass) %in%
+                c("ControlledVocabularyPropertyType", "PropertyType")))
+})

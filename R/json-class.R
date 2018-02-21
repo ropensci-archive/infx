@@ -126,7 +126,9 @@ as_json_class.default <- function(x, force = FALSE, ...) {
   if (force)
     x
   else
-    error_default(x, "if param force is FALSE, ")
+    stop("cannot handle objects of type c(",
+         paste0("\"", class(x), "\"", collapse = ", "),
+         "), if param force is FALSE.")
 }
 
 #' @rdname json_class_create
