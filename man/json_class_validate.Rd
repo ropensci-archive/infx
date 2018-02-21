@@ -45,12 +45,14 @@ proper \code{json_class} object, meaning that:
 \item it inherits \code{json_class}
 \item the last class attribute is \code{json_class}
 \item apart from \code{json_class} there exists at least one more class attribute
+}
+}
+\details{
 The latter function tests whether an object has a specific JSON class
 attached. In order to recursively test a \code{json_class} object for being
 properly formed, the function \code{check_json_class()} can be used. In order to
 retrieve the sub-class to a \code{json_class} object, \code{get_subclass()} can
 be used.
-}
 }
 \examples{
 lst <- list(`@type` = "foo", "a", "b")

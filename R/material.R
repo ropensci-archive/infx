@@ -4,27 +4,28 @@
 #' List all materials available on the queried openBIS instance for a given
 #' set of material id objects. Unfortunately there is no way for the available
 #' API version to list material id objects. These have to be instantiated by
-#' the user, using the function `material_id()`. A material id object is
-#' defined by a material code and a material type. Furthermore, two different
-#' types of material id objects are used for different API sections:
-#' `MaterialIdentifierGeneric` and `MaterialIdentifierScreening`. Current
-#' types for generic material object ids are
+#' the user, using the function `material_id()` or by searching with
+#' `search_openbis()`.
 #' 
-#' * compound
-#' * control
-#' * esirna
-#' * gene
-#' * mirna
-#' * mirna_inhibitor
-#' * mirna_mimic
-#' * pooled_sirna
-#' * sirna
+#' A material id object is defined by a material code and a material type.
+#' Furthermore, two different types of material id objects are used for
+#' different API sections: `MaterialIdentifierGeneric` and
+#' `MaterialIdentifierScreening`. Current types for generic material object
+#' ids are
+#'   * compound
+#'   * control
+#'   * esirna
+#'   * gene
+#'   * mirna
+#'   * mirna_inhibitor
+#'   * mirna_mimic
+#'   * pooled_sirna
+#'   * sirna
 #' 
 #' and for generic screening object ids
-#' 
-#' * compound
-#' * gene
-#' * oligo
+#'   * compound
+#'   * gene
+#'   * oligo
 #' 
 #' The construction of material codes depends on material type. Genes, for
 #' example are identified with Entrez gene ids (e.g. 2475 for MTOR), while for

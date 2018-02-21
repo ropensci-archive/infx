@@ -114,13 +114,11 @@ Several classes in addition to \code{DatasetIdentifier} implement the
 \code{IDatasetIdentifier} interface, including
 \itemize{
 \item \code{DatasetReference}
-\itemize{
 \item \code{FeatureVectorDatasetReference}
 \item \code{FeatureVectorDatasetWellReference}
 \item \code{ImageDatasetReference}
 \item \code{MicroscopyImageReference}
 \item \code{PlateImageReference}
-}
 }
 
 The above objects are returned by \code{list_references()} and the exact return

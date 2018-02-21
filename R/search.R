@@ -6,17 +6,16 @@
 #' object is being searched for. In case of `Sample`s being searched for,
 #' a further argument, `fetch_options`, can be specified for controlling the
 #' search, which can contain one or more of the strings
-#' 
-#' * `ancestors`: Ask for all ancestors.
-#' * `basic`: Samples will have only basic attributes (id, code, type, space
-#'            code, experiment identifier, registrator, registration date,
-#'            modification date) but no properties.
-#' * `children`: Samples contain also their children samples.
-#' * `contained`: Ask for contained samples.
-#' * `descendants`: Ask for all descendants.
-#' * `metaprojects`: Ask for metaprojects this sample belongs to.
-#' * `parents`: Samples contain also their parent samples.
-#' * `properties`: Samples contain basic attributes and all properties.
+#'   * `ancestors`: Ask for all ancestors.
+#'   * `basic`: Samples will have only basic attributes (id, code, type, space
+#'              code, experiment identifier, registrator, registration date,
+#'              modification date) but no properties.
+#'   * `children`: Samples contain also their children samples.
+#'   * `contained`: Ask for contained samples.
+#'   * `descendants`: Ask for all descendants.
+#'   * `metaprojects`: Ask for metaprojects this sample belongs to.
+#'   * `parents`: Samples contain also their parent samples.
+#'   * `properties`: Samples contain basic attributes and all properties.
 #' 
 #' A `SearchCriteria` object can be instantiated using the constructor
 #' `search_criteria`, which takes one or several match clause objects, see
@@ -26,15 +25,14 @@
 #' `search_sub_criteria()`, which takes a single `SearchCriteria` object
 #' alongside a string specifying the entities, the sub criterion is applied
 #' to. Possibilities are
-#' 
-#' * `data_set_container`
-#' * `data_set_parent`
-#' * `data_set_child`
-#' * `experiment`
-#' * `sample`
-#' * `sample_container`
-#' * `sample_child`
-#' * `sample_parent`
+#'   * `data_set_container`
+#'   * `data_set_parent`
+#'   * `data_set_child`
+#'   * `experiment`
+#'   * `sample`
+#'   * `sample_container`
+#'   * `sample_child`
+#'   * `sample_parent`
 #' 
 #' @inheritParams logout_openbis
 #' @param criteria A single `SearchCriteria` object.

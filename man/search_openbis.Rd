@@ -40,8 +40,6 @@ passing that to \code{search_openbis()}, alongside specifying what type of
 object is being searched for. In case of \code{Sample}s being searched for,
 a further argument, \code{fetch_options}, can be specified for controlling the
 search, which can contain one or more of the strings
-}
-\details{
 \itemize{
 \item \code{ancestors}: Ask for all ancestors.
 \item \code{basic}: Samples will have only basic attributes (id, code, type, space
@@ -54,7 +52,8 @@ modification date) but no properties.
 \item \code{parents}: Samples contain also their parent samples.
 \item \code{properties}: Samples contain basic attributes and all properties.
 }
-
+}
+\details{
 A \code{SearchCriteria} object can be instantiated using the constructor
 \code{search_criteria}, which takes one or several match clause objects, see
 \code{\link[=match_clause]{match_clause()}}, a search operator specifying whether to match \code{all} or

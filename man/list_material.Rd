@@ -41,13 +41,15 @@ the material listing to a certain type of materials.}
 List all materials available on the queried openBIS instance for a given
 set of material id objects. Unfortunately there is no way for the available
 API version to list material id objects. These have to be instantiated by
-the user, using the function \code{material_id()}. A material id object is
-defined by a material code and a material type. Furthermore, two different
-types of material id objects are used for different API sections:
-\code{MaterialIdentifierGeneric} and \code{MaterialIdentifierScreening}. Current
-types for generic material object ids are
+the user, using the function \code{material_id()} or by searching with
+\code{search_openbis()}.
 }
 \details{
+A material id object is defined by a material code and a material type.
+Furthermore, two different types of material id objects are used for
+different API sections: \code{MaterialIdentifierGeneric} and
+\code{MaterialIdentifierScreening}. Current types for generic material object
+ids are
 \itemize{
 \item compound
 \item control

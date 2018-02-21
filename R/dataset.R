@@ -9,7 +9,6 @@
 #' 
 #' Several classes in addition to `DatasetIdentifier` implement the
 #' `IDatasetIdentifier` interface, including
-#' 
 #'   * `DatasetReference`
 #'   * `FeatureVectorDatasetReference`
 #'   * `FeatureVectorDatasetWellReference`
@@ -57,7 +56,7 @@
 #' documentation contains the following explanation:
 #' 
 #' > If true, only data sets that are directly connected to the sample are
-#' included, otherwise data sets of child samples are included as well.
+#' > included, otherwise data sets of child samples are included as well.
 #' 
 #' This does however not seem to correspond to including child datasets in the
 #' API call to `listDataSets()` via its `connectionsToGet` argument. As long

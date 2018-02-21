@@ -175,6 +175,7 @@ as.list.json_class <- function(x,
 #'   * it inherits `json_class`
 #'   * the last class attribute is `json_class`
 #'   * apart from `json_class` there exists at least one more class attribute
+#' 
 #' The latter function tests whether an object has a specific JSON class
 #' attached. In order to recursively test a `json_class` object for being
 #' properly formed, the function `check_json_class()` can be used. In order to
