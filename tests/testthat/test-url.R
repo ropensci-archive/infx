@@ -69,7 +69,8 @@ test_that("dataset download urls can be generated", {
   url_2 <- list_download_urls(tok, codes[2], paths[1:2])
   expect_is(url_2, "character")
   expect_length(url_2, 2L)
-  expect_true(all(grepl("^https://", url_2)))
+  for (i in seq_along(url_2))
+    expect_match(url_2[i], "^https://")
 
   url_to <- list_download_urls(tok, codes[2], paths[1], 5L)
   expect_is(url_to, "character")
@@ -84,7 +85,17 @@ test_that("dataset download urls can be generated", {
   url_2 <- list_download_urls(tok, datasets[[2]], paths[1:2])
   expect_is(url_2, "character")
   expect_length(url_2, 2L)
-  expect_true(all(grepl("^https://", url_2)))
+  for (i in seq_along(url_2))
+    expect_match(url_2[i], "^https://")
+
+  url_2 <- list_download_urls(tok,
+                              c("20150518113941960-3132048",
+                                "20160421133225062-3373964"),
+                              "original/data/metadata.properties")
+  expect_is(url_2, "character")
+  expect_length(url_2, 2L)
+  for (i in seq_along(url_2))
+    expect_match(url_2[i], "^https://")
 
   dsid <- list_dataset_ids(tok, codes[2])
 
@@ -96,7 +107,8 @@ test_that("dataset download urls can be generated", {
   url_2 <- list_download_urls(tok, dsid[[1]], paths[1:2])
   expect_is(url_2, "character")
   expect_length(url_2, 2L)
-  expect_true(all(grepl("^https://", url_2)))
+  for (i in seq_along(url_2))
+    expect_match(url_2[i], "^https://")
 
   ds_file <- c(json_class(dataSetCode = codes[2],
                           path = paths[1],
@@ -115,7 +127,8 @@ test_that("dataset download urls can be generated", {
   url_2 <- list_download_urls(tok, ds_file[1:2])
   expect_is(url_2, "character")
   expect_length(url_2, 2L)
-  expect_true(all(grepl("^https://", url_2)))
+  for (i in seq_along(url_2))
+    expect_match(url_2[i], "^https://")
 
   url_to <- list_download_urls(tok, ds_file[[1]], 5L)
   expect_is(url_to, "character")
