@@ -2,4 +2,4 @@
 library(testthat)
 library(infx)
 
-test_check("infx", "feature|file|image|url")
+test_check("infx", "feature|file|image|url|read")

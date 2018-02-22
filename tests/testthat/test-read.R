@@ -1,59 +1,33 @@
 context("test readers")
 
 test_that("matlab data files can be read", {
-  files <- list_files(tok, "20160921085125038-3519900")
-  sel <- grepl(paste(".*handles.mat$", ".*Cells.Parent_Nuclei.mat$",
-                     ".*Count_Bacteria.mat$", ".*RobustMax_CorrDNA.mat$",
-                     ".*PathName_OrigActin.mat$", sep = "|"),
-               sapply(files, `[[`, "pathInDataSet"))
-  dat <- do_download(tok, "20160921085125038-3519900", files[sel])
 
-  expect_error(read_data(dat))
-  expect_error(read_data(dat[[grep("handles", names(dat))]]))
-  expect_error(read_data(dat[[grep("xml$", names(dat))]]))
-  expect_type(read_data(dat[[grep("Parent_Nuclei", names(dat))]]),
-                        "integer")
-  expect_is(read_data(dat[[grep("RobustMax", names(dat))]]), "numeric")
-  expect_true(attr(read_data(dat[[grep("RobustMax", names(dat))]]),
-                   "Csingle"))
-  expect_type(read_data(dat[[grep("PathName", names(dat))]]), "character")
-  expect_length(read_data(dat[[grep("Count", names(dat))]]), 2304L)
-  expect_true(all(attr(read_data(dat[[grep("Count", names(dat))]]),
-                       "lengths") == 1))
-  tmp <- read_data(dat[[grep("Parent_Nuclei", names(dat))]])
-  expect_equal(length(tmp),
-               sum(attr(tmp, "lengths")))
-})
+  data <- fetch_files(tok, "20120629084351794-603357",
+                      file_regex = "Image\\.Count_[A-z]+\\.mat$",
+                      done = read_mat_files)
 
-test_that("public metadata data files can be read", {
-  public <- do_download(tok, "20171124145822228-3752139",
-                        list_files(tok, "20171124145822228-3752139"))
-  expect_is(dat <- read_pub_meta(public), "tbl")
-  expect_equal(nrow(dat), 3590L)
-  expect_equal(ncol(dat), 28L)
-  expect_true(all(sapply(dat, is.character)))
-  expect_false(anyNA(dat[["PlateQualityStatus"]]))
+  expect_gte(length(data), 1L)
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("data_set", "file", "data"))
+    expect_is(data[[i]][["data_set"]], "character")
+    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "list")
+    expect_true(all(sapply(data[[i]][["data"]], is.numeric)))
+    expect_true(assertthat::has_attr(data[[i]][["data"]], "object"))
+    expect_true(assertthat::has_attr(data[[i]][["data"]], "feature"))
+  }
 
-  expect_message(dat <- read_pub_meta(public, col_types = NULL))
-  expect_equal(ncol(dat), 28L)
-  expect_false(all(sapply(dat, is.character)))
+  expect_warning(data <- fetch_files(tok, "20120629084351794-603357",
+                                     file_regex = "metadata.properties$",
+                                     done = read_mat_files))
 
-  expect_is(dat <- read_pub_meta(public, na = c("", "NA", "NaN", "unknown",
-                                                "UNKNOWN")), "tbl")
-  expect_equal(ncol(dat), 28L)
-  expect_true(all(sapply(dat, is.character)))
-  expect_true(anyNA(dat[["PlateQualityStatus"]]))
-})
-
-test_that("full metadata data files can be read", {
-  files <- list.files(system.file("extdata", package = "infx"),
-                      pattern = "\\.tsv\\.gz$", full.names = TRUE)
-  files <- setNames(lapply(files, function(x)
-                      readBin(x, "raw", file.info(x)$size)),
-                    basename(files))
-  expect_is(dat <- read_full_meta(files), "list")
-  for (i in seq_along(dat)) expect_is(dat[[i]], "tbl")
-  for (i in seq_along(dat)) expect_named(dat[[i]])
-  for (i in seq_along(dat)) expect_gte(nrow(dat[[i]]), 0L)
-  for (i in seq_along(dat)) expect_true(all(sapply(dat[[i]], is.character)))
+  expect_gte(length(data), 1L)
+  for (i in seq_along(data)) {
+    expect_named(data[[i]], c("data_set", "file", "data"))
+    expect_is(data[[i]][["data_set"]], "character")
+    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
+    expect_s3_class(data[[i]][["file"]], "json_class")
+    expect_is(data[[i]][["data"]], "raw")
+  }
 })
