@@ -1,59 +1,89 @@
 
-#' @title Read single cell data
+#' Read single cell data
 #'
-#' @description Calling [R.matlab::readMat] single cell feature files in
-#' Matlab format, as produced by CellProfiler are read and checked for the
-#' correct structure. The Matlab file is expected to contain a nested list
-#' where each node corresponds to an image and contains a list which is either
-#' holding a single value or a vector of values.  
+#' Calling [R.matlab::readMat()] single cell feature files in Matlab format, as
+#' produced by CellProfiler are read and checked for the correct structure.
+#' The Matlab file is expected to contain a nested list where each node
+#' corresponds to an image and contains a list which is either holding a
+#' single value or a vector of values.  
 #' 
 #' @param data The data to be read.
 #' 
-#' @return A vector holding all data. The attribute \code{length} can be used
-#' to split the linearized data into bins corresponding to images.
-#' 
+#' @rdname read_files
 #' @export
 #' 
-read_data <- function(data) {
+read_cc_mat <- function(data) {
 
   is_int <- function(x) {
-    isTRUE(all.equal(x, suppressWarnings(as.integer(x)),
-                     check.attributes = FALSE))
+    if (is.numeric(x))
+      isTRUE(all.equal(x, suppressWarnings(as.integer(x)),
+                       check.attributes = FALSE))
+    else
+      FALSE
   }
 
-  assert_that(is.raw(data))
+  as_int <- function(x) if (is_int(x)) as.integer(x) else x
 
-  data <- R.matlab::readMat(data)
-
-  assert_that(is.list(data), length(data) == 1L)
-  data <- data[["handles"]]
-  info <- character()
-  repeat {
-    if (length(data) > 1L) break
-    info <- c(info, unlist(attr(data, "dimnames")))
-    assert_that(is.list(data), all(attr(data, "dim") == c(rep(1L, 3))))
-    data <- data[[1]]
-  }
-  assert_that(length(info) == 3L, info[1] == "Measurements")
-
-  data <- unlist(data, recursive = FALSE)
-  assert_that(is.list(data), !any(sapply(data, is.list)))
-
-  dims <- t(sapply(data, dim))
-  assert_that(!any(dims[, 2] > 1L))
-
-  res <- unlist(data, recursive = FALSE)
-
-  if (is.numeric(res)) {
-    if (is_int(res)) res <- as.integer(res)
-    else if (all(sapply(data, attr, "Csingle"))) attr(res, "Csingle") <- TRUE
+  reduce_nesting <- function(x) {
+    if (is.list(x) && length(x) == 1L)
+      x <- x[[1]]
+    if (is.list(x))
+      lapply(x, reduce_nesting)
+    else
+      drop(x)
   }
 
-  attr(res, "lengths") <- as.integer(dims[, 1])
-  attr(res, "object") <- info[2]
-  attr(res, "feature") <- info[3]
+  extract_data <- function(x, y = character()) {
+    if (is.list(x) && length(x) == 1L &&
+        has_attr(x, "dim") && has_attr(x, "dimnames"))
+      extract_data(x[[1]], c(y, unlist(attr(x, "dimnames"))))
+    else {
+      x <- reduce_nesting(x)
+      attr(x, "info") <- y
+      x
+    }
+  }
 
-  res
+  adj_mat <- function(well) {
+    if (is.list(well) && all(sapply(well, is.numeric))) {
+      lengths <- sapply(well, length)
+      entries <- unlist(well, recursive = FALSE)
+      if (is_int(entries)) {
+        well
+      } else if (max(lengths) == 0L) {
+        Matrix::Matrix(nrow = 0, ncol = 0)
+      } else
+        Matrix::sparseMatrix(rep(seq_along(lengths), lengths),
+                             entries,
+                             symmetric = TRUE, dims = rep(length(well), 2))
+    } else
+      well
+  }
+
+  tryCatch({
+
+    dat <- R.matlab::readMat(data, fixNames = FALSE, drop = "singletonLists")
+    dat <- extract_data(dat[["handles"]])
+
+    info <- setdiff(attr(dat, "info"), "Measurements")
+    assert_that(length(info) == 2L, is.list(dat))
+
+    if (info[1] == "Neighbors")
+      dat <- lapply(dat, adj_mat)
+
+    dat <- lapply(dat, as_int)
+
+    attr(dat, "object") <- info[1]
+    attr(dat, "feature") <- info[2]
+
+    dat
+  },
+  error = function(e) {
+    warning("a read error occurred ",
+            if (exists("info")) paste0("(", info[1], ": ", info[2], ") "),
+            ":\n  ", e)
+    data
+  })
 }
 
 #' @title Read public meta data
