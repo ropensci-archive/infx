@@ -40,4 +40,4 @@ reference:
     contents: 
       - make_request
       - login_openbis
-      - read_cc_mat
+      - starts_with("read_")
