@@ -22,7 +22,7 @@ test_that("json objects can be checked for fields", {
 
   expect_error(has_fields(obj_1, 1L))
   expect_error(has_fields(obj_1, character()))
-  expect_error(has_fields(list(a = 1), "a"))
+  expect_false(has_fields(list(a = 1), "a"))
 })
 
 test_that("NULL fields can be filtered", {

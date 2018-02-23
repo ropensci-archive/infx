@@ -74,7 +74,7 @@ test_that("json objects can be created", {
 })
 
 test_that("json objects can be tested", {
-  expect_false(has_subclass(list(`@type` = "foo", "a", "b")))
+  expect_false(has_subclass(list(`@type` = "foo", "a", "b"), "foo"))
   expect_true(has_subclass(as_json_class(list(`@type` = "foo", "a", "b")),
                                 "foo"))
   expect_false(has_subclass(list(`@type` = "foo", "a", "b"), "foo"))

@@ -42,9 +42,7 @@ read_mat_files <- function(data) {
     extract_data(dat[["handles"]])
   },
   error = function(e) {
-    warning("a read error occurred",
-            if (exists("info")) paste0(" (", info[1], ": ", info[2], ")"),
-            ":\n  ", e)
+    warning("a read error occurred:\n  ", e)
     data
   })
 }
