@@ -33,6 +33,7 @@ reference:
     contents: 
       - matches("json_vec")
       - matches("json_class")
+      - has_fields
   - title: Utility functions
     desc: >
       Assemble JSON-RPC request and issue a POST request to openBIS; parse

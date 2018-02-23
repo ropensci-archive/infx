@@ -114,37 +114,3 @@ test_that("json subclass can be determined", {
                                 class = c("foo", "bar", "json_class"))),
     c("foo", "bar"))
 })
-
-test_that("json objects can be subsetted", {
-  lst <- list(foo = list(`@type` = "foobar",
-                         a = "c",
-                         b = "d"),
-              bar = list(`@type` = "foobar",
-                         a = "e",
-                         b = "f"))
-  expect_true(all(sapply(lapply(as_json_class(lst), `[`, "b"),
-                         class)[1, ] == "foobar"))
-  expect_true(all(sapply(lapply(as_json_class(lst), `[`, "b"),
-                         class)[2, ] == "json_class"))
-  lst <- lapply(as_json_class(lst), `class<-`, "some_class")
-  expect_true(all(sapply(lst, class) == "some_class"))
-  expect_false(all(sapply(lapply(lst, `[`, "b"), class) == "some_class"))
-})
-
-test_that("json objects can be rep'd", {
-  cls <- json_class(a = "b", c = "d", class = "foo")
-
-  cls_2 <- rep(cls, 2)
-
-  expect_is(cls_2, "foo")
-  expect_is(cls_2, "json_vec")
-  expect_identical(cls_2[[1]], cls_2[[2]])
-  expect_equal(length(cls_2), 2L)
-
-  cls_4 <- rep(cls, 2, each = 2)
-
-  expect_is(cls_4, "foo")
-  expect_is(cls_4, "json_vec")
-  expect_identical(cls_4[[1]], cls_4[[2]])
-  expect_equal(length(cls_4), 4L)
-})
