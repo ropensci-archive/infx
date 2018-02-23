@@ -4,11 +4,6 @@
 \alias{is_json_class}
 \alias{is.json_class}
 \alias{check_json_class}
-\alias{has_subclass}
-\alias{has_subclass.json_class}
-\alias{has_subclass.default}
-\alias{get_subclass}
-\alias{get_subclass.json_class}
 \title{Validate JSON class objects}
 \usage{
 is_json_class(x)
@@ -16,30 +11,15 @@ is_json_class(x)
 is.json_class(x)
 
 check_json_class(x, recursive = TRUE)
-
-has_subclass(x, class, ...)
-
-\method{has_subclass}{json_class}(x, class, ...)
-
-\method{has_subclass}{default}(x, class, ...)
-
-get_subclass(x)
-
-\method{get_subclass}{json_class}(x)
 }
 \arguments{
 \item{x}{Object to process.}
 
 \item{recursive}{Recursively apply the function.}
-
-\item{class}{JSON sub-class name.}
-
-\item{...}{Generic compatibility.}
 }
 \description{
-The functions \code{is_json_class()} and \code{has_subclass()} test whether an
-object is a JSON class object. The former tests whether an object is a
-proper \code{json_class} object, meaning that:
+The functions \code{is_json_class()} tests whether an object is a proper JSON
+class object, meaning that:
 \itemize{
 \item it is a list
 \item it inherits \code{json_class}
@@ -48,11 +28,10 @@ proper \code{json_class} object, meaning that:
 }
 }
 \details{
-The latter function tests whether an object has a specific JSON class
-attached. In order to recursively test a \code{json_class} object for being
-properly formed, the function \code{check_json_class()} can be used. In order to
-retrieve the sub-class to a \code{json_class} object, \code{get_subclass()} can
-be used.
+In order to recursively test a \code{json_class} object for being properly
+formed, the function \code{check_json_class()} can be used. This recurses through
+a list structure and whenever an object inherits from \code{json_class} it is
+tested with \code{is_json_class()}.
 }
 \examples{
 lst <- list(`@type` = "foo", "a", "b")

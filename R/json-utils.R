@@ -1,16 +1,32 @@
 
-#' Check JSON objects
+#' JSON class utilities
 #'
-#' Test whether a single `json_class` object contains all of the specified
-#' fields or whether each `json_class` object contained in a `json_vec` object
-#' passes this test.
+#' The generic function `has_fields()` tests whether a single `json_class`
+#' object contains all of the specified fields or whether each `json_class`
+#' object contained in a `json_vec` object passes this test. If dispatch
+#' occurs on an object that is neither of class `json_class`, nor of class
+#' `json_vec`, `has_fields()` returns `FALSE`. In order to test whether a
+#' `json_class` or a `json_vec`  object is of a certain sub-class (can also be
+#' a vector of sub-classes), the generic function `has_subclass()` can be
+#' used. Dispatch on any other type objects will return `FALSE`. The sub-class
+#' of a `json_class` or a `json_vec`  object can be determined, using
+#' `get_subclass`. This will also work if dispatched on a `list` of objects if
+#' that list object passes [has_common_subclass()].
+#' 
+#' The function `remove_null()` recursively removes all NULL fields from a
+#' nested list structure while preserving `json_class` and `json_vec` class
+#' attributes. This can be useful when fetching an object form openBIS and
+#' subsequently using this object for a further query: whenever the object
+#' returned by the first API call contains NULL fields, it is safer to remove
+#' all of them, as in some cases this might cause an error in the following
+#' API requests.
 #' 
 #' @param x Object to test.
 #' @param fields Character vector of nonzero length, holding the field names
 #' for which to check.
 #' @param ... Generic compatibility.
 #' 
-#' @rdname json_check
+#' @rdname json_utils
 #'  
 #' @examples
 #' obj_1 <- json_class(a = 1, b = 2, class = "foo")
@@ -34,27 +50,46 @@ has_fields <- function(x, fields, ...) {
   UseMethod("has_fields", x)
 }
 
-#' @rdname json_check
+#' @rdname json_utils
 #' @export
 #' 
-has_fields.json_class <- function(x, fields, ...)
-  all(fields %in% names(x))
+has_fields.default <- function(x, ...) FALSE
 
-#' @rdname json_check
+#' @param class Character vector of nonzero length, holding the class names
+#' to test for.
+#' 
+#' @rdname json_utils
 #' @export
 #' 
-has_fields.json_vec <- function(x, fields, ...)
-  all(sapply(x, has_fields, fields))
+has_subclass <- function(x, class, ...) {
 
-#' Remove NULL entries
-#'
-#' Recursively remove all NULL fields from a nested list structure while
-#' preserving `json_class` and `json_vec` class attributes.
+  assert_that(is.character(class),
+              length(class) >= 1L)
+
+  UseMethod("has_subclass", x)
+}
+
+#' @rdname json_utils
+#' @export
 #' 
-#' @param x Object to process.
+has_subclass.default <- function(x, ...) FALSE
+
+#' @rdname json_utils
+#' @export
 #' 
-#' @rdname remove_null
-#'  
+get_subclass <- function(x)
+  UseMethod("get_subclass")
+
+#' @rdname json_utils
+#' @export
+#' 
+get_subclass.list <- function(x, ...) {
+  assert_that(has_common_subclass(x))
+  unlist(unique(lapply(x, get_subclass)))
+}
+
+#' @rdname json_utils
+#' 
 #' @examples
 #' tmp <- json_class(a = json_class(b = "c", d = NULL, class = "foo"),
 #'                   e = json_class(f = "g", class = "bar"),
@@ -78,114 +113,31 @@ remove_null <- function(x) {
     x
 }
 
-#' Print JSON objects
+#' Helper function for printing JSON objects
+#' 
+#' This function powers the `json_class` and `json_vec` specific methods of the
+#' base generic [base::print()]. As it is applied recursively and recursion
+#' depth has to be controllable, the function is aware of both the current
+#' recursion depth (via `cur_depth`) and the maximally allowed recursion depth
+#' (via `max_depth`). Furthermore the printing style (colored output and UTF
+#' box characters for visualizing the tree structure) can be controlled through
+#' the `layout` argument. Under some circumstances, this requires a given node
+#' to know whether the parent node is a named object or not, which is passed
+#' from a parent node to its children through the `unnamed_parent` argument.
 #'
-#' Inspired by the ast printing function of Hadley's `lobstr` package and
-#' borrowing code from [there](https://git.io/vFMA5), this enables the
-#' recursive printing of `json_class` and `json_vec` objects. Printing style
-#' can either be with fancy (colors, UTF box characters. etc.) or simple and
-#' several options are available for setting the max printing with/length, as
-#' well as a max recursion depth for nested `json_class` objects.
-#' 
-#' @param x Object to print.
-#' @param depth The maximum recursion depth for printing.
-#' @param width Number of columns to maximally print.
-#' @param length Number of lines to maximally print.
+#' @param x The JSON object to print.
+#' @param unnamed_parent Whether the parent node is named or not (in some
+#' cases, a different box character has to be used if this is true).
+#' @param cur_depth The current recursion depth.
+#' @param max_depth The maximum recursion depth.
+#' @param layout Characters for printing the tree structure and styles to be
+#' applied to the different entities.
 #' @param fancy Logical switch to enable font styles, colors and UTF box
-#' characters for printing.
-#' @param ... Generic compatibility.
+#' characters.
 #' 
-#' @rdname json_print
-#'  
-#' @examples
-#' tmp <- json_class(a = json_class(b = "c", class = "foo"),
-#'                   d = json_class(e = "f", class = "bar"),
-#'                   class = "foobar")
-#' tmp
-#' print(tmp, depth = 2L)
-#' print(tmp, depth = 2L, length = 4L)
+#' @keywords internal
+#' @rdname json_internal
 #' 
-#' @export
-#' 
-print.json_class <- function(x,
-                             depth = 1L,
-                             width = getOption("width"),
-                             length = 100L,
-                             fancy = TRUE,
-                             ...) {
-
-  if (!check_json_class(x))
-    warning("printing a json_class object that is not properly formed.")
-
-  out <- print_json_class(x, cur_depth = 0L, max_depth = depth,
-                          layout = style(fancy))
-
-  too_wide <- crayon::col_nchar(out) > width
-  out[too_wide] <- paste0(crayon::col_substr(out[too_wide], 1L,
-                                             width - 4L), "...")
-
-  if (length(out) > length) {
-    out[length] <- "..."
-    out <- out[seq_len(length)]
-  }
-
-  cat(paste(out, "\n", collapse = ""), sep = "")
-  invisible(x)
-}
-
-#' @rdname json_print
-#' @export
-#' 
-print.json_vec <- function(x,
-                           depth = 1L,
-                           width = getOption("width"),
-                           length = 100L,
-                           fancy = TRUE,
-                           ...) {
-
-  form <- style(fancy)
-
-  out <- lapply(x, print_json_class, cur_depth = 0L, max_depth = depth,
-                layout = form)
-
-  if (length(out) == 1L) {
-    out <- c(paste0(form$h, form$h, out[[1]][1]),
-             paste(" ", out[[1]][-1]))
-  } else {
-    out <- c(paste0(form$t, form$h, out[[1]][1]),
-             paste(form$v, out[[1]][-1]),
-             unlist(lapply(out[-c(1, length(out))], function(y) {
-               c(paste0(form$j, form$h, y[1]), paste(form$v, y[-1]))
-             })),
-             paste0(form$l, form$h, out[[length(out)]][1][1]),
-             paste(" ", out[[length(out)]][-1]))
-  }
-
-  too_wide <- crayon::col_nchar(out) > width
-  out[too_wide] <- paste0(crayon::col_substr(out[too_wide], 1L,
-                                             width - 3L), "...")
-
-  if (length(out) > length) {
-    out[length] <- "..."
-    out <- out[seq_len(length)]
-  }
-
-  cat(paste(out, "\n", collapse = ""), sep = "")
-  invisible(x)
-}
-
-# Helper functions for printing JSON objects
-#
-# @param x The JSON object to print.
-# @param unnamed_parent Whether the parent node is named or not (in some
-# cases, a different box character has to be used if this is true).
-# @param cur_depth The current recursion depth.
-# @param max_depth The maximum recursion depth.
-# @param layout Characters for printing the tree structure and styles to be
-# applied to the different entities.
-# @param fancy Logical switch to enable font styles, colors and UTF box
-# characters.
-# 
 print_json_class <- function(x,
                              unnamed_parent = FALSE,
                              cur_depth,
@@ -266,6 +218,17 @@ print_json_class <- function(x,
   }
 }
 
+#' Style function for printing JSON objects
+#' 
+#' In order to enable fancy printing (colored output and UTF box characters
+#' for visualizing the tree structure), this function provides the required
+#' styling information. Fancy printing can be disabled by setting the `fancy`
+#' argument to `FALSE`, which yields ASCII characters for the tree structure
+#' and disables color.
+#'
+#' @keywords internal
+#' @rdname json_internal
+#' 
 style <- function(fancy = TRUE) {
 
   if (fancy && l10n_info()$`UTF-8`) {

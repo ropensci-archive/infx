@@ -170,24 +170,20 @@ as.list.json_class <- function(x,
 
 #' Validate JSON class objects
 #'
-#' The functions `is_json_class()` and `has_subclass()` test whether an
-#' object is a JSON class object. The former tests whether an object is a
-#' proper `json_class` object, meaning that:
+#' The functions `is_json_class()` tests whether an object is a proper JSON
+#' class object, meaning that:
 #'   * it is a list
 #'   * it inherits `json_class`
 #'   * the last class attribute is `json_class`
 #'   * apart from `json_class` there exists at least one more class attribute
 #' 
-#' The latter function tests whether an object has a specific JSON class
-#' attached. In order to recursively test a `json_class` object for being
-#' properly formed, the function `check_json_class()` can be used. In order to
-#' retrieve the sub-class to a `json_class` object, `get_subclass()` can
-#' be used.
+#' In order to recursively test a `json_class` object for being properly
+#' formed, the function `check_json_class()` can be used. This recurses through
+#' a list structure and whenever an object inherits from `json_class` it is
+#' tested with `is_json_class()`.
 #' 
 #' @param x Object to process.
-#' @param class JSON sub-class name.
 #' @param recursive Recursively apply the function.
-#' @param ... Generic compatibility.
 #' 
 #' @rdname json_class_validate
 #'  
@@ -195,9 +191,7 @@ as.list.json_class <- function(x,
 #' lst <- list(`@type` = "foo", "a", "b")
 #' cls <- as_json_class(lst)
 #' 
-#' print(cls)
 #' is_json_class(cls)
-#' get_subclass(cls)
 #' 
 #' identical(rm_json_class(cls), lst)
 #' 
@@ -232,49 +226,20 @@ check_json_class <- function(x, recursive = TRUE) {
     res
 }
 
-#' @rdname json_class_validate
+#' @rdname json_utils
 #' @export
 #' 
-has_subclass <- function(x, class, ...)
-  UseMethod("has_subclass")
+has_fields.json_class <- function(x, fields, ...)
+  all(fields %in% names(x))
 
-#' @rdname json_class_validate
+#' @rdname json_utils
 #' @export
 #' 
-has_subclass.json_class <- function(x, class, ...) {
-  assert_that(is.character(class))
-  isTRUE(all(class == get_subclass(x)))
-}
+has_subclass.json_class <- function(x, class, ...)
+  setequal(class, get_subclass(x))
 
-#' @rdname json_class_validate
-#' @export
-#' 
-has_subclass.default <- function(x, class, ...) FALSE
-
-#' @rdname json_class_validate
-#' @export
-#' 
-get_subclass <- function(x)
-  UseMethod("get_subclass")
-
-#' @rdname json_class_validate
+#' @rdname json_utils
 #' @export
 #' 
 get_subclass.json_class <- function(x)
   setdiff(class(x), "json_class")
-
-#' @export
-`[.json_class` <- function(x, i, ...) {
-  r <- NextMethod("[")
-  class(r) <- class(x)
-  r
-}
-
-#' @export
-c.json_class <- function(x, ...) c(as_json_vec(x), json_vec(...))
-
-#' @export
-rep.json_class <- function(x, ...) {
-  x <- as_json_vec(x)
-  as_json_vec(NextMethod())
-}

@@ -102,13 +102,12 @@ as.list.json_vec <- function(x, ...) {
 #'     determined for the children.
 #' 
 #' Testing whether a list structure consists of `json_class` objects which are
-#' of the same sub-class can be done with `has_common_subclass()` and this
-#' shared sub-class can be extracted, using the S3 generic function
-#' `get_subclass()`.
+#' of the same sub-class can be done with `has_common_subclass()`. This always
+#' returns `TRUE` if a `json_class` object is passed and `FALSE` if a non-list
+#' structure is passed.
 #'
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
-#' @param class Class name to check for.
 #' 
 #' @rdname json_vec_validate
 #' 
@@ -122,7 +121,6 @@ as.list.json_vec <- function(x, ...) {
 #' is_json_vec(a)
 #' 
 #' has_common_subclass(vec)
-#' get_subclass(vec)
 #' 
 #' @export
 #' 
@@ -145,73 +143,32 @@ is.json_vec <- is_json_vec
 #' @rdname json_vec_validate
 #' @export
 #' 
-has_subclass.json_vec <- function(x, class, ...) {
-  assert_that(is.character(class))
-  isTRUE(all(class == get_subclass(x)))
-}
-
-#' @rdname json_vec_validate
-#' @export
-#' 
 has_common_subclass <- function(x) {
 
   if (is_json_class(x))
     TRUE
+  else if (!is.list(x))
+    FALSE
   else if (all(sapply(x, is_json_class)))
     isTRUE(length(unique(lapply(x, get_subclass))) == 1L)
   else
     FALSE
 }
 
-#' @rdname json_vec_validate
+#' @rdname json_utils
 #' @export
 #' 
-get_subclass.list <- function(x, ...) {
-  assert_that(has_common_subclass(x))
-  unlist(unique(lapply(x, get_subclass)))
-}
+has_fields.json_vec <- function(x, fields, ...)
+  all(sapply(x, has_fields, fields))
 
-#' @rdname json_vec_validate
+#' @rdname json_utils
+#' @export
+#' 
+has_subclass.json_vec <- function(x, class, ...)
+  setequal(class, get_subclass(x))
+
+#' @rdname json_utils
 #' @export
 #' 
 get_subclass.json_vec <- function(x, ...)
   setdiff(class(x), "json_vec")
-
-#' @export
-`[.json_vec` <- function(x, i, ...) {
-  new_json_vec(NextMethod())
-}
-
-#' @export
-`[<-.json_vec` <- function(x, i, ..., value) {
-
-  sub_class <- get_subclass(x)
-
-  assert_that(get_subclass(value) == sub_class)
-
-  if (is_json_class(value))
-    value <- list(value)
-
-  NextMethod()
-}
-
-#' @export
-`[[.json_vec` <- function(x, i, ...) {
-  res <- NextMethod()
-  assert_that(is_json_class(res))
-  res
-}
-
-#' @export
-`[[<-.json_vec` <- function(x, i, ..., value) {
-
-  assert_that(get_subclass(value) == get_subclass(x))
-
-  NextMethod()
-}
-
-#' @export
-c.json_vec <- function(x, ...) as_json_vec(NextMethod())
-
-#' @export
-rep.json_vec <- function(x, ...) as_json_vec(NextMethod())
