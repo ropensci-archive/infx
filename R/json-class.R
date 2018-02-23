@@ -235,6 +235,12 @@ has_fields.json_class <- function(x, fields, ...)
 #' @rdname json_utils
 #' @export
 #' 
+get_field.json_class <- function(x, field, ...)
+  x[[field]]
+
+#' @rdname json_utils
+#' @export
+#' 
 has_subclass.json_class <- function(x, class, ...)
   setequal(class, get_subclass(x))
 

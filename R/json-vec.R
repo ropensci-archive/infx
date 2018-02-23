@@ -164,6 +164,12 @@ has_fields.json_vec <- function(x, fields, ...)
 #' @rdname json_utils
 #' @export
 #' 
+get_field.json_vec <- function(x, field, ...)
+  sapply(x, `[[`, field)
+
+#' @rdname json_utils
+#' @export
+#' 
 has_subclass.json_vec <- function(x, class, ...)
   setequal(class, get_subclass(x))
 

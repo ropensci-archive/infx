@@ -2,21 +2,26 @@
 % Please edit documentation in R/json-class.R, R/json-utils.R, R/json-vec.R
 \name{has_fields.json_class}
 \alias{has_fields.json_class}
+\alias{get_field.json_class}
 \alias{has_subclass.json_class}
 \alias{get_subclass.json_class}
 \alias{has_fields}
 \alias{has_fields.default}
+\alias{get_field}
 \alias{has_subclass}
 \alias{has_subclass.default}
 \alias{get_subclass}
 \alias{get_subclass.list}
 \alias{remove_null}
 \alias{has_fields.json_vec}
+\alias{get_field.json_vec}
 \alias{has_subclass.json_vec}
 \alias{get_subclass.json_vec}
 \title{JSON class utilities}
 \usage{
 \method{has_fields}{json_class}(x, fields, ...)
+
+\method{get_field}{json_class}(x, field, ...)
 
 \method{has_subclass}{json_class}(x, class, ...)
 
@@ -25,6 +30,8 @@
 has_fields(x, fields, ...)
 
 \method{has_fields}{default}(x, ...)
+
+get_field(x, field, ...)
 
 has_subclass(x, class, ...)
 
@@ -38,6 +45,8 @@ remove_null(x)
 
 \method{has_fields}{json_vec}(x, fields, ...)
 
+\method{get_field}{json_vec}(x, field, ...)
+
 \method{has_subclass}{json_vec}(x, class, ...)
 
 \method{get_subclass}{json_vec}(x, ...)
@@ -50,6 +59,9 @@ for which to check.}
 
 \item{...}{Generic compatibility.}
 
+\item{field}{Character vector of length 1, holding the field name to
+extract.}
+
 \item{class}{Character vector of nonzero length, holding the class names
 to test for.}
 }
@@ -58,15 +70,18 @@ The generic function \code{has_fields()} tests whether a single \code{json_class
 object contains all of the specified fields or whether each \code{json_class}
 object contained in a \code{json_vec} object passes this test. If dispatch
 occurs on an object that is neither of class \code{json_class}, nor of class
-\code{json_vec}, \code{has_fields()} returns \code{FALSE}. In order to test whether a
-\code{json_class} or a \code{json_vec}  object is of a certain sub-class (can also be
-a vector of sub-classes), the generic function \code{has_subclass()} can be
-used. Dispatch on any other type objects will return \code{FALSE}. The sub-class
-of a \code{json_class} or a \code{json_vec}  object can be determined, using
-\code{get_subclass}. This will also work if dispatched on a \code{list} of objects if
-that list object passes \code{\link[=has_common_subclass]{has_common_subclass()}}.
+\code{json_vec}, \code{has_fields()} returns \code{FALSE}. A single field can be extracted
+from a \code{json_class} or a \code{json_vec} object, using \code{get_field()}.
 }
 \details{
+In order to test whether a \code{json_class} or a \code{json_vec}  object is of a
+certain sub-class (can also be a vector of sub-classes), the generic
+function \code{has_subclass()} can be used. Dispatch on any other type objects
+will return \code{FALSE}. The sub-class of a \code{json_class} or a \code{json_vec}
+object can be determined, using \code{get_subclass}. This will also work if
+dispatched on a \code{list} of objects if that list object passes
+\code{\link[=has_common_subclass]{has_common_subclass()}}.
+
 The function \code{remove_null()} recursively removes all NULL fields from a
 nested list structure while preserving \code{json_class} and \code{json_vec} class
 attributes. This can be useful when fetching an object form openBIS and

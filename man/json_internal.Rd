@@ -41,6 +41,7 @@ In order to enable fancy printing (colored output and UTF box characters
 for visualizing the tree structure), this function provides the required
 styling information. Fancy printing can be disabled by setting the \code{fancy}
 argument to \code{FALSE}, which yields ASCII characters for the tree structure
-and disables color.
+and disables color. This was more or less directly copied from Hadley's
+\href{https://git.io/vFMA5}{lobstr} package.
 }
 \keyword{internal}

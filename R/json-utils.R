@@ -5,13 +5,16 @@
 #' object contains all of the specified fields or whether each `json_class`
 #' object contained in a `json_vec` object passes this test. If dispatch
 #' occurs on an object that is neither of class `json_class`, nor of class
-#' `json_vec`, `has_fields()` returns `FALSE`. In order to test whether a
-#' `json_class` or a `json_vec`  object is of a certain sub-class (can also be
-#' a vector of sub-classes), the generic function `has_subclass()` can be
-#' used. Dispatch on any other type objects will return `FALSE`. The sub-class
-#' of a `json_class` or a `json_vec`  object can be determined, using
-#' `get_subclass`. This will also work if dispatched on a `list` of objects if
-#' that list object passes [has_common_subclass()].
+#' `json_vec`, `has_fields()` returns `FALSE`. A single field can be extracted
+#' from a `json_class` or a `json_vec` object, using `get_field()`.
+#' 
+#' In order to test whether a `json_class` or a `json_vec`  object is of a
+#' certain sub-class (can also be a vector of sub-classes), the generic
+#' function `has_subclass()` can be used. Dispatch on any other type objects
+#' will return `FALSE`. The sub-class of a `json_class` or a `json_vec`
+#' object can be determined, using `get_subclass`. This will also work if
+#' dispatched on a `list` of objects if that list object passes
+#' [has_common_subclass()].
 #' 
 #' The function `remove_null()` recursively removes all NULL fields from a
 #' nested list structure while preserving `json_class` and `json_vec` class
@@ -54,6 +57,19 @@ has_fields <- function(x, fields, ...) {
 #' @export
 #' 
 has_fields.default <- function(x, ...) FALSE
+
+#' @param field Character vector of length 1, holding the field name to
+#' extract.
+#' 
+#' @rdname json_utils
+#' @export
+#' 
+get_field <- function(x, field, ...) {
+
+  assert_that(has_fields(x, field))
+
+  UseMethod("get_field", x)
+}
 
 #' @param class Character vector of nonzero length, holding the class names
 #' to test for.
@@ -224,7 +240,8 @@ print_json_class <- function(x,
 #' for visualizing the tree structure), this function provides the required
 #' styling information. Fancy printing can be disabled by setting the `fancy`
 #' argument to `FALSE`, which yields ASCII characters for the tree structure
-#' and disables color.
+#' and disables color. This was more or less directly copied from Hadley's
+#' [`lobstr`](https://git.io/vFMA5) package.
 #'
 #' @keywords internal
 #' @rdname json_internal

@@ -317,10 +317,10 @@ dataset_code <- function(x, ...)
 #' @export
 #' 
 dataset_code.DataSet <- function(x, ...)
-  extract_field(x, "code")
+  get_field(x, "code")
 
 ds_code_ds_id <- function(x, ...)
-  extract_field(x, "datasetCode")
+  get_field(x, "datasetCode")
 
 #' @rdname dataset_code
 #' @keywords internal
@@ -369,15 +369,7 @@ dataset_code.PlateImageReference <- ds_code_ds_id
 #' @export
 #' 
 dataset_code.DataSetFileDTO <- function(x, ...)
-  extract_field(x, "dataSetCode")
-
-extract_field <- function(x, field) {
-  assert_that(has_fields(x, field))
-  if (is_json_vec(x))
-    sapply(x, `[[`, field)
-  else
-    x[[field]]
-}
+  get_field(x, "dataSetCode")
 
 resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
 
