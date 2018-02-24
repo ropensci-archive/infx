@@ -70,6 +70,9 @@ list_datasets <- function(token, x, ...)
   UseMethod("list_datasets", x)
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listDataSetsForSample")}
+#' * \Sexpr{infx::docs_link("gis", "listDataSets")}
 #' @export
 #' 
 list_datasets.Sample <- function(token,
@@ -95,6 +98,8 @@ list_datasets.Sample <- function(token,
 }
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listDataSetsForExperiments")}
 #' @export
 #' 
 list_datasets.Experiment <- function(token,
@@ -112,6 +117,8 @@ list_datasets.Experiment <- function(token,
 }
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "getDataSetMetaData")}
 #' @export
 #' 
 list_datasets.character <- function(token,
@@ -135,6 +142,8 @@ list_dataset_ids <- function(token, x, ...)
   UseMethod("list_dataset_ids", x)
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("sas", "getDatasetIdentifiers")}
 #' @export
 #' 
 list_dataset_ids.character <- function(token, x, ...)
@@ -148,6 +157,11 @@ list_dataset_ids.DataSet <- function(token, x, ...)
   list_dataset_ids(token, dataset_code(x))
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("sas", "listImageDatasets")}
+#' * \Sexpr{infx::docs_link("sas", "listRawImageDatasets")}
+#' * \Sexpr{infx::docs_link("sas", "listSegmentationImageDatasets")}
+#' * \Sexpr{infx::docs_link("sas", "listFeatureVectorDatasets")}
 #' @export
 #' 
 list_references <- function(token, x, ...)
@@ -199,6 +213,9 @@ list_img_ref_wrapper <- function(token, x, wells = NULL, channels, ...)
   list_img_ref(token, x, wells, channels)
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "listImageReferences")}
+#' * \Sexpr{infx::docs_link("dsrs", "listPlateImageReferences")}
 #' @export
 #' 
 list_references.DatasetIdentifier <- list_img_ref_wrapper
@@ -293,6 +310,8 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 }
 
 #' @rdname list_datasets
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listDataSetTypes")}
 #' @export
 #' 
 list_dataset_types <- function(token)

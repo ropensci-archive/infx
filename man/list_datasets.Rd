@@ -157,3 +157,45 @@ differs from setting \code{areOnlyDirectlyConnectedIncluded} to \code{FALSE}, th
 option is not exposed to the user.
 }
 
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listDataSetsForSample")}
+\item \Sexpr{infx::docs_link("gis", "listDataSets")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listDataSetsForExperiments")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "getDataSetMetaData")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("sas", "getDatasetIdentifiers")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("sas", "listImageDatasets")}
+\item \Sexpr{infx::docs_link("sas", "listRawImageDatasets")}
+\item \Sexpr{infx::docs_link("sas", "listSegmentationImageDatasets")}
+\item \Sexpr{infx::docs_link("sas", "listFeatureVectorDatasets")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "listImageReferences")}
+\item \Sexpr{infx::docs_link("dsrs", "listPlateImageReferences")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listDataSetTypes")}
+}
+}
+
