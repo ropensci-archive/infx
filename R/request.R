@@ -24,6 +24,10 @@
 #' requests are issued per HTTP request.
 #' @param x A (possibly nested) list structure for which all `@id` fields are
 #' recursively removed.
+#' @param mode Can either be `api` or `docs` and specifies what type of url to
+#' return.
+#' @param link Logical flag whether to return an url or a markdown link.
+#' @param version Used only for docs urls, specifies the openBIS version.
 #' 
 #' @rdname request
 #' 
@@ -83,25 +87,79 @@ request_openbis <- function(method,
                                     "IDssServiceRpcScreening"),
                             host = "https://infectx.biozentrum.unibas.ch") {
 
+  api <- switch(match.arg(api),
+                IGeneralInformationService = "gis",
+                IGeneralInformationChangingService = "gics",
+                IQueryApiServer = "qas",
+                IWebInformationService = "wis",
+                IDssServiceRpcGeneric = "dsrg",
+                IScreeningApiServer = "sas",
+                IDssServiceRpcScreening = "dsrs")
+
+  make_request(openbis_url(api, host = host), method, params)
+}
+
+#' @rdname request
+#' @export
+#' 
+openbis_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
+                                "dsrs"),
+                        mode = c("api", "docs"),
+                        link = FALSE,
+                        host = "https://infectx.biozentrum.unibas.ch",
+                        version = "13.04.0") {
+
   api <- match.arg(api)
+  mode <- match.arg(mode)
 
-  url <- switch(api,
-                IGeneralInformationService =
-                  "openbis/openbis/rmi-general-information-v1.json",
-                IGeneralInformationChangingService =
-                  "openbis/openbis/rmi-general-information-changing-v1.json",
-                IQueryApiServer =
-                  "openbis/openbis/rmi-query-v1.json",
-                IWebInformationService =
-                  "openbis/openbis/rmi-web-information-v1.json",
-                IDssServiceRpcGeneric =
-                  "datastore_server/rmi-dss-api-v1.json",
-                IScreeningApiServer =
-                  "openbis/openbis/rmi-screening-api-v1.json",
-                IDssServiceRpcScreening =
-                  "rmi-datastore-server-screening-api-v1.json")
+  if (mode == "api") {
+    url <- switch(api,
+                  gis = "openbis/openbis/rmi-general-information-v1.json",
+                  gics = paste0("openbis/openbis/",
+                                "rmi-general-information-changing-v1.json"),
+                  qas = "openbis/openbis/rmi-query-v1.json",
+                  wis = "openbis/openbis/rmi-web-information-v1.json",
+                  dsrg = "datastore_server/rmi-dss-api-v1.json",
+                  sas = "openbis/openbis/rmi-screening-api-v1.json",
+                  dsrs = "rmi-datastore-server-screening-api-v1.json")
 
-  make_request(paste(host, url, sep = "/"), method, params)
+    url <- paste(host, url, sep = "/")
+
+  } else {
+
+    url <- switch(api,
+                  gis = paste0("generic/shared/api/v1/",
+                               "IGeneralInformationService.html"),
+                  gics = paste0("generic/shared/api/v1/",
+                                "IGeneralInformationChangingService.html"),
+                  qas = "plugin/query/shared/api/v1/IQueryApiServer.html",
+                  wis = "generic/shared/api/v1/IWebInformationService.html",
+                  dsrg = paste0("dss/generic/shared/api/v1/",
+                                "IDssServiceRpcGeneric.html"),
+                  sas = paste0("plugin/screening/shared/api/v1/",
+                               "IScreeningApiServer.html"),
+                  dsrs = paste0("dss/screening/shared/api/v1/",
+                                "IDssServiceRpcScreening.html"))
+
+    url <- paste0("https://svnsis.ethz.ch/doc/openbis", version,
+                  "ch/systemsx/cisd/openbis", url, sep = "/")
+  }
+
+  if (link) {
+
+    txt <- switch(api,
+                  gis = "IGeneralInformationService",
+                  gics = "IGeneralInformationChangingService",
+                  qas = "IQueryApiServer",
+                  wis = "IWebInformationService",
+                  dsrg = "IDssServiceRpcGeneric",
+                  sas = "IScreeningApiServer",
+                  dsrs = "IDssServiceRpcScreening")
+
+    paste0("[", txt, "]", "(", url, ")")
+
+  } else
+    url
 }
 
 #' @rdname request
