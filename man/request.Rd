@@ -3,7 +3,8 @@
 \name{make_request}
 \alias{make_request}
 \alias{request_openbis}
-\alias{openbis_url}
+\alias{api_url}
+\alias{docs_link}
 \alias{resolve_references}
 \title{Make a JSON-RPC request}
 \usage{
@@ -15,9 +16,11 @@ request_openbis(method, params, api = c("IGeneralInformationService",
   "IWebInformationService", "IDssServiceRpcGeneric", "IScreeningApiServer",
   "IDssServiceRpcScreening"), host = "https://infectx.biozentrum.unibas.ch")
 
-openbis_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  mode = c("api", "docs"), link = FALSE,
-  host = "https://infectx.biozentrum.unibas.ch", version = "13.04.0")
+api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
+  host = "https://infectx.biozentrum.unibas.ch")
+
+docs_link(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
+  method = NULL, version = "13.04.0")
 
 resolve_references(x)
 }
@@ -37,11 +40,6 @@ string of length 7). Can be usually be ignored, as only single JSON-RPC
 requests are issued per HTTP request.}
 
 \item{api, host}{Strings used to construct the destination url.}
-
-\item{mode}{Can either be \code{api} or \code{docs} and specifies what type of url to
-return.}
-
-\item{link}{Logical flag whether to return an url or a markdown link.}
 
 \item{x}{A (possibly nested) list structure for which all \code{@id} fields are
 recursively removed.}

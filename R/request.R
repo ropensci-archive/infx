@@ -24,9 +24,6 @@
 #' requests are issued per HTTP request.
 #' @param x A (possibly nested) list structure for which all `@id` fields are
 #' recursively removed.
-#' @param mode Can either be `api` or `docs` and specifies what type of url to
-#' return.
-#' @param link Logical flag whether to return an url or a markdown link.
 #' @param version Used only for docs urls, specifies the openBIS version.
 #' 
 #' @rdname request
@@ -96,70 +93,69 @@ request_openbis <- function(method,
                 IScreeningApiServer = "sas",
                 IDssServiceRpcScreening = "dsrs")
 
-  make_request(openbis_url(api, host = host), method, params)
+  make_request(api_url(api, host = host), method, params)
 }
 
 #' @rdname request
 #' @export
 #' 
-openbis_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
-                                "dsrs"),
-                        mode = c("api", "docs"),
-                        link = FALSE,
-                        host = "https://infectx.biozentrum.unibas.ch",
-                        version = "13.04.0") {
+api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
+                            "dsrs"),
+                    host = "https://infectx.biozentrum.unibas.ch") {
+
+  url <- switch(match.arg(api),
+                gis = "openbis/openbis/rmi-general-information-v1.json",
+                gics = paste0("openbis/openbis/",
+                              "rmi-general-information-changing-v1.json"),
+                qas = "openbis/openbis/rmi-query-v1.json",
+                wis = "openbis/openbis/rmi-web-information-v1.json",
+                dsrg = "datastore_server/rmi-dss-api-v1.json",
+                sas = "openbis/openbis/rmi-screening-api-v1.json",
+                dsrs = "rmi-datastore-server-screening-api-v1.json")
+
+  paste(host, url, sep = "/")
+}
+
+#' @rdname request
+#' @export
+#' 
+docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
+                              "dsrs"),
+                      method = NULL,
+                      version = "13.04.0") {
 
   api <- match.arg(api)
-  mode <- match.arg(mode)
 
-  if (mode == "api") {
-    url <- switch(api,
-                  gis = "openbis/openbis/rmi-general-information-v1.json",
-                  gics = paste0("openbis/openbis/",
-                                "rmi-general-information-changing-v1.json"),
-                  qas = "openbis/openbis/rmi-query-v1.json",
-                  wis = "openbis/openbis/rmi-web-information-v1.json",
-                  dsrg = "datastore_server/rmi-dss-api-v1.json",
-                  sas = "openbis/openbis/rmi-screening-api-v1.json",
-                  dsrs = "rmi-datastore-server-screening-api-v1.json")
+  url <- switch(api,
+                gis = paste0("generic/shared/api/v1/",
+                             "IGeneralInformationService.html"),
+                gics = paste0("generic/shared/api/v1/",
+                              "IGeneralInformationChangingService.html"),
+                qas = "plugin/query/shared/api/v1/IQueryApiServer.html",
+                wis = "generic/shared/api/v1/IWebInformationService.html",
+                dsrg = paste0("dss/generic/shared/api/v1/",
+                              "IDssServiceRpcGeneric.html"),
+                sas = paste0("plugin/screening/shared/api/v1/",
+                             "IScreeningApiServer.html"),
+                dsrs = paste0("dss/screening/shared/api/v1/",
+                              "IDssServiceRpcScreening.html"))
 
-    url <- paste(host, url, sep = "/")
+  url <- paste("https://svnsis.ethz.ch/doc/openbis", version,
+               "ch/systemsx/cisd/openbis", url, sep = "/")
 
-  } else {
+  txt <- switch(api,
+                gis = "IGeneralInformationService",
+                gics = "IGeneralInformationChangingService",
+                qas = "IQueryApiServer",
+                wis = "IWebInformationService",
+                dsrg = "IDssServiceRpcGeneric",
+                sas = "IScreeningApiServer",
+                dsrs = "IDssServiceRpcScreening")
 
-    url <- switch(api,
-                  gis = paste0("generic/shared/api/v1/",
-                               "IGeneralInformationService.html"),
-                  gics = paste0("generic/shared/api/v1/",
-                                "IGeneralInformationChangingService.html"),
-                  qas = "plugin/query/shared/api/v1/IQueryApiServer.html",
-                  wis = "generic/shared/api/v1/IWebInformationService.html",
-                  dsrg = paste0("dss/generic/shared/api/v1/",
-                                "IDssServiceRpcGeneric.html"),
-                  sas = paste0("plugin/screening/shared/api/v1/",
-                               "IScreeningApiServer.html"),
-                  dsrs = paste0("dss/screening/shared/api/v1/",
-                                "IDssServiceRpcScreening.html"))
+  if (!is.null(method))
+    txt <- paste(txt, method, sep = ":")
 
-    url <- paste0("https://svnsis.ethz.ch/doc/openbis", version,
-                  "ch/systemsx/cisd/openbis", url, sep = "/")
-  }
-
-  if (link) {
-
-    txt <- switch(api,
-                  gis = "IGeneralInformationService",
-                  gics = "IGeneralInformationChangingService",
-                  qas = "IQueryApiServer",
-                  wis = "IWebInformationService",
-                  dsrg = "IDssServiceRpcGeneric",
-                  sas = "IScreeningApiServer",
-                  dsrs = "IDssServiceRpcScreening")
-
-    paste0("[", txt, "]", "(", url, ")")
-
-  } else
-    url
+  paste0("\\href{", url, "}{", txt, "}")
 }
 
 #' @rdname request
