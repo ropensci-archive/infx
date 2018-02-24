@@ -24,7 +24,6 @@
 #' requests are issued per HTTP request.
 #' @param x A (possibly nested) list structure for which all `@id` fields are
 #' recursively removed.
-#' @param version Used only for docs urls, specifies the openBIS version.
 #' 
 #' @rdname request
 #' 

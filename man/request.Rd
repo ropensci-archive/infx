@@ -43,8 +43,6 @@ requests are issued per HTTP request.}
 
 \item{x}{A (possibly nested) list structure for which all \code{@id} fields are
 recursively removed.}
-
-\item{version}{Used only for docs urls, specifies the openBIS version.}
 }
 \description{
 Issues a POST request to a JSON-RPC server. All \code{@type} fields are

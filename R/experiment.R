@@ -30,12 +30,17 @@ list_experiments <- function(token, x, ...)
   UseMethod("list_experiments", x)
 
 #' @rdname list_experiments
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listExperiments")}
 #' @export
 #' 
 list_experiments.ExperimentIdentifier <- function(token, x, ...)
   request_openbis("listExperiments", list(token, exp_id_str(x)))
 
 #' @rdname list_experiments
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listExperimentsHavingDataSets")}
+#' * \Sexpr{infx::docs_link("gis", "listExperimentsHavingSamples")}
 #' @export
 #' 
 list_experiments.Project <- function(token,
@@ -70,12 +75,16 @@ list_experiments.Project <- function(token,
 }
 
 #' @rdname list_experiments
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("sas", "listExperiments")}
 #' @export
 #' 
 list_experiment_ids <- function(token)
   request_openbis("listExperiments", token, "IScreeningApiServer")
 
 #' @rdname list_experiments
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listExperimentTypes")}
 #' @export
 #' 
 list_experiment_types <- function(token)

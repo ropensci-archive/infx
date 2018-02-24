@@ -53,3 +53,26 @@ does not incur an API call and can act on both a single experiment object
 or a vector of experiment objects (passed as a \code{json_vec} object) and will
 return a \code{json_vec} object of type \code{ExperimentIdentifier}.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listExperiments")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listExperimentsHavingDataSets")}
+\item \Sexpr{infx::docs_link("gis", "listExperimentsHavingSamples")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("sas", "listExperiments")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listExperimentTypes")}
+}
+}
+
