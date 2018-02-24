@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ```
 # [infx](https://nbenn.github.io/infx)
 
-[![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
+[![lifecycle](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
 [![Travis-CI Build Status](https://travis-ci.org/nbenn/infx.svg?branch=master)](https://travis-ci.org/nbenn/infx)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/nbenn/infx?branch=master&svg=true)](https://ci.appveyor.com/project/nbenn/infx)
 [![Coverage status](https://codecov.io/gh/nbenn/infx/branch/master/graph/badge.svg)](https://codecov.io/github/nbenn/infx?branch=master)
