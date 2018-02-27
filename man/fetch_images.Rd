@@ -114,3 +114,16 @@ class \code{AbstractFormatSelectionCriterion}, which causes an issue with JSON
 deserialization.
 }
 
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "loadImagesBase64")}
+\item \Sexpr{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "loadPhysicalThumbnailsBase64")}
+}
+}
+

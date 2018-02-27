@@ -26,6 +26,10 @@ list_image_metadata <- function(token, x, ...)
   UseMethod("list_image_metadata", x)
 
 #' @rdname list_image_metadata
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("sas", "getExperimentImageMetadata")}
+#' * \Sexpr{infx::docs_link("dsrs", "listImageMetadata")}
+#' * \Sexpr{infx::docs_link("dsrs", "listAvailableImageRepresentationFormats")}
 #' @export
 #' 
 list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
@@ -153,6 +157,10 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' class `AbstractFormatSelectionCriterion`, which causes an issue with JSON
 #' deserialization.
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "loadImagesBase64")}
+#' * \Sexpr{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
+#' 
 #' @export
 #' 
 fetch_images <- function(token, x, ...)
@@ -273,6 +281,8 @@ fetch_images.MicroscopyImageReference <- function(token,
 }
 
 #' @rdname fetch_images
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "loadPhysicalThumbnailsBase64")}
 #' @export
 #' 
 fetch_images.PlateImageReference <- function(token,

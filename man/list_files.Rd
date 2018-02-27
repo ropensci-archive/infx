@@ -70,3 +70,10 @@ occurs on. In case a set of objects is passed, the search-tuning arguments
 \code{path} and \code{recursive} have to be euther of length 1 or of the same length
 as \code{x}.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrg", "listFilesForDataSet")}
+}
+}
+

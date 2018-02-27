@@ -27,6 +27,8 @@ list_files <- function(token, x, ...)
   UseMethod("list_files", x)
 
 #' @rdname list_files
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrg", "listFilesForDataSet")}
 #' @export
 #' 
 list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {

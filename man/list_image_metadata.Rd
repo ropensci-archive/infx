@@ -57,3 +57,12 @@ argument: if it is set to \code{metadata} (default), objects of type
 \code{ImageDatasetMetadata} and it it is set to \code{format}, objects of type
 \code{DatasetImageRepresentationFormats} are returned.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("sas", "getExperimentImageMetadata")}
+\item \Sexpr{infx::docs_link("dsrs", "listImageMetadata")}
+\item \Sexpr{infx::docs_link("dsrs", "listAvailableImageRepresentationFormats")}
+}
+}
+
