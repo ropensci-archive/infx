@@ -41,3 +41,15 @@ features as character vector or feature codes. If for different data sets
 different sets of features are available, \code{list_feature_codes()} provides
 the union of the features of all data sets.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
+}
+}
+

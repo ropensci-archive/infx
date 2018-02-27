@@ -16,6 +16,8 @@
 #' @param x Object to specify the set of feature vector data sets of interest.
 #' @param ... Generic compatibility 
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
 #' @export
 #' 
 list_features <- function(token, x, ...)
@@ -37,6 +39,8 @@ list_features.FeatureVectorDatasetReference <- list_feats
 list_features.FeatureVectorDatasetWellReference <- list_feats
 
 #' @rdname list_features
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
 #' @export
 #' 
 list_feature_codes <- function(token, x, ...)
@@ -92,6 +96,8 @@ fetch_features <- function(token, x, feature_codes = NA, ...)
     UseMethod("fetch_features", x)
 
 #' @rdname fetch_features
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "loadFeatures")}
 #' @export
 #' 
 fetch_features.FeatureVectorDatasetReference <- function(token,
@@ -112,6 +118,8 @@ fetch_features.FeatureVectorDatasetReference <- function(token,
 }
 
 #' @rdname fetch_features
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "loadFeaturesForDatasetWellReferences")}
 #' @export
 #' 
 fetch_features.FeatureVectorDatasetWellReference <- function(

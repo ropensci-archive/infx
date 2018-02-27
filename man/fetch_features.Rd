@@ -49,3 +49,15 @@ cannot be supplied as this will cause an error as well (hence the use of
 behaves this way is currently unclear.
 }
 
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "loadFeatures")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("dsrs", "loadFeaturesForDatasetWellReferences")}
+}
+}
+
