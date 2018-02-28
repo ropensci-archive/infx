@@ -92,3 +92,12 @@ All metadata corresponding to a plate (specified as a set of \code{Plate} or
 The returned \code{PlateMetadata} objects also contain a list of corresponding
 \code{WellMetadata} objects.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("sas", "listPlates")}
+\item \Sexpr{infx::docs_link("sas", "listPlateWells")}
+\item \Sexpr{infx::docs_link("sas", "getPlateMetadataList")}
+}
+}
+

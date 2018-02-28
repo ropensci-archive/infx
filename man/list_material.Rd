@@ -84,6 +84,14 @@ many mapping scenario (e.g. a well being linked to both an oligo and a
 gene). This can be overcome by specifying the type of the material of
 interest (see examples).
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "getMaterialByCodes")}
+\item \Sexpr{infx::docs_link("sas", "listPlateMaterialMapping")}
+}
+}
+
 \examples{
 \dontrun{
   tok <- login_openbis("username", "password")

@@ -13,6 +13,9 @@
 #' 
 #' @rdname login
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
@@ -54,12 +57,16 @@ login_openbis <- function(user,
 }
 
 #' @rdname login
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "logout")}
 #' @export
 #' 
 logout_openbis <- function(token)
   invisible(unlist(request_openbis("logout", list(token))))
 
 #' @rdname login
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "isSessionActive")}
 #' @export
 #' 
 is_token_valid <- function(token)

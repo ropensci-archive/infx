@@ -45,6 +45,11 @@
 #' @param include_datasets Logical switch indicating whether to also return
 #' the connected image and image analysis data sets.
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("sas", "listPlates")}
+#' * \Sexpr{infx::docs_link("sas", "listPlateWells")}
+#' * \Sexpr{infx::docs_link("sas", "getPlateMetadataList")}
+#' 
 #' @rdname list_plate_well
 #' 
 #' @export

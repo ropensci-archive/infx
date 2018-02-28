@@ -26,6 +26,23 @@ is chosen, the user is logged out automatically upon garbage collection of
 the token. The validity of a token can be checked using \code{is_token_valid()}
 and a login token can be destroyed using \code{logout_openbis()}.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "logout")}
+}
+
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "isSessionActive")}
+}
+}
+
 \examples{
 \donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)

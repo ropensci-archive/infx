@@ -51,6 +51,10 @@
 #' the material listing to a certain type of materials.
 #' @param ... Generic compatibility.
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "getMaterialByCodes")}
+#' * \Sexpr{infx::docs_link("sas", "listPlateMaterialMapping")}
+#' 
 #' @examples
 #' \dontrun{
 #'   tok <- login_openbis("username", "password")
