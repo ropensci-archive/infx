@@ -46,3 +46,13 @@ classes \code{PlateIdentifier} and \code{WellIdentifier} (as well as \code{Plate
 \code{Well}).
 }
 
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listSamplesForExperiment")}
+\item \Sexpr{infx::docs_link("sas", "getPlateSample")}
+\item \Sexpr{infx::docs_link("sas", "getWellSample")}
+\item \Sexpr{infx::docs_link("gis", "listSampleTypes")}
+}
+}
+

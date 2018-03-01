@@ -19,6 +19,15 @@
 #' 
 #' @rdname list_urls
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listDataStores")}
+#' * \Sexpr{infx::docs_link("gis", "getDefaultPutDataStoreBaseURL")}
+#' * \Sexpr{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
+#' * \Sexpr{infx::docs_link("gis", "getDataStoreBaseURLs")}
+#' * \Sexpr{infx::docs_link("dsrg", "getDownloadUrlForFileForDataSet")}
+#' * \Sexpr{infx::docs_link("dsrg",
+#'                          "getDownloadUrlForFileForDataSetWithTimeout")}
+#' 
 #' @export
 #' 
 list_datastores <- function(token)

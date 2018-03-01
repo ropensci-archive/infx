@@ -17,6 +17,12 @@
 #' `ExperimentIdentifier` or `Experiment` objects.
 #' @param ... Generic compatibility
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listSamplesForExperiment")}
+#' * \Sexpr{infx::docs_link("sas", "getPlateSample")}
+#' * \Sexpr{infx::docs_link("sas", "getWellSample")}
+#' * \Sexpr{infx::docs_link("gis", "listSampleTypes")}
+#' 
 #' @export
 #' 
 list_samples <- function(token, x, ...)

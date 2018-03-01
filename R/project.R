@@ -9,6 +9,9 @@
 #' 
 #' @inheritParams logout_openbis
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listProjects")}
+#' 
 #' @export
 #' 
 list_projects <- function(token)

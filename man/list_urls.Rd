@@ -48,3 +48,16 @@ data store servers that host the supplied datasets (or that of the default
 data store server in case no data set is supplied). Download urls of files
 can be listed using the function \code{list_download_urls()}.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listDataStores")}
+\item \Sexpr{infx::docs_link("gis", "getDefaultPutDataStoreBaseURL")}
+\item \Sexpr{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
+\item \Sexpr{infx::docs_link("gis", "getDataStoreBaseURLs")}
+\item \Sexpr{infx::docs_link("dsrg", "getDownloadUrlForFileForDataSet")}
+\item \Sexpr{infx::docs_link("dsrg",
+"getDownloadUrlForFileForDataSetWithTimeout")}
+}
+}
+

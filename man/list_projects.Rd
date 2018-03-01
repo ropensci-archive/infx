@@ -16,3 +16,10 @@ One or more projects are contained in each space (the topmost
 organizational entity) and each project consists of one or several
 experiments.
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "listProjects")}
+}
+}
+

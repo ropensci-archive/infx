@@ -47,6 +47,12 @@
 #' can be used to create a `SearchCriteria` object.
 #' @param type The entity type, a `SearchSubCriteria` is applied to.
 #' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "searchForDataSets")}
+#' * \Sexpr{infx::docs_link("gis", "searchForExperiments")}
+#' * \Sexpr{infx::docs_link("gis", "searchForMaterials")}
+#' * \Sexpr{infx::docs_link("gis", "searchForSamples")}
+#' 
 #' @export
 #' 
 search_openbis <- function(token,

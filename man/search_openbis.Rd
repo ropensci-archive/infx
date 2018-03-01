@@ -73,3 +73,13 @@ to. Possibilities are
 \item \code{sample_parent}
 }
 }
+\section{openBIS}{
+
+\itemize{
+\item \Sexpr{infx::docs_link("gis", "searchForDataSets")}
+\item \Sexpr{infx::docs_link("gis", "searchForExperiments")}
+\item \Sexpr{infx::docs_link("gis", "searchForMaterials")}
+\item \Sexpr{infx::docs_link("gis", "searchForSamples")}
+}
+}
+
