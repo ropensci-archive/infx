@@ -1,0 +1,94 @@
+---
+title: "openBIS API coverage"
+author: "Nicolas Bennett"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{OpenBIS API}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(infx)
+library(rvest)
+library(knitr)
+```
+
+# Outline
+
+* implementing further methods howto
+* detailed list of implemented methods
+
+# Summary of API methods
+
+```{r api-calls, include = FALSE}
+get_openbis_items <- function(x) {
+  sections <- tools:::RdTags(x) == "\\section"
+  if (sum(sections) > 0L)
+    sections[sections] <- sapply(x[sections], function(sec) {
+      tolower(tools:::.Rd_get_text(sec[[1L]])) == "openbis"
+    })
+
+  if (sum(sections) == 1L) {
+    obis <- x[[which(sections)]][[2L]]
+    is_itemize <- tools:::RdTags(obis) == "\\itemize"
+    res <- unlist(obis[is_itemize])
+    res[!res %in% c("\n", " ")]
+  } else if (sum(sections) > 1L)
+    stop("expecting one or zero openbis sections")
+  else
+    NA
+}
+
+pkg <- "infx"
+rd_db <- tools:::fetchRdDB(file.path(find.package(pkg), "help", pkg))
+api_calls <- Filter(Negate(is.na), unlist(lapply(rd_db, get_openbis_items)))
+
+urls <- gsub("^\\\\href\\{", "",
+             sapply(strsplit(api_calls, "\\}\\{"), `[`, 1L))
+
+api_calls <- gsub("\\}$", "", sapply(strsplit(api_calls, "\\}\\{"), `[`, 2L))
+api_calls <- strsplit(api_calls, ":")
+```
+
+```{r api-docs, echo = FALSE, results = "asis", tidy = FALSE}
+out <- sapply(sort(unique(urls)), function(x) {
+  docs <- read_html(x)
+  api <- html_nodes(docs,
+                    xpath = "/html/body/div[4]/div[2]/ul/li/ul[2]/li/table")
+
+  res <- apply(html_table(api)[[1]], 1, function(y) {
+    ret_type <- y[1]
+    y <- y[2]
+    fun_name <- sub("\\($", "", regmatches(y, regexpr("^.+?\\(", y)))
+    args <- sub("^\\(", "",
+                sub("\\)$", "", regmatches(y, regexpr("\\(.+?\\)", y))))
+    args <- strsplit(strsplit(args, ",\\s*")[[1]], "\\s+")
+    desc <- sub("\\)\n", "", regmatches(y, regexpr("\\)\n.+$", y)))
+
+    if (length(desc) && grepl("^Deprecated", desc))
+      return(NULL)
+
+    found <- fun_name %in% sapply(api_calls[urls == x], `[`, 2L)
+
+    list(`Function name` = fun_name,
+         Status = ifelse(found, "implemented", "skipped"),
+         `Function arguments` = args, `Return type` = ret_type,
+         Description = desc)
+  })
+
+  title <- html_nodes(docs, xpath = "/html/body/div[3]/h2")
+  desc <- html_nodes(docs, xpath = "/html/body/div[4]/div[1]/ul/li/div")
+  
+  print(kable(do.call(rbind, res),
+              caption = paste0("[", html_text(title), "](", x, "): ",
+                               html_text(desc))))
+  cat("\n")
+})
+```
