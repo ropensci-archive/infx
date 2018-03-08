@@ -20,11 +20,6 @@ library(rvest)
 library(knitr)
 ```
 
-# Outline
-
-* implementing further methods howto
-* detailed list of implemented methods
-
 ```{r api-calls, include = FALSE}
 get_openbis_items <- function(x) {
   sections <- tools:::RdTags(x) == "\\section"
@@ -56,6 +51,25 @@ api_calls <- strsplit(api_calls, ":")
 ```
 
 ```{r api-info, include = FALSE}
+badger <- function(value) {
+  color <- if (value < 15)
+    "red"
+  else if (value < 30)
+    "orange"
+  else if (value < 45)
+    "yellow"
+  else if (value < 60)
+    "yellowgreen"
+  else if (value < 75)
+    "green"
+  else
+    "brightgreen"
+
+  paste0("![implementation status](",
+         "https://img.shields.io/badge/implementation%20status-",
+         value, "%25-", color, ".svg)")
+}
+
 info <- lapply(sort(unique(urls)), function(x) {
   docs <- read_html(x)
   api <- html_nodes(docs,
@@ -83,49 +97,27 @@ info <- lapply(sort(unique(urls)), function(x) {
   desc <- html_nodes(docs, xpath = "/html/body/div[4]/div[1]/ul/li/div")
   desc <- strsplit(html_text(desc), "\\.")[[1]]
   desc <- paste0(desc[1], ". More information available [here](", x, ").\n")
+  tabl <- do.call(rbind, tab)
 
   list(title = html_text(title),
        description = desc,
-       table = do.call(rbind, tab))
+       table = tabl,
+       badge = badger(round(mean(tabl[, 2] == "implemented") * 100)))
 })
 ```
 
-# Overview of implementation
+# Outline
 
-```{r api-progress, echo = FALSE, results = "asis", tidy = FALSE}
-badger <- function(name, value) {
-  color <- if (value < 15)
-    "red"
-  else if (value < 30)
-    "orange"
-  else if (value < 45)
-    "yellow"
-  else if (value < 60)
-    "yellowgreen"
-  else if (value < 75)
-    "green"
-  else
-    "brightgreen"
-
-  paste0("![", name, "](", "https://img.shields.io/badge/", name, "-", value,
-         "%25-", color, ".svg)")
-}
-
-badges <- mapply(
-  badger,
-  sapply(info, function(x) sub("^Interface ", "", x$title)),
-  round(sapply(info, function(x) mean(x$table[, 2] == "implemented")) * 100)
-)
-cat(paste0(badges, collapse = "\n"))
-```
+* implementing further methods howto
+* detailed list of implemented methods
 
 # Summary of API methods
 
 ```{r api-tables, echo = FALSE, results = "asis", tidy = FALSE}
-sapply(info, function(x) {
-  cat(paste0("##", x$title, "\n", x$description, "\n"))
-  print(kable(x$table))
+for (i in seq_along(info)) {
+  cat(paste0("##", info[[i]]$title, " ", info[[i]]$badge, "\n",
+             info[[i]]$description, "\n"))
+  print(kable(info[[i]]$table))
   cat("\n")
-  invisible(NULL)
-})
+}
 ```
