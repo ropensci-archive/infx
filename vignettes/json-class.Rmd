@@ -2,7 +2,9 @@
 title: "JSON object handling"
 author: "Nicolas Bennett"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_vignette:
+    self_contained: no
 vignette: >
   %\VignetteIndexEntry{JSON objects}
   %\VignetteEngine{knitr::rmarkdown}

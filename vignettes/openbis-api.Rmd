@@ -2,7 +2,9 @@
 title: "openBIS API coverage"
 author: "Nicolas Bennett"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_vignette:
+    self_contained: no
 vignette: >
   %\VignetteIndexEntry{OpenBIS API}
   %\VignetteEngine{knitr::rmarkdown}
@@ -107,6 +109,8 @@ info <- lapply(sort(unique(urls)), function(x) {
 ```
 
 # Outline
+
+Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API).
 
 * implementing further methods howto
 * detailed list of implemented methods
