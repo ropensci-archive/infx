@@ -118,7 +118,7 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
 
 ```{r api-tables, echo = FALSE, results = "asis", tidy = FALSE}
 for (i in seq_along(info)) {
-  cat(paste0("##", info[[i]]$title, " ", info[[i]]$badge, "\n",
+  cat(paste0("##", info[[i]]$title, "\n", info[[i]]$badge, "\n",
              info[[i]]$description, "\n"))
   print(kable(info[[i]]$table))
   cat("\n")
