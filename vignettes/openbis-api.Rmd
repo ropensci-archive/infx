@@ -1,5 +1,5 @@
 ---
-title: "openBIS API coverage"
+title: "OpenBIS API coverage"
 author: "Nicolas Bennett"
 date: "`r Sys.Date()`"
 output:
@@ -67,8 +67,7 @@ badger <- function(value) {
   else
     "brightgreen"
 
-  paste0("![implementation status](",
-         "https://img.shields.io/badge/implementation%20status-",
+  paste0("![coverage](https://img.shields.io/badge/coverage-",
          value, "%25-", color, ".svg)")
 }
 
