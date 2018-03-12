@@ -1,10 +1,12 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Introduction to infx"
+author: "Nicolas Bennett"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  html_vignette:
+    self_contained: no
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Introduction to infx}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
