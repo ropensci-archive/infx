@@ -116,6 +116,14 @@ Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.
 
 # Summary of API methods
 
+No methods from the API sections
+
+* [IGeneralInformationChangingService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationChangingService.html)
+* [IQueryApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/query/shared/api/v1/IQueryApiServer.html)
+* [IWebInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IWebInformationService.html)
+
+are currently implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package however is retrieving data and therefore only methods from the following API sections have been implemented.
+
 ```{r api-tables, echo = FALSE, results = "asis", tidy = FALSE}
 for (i in seq_along(info)) {
   cat(paste0("##", info[[i]]$title, "\n", info[[i]]$badge, "\n",
