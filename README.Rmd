@@ -28,92 +28,17 @@ Access to [InfectX](http://www.infectx.ch)/[TargetInfectX](https://www.targetinf
 
 ## Installation
 
-You can install infx from github with:
+You can install [infx](https://nbenn.github.io/infx) from Github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("nbenn/infx")
 ```
 
-## OpenBIS API
+## InfectX
 
-Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API). The available methods are grouped as:
+[InfectX](http://www.infectx.ch) and its successor project [TargetInfectX](https://www.targetinfectx.ch) are large-scale high throughput screening experiments focused on the human infectome of a set of viral and bacterial pathogens. In order to identify host-provided components involved in pathogen entry and host colonization, several RNA interference screens were carried out on HeLa cells, using siRNA libraries from vendors such as Dharmacon, Quiagen and Ambion. Of the many performed screens, currently the data of kinome-wide screens for five bacterial pathogens (*Bartonella henselae*, *Brucella abortus*, *Listeria monocytogenes*, *Salmonella* typhimurium, and *Shigella flexneri*) and three viruses (Adenovirus, Rhinovirus, and *Vaccinia virus*) is publicly available[^1]. Additionally, several genome-wide screens will follow suit in the coming months.
 
-```{r openbis-api, echo = FALSE, results = "asis", tidy = FALSE}
-skip <- c("VisibleToUser", "OnBehalfOfUser", "^add", "^create", "^delete",
-          "^remove", "^update", "put", "Metaproject", "Attachments",
-          "SpacesWithProjects", "Vocabularies", "WebAppSettings", "Query",
-          "Queries", "Aggregation", "TableReport", "RoleSet",
-          "getSessionToken", "shuffle", "listAllShares", "getValidationScript",
-          "getPathToDataSet", "getFileFromSessionWorkspace", "getFeatureList",
-          "logoutScreening", "tryLoginScreening", "ImageTransformerFactory",
-          "loadImages$", "loadPhysicalThumbnails$", "loadThumbnailImages$")
-done <- c("tryToAuthenticateForAllServices", "logout$", "isSessionActive",
-          "listProjects",
-          "listExperiments", "listExperimentTypes",
-          "listSamplesForExperiment", "getPlateSample", "getWellSample",
-          "listSampleTypes",
-          "listDataSets", "getDataSetMetaData", "listDataSetTypes",
-          "getDatasetIdentifiers",
-          "listDataStores",
-          "listPlates", "listPlateWells",
-          "getMaterialByCodes",
-          "getDataStoreBaseURLs", "getDefaultPutDataStoreBaseURL",
-          "tryGetDataStoreBaseURL",
-          "listFilesForDataSet",
-          "getDownloadUrlForFileForDataSet",
-          "getDownloadUrlForFileForDataSetWithTimeout",
-          "getExperimentImageMetadata", "getPlateMetadataList",
-          "listImageDatasets", "listRawImageDatasets",
-          "listSegmentationImageDatasets", "listImageMetadata",
-          "listAvailableImageRepresentationFormats",
-          "listPlateMaterialMapping",
-          "listImageReferences", "listPlateImageReferences",
-          "listFeatureVectorDatasets",
-          "listAvailableFeatures", "listAvailableFeatureCodes",
-          "loadFeatures", "loadFeaturesForDatasetWellReferences",
-          "loadImagesBase64", "loadThumbnailImagesBase64",
-          "loadPhysicalThumbnailsBase64", "^search.+s$")
+All collected data, including raw imaging data, [CellProfiler](http://cellprofiler.org) derived feature data and infection scoring at single cell resolution, alongside extensive metadata, is hosted by the laboratory information management system [openBIS](https://wiki-bsse.ethz.ch/display/bis/Home). This R package provides access to its [JSON-RPC API](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API), facilitating data searches and downloads.
 
-api <- c("generic/shared/api/v1/IGeneralInformationService.html",
-         "generic/shared/api/v1/IGeneralInformationChangingService.html",
-         "plugin/query/shared/api/v1/IQueryApiServer.html",
-         "generic/shared/api/v1/IWebInformationService.html",
-         "dss/generic/shared/api/v1/IDssServiceRpcGeneric.html",
-         "plugin/screening/shared/api/v1/IScreeningApiServer.html",
-         "dss/screening/shared/api/v1/IDssServiceRpcScreening.html")
-
-out <- sapply(api, function(url) {
-  url <- paste("http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd",
-               "openbis", url, sep = "/")
-
-  res <- html_nodes(read_html(url),
-                    xpath = "/html/body/div[4]/div[2]/ul/li/ul[2]/li/table")
-
-  res <- apply(html_table(res)[[1]], 1, function(x) {
-    retr <- x[1]
-    x <- x[2]
-    name <- sub("\\($", "", regmatches(x, regexpr("^.+?\\(", x)))
-    args <- sub("^\\(", "",
-                sub("\\)$", "", regmatches(x, regexpr("\\(.+?\\)", x))))
-    desc <- sub("\\)\n", "", regmatches(x, regexpr("\\)\n.+$", x)))
-
-    found <- any(sapply(done, grepl, name))
-
-    if (length(desc) && grepl("^Deprecated", desc))
-      st <- TRUE
-    else
-      st <- any(sapply(skip, grepl, name))
-
-    paste0("    + [", if (found) "x" else " ", "] ",
-           if (st) "~~", name, if (st) "~~", ":\n        - description: ",
-           gsub("\n", " ", desc), "\n        - arguments: ",
-           paste(gsub(",\n +", ", ", args), collapse = ", "),
-           "\n        - returntype: ", retr)
-  })
-
-  paste0("* [", sub("\\.html$", "", basename(url)), "](", url, ")\n",
-         paste(res, collapse = "\n"))
-})
-cat(paste(gsub("<", "&lt;", gsub(">", "&gt;", out)), collapse = "\n"))
-```
+[^1]: [*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)
