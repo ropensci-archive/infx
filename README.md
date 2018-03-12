@@ -28,6 +28,39 @@ All collected data, including raw imaging data, [CellProfiler](http://cellprofil
 OpenBIS
 -------
 
-This document gives only a brief introduction on how to work with openBIS. For a more in-depth information on how to use this package, please refer to the vignettes ["Introduction to infx"](https://nbenn.github.io/infx/articles/infx-intro.html) and ["JSON object handling"](https://nbenn.github.io/infx/articles/json-class.html). For an extensive look at what parts of the API are implemented by this package, have a look at the vignette ["OpenBIS API coverage"](https://nbenn.github.io/infx/articles/openbis-api.html)
+This document gives only a brief introduction on how to work with openBIS. For a more in-depth information on how to use this package, please refer to the vignettes ["Introduction to infx"](https://nbenn.github.io/infx/articles/infx-intro.html) and ["JSON object handling"](https://nbenn.github.io/infx/articles/json-class.html). For an extensive look at what parts of the API are implemented by this package and how to extend the package to support further functionality, have a look at the vignette ["OpenBIS API coverage"](https://nbenn.github.io/infx/articles/openbis-api.html). Documentation of exported functions is available from within the R help system or [here](https://nbenn.github.io/infx/reference/index.html).
+
+For every API call, a valid login token is required. Tokens can be created using [`login_openbis()`](https://nbenn.github.io/infx/reference/login.html) and tested for validity with [`is_token_valid()`](https://nbenn.github.io/infx/reference/login.html).
+
+``` r
+tok <- login_openbis(user = "rdgr2014",
+                     pwd = "IXPubReview",
+                     auto_disconnect = FALSE)
+is_token_valid(tok)
+#> [1] TRUE
+```
+
+Using the valid login token, openBIS can now be queried, for example for a list of all projects that are available for the given user, using [`list_projects()`](https://nbenn.github.io/infx/reference/list_projects.html).
+
+``` r
+projects <- list_projects(tok)
+projects[[1]]
+#> █─Project 
+#> ├─permId = 20130710131815818-2788266 
+#> ├─spaceCode = INFECTX_PUBLISHED 
+#> ├─code = ADENO_TEAM 
+#> ├─description =  
+#> ├─registrationDetails = █─EntityRegistrationDetails 
+#> │                       └─... 
+#> └─id = 39
+```
+
+Finally, the login token should be destroyed, using [`logout_openbis()`](https://nbenn.github.io/infx/reference/login.html).
+
+``` r
+logout_openbis(tok)
+is_token_valid(tok)
+#> [1] FALSE
+```
 
 [1] [*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)
