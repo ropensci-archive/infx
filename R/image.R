@@ -365,7 +365,7 @@ fetch_images.PlateImageReference <- function(token,
 
   res <- request_openbis(fun, agruments, "IDssServiceRpcScreening")
 
-  if (is.null(res))
+  if (length(res) == 0L)
     res <- rep(list(NULL), length(x))
 
   assert_that(length(res) == length(x))

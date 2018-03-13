@@ -74,6 +74,8 @@ as_json_vec.list <- function(x, force = FALSE, ...) {
 
   if (force && !has_common_subclass(x))
     x
+  else if (length(x) == 0L)
+    x
   else
     new_json_vec(x)
 }

@@ -7,7 +7,8 @@ test_that("datasets can be listed", {
   expect_identical(get_subclass(ds_1), "DataSet")
   expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
   expect_gte(length(ds_1), 1L)
-  expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"), is.null)))
+  expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"),
+                         identical, list())))
 
   check_skip()
 
@@ -17,7 +18,8 @@ test_that("datasets can be listed", {
   expect_identical(get_subclass(ds_2), "DataSet")
   expect_true(all(sapply(ds_2, has_subclass, "DataSet")))
   expect_gte(length(ds_2), length(ds_1))
-  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"), is.null)))
+  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"),
+                         identical, list())))
 
   ds_3 <- list_datasets(tok, samples[[1]], "all")
   expect_is(ds_3, "DataSet")
@@ -34,7 +36,8 @@ test_that("datasets can be listed", {
   expect_identical(get_subclass(ds_1), "DataSet")
   expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
   expect_gte(length(ds_1), 1L)
-  expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"), is.null)))
+  expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"),
+                         identical, list())))
 
   ds_2 <- list_datasets(tok, experiments[c(1, 2)])
   expect_is(ds_2, "DataSet")
@@ -42,7 +45,8 @@ test_that("datasets can be listed", {
   expect_identical(get_subclass(ds_2), "DataSet")
   expect_true(all(sapply(ds_2, has_subclass, "DataSet")))
   expect_gte(length(ds_2), length(ds_1))
-  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"), is.null)))
+  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"),
+                         identical, list())))
 
   ds_3 <- list_datasets(tok, experiments[[1]], "all")
   expect_is(ds_3, "DataSet")
@@ -61,7 +65,7 @@ test_that("datasets can be listed", {
   expect_identical(get_subclass(ds_1), "DataSet")
   expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
   expect_equal(length(ds_1), 1L)
-  expect_true(is.null(ds_1[[1]][["retrievedConnections"]]))
+  expect_equal(ds_1[[1]][["retrievedConnections"]], list())
 
   ds_2 <- list_datasets(tok, codes[c(1, 2)])
   expect_is(ds_2, "DataSet")
@@ -69,7 +73,8 @@ test_that("datasets can be listed", {
   expect_identical(get_subclass(ds_2), "DataSet")
   expect_true(all(sapply(ds_2, has_subclass, "DataSet")))
   expect_equal(length(ds_2), 2L)
-  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"), is.null)))
+  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"),
+                         identical, list())))
 
   ds_3 <- list_datasets(tok, codes[1], "all")
   expect_is(ds_3, "DataSet")

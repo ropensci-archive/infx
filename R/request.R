@@ -4,7 +4,7 @@
 #' Issues a POST request to a JSON-RPC server. All `@type` fields are
 #' converted to/from `json_class` attributes, using [rm_json_class()] and
 #' [as_json_class()]. The helper function `request_openbis()` wraps
-#' `make_request()` and constructs the url the request is sent to, based on a
+#' `make_requests()` and constructs the url the request is sent to, based on a
 #' root url and an API section name (for the API section mapping, see
 #' [docs](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API)).
 #' As part of the JSON-RPC specification, all objects returned form the API
@@ -12,18 +12,15 @@
 #' multiple times. The helper function `resolve_references()` recursively
 #' resolves all references such that each object is self-contained.
 #' 
-#' @param url Destination url, the request is sent to.
-#' @param api,host Strings used to construct the destination url.
-#' @param method The API method name.
+#' @param urls Destination url, the request is sent to.
+#' @param methods The API method name.
 #' @param params A list structure holding the arguments which, converted to
 #' JSON, will be used to call the supplied method. The `@type` entries will be
 #' generated from `json_class` attributes.
-#' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
-#' @param id An identifier for the JSON-RPC request (defaults to a random
+#' @param ids An identifier for the JSON-RPC request (defaults to a random
 #' string of length 7). Can be usually be ignored, as only single JSON-RPC
 #' requests are issued per HTTP request.
-#' @param x A (possibly nested) list structure for which all `@id` fields are
-#' recursively removed.
+#' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
 #' 
 #' @rdname request
 #' 
@@ -36,43 +33,130 @@
 #' 
 #' @export
 #' 
-make_request <- function(url,
-                         method,
-                         params,
-                         version = "2.0",
-                         id = paste(sample(c(letters, LETTERS, 0:9), 7),
-                                    collapse = "")) {
+make_requests <- function(urls,
+                          methods,
+                          params,
+                          ids = NULL,
+                          version = "2.0") {
+
+  check_rep <- function(vec, len) {
+    if (length(vec) == 1L)
+      vec <- rep(vec, len)
+    assert_that(length(vec) == len || length(vec) == 1L)
+    vec
+  }
+
+  to_json_class_vec <- function(x) {
+    if (is.null(x))
+      x <- list()
+    x <- as_json_class(x, force = TRUE)
+    x <- resolve_references(x)
+    as_json_vec(x, force = TRUE)
+  }
 
   if (!is.list(params)) params <- list(params)
 
-  requ <- list(id = id,
-               jsonrpc = version,
-               method = method,
-               params = rm_json_class(params))
+  params <- list(params)
 
-  resp <- httr::POST(url, body = requ, encode = "json")
-  assert_that(resp$status_code == 200)
+  max_len <- max(length(url), length(methods), length(params))
 
-  resp$content <- jsonlite::fromJSON(rawToChar(resp$content),
-                                     simplifyVector = FALSE)
+  if (max_len > 1L) {
+    url <- check_rep(url, max_len)
+    methods <- check_rep(methods, max_len)
+    params <- check_rep(params, max_len)
+  }
 
-  assert_that(resp$content$id == id)
+  if (is.null(ids))
+    ids <- replicate(max_len, paste(sample(c(letters, LETTERS, 0:9), 7),
+                                    collapse = ""))
+  assert_that(length(ids) == max_len)
 
-  if (!is.null(resp$content$error))
-    stop("Error:\n", paste(names(resp$content$error), resp$content$error,
-                           sep = ": ", collapse = "\n"))
+  bodies <- mapply(list,
+                   id = ids,
+                   jsonrpc = rep(version, max_len),
+                   method = methods,
+                   params = rm_json_class(params),
+                   SIMPLIFY = FALSE)
 
-  res <- as_json_class(resp$content$result, force = TRUE)
-  res <- resolve_references(res)
-  res <- as_json_vec(res, force = TRUE)
+  assert_that(length(bodies) == length(urls))
+
+  res <- do_request_serial(urls, bodies, done = to_json_class_vec)
+
+  do.call(c, res)
+}
+
+#' @param bodies Request bodies: a list where each entry is a list with slots
+#' `id`, `jsonrpc`, `method` and `params`.
+#' @param n_try Number of tries each request is performed in case of failed
+#' requests.
+#' @param done A function that is applied to the result of a successful
+#' request.
+#' 
+#' @rdname request
+#' @export
+#' 
+do_request_serial <- function(urls,
+                              bodies,
+                              n_try = 2L,
+                              done = identity) {
+
+  handles <- lapply(bodies, function(body) {
+    body <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
+
+    h <- curl::new_handle(post = TRUE,
+                          postfieldsize = length(body),
+                          postfields = body)
+    curl::handle_setheaders(h, "Content-Type" = "application/json")
+  })
+
+  assert_that(length(handles) == length(urls))
+
+  res <- vector("list", length(urls))
+
+  repeat {
+
+    to_do <- sapply(res, is.null)
+    if (sum(to_do) == 0L)
+      break
+
+    n_try <- n_try - 1L
+    if (n_try < 0L)
+      stop("data could not be fetched successfully.")
+
+    res[to_do] <- mapply(function(url, h, id) {
+      resp <- curl::curl_fetch_memory(url, handle = h)
+      if (resp$status_code != 200)
+        NULL
+      else {
+        resp <- jsonlite::fromJSON(rawToChar(resp$content),
+                                   simplifyVector = FALSE)
+        assert_that(resp$id == id)
+        if (!is.null(resp$error)) {
+          data <- resp$error$data[!grepl("^@", names(resp$error$data))]
+          warning("\nError with code ", resp$error$code, ":\n",
+                  paste(strwrap(paste(names(data), data, sep = ": "),
+                                indent = 2L, exdent = 4L), collapse = "\n"))
+          NULL
+        } else {
+          done(resp$result)
+        }
+      }
+    },
+    urls[to_do], handles[to_do], sapply(bodies[to_do], `[[`, "id"),
+    SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  }
+
+  assert_that(all(sapply(res, Negate(is.null))))
 
   res
 }
 
+#' @param api,host Strings used to construct the destination url.
+#' 
 #' @rdname request
 #' @export
 #' 
-request_openbis <- function(method,
+request_openbis <- function(methods,
                             params,
                             api = c("IGeneralInformationService",
                                     "IGeneralInformationChangingService",
@@ -92,7 +176,7 @@ request_openbis <- function(method,
                 IScreeningApiServer = "sas",
                 IDssServiceRpcScreening = "dsrs")
 
-  make_request(api_url(api, host = host), method, params)
+  make_requests(api_url(api, host = host), methods, params)
 }
 
 #' @rdname request
@@ -115,12 +199,14 @@ api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
   paste(host, url, sep = "/")
 }
 
+#' @param method_name Name of the method for which the link is created.
+#' 
 #' @rdname request
 #' @export
 #' 
 docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
                               "dsrs"),
-                      method = NULL,
+                      method_name = NULL,
                       version = "13.04.0") {
 
   api <- match.arg(api)
@@ -151,12 +237,15 @@ docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
                 sas = "IScreeningApiServer",
                 dsrs = "IDssServiceRpcScreening")
 
-  if (!is.null(method))
-    txt <- paste(txt, method, sep = ":")
+  if (!is.null(method_name))
+    txt <- paste(txt, method_name, sep = ":")
 
   paste0("\\href{", url, "}{", txt, "}")
 }
 
+#' @param x A (possibly nested) list structure for which all `@id` fields are
+#' recursively removed.
+#' 
 #' @rdname request
 #' @export
 #' 

@@ -101,7 +101,7 @@ as_json_class.json_class <- function(x, ...) {
 as_json_class.list <- function(x, ...) {
 
   if (length(x) == 0L)
-    return(NULL)
+    return(x)
 
   x <- lapply(x, as_json_class, force = TRUE)
   if ("@type" %in% names(x))

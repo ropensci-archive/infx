@@ -80,6 +80,6 @@ test_that("materials can be listed", {
                       class = "MaterialTypeIdentifierScreening")
   map_gen <- list_material(tok, plates[[2]], genes)
 
-  expect_true(all(sapply(mat_1[[1]][["mapping"]], is.null)))
-  expect_false(all(sapply(map_gen[[1]][["mapping"]], is.null)))
+  expect_true(all(sapply(mat_1[[1]][["mapping"]], identical, list())))
+  expect_false(all(sapply(map_gen[[1]][["mapping"]], identical, list())))
 })
