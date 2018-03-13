@@ -12,12 +12,12 @@
 #' multiple times. The helper function `resolve_references()` recursively
 #' resolves all references such that each object is self-contained.
 #' 
-#' @param urls Destination url, the request is sent to.
-#' @param methods The API method name.
+#' @param url,urls, Destination url(s), the request is sent to.
+#' @param method,methods The API method name(s).
 #' @param params A list structure holding the arguments which, converted to
 #' JSON, will be used to call the supplied method. The `@type` entries will be
 #' generated from `json_class` attributes.
-#' @param ids An identifier for the JSON-RPC request (defaults to a random
+#' @param ids Identifier(s) for the JSON-RPC request (defaults to a random
 #' string of length 7). Can be usually be ignored, as only single JSON-RPC
 #' requests are issued per HTTP request.
 #' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
@@ -54,14 +54,13 @@ make_requests <- function(urls,
     as_json_vec(x, force = TRUE)
   }
 
-  if (!is.list(params)) params <- list(params)
+  assert_that(is.list(params),
+              all(sapply(params, is.list)))
 
-  params <- list(params)
-
-  max_len <- max(length(url), length(methods), length(params))
+  max_len <- max(length(urls), length(methods), length(params))
 
   if (max_len > 1L) {
-    url <- check_rep(url, max_len)
+    urls <- check_rep(urls, max_len)
     methods <- check_rep(methods, max_len)
     params <- check_rep(params, max_len)
   }
@@ -84,6 +83,24 @@ make_requests <- function(urls,
 
   do.call(c, res)
 }
+
+#' @param ... Further arguments to `make_request` are passed to
+#' `make_requests`.
+#' 
+#' @rdname request
+#' @export
+#' 
+make_request <- function(url,
+                         method,
+                         params,
+                         ...) {
+
+  assert_that(length(url) == 1L,
+              length(method) == 1L)
+
+  make_requests(url, method, list(params), ...)
+}
+
 
 #' @param bodies Request bodies: a list where each entry is a list with slots
 #' `id`, `jsonrpc`, `method` and `params`.
@@ -176,7 +193,7 @@ request_openbis <- function(methods,
                 IScreeningApiServer = "sas",
                 IDssServiceRpcScreening = "dsrs")
 
-  make_requests(api_url(api, host = host), methods, params)
+  make_requests(api_url(api, host = host), methods, list(params))
 }
 
 #' @rdname request

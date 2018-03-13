@@ -90,4 +90,4 @@ list_samples.WellIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_sample_types <- function(token)
-  request_openbis("listSampleTypes", token)
+  request_openbis("listSampleTypes", list(token))

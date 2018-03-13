@@ -89,12 +89,13 @@ list_datasets.Sample <- function(token,
   if (length(include) == 0L) {
 
     if (length(x) == 1L)
-      request_openbis("listDataSetsForSample", list(token, x[[1]], TRUE))
+      make_request(api_url("gis"), "listDataSetsForSample",
+                   list(token, x[[1]], TRUE))
     else
-      request_openbis("listDataSets", list(token, x))
+      make_request(api_url("gis"), "listDataSets", list(token, x))
 
   } else
-    request_openbis("listDataSets", list(token, x, include))
+    make_request(api_url("gis"), "listDataSets", list(token, x, include))
 }
 
 #' @rdname list_datasets
@@ -112,8 +113,8 @@ list_datasets.Experiment <- function(token,
   if (!is_json_vec(x))
     x <- as_json_vec(x)
 
-  request_openbis("listDataSetsForExperiments",
-                  list(token, x, resolve_fetch_opts(include)))
+  make_request(api_url("gis"), "listDataSetsForExperiments",
+               list(token, x, resolve_fetch_opts(include)))
 }
 
 #' @rdname list_datasets
@@ -130,9 +131,11 @@ list_datasets.character <- function(token,
   include <- resolve_fetch_opts(include)
 
   if (length(include) == 2L)
-    request_openbis("getDataSetMetaData", list(token, as.list(x)))
+    make_request(api_url("gis"), "getDataSetMetaData",
+                 list(token, as.list(x)))
   else
-    request_openbis("getDataSetMetaData", list(token, as.list(x), include))
+    make_request(api_url("gis"), "getDataSetMetaData",
+                 list(token, as.list(x), include))
 }
 
 #' @rdname list_datasets
@@ -147,8 +150,8 @@ list_dataset_ids <- function(token, x, ...)
 #' @export
 #' 
 list_dataset_ids.character <- function(token, x, ...)
-  request_openbis("getDatasetIdentifiers", list(token, as.list(x)),
-                  "IScreeningApiServer")
+  make_request(api_url("sas"), "getDatasetIdentifiers",
+               list(token, as.list(x)))
 
 #' @rdname list_datasets
 #' @export
@@ -180,7 +183,7 @@ list_img_ds <- function(token,
                 segmentation = "listSegmentationImageDatasets",
                 feature = "listFeatureVectorDatasets")
 
-  request_openbis(fun, list(token, as_json_vec(x)), "IScreeningApiServer")
+  make_request(api_url("sas"), fun, list(token, as_json_vec(x)))
 }
 
 #' @rdname list_datasets
@@ -282,11 +285,9 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
   if (length(channels) > 1L)
     channels <- as.list(channels)
 
-  res <- lapply(x, function(z)
-    request_openbis("listImageReferences", list(token, z, channels),
-                    "IDssServiceRpcScreening"))
+  params <- lapply(x, function(z) list(token, z, channels))
 
-  as_json_vec(do.call(c, res))
+  make_requests(api_url("dsrs"), "listImageReferences", params)
 }
 
 #' @rdname list_img_ref
@@ -301,12 +302,9 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
   if (length(channels) > 1L)
     channels <- as.list(channels)
 
-  res <- lapply(x, function(z)
-    request_openbis("listPlateImageReferences",
-                    list(token, z, wells, channels),
-                    "IDssServiceRpcScreening"))
+  params <- lapply(x, function(z) list(token, z, wells, channels))
 
-  as_json_vec(do.call(c, res))
+  make_requests(api_url("dsrs"), "listPlateImageReferences", params)
 }
 
 #' @rdname list_datasets
@@ -315,7 +313,7 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 #' @export
 #' 
 list_dataset_types <- function(token)
-  request_openbis("listDataSetTypes", token)
+  make_request(api_url("gis"), "listDataSetTypes", list(token))
 
 #' Extract dataset code
 #' 

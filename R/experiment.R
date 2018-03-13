@@ -80,7 +80,7 @@ list_experiments.Project <- function(token,
 #' @export
 #' 
 list_experiment_ids <- function(token)
-  request_openbis("listExperiments", token, "IScreeningApiServer")
+  request_openbis("listExperiments", list(token), "IScreeningApiServer")
 
 #' @rdname list_experiments
 #' @section openBIS:
@@ -88,7 +88,7 @@ list_experiment_ids <- function(token)
 #' @export
 #' 
 list_experiment_types <- function(token)
-  request_openbis("listExperimentTypes", token)
+  request_openbis("listExperimentTypes", list(token))
 
 #' @rdname list_experiments
 #' @export

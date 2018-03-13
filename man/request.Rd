@@ -2,6 +2,7 @@
 % Please edit documentation in R/request.R
 \name{make_requests}
 \alias{make_requests}
+\alias{make_request}
 \alias{do_request_serial}
 \alias{request_openbis}
 \alias{api_url}
@@ -10,6 +11,8 @@
 \title{Make a JSON-RPC request}
 \usage{
 make_requests(urls, methods, params, ids = NULL, version = "2.0")
+
+make_request(url, method, params, ...)
 
 do_request_serial(urls, bodies, n_try = 2L, done = identity)
 
@@ -27,19 +30,22 @@ docs_link(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
 resolve_references(x)
 }
 \arguments{
-\item{urls}{Destination url, the request is sent to.}
-
-\item{methods}{The API method name.}
-
 \item{params}{A list structure holding the arguments which, converted to
 JSON, will be used to call the supplied method. The \code{@type} entries will be
 generated from \code{json_class} attributes.}
 
-\item{ids}{An identifier for the JSON-RPC request (defaults to a random
+\item{ids}{Identifier(s) for the JSON-RPC request (defaults to a random
 string of length 7). Can be usually be ignored, as only single JSON-RPC
 requests are issued per HTTP request.}
 
 \item{version}{JSON-RPC protocol version to be used (defaults to \code{"2.0"}.}
+
+\item{url, urls, }{Destination url(s), the request is sent to.}
+
+\item{method, methods}{The API method name(s).}
+
+\item{...}{Further arguments to \code{make_request} are passed to
+\code{make_requests}.}
 
 \item{bodies}{Request bodies: a list where each entry is a list with slots
 \code{id}, \code{jsonrpc}, \code{method} and \code{params}.}

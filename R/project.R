@@ -15,4 +15,4 @@
 #' @export
 #' 
 list_projects <- function(token)
-  request_openbis("listProjects", token)
+  request_openbis("listProjects", list(token))

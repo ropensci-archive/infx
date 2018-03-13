@@ -39,6 +39,6 @@ reference:
       Assemble JSON-RPC request and issue a POST request to openBIS; parse
       results; login/logout functionality; helpers for reading downloaded files
     contents: 
-      - make_request
+      - make_requests
       - login_openbis
       - starts_with("read_")

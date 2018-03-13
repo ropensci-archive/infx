@@ -61,7 +61,7 @@ list_plates <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_plates.NULL <- function(token, x, ...)
-  request_openbis("listPlates", token, "IScreeningApiServer")
+  request_openbis("listPlates", list(token), "IScreeningApiServer")
 
 #' @rdname list_plate_well
 #' @export

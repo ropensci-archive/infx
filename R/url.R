@@ -31,7 +31,7 @@
 #' @export
 #' 
 list_datastores <- function(token)
-  request_openbis("listDataStores", token)
+  request_openbis("listDataStores", list(token))
 
 #' @rdname list_urls
 #' @export
@@ -40,7 +40,7 @@ list_datastore_urls <- function(token, data_set = NULL) {
 
   if (is.null(data_set)) {
 
-    request_openbis("getDefaultPutDataStoreBaseURL", token)
+    request_openbis("getDefaultPutDataStoreBaseURL", list(token))
 
   } else {
 
