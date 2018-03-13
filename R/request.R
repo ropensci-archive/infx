@@ -17,6 +17,8 @@
 #' @param params A list structure holding the arguments which, converted to
 #' JSON, will be used to call the supplied method. The `@type` entries will be
 #' generated from `json_class` attributes.
+#' @param names Optional character vector of names to map list items to
+#' api calls.
 #' @param ids Identifier(s) for the JSON-RPC request (defaults to a random
 #' string of length 7). Can be usually be ignored, as only single JSON-RPC
 #' requests are issued per HTTP request.
@@ -36,6 +38,7 @@
 make_requests <- function(urls,
                           methods,
                           params,
+                          names = NULL,
                           ids = NULL,
                           version = "2.0") {
 
@@ -70,6 +73,9 @@ make_requests <- function(urls,
                                     collapse = ""))
   assert_that(length(ids) == max_len)
 
+  if (!is.null(names))
+    assert_that(length(names) == max_len)
+
   bodies <- mapply(list,
                    id = ids,
                    jsonrpc = rep(version, max_len),
@@ -81,7 +87,16 @@ make_requests <- function(urls,
 
   res <- do_request_serial(urls, bodies, done = to_json_class_vec)
 
-  do.call(c, res)
+
+  if (!is.null(names))
+    names <- rep(names, sapply(res, length))
+
+  res <- do.call(c, res[sapply(res, length) > 0L])
+
+  if (is.null(names))
+    res
+  else
+    stats::setNames(res, names)
 }
 
 #' @param ... Further arguments to `make_request` are passed to

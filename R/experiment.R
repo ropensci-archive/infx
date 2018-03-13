@@ -35,7 +35,7 @@ list_experiments <- function(token, x, ...)
 #' @export
 #' 
 list_experiments.ExperimentIdentifier <- function(token, x, ...)
-  request_openbis("listExperiments", list(token, exp_id_str(x)))
+  make_request(api_url("gis"), "listExperiments", list(token, exp_id_str(x)))
 
 #' @rdname list_experiments
 #' @section openBIS:
@@ -68,10 +68,9 @@ list_experiments.Project <- function(token,
   else
     fun <- "listExperimentsHavingSamples"
 
-  res <- lapply(types, function(type)
-    request_openbis(fun, list(token, x, as.character(type))))
+  params <- lapply(types, function(type) list(token, x, as.character(type)))
 
-  as_json_vec(do.call(c, res))
+  make_requests(api_url("gis"), fun, params)
 }
 
 #' @rdname list_experiments
@@ -80,7 +79,7 @@ list_experiments.Project <- function(token,
 #' @export
 #' 
 list_experiment_ids <- function(token)
-  request_openbis("listExperiments", list(token), "IScreeningApiServer")
+  make_request(api_url("sas"), "listExperiments", list(token))
 
 #' @rdname list_experiments
 #' @section openBIS:
@@ -88,7 +87,7 @@ list_experiment_ids <- function(token)
 #' @export
 #' 
 list_experiment_types <- function(token)
-  request_openbis("listExperimentTypes", list(token))
+  make_request(api_url("gis"), "listExperimentTypes", list(token))
 
 #' @rdname list_experiments
 #' @export

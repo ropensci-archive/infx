@@ -24,9 +24,8 @@ list_features <- function(token, x, ...)
     UseMethod("list_features", x)
 
 list_feats <- function(token, x, ...)
-  request_openbis("listAvailableFeatures",
-                  list(token, as_json_vec(remove_null(x))),
-                  "IDssServiceRpcScreening")
+  make_request(api_url("dsrs"), "listAvailableFeatures",
+               list(token, as_json_vec(remove_null(x))))
 
 #' @rdname list_features
 #' @export
@@ -47,9 +46,8 @@ list_feature_codes <- function(token, x, ...)
     UseMethod("list_feature_codes", x)
 
 list_feat_codes <- function(token, x, ...)
-  request_openbis("listAvailableFeatureCodes",
-                  list(token, as_json_vec(remove_null(x))),
-                  "IDssServiceRpcScreening")
+  make_request(api_url("dsrs"), "listAvailableFeatureCodes",
+               list(token, as_json_vec(remove_null(x))))
 
 #' @rdname list_features
 #' @export
@@ -113,8 +111,7 @@ fetch_features.FeatureVectorDatasetReference <- function(token,
     feature_codes <- as.list(feature_codes)
   }
 
-  request_openbis("loadFeatures", list(token, x, feature_codes),
-                  "IDssServiceRpcScreening")
+  make_request(api_url("dsrs"), "loadFeatures", list(token, x, feature_codes))
 }
 
 #' @rdname fetch_features
@@ -146,7 +143,6 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
   x <- lapply(lapply(x, `[`, fields), rm_json_class, recursive = FALSE,
               restore_type = FALSE)
 
-  request_openbis("loadFeaturesForDatasetWellReferences",
-                  list(token, x, feature_codes),
-                  "IDssServiceRpcScreening")
+  make_request(api_url("dsrs"), "loadFeaturesForDatasetWellReferences",
+               list(token, x, feature_codes))
 }

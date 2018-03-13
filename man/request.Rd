@@ -10,7 +10,8 @@
 \alias{resolve_references}
 \title{Make a JSON-RPC request}
 \usage{
-make_requests(urls, methods, params, ids = NULL, version = "2.0")
+make_requests(urls, methods, params, names = NULL, ids = NULL,
+  version = "2.0")
 
 make_request(url, method, params, ...)
 
@@ -33,6 +34,9 @@ resolve_references(x)
 \item{params}{A list structure holding the arguments which, converted to
 JSON, will be used to call the supplied method. The \code{@type} entries will be
 generated from \code{json_class} attributes.}
+
+\item{names}{Optional character vector of names to map list items to
+api calls.}
 
 \item{ids}{Identifier(s) for the JSON-RPC request (defaults to a random
 string of length 7). Can be usually be ignored, as only single JSON-RPC
