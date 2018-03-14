@@ -15,4 +15,4 @@
 #' @export
 #' 
 list_projects <- function(token)
-  request_openbis("listProjects", list(token))
+  make_request(api_url("gis"), "listProjects", list(token))

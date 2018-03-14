@@ -176,12 +176,12 @@ list_plate_metadata <- function(token, x, ...)
 #' @export
 #' 
 list_plate_metadata.PlateIdentifier <- function(token, x, ...)
-  make_requests(api_url("sas"), "getPlateMetadataList",
-                list(token, as_json_vec(x)))
+  make_request(api_url("sas"), "getPlateMetadataList",
+               list(token, as_json_vec(x)))
 
 #' @rdname list_plate_well
 #' @export
 #' 
 list_plate_metadata.Plate <- function(token, x, ...)
-  make_requests(api_url("sas"), "getPlateMetadataList",
-                list(token, plate_to_plateid(x)))
+  make_request(api_url("sas"), "getPlateMetadataList",
+               list(token, plate_to_plateid(x)))
