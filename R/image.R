@@ -34,10 +34,9 @@ list_image_metadata <- function(token, x, ...)
 #' 
 list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
 
-  res <- lapply(as_json_vec(x), function(y)
-    request_openbis("getExperimentImageMetadata", list(token, y),
-                    "IScreeningApiServer"))
+  params <- lapply(as_json_vec(x), function(y) list(token, y))
 
+  res <- make_requests(api_url("sas"), "getExperimentImageMetadata", params)
   as_json_vec(do.call(c, res))
 }
 
@@ -53,7 +52,7 @@ fetch_img_meta <- function(token, x, type = c("metadata", "format"), ...) {
                 metadata = "listImageMetadata",
                 format = "listAvailableImageRepresentationFormats")
 
-  request_openbis(fun, list(token, as_json_vec(x)), "IDssServiceRpcScreening")
+  make_request(api_url("dsrs"), fun, list(token, as_json_vec(x)))
 }
 
 #' @rdname list_image_metadata
@@ -222,12 +221,11 @@ fetch_img_for_ds <- function(token,
            x, channels, SIMPLIFY = FALSE)
   }
 
-  lapply(params, function(param) {
+  res <- make_requests(api_url("dsrs"), fun, params, done = process_imgs)
 
-    dat <- lapply(request_openbis(fun, param, "IDssServiceRpcScreening"),
-                  function(y) magick::image_read(base64enc::base64decode(y)))
+  mapply(function(param, x) {
 
-    if (length(dat) == 0 && is.null(well_positions)) {
+    if (length(x) == 0 && is.null(well_positions)) {
       if (thumbnails)
         warning("no thumbnails found: make sure the supplied dataset ",
                 "is associated with a plate and has registered thumbnails.")
@@ -236,12 +234,12 @@ fetch_img_for_ds <- function(token,
                 "sure the supplied dataset is associated with a plate.")
     }
 
-    c(stats::setNames(param[-1],
+    c(stats::setNames(if (is.null(well_positions)) param[2:3] else param[2:4],
                       if (is.null(well_positions)) c("data_set", "channel")
                       else c("data_set", "well_positions", "channel")),
-      data = list(dat)
+      data = list(x)
     )
-  })
+  }, params, res, SIMPLIFY = FALSE)
 }
 
 #' @rdname fetch_images
@@ -363,17 +361,21 @@ fetch_images.PlateImageReference <- function(token,
     agruments <- list(sessionToken = token, imageReferences = x)
   }
 
-  res <- request_openbis(fun, agruments, "IDssServiceRpcScreening")
+  res <- make_request(api_url("dsrs"), fun, agruments, done = process_imgs)
 
   if (length(res) == 0L)
     res <- rep(list(NULL), length(x))
 
   assert_that(length(res) == length(x))
 
-  mapply(function(a, b) {
-    if (is.null(a))
-      list(data_set = b, data = NULL)
-    else
-      list(data_set = b, data = magick::image_read(base64enc::base64decode(a)))
-  }, res, x, SIMPLIFY = FALSE)
+  mapply(list, data_set = x, data = res, SIMPLIFY = FALSE)
 }
+
+#' @param imgs A list of base64 encoded images, each of which will read by
+#' image magick.
+#' 
+#' @rdname fetch_images
+#' @export
+#' 
+process_imgs <- function(imgs)
+  lapply(imgs, function(x) magick::image_read(base64enc::base64decode(x)))

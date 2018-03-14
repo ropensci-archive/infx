@@ -7,6 +7,7 @@
 \alias{fetch_images.ImageDatasetReference}
 \alias{fetch_images.MicroscopyImageReference}
 \alias{fetch_images.PlateImageReference}
+\alias{process_imgs}
 \title{Fetch images}
 \usage{
 fetch_images(token, x, ...)
@@ -25,6 +26,8 @@ fetch_images(token, x, ...)
 
 \method{fetch_images}{PlateImageReference}(token, x, image_size = NULL,
   force_png = FALSE, format = NULL, thumbnails = FALSE, ...)
+
+process_imgs(imgs)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -52,6 +55,9 @@ png. If NULL or FALSE, the image is returned in the format it is stored.}
 \item{format}{If not NULL, a single \code{ImageRepresentationFormat} object.
 Cannot be combined with non-default \code{image_size}, \code{force_png} and \code{format}
 arguments.}
+
+\item{imgs}{A list of base64 encoded images, each of which will read by
+image magick.}
 }
 \description{
 Dispatch is - as per openBis implementation - possible on any object that
