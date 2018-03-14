@@ -1,16 +1,21 @@
 
 #' Make a JSON-RPC request
 #'
-#' Issues a POST request to a JSON-RPC server. All `@type` fields are
-#' converted to/from `json_class` attributes, using [rm_json_class()] and
-#' [as_json_class()]. The helper function `request_openbis()` wraps
-#' `make_requests()` and constructs the url the request is sent to, based on a
-#' root url and an API section name (for the API section mapping, see
-#' [docs](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API)).
-#' As part of the JSON-RPC specification, all objects returned form the API
-#' will have `@id` fields, which may be referenced if an objects is used
-#' multiple times. The helper function `resolve_references()` recursively
-#' resolves all references such that each object is self-contained.
+#' The function `make_requests()` and a wrapper for single requests
+#' (`make_request()`) issues one or several POST request to the specified
+#' JSON-RPC server. The urls for the various openBIS endpoints can be
+#' constructed using the `api_url()` function. If several requests are issued,
+#' these can be run asynchronously using `do_request_parallel()` or serially
+#' using `do_request_serial()`. For both functions, a number of retries can be
+#' specified and a function can be supplied that will be run on the returned
+#' data if the request returns successfully.
+#' 
+#' All `@type` fields are converted to/from `json_class` attributes, using
+#' [rm_json_class()] and [as_json_class()]. Furthermore, as part of the
+#' JSON-RPC specification, all objects returned form the API will have `@id`
+#' fields, which may be referenced if an objects is used multiple times. The
+#' helper function `resolve_references()` recursively resolves all references
+#' such that each object is self-contained.
 #' 
 #' @param url,urls, Destination url(s), the request is sent to.
 #' @param method,methods The API method name(s).
@@ -160,32 +165,6 @@ do_request_serial <- function(urls,
 
 #' @param api,host Strings used to construct the destination url.
 #' 
-#' @rdname request
-#' @export
-#' 
-request_openbis <- function(methods,
-                            params,
-                            api = c("IGeneralInformationService",
-                                    "IGeneralInformationChangingService",
-                                    "IQueryApiServer",
-                                    "IWebInformationService",
-                                    "IDssServiceRpcGeneric",
-                                    "IScreeningApiServer",
-                                    "IDssServiceRpcScreening"),
-                            host = "https://infectx.biozentrum.unibas.ch") {
-
-  api <- switch(match.arg(api),
-                IGeneralInformationService = "gis",
-                IGeneralInformationChangingService = "gics",
-                IQueryApiServer = "qas",
-                IWebInformationService = "wis",
-                IDssServiceRpcGeneric = "dsrg",
-                IScreeningApiServer = "sas",
-                IDssServiceRpcScreening = "dsrs")
-
-  make_request(api_url(api, host = host), methods, params)
-}
-
 #' @rdname request
 #' @export
 #' 

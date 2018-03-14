@@ -4,7 +4,6 @@
 \alias{make_requests}
 \alias{make_request}
 \alias{do_request_serial}
-\alias{request_openbis}
 \alias{api_url}
 \alias{docs_link}
 \alias{process_json}
@@ -16,11 +15,6 @@ make_requests(urls, methods, params, ids = NULL, version = "2.0", ...)
 make_request(url, method, params, ...)
 
 do_request_serial(urls, bodies, n_try = 2L, done = process_json)
-
-request_openbis(methods, params, api = c("IGeneralInformationService",
-  "IGeneralInformationChangingService", "IQueryApiServer",
-  "IWebInformationService", "IDssServiceRpcGeneric", "IScreeningApiServer",
-  "IDssServiceRpcScreening"), host = "https://infectx.biozentrum.unibas.ch")
 
 api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
   host = "https://infectx.biozentrum.unibas.ch")
@@ -67,16 +61,22 @@ request.}
 are turned into class attributes and \code{@id} fields are recursively removed.}
 }
 \description{
-Issues a POST request to a JSON-RPC server. All \code{@type} fields are
-converted to/from \code{json_class} attributes, using \code{\link[=rm_json_class]{rm_json_class()}} and
-\code{\link[=as_json_class]{as_json_class()}}. The helper function \code{request_openbis()} wraps
-\code{make_requests()} and constructs the url the request is sent to, based on a
-root url and an API section name (for the API section mapping, see
-\href{https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API}{docs}).
-As part of the JSON-RPC specification, all objects returned form the API
-will have \code{@id} fields, which may be referenced if an objects is used
-multiple times. The helper function \code{resolve_references()} recursively
-resolves all references such that each object is self-contained.
+The function \code{make_requests()} and a wrapper for single requests
+(\code{make_request()}) issues one or several POST request to the specified
+JSON-RPC server. The urls for the various openBIS endpoints can be
+constructed using the \code{api_url()} function. If several requests are issued,
+these can be run asynchronously using \code{do_request_parallel()} or serially
+using \code{do_request_serial()}. For both functions, a number of retries can be
+specified and a function can be supplied that will be run on the returned
+data if the request returns successfully.
+}
+\details{
+All \code{@type} fields are converted to/from \code{json_class} attributes, using
+\code{\link[=rm_json_class]{rm_json_class()}} and \code{\link[=as_json_class]{as_json_class()}}. Furthermore, as part of the
+JSON-RPC specification, all objects returned form the API will have \code{@id}
+fields, which may be referenced if an objects is used multiple times. The
+helper function \code{resolve_references()} recursively resolves all references
+such that each object is self-contained.
 }
 \examples{
 \donttest{
