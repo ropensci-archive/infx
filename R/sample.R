@@ -75,7 +75,7 @@ list_samples.Plate <- function(token, x, ...)
 list_samples.WellIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x),
-                   function(well) list(token, well))
+                   function(well) list(token, remove_null(well)))
 
   res <- make_requests(api_url("sas"), "getWellSample", params)
 
