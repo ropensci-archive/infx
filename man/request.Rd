@@ -3,18 +3,23 @@
 \name{make_requests}
 \alias{make_requests}
 \alias{make_request}
-\alias{do_request_serial}
+\alias{do_requests_serial}
+\alias{do_requests_parallel}
 \alias{api_url}
 \alias{docs_link}
 \alias{process_json}
 \alias{resolve_references}
 \title{Make a JSON-RPC request}
 \usage{
-make_requests(urls, methods, params, ids = NULL, version = "2.0", ...)
+make_requests(urls, methods, params, ids = NULL, version = "2.0",
+  n_con = 5L, ...)
 
 make_request(url, method, params, ...)
 
-do_request_serial(urls, bodies, n_try = 2L, done = process_json)
+do_requests_serial(urls, bodies, n_try = 2L, done = process_json)
+
+do_requests_parallel(urls, bodies, n_con = 5L, n_try = 2L,
+  done = process_json)
 
 api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
   host = "https://infectx.biozentrum.unibas.ch")
@@ -37,8 +42,10 @@ requests are issued per HTTP request.}
 
 \item{version}{JSON-RPC protocol version to be used (defaults to \code{"2.0"}.}
 
+\item{n_con}{The number of simultaneous connections.}
+
 \item{...}{Further arguments to \code{make_request} are passed to
-\code{make_requests} and from \code{make_requests} to \code{do_request_serial}.}
+\code{make_requests} and from \code{make_requests} to \code{do_requests_serial}.}
 
 \item{url, urls, }{Destination url(s), the request is sent to.}
 
@@ -65,8 +72,8 @@ The function \code{make_requests()} and a wrapper for single requests
 (\code{make_request()}) issues one or several POST request to the specified
 JSON-RPC server. The urls for the various openBIS endpoints can be
 constructed using the \code{api_url()} function. If several requests are issued,
-these can be run asynchronously using \code{do_request_parallel()} or serially
-using \code{do_request_serial()}. For both functions, a number of retries can be
+these can be run asynchronously using \code{do_requests_parallel()} or serially
+using \code{do_requests_serial()}. For both functions, a number of retries can be
 specified and a function can be supplied that will be run on the returned
 data if the request returns successfully.
 }

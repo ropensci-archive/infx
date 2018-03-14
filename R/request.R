@@ -5,8 +5,8 @@
 #' (`make_request()`) issues one or several POST request to the specified
 #' JSON-RPC server. The urls for the various openBIS endpoints can be
 #' constructed using the `api_url()` function. If several requests are issued,
-#' these can be run asynchronously using `do_request_parallel()` or serially
-#' using `do_request_serial()`. For both functions, a number of retries can be
+#' these can be run asynchronously using `do_requests_parallel()` or serially
+#' using `do_requests_serial()`. For both functions, a number of retries can be
 #' specified and a function can be supplied that will be run on the returned
 #' data if the request returns successfully.
 #' 
@@ -26,6 +26,7 @@
 #' string of length 7). Can be usually be ignored, as only single JSON-RPC
 #' requests are issued per HTTP request.
 #' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
+#' @param n_con The number of simultaneous connections.
 #' 
 #' @rdname request
 #' 
@@ -43,6 +44,7 @@ make_requests <- function(urls,
                           params,
                           ids = NULL,
                           version = "2.0",
+                          n_con = 5L,
                           ...) {
 
   check_rep <- function(vec, len) {
@@ -77,11 +79,14 @@ make_requests <- function(urls,
 
   assert_that(length(bodies) == length(urls))
 
-  do_request_serial(urls, bodies, ...)
+  if (length(urls) > 1L && n_con > 1L)
+    do_requests_parallel(urls, bodies, n_con, ...)
+  else
+    do_requests_serial(urls, bodies, ...)
 }
 
 #' @param ... Further arguments to `make_request` are passed to
-#' `make_requests` and from `make_requests` to `do_request_serial`.
+#' `make_requests` and from `make_requests` to `do_requests_serial`.
 #' 
 #' @rdname request
 #' @export
@@ -108,7 +113,7 @@ make_request <- function(url,
 #' @rdname request
 #' @export
 #' 
-do_request_serial <- function(urls,
+do_requests_serial <- function(urls,
                               bodies,
                               n_try = 2L,
                               done = process_json) {
@@ -130,7 +135,7 @@ do_request_serial <- function(urls,
 
     n_try <- n_try - 1L
     if (n_try < 0L)
-      stop("data could not be fetched successfully.")
+      stop("could not fetched data within ", n_try, " tries.")
 
     res[to_do] <- mapply(function(url, body) {
       body_raw <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
@@ -145,7 +150,7 @@ do_request_serial <- function(urls,
 
       if (resp$status_code != 200) {
 
-        warning("Request returned with code ", resp$status_code)
+        warning("request returned with code ", resp$status_code)
 
         NULL
 
@@ -157,7 +162,7 @@ do_request_serial <- function(urls,
         if (!is.null(resp$error)) {
 
           data <- resp$error$data[!grepl("^@", names(resp$error$data))]
-          warning("\nError with code ", resp$error$code, ":\n",
+          warning("\nerror with code ", resp$error$code, ":\n",
                   paste(strwrap(paste(names(data), data, sep = ": "),
                                 indent = 2L, exdent = 4L), collapse = "\n"))
           NULL
@@ -175,6 +180,89 @@ do_request_serial <- function(urls,
       }
     }, urls[to_do], bodies[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
   }
+
+  assert_that(all(sapply(res, Negate(is.null))))
+
+  res
+}
+
+#' @rdname request
+#' @export
+#' 
+do_requests_parallel <- function(urls,
+                                 bodies,
+                                 n_con = 5L,
+                                 n_try = 2L,
+                                 done = process_json) {
+
+  add_request <- function(i) {
+
+    tries[i] <<- tries[i] - 1L
+    if (tries[i] < 0L)
+      stop("could not download file within ", n_try, " tries.")
+
+    body_raw <- charToRaw(jsonlite::toJSON(bodies[[i]], auto_unbox = TRUE))
+
+    handle <- curl::new_handle(post = TRUE,
+                               postfieldsize = length(body_raw),
+                               postfields = body_raw)
+    handle <- curl::handle_setheaders(handle,
+                                      "Content-Type" = "application/json")
+
+    curl::curl_fetch_multi(
+      url = urls[i],
+      handle = handle,
+      pool = pool,
+      done = function(x) {
+
+        if (x$status_code != 200) {
+
+          warning("request returned with code ", x$status_code)
+          add_request(i)
+
+        } else {
+
+          resp <- jsonlite::fromJSON(rawToChar(x$content),
+                                     simplifyVector = FALSE)
+          assert_that(resp$id == bodies[[i]]$id)
+
+          if (!is.null(resp$error)) {
+
+            data <- resp$error$data[!grepl("^@", names(resp$error$data))]
+            warning("\nerror with code ", resp$error$code, ":\n",
+                    paste(strwrap(paste(names(data), data, sep = ": "),
+                                  indent = 2L, exdent = 4L), collapse = "\n"))
+            add_request(i)
+
+          } else {
+
+            res[[i]] <<- done(resp$result)
+
+            if (length(urls) > 1L)
+              pb$tick(1L)
+          }
+        }
+      },
+      fail = function(x) add_request(i)
+    )
+  }
+
+  if (length(urls) > 1L) {
+    pb <- progress::progress_bar$new(
+      format = paste0("querying [:bar] :percent in :elapsed"),
+      total = length(urls))
+    pb$tick(0)
+  }
+
+  tries <- rep(n_try, length(urls))
+  res <- vector("list", length(urls))
+
+  pool <- curl::new_pool(host_con = n_con)
+
+  for (j in seq_along(urls))
+    add_request(j)
+
+  curl::multi_run(pool = pool)
 
   assert_that(all(sapply(res, Negate(is.null))))
 

@@ -77,7 +77,7 @@ test_that("image data can be fetched", {
   # test plate DatasetIdentifier with CLUSTER_JOB_LOGS type
   expect_error(suppressWarnings(fetch_images(tok, ds_ids[[2]], "DAPI",
                                              well_pos[[1]], img_size)),
-               "data could not be fetched successfully.")
+               "could not fetched data within")
 
   img_ds <- list_references(tok, plates[1:2])
 
@@ -226,5 +226,5 @@ test_that("image data can be fetched", {
   expect_error(suppressWarnings(fetch_images(tok, pi_ref[[1]],
                                              format = img_rep,
                                              thumbnails = TRUE)),
-               "data could not be fetched successfully.")
+               "could not fetched data within")
 })
