@@ -2,7 +2,7 @@ context("openbis login")
 
 test_that("openbis login is possible", {
   expect_error(login_openbis())
-  expect_error(login_openbis("foo", "bar"))
+  expect_error(suppressWarnings(login_openbis("foo", "bar")))
   expect_error(login_openbis(cred$username, cred$password, api = "foo"))
   expect_error(login_openbis(cred$username, cred$password, url = "foo"))
   expect_error(login_openbis("foo", "bar", url = "google.ch"))
