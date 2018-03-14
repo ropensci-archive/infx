@@ -44,8 +44,9 @@ login_openbis <- function(user,
     environment()
   }
 
-  token <- unlist(request_openbis("tryToAuthenticateForAllServices",
-                                  list(user, pwd)))
+  token <- unlist(make_request(api_url("gis"),
+                               "tryToAuthenticateForAllServices",
+                               list(user, pwd)))
 
   assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
@@ -62,11 +63,13 @@ login_openbis <- function(user,
 #' @export
 #' 
 logout_openbis <- function(token) {
-  tryCatch(request_openbis("logout", list(token)),
-           warning = function(w) {
-             if (!grepl("an api call returned NULL", w))
-              stop(w)
-           })
+  process_logoout <- function(x) {
+    if (!is.null(x))
+      stop(x)
+    else
+      list()
+  }
+  make_request(api_url("gis"), "logout", list(token), done = process_logoout)
   invisible(NULL)
 }
 
@@ -76,4 +79,4 @@ logout_openbis <- function(token) {
 #' @export
 #' 
 is_token_valid <- function(token)
-  unlist(request_openbis("isSessionActive", list(token)))
+  unlist(make_request(api_url("gis"), "isSessionActive", list(token)))
