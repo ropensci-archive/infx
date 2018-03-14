@@ -120,48 +120,23 @@ do_requests_serial <- function(urls,
 
   add_request <- function(i, tries) {
 
-    if (tries == 0L) {
+    if (tries <= 0L) {
       warning("could not carry out request within ", n_try, " tries.")
       return(invisible(NULL))
     }
 
-    body_raw <- charToRaw(jsonlite::toJSON(bodies[[i]], auto_unbox = TRUE))
+    res <- curl::curl_fetch_memory(urls[i],
+                                   handle = create_post_handle(bodies[[i]]))
 
-    handle <- curl::new_handle(post = TRUE,
-                               postfieldsize = length(body_raw),
-                               postfields = body_raw)
-    handle <- curl::handle_setheaders(handle,
-                                      "Content-Type" = "application/json")
+    res <- check_result(res)
 
-    resp <- curl::curl_fetch_memory(urls[i], handle = handle)
-
-    if (resp$status_code != 200) {
-
-      warning("request returned with code ", resp$status_code)
-
+    if (is.null(res)) {
       add_request(i, tries - 1L)
-
     } else {
-
-      resp <- jsonlite::fromJSON(rawToChar(resp$content),
-                                 simplifyVector = FALSE)
-      assert_that(resp$id == bodies[[i]]$id)
-
-      if (!is.null(resp$error)) {
-
-        data <- resp$error$data[!grepl("^@", names(resp$error$data))]
-        warning("\nerror with code ", resp$error$code, ":\n",
-                paste(strwrap(paste(names(data), data, sep = ": "),
-                              indent = 2L, exdent = 4L), collapse = "\n"))
-        add_request(i, tries - 1L)
-
-      } else {
-
-        res[[i]] <<- done(resp$result)
-
-        if (length(urls) > 1L)
-          pb$tick(1L)
-      }
+      res <- done(res)
+      if (length(urls) > 1L)
+        pb$tick(1L)
+      res
     }
   }
 
@@ -172,12 +147,7 @@ do_requests_serial <- function(urls,
     pb$tick(0)
   }
 
-  res <- vector("list", length(urls))
-
-  for (j in seq_along(urls))
-    add_request(j, n_try)
-
-  res
+  lapply(seq_along(urls), add_request, n_try)
 }
 
 #' @rdname request
@@ -196,46 +166,20 @@ do_requests_parallel <- function(urls,
       return(invisible(NULL))
     }
 
-    body_raw <- charToRaw(jsonlite::toJSON(bodies[[i]], auto_unbox = TRUE))
-
-    handle <- curl::new_handle(post = TRUE,
-                               postfieldsize = length(body_raw),
-                               postfields = body_raw)
-    handle <- curl::handle_setheaders(handle,
-                                      "Content-Type" = "application/json")
-
     curl::curl_fetch_multi(
       url = urls[i],
-      handle = handle,
+      handle = create_post_handle(bodies[[i]]),
       pool = pool,
       done = function(x) {
 
-        if (x$status_code != 200) {
+        resp <- check_result(x)
 
-          warning("request returned with code ", x$status_code)
+        if (is.null(resp)) {
           add_request(i, tries - 1L)
-
         } else {
-
-          resp <- jsonlite::fromJSON(rawToChar(x$content),
-                                     simplifyVector = FALSE)
-          assert_that(resp$id == bodies[[i]]$id)
-
-          if (!is.null(resp$error)) {
-
-            data <- resp$error$data[!grepl("^@", names(resp$error$data))]
-            warning("\nerror with code ", resp$error$code, ":\n",
-                    paste(strwrap(paste(names(data), data, sep = ": "),
-                                  indent = 2L, exdent = 4L), collapse = "\n"))
-            add_request(i, tries - 1L)
-
-          } else {
-
-            res[[i]] <<- done(resp$result)
-
-            if (length(urls) > 1L)
-              pb$tick(1L)
-          }
+          res[[i]] <<- done(resp)
+          if (length(urls) > 1L)
+            pb$tick(1L)
         }
       },
       fail = function(x) add_request(i, tries - 1L)
@@ -249,7 +193,6 @@ do_requests_parallel <- function(urls,
     pb$tick(0)
   }
 
-  tries <- rep(n_try, length(urls))
   res <- vector("list", length(urls))
 
   pool <- curl::new_pool(host_con = n_con)
@@ -260,6 +203,44 @@ do_requests_parallel <- function(urls,
   curl::multi_run(pool = pool)
 
   res
+}
+
+create_post_handle <- function(body) {
+  body_raw <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
+
+  handle <- curl::new_handle(post = TRUE,
+                             postfieldsize = length(body_raw),
+                             postfields = body_raw)
+
+  curl::handle_setheaders(handle, "Content-Type" = "application/json")
+}
+
+check_result <- function(resp) {
+
+  if (resp$status_code != 200) {
+
+    warning("request returned with code ", resp$status_code)
+    NULL
+
+  } else {
+
+    resp <- jsonlite::fromJSON(rawToChar(resp$content),
+                               simplifyVector = FALSE)
+    assert_that(resp$id == bodies[[i]]$id)
+
+    if (!is.null(resp$error)) {
+
+      data <- resp$error$data[!grepl("^@", names(resp$error$data))]
+      warning("\nerror with code ", resp$error$code, ":\n",
+              paste(strwrap(paste(names(data), data, sep = ": "),
+                            indent = 2L, exdent = 4L), collapse = "\n"))
+      NULL
+
+    } else {
+
+      resp$result
+    }
+  }
 }
 
 #' @param x A (possibly nested) list structure for which all `@type` fields
