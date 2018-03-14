@@ -82,7 +82,8 @@ list_material <- function(token, x, ...)
 #' @export
 #' 
 list_material.MaterialIdentifierGeneric <- function(token, x, ...)
-  request_openbis("getMaterialByCodes", list(token, as_json_vec(x)))
+  make_request(api_url("gis"), "getMaterialByCodes",
+               list(token, as_json_vec(x)))
 
 #' @rdname list_material
 #' @export
@@ -113,9 +114,8 @@ list_plate_mat_map <- function(token, x, material_type = NULL) {
     assert_that(is_json_class(material_type),
                 has_subclass(material_type, "MaterialTypeIdentifierScreening"))
 
-  request_openbis("listPlateMaterialMapping",
-                  list(token, as_json_vec(x), material_type),
-                  "IScreeningApiServer")
+  make_request(api_url("sas"), "listPlateMaterialMapping",
+               list(token, as_json_vec(x), material_type))
 }
 
 #' @rdname list_material
