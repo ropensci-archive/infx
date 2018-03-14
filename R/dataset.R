@@ -287,7 +287,8 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
 
   params <- lapply(x, function(z) list(token, z, channels))
 
-  make_requests(api_url("dsrs"), "listImageReferences", params)
+  res <- make_requests(api_url("dsrs"), "listImageReferences", params)
+  as_json_vec(do.call(c, res))
 }
 
 #' @rdname list_img_ref
@@ -304,7 +305,8 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 
   params <- lapply(x, function(z) list(token, z, wells, channels))
 
-  make_requests(api_url("dsrs"), "listPlateImageReferences", params)
+  res <- make_requests(api_url("dsrs"), "listPlateImageReferences", params)
+  as_json_vec(do.call(c, res))
 }
 
 #' @rdname list_datasets

@@ -17,8 +17,6 @@
 #' @param params A list structure holding the arguments which, converted to
 #' JSON, will be used to call the supplied method. The `@type` entries will be
 #' generated from `json_class` attributes.
-#' @param names Optional character vector of names to map list items to
-#' api calls.
 #' @param ids Identifier(s) for the JSON-RPC request (defaults to a random
 #' string of length 7). Can be usually be ignored, as only single JSON-RPC
 #' requests are issued per HTTP request.
@@ -38,23 +36,15 @@
 make_requests <- function(urls,
                           methods,
                           params,
-                          names = NULL,
                           ids = NULL,
-                          version = "2.0") {
+                          version = "2.0",
+                          ...) {
 
   check_rep <- function(vec, len) {
     if (length(vec) == 1L)
       vec <- rep(vec, len)
     assert_that(length(vec) == len || length(vec) == 1L)
     vec
-  }
-
-  to_json_class_vec <- function(x) {
-    if (is.null(x))
-      x <- list()
-    x <- as_json_class(x, force = TRUE)
-    x <- resolve_references(x)
-    as_json_vec(x, force = TRUE)
   }
 
   assert_that(is.list(params),
@@ -73,9 +63,6 @@ make_requests <- function(urls,
                                     collapse = ""))
   assert_that(length(ids) == max_len)
 
-  if (!is.null(names))
-    assert_that(length(names) == max_len)
-
   bodies <- mapply(list,
                    id = ids,
                    jsonrpc = rep(version, max_len),
@@ -85,22 +72,11 @@ make_requests <- function(urls,
 
   assert_that(length(bodies) == length(urls))
 
-  res <- do_request_serial(urls, bodies, done = to_json_class_vec)
-
-
-  if (!is.null(names))
-    names <- rep(names, sapply(res, length))
-
-  res <- do.call(c, res[sapply(res, length) > 0L])
-
-  if (is.null(names))
-    res
-  else
-    stats::setNames(res, names)
+  do_request_serial(urls, bodies, ...)
 }
 
 #' @param ... Further arguments to `make_request` are passed to
-#' `make_requests`.
+#' `make_requests` and from `make_requests` to `do_request_serial`.
 #' 
 #' @rdname request
 #' @export
@@ -113,7 +89,7 @@ make_request <- function(url,
   assert_that(length(url) == 1L,
               length(method) == 1L)
 
-  make_requests(url, method, list(params), ...)
+  make_requests(url, method, list(params), ...)[[1L]]
 }
 
 
@@ -130,18 +106,7 @@ make_request <- function(url,
 do_request_serial <- function(urls,
                               bodies,
                               n_try = 2L,
-                              done = identity) {
-
-  handles <- lapply(bodies, function(body) {
-    body <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
-
-    h <- curl::new_handle(post = TRUE,
-                          postfieldsize = length(body),
-                          postfields = body)
-    curl::handle_setheaders(h, "Content-Type" = "application/json")
-  })
-
-  assert_that(length(handles) == length(urls))
+                              done = process_json) {
 
   res <- vector("list", length(urls))
 
@@ -155,14 +120,24 @@ do_request_serial <- function(urls,
     if (n_try < 0L)
       stop("data could not be fetched successfully.")
 
-    res[to_do] <- mapply(function(url, h, id) {
-      resp <- curl::curl_fetch_memory(url, handle = h)
+    res[to_do] <- mapply(function(url, body) {
+      body_raw <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
+
+      handle <- curl::new_handle(post = TRUE,
+                                 postfieldsize = length(body_raw),
+                                 postfields = body_raw)
+      handle <- curl::handle_setheaders(handle,
+                                        "Content-Type" = "application/json")
+
+      resp <- curl::curl_fetch_memory(url, handle = handle)
+
       if (resp$status_code != 200)
         NULL
       else {
         resp <- jsonlite::fromJSON(rawToChar(resp$content),
                                    simplifyVector = FALSE)
-        assert_that(resp$id == id)
+        assert_that(resp$id == body$id)
+
         if (!is.null(resp$error)) {
           data <- resp$error$data[!grepl("^@", names(resp$error$data))]
           warning("\nError with code ", resp$error$code, ":\n",
@@ -170,12 +145,12 @@ do_request_serial <- function(urls,
                                 indent = 2L, exdent = 4L), collapse = "\n"))
           NULL
         } else {
-          done(resp$result)
+          resp <- done(resp$result)
+          assert_that(!is.null(resp))
+          resp
         }
       }
-    },
-    urls[to_do], handles[to_do], sapply(bodies[to_do], `[[`, "id"),
-    SIMPLIFY = FALSE, USE.NAMES = FALSE)
+    }, urls[to_do], bodies[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
   }
 
   assert_that(all(sapply(res, Negate(is.null))))
@@ -208,7 +183,7 @@ request_openbis <- function(methods,
                 IScreeningApiServer = "sas",
                 IDssServiceRpcScreening = "dsrs")
 
-  make_requests(api_url(api, host = host), methods, list(params))
+  make_request(api_url(api, host = host), methods, params)
 }
 
 #' @rdname request
@@ -275,9 +250,22 @@ docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
   paste0("\\href{", url, "}{", txt, "}")
 }
 
-#' @param x A (possibly nested) list structure for which all `@id` fields are
-#' recursively removed.
+#' @param x A (possibly nested) list structure for which all `@type` fields
+#' are turned into class attributes and `@id` fields are recursively removed.
 #' 
+#' @rdname request
+#' @export
+#' 
+process_json <- function(x) {
+  if (is.null(x)) {
+    warning("an api call returned NULL.")
+    x <- list()
+  }
+  x <- as_json_class(x, force = TRUE)
+  x <- resolve_references(x)
+  as_json_vec(x, force = TRUE)
+}
+
 #' @rdname request
 #' @export
 #' 

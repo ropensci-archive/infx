@@ -70,7 +70,8 @@ list_experiments.Project <- function(token,
 
   params <- lapply(types, function(type) list(token, x, as.character(type)))
 
-  make_requests(api_url("gis"), fun, params)
+  res <- make_requests(api_url("gis"), fun, params)
+  as_json_vec(do.call(c, res))
 }
 
 #' @rdname list_experiments

@@ -51,7 +51,10 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
   params <- mapply(function(a, b, c) list(token, a, b, c), x, path, recursive,
                    SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  make_requests(api_url("dsrg"), "listFilesForDataSet", params, x)
+  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
+
+  stats::setNames(as_json_vec(do.call(c, res)),
+                  rep(x, sapply(res, length)))
 }
 
 list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
@@ -106,8 +109,10 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
   params <- lapply(x, function(y) list(token, y))
 
-  make_requests(api_url("dsrg"), "listFilesForDataSet", params,
-                dataset_code(x))
+  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
+
+  stats::setNames(as_json_vec(do.call(c, res)),
+                  rep(dataset_code(x), sapply(res, length)))
 }
 
 #' Fetch files

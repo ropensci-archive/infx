@@ -90,9 +90,12 @@ test_that("dataset references can be listed", {
 
   check_skip()
 
-  mat <- material_id(c(2475L, 3832L), mode = "screening")
+  mat <- material_id(c(3832L, 2475L), mode = "screening")
 
   ds_1 <- list_references(tok, mat[[1]], exp_ids[[1]])
+  expect_identical(ds_1, list())
+
+  ds_1 <- list_references(tok, mat[[2]], exp_ids[[1]])
   expect_is(ds_1, "PlateWellReferenceWithDatasets")
   expect_is(ds_1, "json_vec")
   expect_identical(get_subclass(ds_1),

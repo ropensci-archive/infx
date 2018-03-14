@@ -7,15 +7,15 @@
 \alias{request_openbis}
 \alias{api_url}
 \alias{docs_link}
+\alias{process_json}
 \alias{resolve_references}
 \title{Make a JSON-RPC request}
 \usage{
-make_requests(urls, methods, params, names = NULL, ids = NULL,
-  version = "2.0")
+make_requests(urls, methods, params, ids = NULL, version = "2.0", ...)
 
 make_request(url, method, params, ...)
 
-do_request_serial(urls, bodies, n_try = 2L, done = identity)
+do_request_serial(urls, bodies, n_try = 2L, done = process_json)
 
 request_openbis(methods, params, api = c("IGeneralInformationService",
   "IGeneralInformationChangingService", "IQueryApiServer",
@@ -28,6 +28,8 @@ api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
 docs_link(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
   method_name = NULL, version = "13.04.0")
 
+process_json(x)
+
 resolve_references(x)
 }
 \arguments{
@@ -35,21 +37,18 @@ resolve_references(x)
 JSON, will be used to call the supplied method. The \code{@type} entries will be
 generated from \code{json_class} attributes.}
 
-\item{names}{Optional character vector of names to map list items to
-api calls.}
-
 \item{ids}{Identifier(s) for the JSON-RPC request (defaults to a random
 string of length 7). Can be usually be ignored, as only single JSON-RPC
 requests are issued per HTTP request.}
 
 \item{version}{JSON-RPC protocol version to be used (defaults to \code{"2.0"}.}
 
+\item{...}{Further arguments to \code{make_request} are passed to
+\code{make_requests} and from \code{make_requests} to \code{do_request_serial}.}
+
 \item{url, urls, }{Destination url(s), the request is sent to.}
 
 \item{method, methods}{The API method name(s).}
-
-\item{...}{Further arguments to \code{make_request} are passed to
-\code{make_requests}.}
 
 \item{bodies}{Request bodies: a list where each entry is a list with slots
 \code{id}, \code{jsonrpc}, \code{method} and \code{params}.}
@@ -64,8 +63,8 @@ request.}
 
 \item{method_name}{Name of the method for which the link is created.}
 
-\item{x}{A (possibly nested) list structure for which all \code{@id} fields are
-recursively removed.}
+\item{x}{A (possibly nested) list structure for which all \code{@type} fields
+are turned into class attributes and \code{@id} fields are recursively removed.}
 }
 \description{
 Issues a POST request to a JSON-RPC server. All \code{@type} fields are
