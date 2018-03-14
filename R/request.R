@@ -113,6 +113,13 @@ do_request_serial <- function(urls,
                               n_try = 2L,
                               done = process_json) {
 
+  if (length(urls) > 1L) {
+    pb <- progress::progress_bar$new(
+      format = paste0("querying [:bar] :percent in :elapsed"),
+      total = length(urls))
+    pb$tick(0)
+  }
+
   res <- vector("list", length(urls))
 
   repeat {
@@ -136,22 +143,33 @@ do_request_serial <- function(urls,
 
       resp <- curl::curl_fetch_memory(url, handle = handle)
 
-      if (resp$status_code != 200)
+      if (resp$status_code != 200) {
+
+        warning("Request returned with code ", resp$status_code)
+
         NULL
-      else {
+
+      } else {
         resp <- jsonlite::fromJSON(rawToChar(resp$content),
                                    simplifyVector = FALSE)
         assert_that(resp$id == body$id)
 
         if (!is.null(resp$error)) {
+
           data <- resp$error$data[!grepl("^@", names(resp$error$data))]
           warning("\nError with code ", resp$error$code, ":\n",
                   paste(strwrap(paste(names(data), data, sep = ": "),
                                 indent = 2L, exdent = 4L), collapse = "\n"))
           NULL
+
         } else {
+
           resp <- done(resp$result)
           assert_that(!is.null(resp))
+
+          if (length(urls) > 1L)
+            pb$tick(1L)
+
           resp
         }
       }
