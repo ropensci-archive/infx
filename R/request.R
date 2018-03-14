@@ -114,9 +114,9 @@ make_request <- function(url,
 #' @export
 #' 
 do_requests_serial <- function(urls,
-                              bodies,
-                              n_try = 2L,
-                              done = process_json) {
+                               bodies,
+                               n_try = 2L,
+                               done = process_json) {
 
   if (length(urls) > 1L) {
     pb <- progress::progress_bar$new(
@@ -267,72 +267,6 @@ do_requests_parallel <- function(urls,
   assert_that(all(sapply(res, Negate(is.null))))
 
   res
-}
-
-#' @param api,host Strings used to construct the destination url.
-#' 
-#' @rdname request
-#' @export
-#' 
-api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
-                            "dsrs"),
-                    host = "https://infectx.biozentrum.unibas.ch") {
-
-  url <- switch(match.arg(api),
-                gis = "openbis/openbis/rmi-general-information-v1.json",
-                gics = paste0("openbis/openbis/",
-                              "rmi-general-information-changing-v1.json"),
-                qas = "openbis/openbis/rmi-query-v1.json",
-                wis = "openbis/openbis/rmi-web-information-v1.json",
-                dsrg = "datastore_server/rmi-dss-api-v1.json",
-                sas = "openbis/openbis/rmi-screening-api-v1.json",
-                dsrs = "rmi-datastore-server-screening-api-v1.json")
-
-  paste(host, url, sep = "/")
-}
-
-#' @param method_name Name of the method for which the link is created.
-#' 
-#' @rdname request
-#' @export
-#' 
-docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
-                              "dsrs"),
-                      method_name = NULL,
-                      version = "13.04.0") {
-
-  api <- match.arg(api)
-
-  url <- switch(api,
-                gis = paste0("generic/shared/api/v1/",
-                             "IGeneralInformationService.html"),
-                gics = paste0("generic/shared/api/v1/",
-                              "IGeneralInformationChangingService.html"),
-                qas = "plugin/query/shared/api/v1/IQueryApiServer.html",
-                wis = "generic/shared/api/v1/IWebInformationService.html",
-                dsrg = paste0("dss/generic/shared/api/v1/",
-                              "IDssServiceRpcGeneric.html"),
-                sas = paste0("plugin/screening/shared/api/v1/",
-                             "IScreeningApiServer.html"),
-                dsrs = paste0("dss/screening/shared/api/v1/",
-                              "IDssServiceRpcScreening.html"))
-
-  url <- paste("https://svnsis.ethz.ch/doc/openbis", version,
-               "ch/systemsx/cisd/openbis", url, sep = "/")
-
-  txt <- switch(api,
-                gis = "IGeneralInformationService",
-                gics = "IGeneralInformationChangingService",
-                qas = "IQueryApiServer",
-                wis = "IWebInformationService",
-                dsrg = "IDssServiceRpcGeneric",
-                sas = "IScreeningApiServer",
-                dsrs = "IDssServiceRpcScreening")
-
-  if (!is.null(method_name))
-    txt <- paste(txt, method_name, sep = ":")
-
-  paste0("\\href{", url, "}{", txt, "}")
 }
 
 #' @param x A (possibly nested) list structure for which all `@type` fields

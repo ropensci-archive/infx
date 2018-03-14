@@ -5,8 +5,6 @@
 \alias{make_request}
 \alias{do_requests_serial}
 \alias{do_requests_parallel}
-\alias{api_url}
-\alias{docs_link}
 \alias{process_json}
 \alias{resolve_references}
 \title{Make a JSON-RPC request}
@@ -20,12 +18,6 @@ do_requests_serial(urls, bodies, n_try = 2L, done = process_json)
 
 do_requests_parallel(urls, bodies, n_con = 5L, n_try = 2L,
   done = process_json)
-
-api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  host = "https://infectx.biozentrum.unibas.ch")
-
-docs_link(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  method_name = NULL, version = "13.04.0")
 
 process_json(x)
 
@@ -59,10 +51,6 @@ requests.}
 
 \item{done}{A function that is applied to the result of a successful
 request.}
-
-\item{api, host}{Strings used to construct the destination url.}
-
-\item{method_name}{Name of the method for which the link is created.}
 
 \item{x}{A (possibly nested) list structure for which all \code{@type} fields
 are turned into class attributes and \code{@id} fields are recursively removed.}
