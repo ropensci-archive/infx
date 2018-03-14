@@ -128,12 +128,13 @@ do_requests_serial <- function(urls,
     res <- curl::curl_fetch_memory(urls[i],
                                    handle = create_post_handle(bodies[[i]]))
 
-    res <- check_result(res)
+    res <- check_result(res, bodies[[i]]$id)
 
     if (is.null(res)) {
       add_request(i, tries - 1L)
     } else {
-      res <- done(res)
+      assert_that(is.list(res), "result" %in% names(res))
+      res <- done(res$result)
       if (length(urls) > 1L)
         pb$tick(1L)
       res
@@ -172,12 +173,13 @@ do_requests_parallel <- function(urls,
       pool = pool,
       done = function(x) {
 
-        resp <- check_result(x)
+        resp <- check_result(x, bodies[[i]]$id)
 
         if (is.null(resp)) {
           add_request(i, tries - 1L)
         } else {
-          res[[i]] <<- done(resp)
+          assert_that(is.list(resp), "result" %in% names(resp))
+          res[[i]] <<- done(resp$result)
           if (length(urls) > 1L)
             pb$tick(1L)
         }
@@ -215,7 +217,7 @@ create_post_handle <- function(body) {
   curl::handle_setheaders(handle, "Content-Type" = "application/json")
 }
 
-check_result <- function(resp) {
+check_result <- function(resp, id) {
 
   if (resp$status_code != 200) {
 
@@ -226,7 +228,7 @@ check_result <- function(resp) {
 
     resp <- jsonlite::fromJSON(rawToChar(resp$content),
                                simplifyVector = FALSE)
-    assert_that(resp$id == bodies[[i]]$id)
+    assert_that(resp$id == id)
 
     if (!is.null(resp$error)) {
 
@@ -236,10 +238,8 @@ check_result <- function(resp) {
                             indent = 2L, exdent = 4L), collapse = "\n"))
       NULL
 
-    } else {
-
-      resp$result
-    }
+    } else
+      resp
   }
 }
 
