@@ -3,19 +3,7 @@
 \name{api_url}
 \alias{api_url}
 \alias{docs_link}
-\title{The helper function \code{api_url()} is used to create urls to InfectX
-openBIS API endpoints and \code{docs_link()} generates latex links to
-documentation pages. Both functions support the following endpoints which
-are abbreviated as
-\itemize{
-\item \code{gis}: \Sexpr{infx::docs_link("gis")}
-\item \code{gics}: \Sexpr{infx::docs_link("gics")}
-\item \code{qas}: \Sexpr{infx::docs_link("qas")}
-\item \code{wis}: \Sexpr{infx::docs_link("wis")}
-\item \code{dsrg}: \Sexpr{infx::docs_link("dsrg")}
-\item \code{sas}: \Sexpr{infx::docs_link("sas")}
-\item \code{dsrs}: \Sexpr{infx::docs_link("dsrs")}
-}}
+\title{OpenBIS urls}
 \usage{
 api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
   host = "https://infectx.biozentrum.unibas.ch")

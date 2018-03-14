@@ -4,6 +4,8 @@ NULL
 
 as_list <- as.list
 
+#' OpenBIS urls
+#' 
 #' The helper function `api_url()` is used to create urls to InfectX
 #' openBIS API endpoints and `docs_link()` generates latex links to
 #' documentation pages. Both functions support the following endpoints which
