@@ -31,7 +31,7 @@
 #' @export
 #' 
 list_datastores <- function(token)
-  request_openbis("listDataStores", list(token))
+  make_request(api_url("gis"), "listDataStores", list(token))
 
 #' @rdname list_urls
 #' @export
@@ -40,7 +40,7 @@ list_datastore_urls <- function(token, data_set = NULL) {
 
   if (is.null(data_set)) {
 
-    request_openbis("getDefaultPutDataStoreBaseURL", list(token))
+    make_request(api_url("gis"), "getDefaultPutDataStoreBaseURL", list(token))
 
   } else {
 
@@ -54,14 +54,15 @@ list_datastore_urls <- function(token, data_set = NULL) {
 
     if (length(data_set) == 1L) {
 
-      urls <- request_openbis("tryGetDataStoreBaseURL", list(token, data_set))
+      urls <- make_request(api_url("gis"), "tryGetDataStoreBaseURL",
+                           list(token, data_set))
       assert_that(!is.null(urls))
       stats::setNames(urls, data_set)
 
     } else {
 
-      urls <- request_openbis("getDataStoreBaseURLs", list(token,
-                                                           as.list(data_set)))
+      urls <- make_request(api_url("gis"), "getDataStoreBaseURLs",
+                           list(token, as.list(data_set)))
       res <- unlist(lapply(urls, function(url) {
         assert_that(has_subclass(url, "DataStoreURLForDataSets"),
                     has_fields(url, c("dataStoreURL", "dataSetCodes")))
@@ -106,22 +107,20 @@ list_download_urls.character <- function(token,
   }
 
   if (is.na(timeout)) {
-
-    mapply(function(a, b) {
-      request_openbis("getDownloadUrlForFileForDataSet", list(token, a, b),
-                      "IDssServiceRpcGeneric")
-    }, x, path)
+    fun <- "getDownloadUrlForFileForDataSet"
+    params <- mapply(function(a, b) list(token, a, b), x, path,
+                     SIMPLIFY = FALSE)
 
   } else {
 
     assert_that(is.numeric(timeout))
 
-    mapply(function(a, b) {
-      request_openbis("getDownloadUrlForFileForDataSetWithTimeout",
-                      list(token, a, b, timeout),
-                      "IDssServiceRpcGeneric")
-    }, x, path)
+    fun <- "getDownloadUrlForFileForDataSetWithTimeout"
+    params <- mapply(function(a, b) list(token, a, b, timeout), x, path,
+                     SIMPLIFY = FALSE)
   }
+
+  unlist(make_requests(api_url("dsrg"), fun, params))
 }
 
 #' @rdname list_urls
@@ -155,19 +154,16 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
 
   if (is.na(timeout)) {
 
-    res <- sapply(as_json_vec(x), function(y) {
-      request_openbis("getDownloadUrlForFileForDataSet", list(token, y),
-                      "IDssServiceRpcGeneric")
-    })
+    fun <- "getDownloadUrlForFileForDataSet"
+    params <- lapply(as_json_vec(x), function(y) list(token, y))
 
   } else {
 
     assert_that(is.numeric(timeout))
 
-    res <- sapply(as_json_vec(x), function(y) {
-      request_openbis("getDownloadUrlForFileForDataSetWithTimeout",
-                      list(token, y, timeout),
-                      "IDssServiceRpcGeneric")
-    })
+    fun <- "getDownloadUrlForFileForDataSetWithTimeout"
+    params <- lapply(as_json_vec(x), function(y) list(token, y, timeout))
   }
+  
+  unlist(make_requests(api_url("dsrg"), fun, params))
 }
