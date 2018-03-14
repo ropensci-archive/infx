@@ -61,18 +61,16 @@ list_plates <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_plates.NULL <- function(token, x, ...)
-  request_openbis("listPlates", list(token), "IScreeningApiServer")
+  make_request(api_url("sas"), "listPlates", list(token))
 
 #' @rdname list_plate_well
 #' @export
 #' 
 list_plates.ExperimentIdentifier <- function(token, x, ...) {
 
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
+  params <- lapply(as_json_vec(x), function(exp) list(token, exp))
 
-  res <- lapply(x, function(exp)
-    request_openbis("listPlates", list(token, exp), "IScreeningApiServer"))
+  res <- make_requests(api_url("sas"), "listPlates", params)
 
   as_json_vec(do.call(c, res))
 }
@@ -118,12 +116,9 @@ list_wells <- function(token, x = NULL, ...)
 #' 
 list_wells.PlateIdentifier <- function(token, x, ...) {
 
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
+  params <- lapply(as_json_vec(x), function(plate) list(token, plate))
 
-  res <- lapply(x, function(plate)
-    request_openbis("listPlateWells", list(token, plate),
-                    "IScreeningApiServer"))
+  res <- make_requests(api_url("sas"), "listPlateWells", params)
 
   as_json_vec(do.call(c, res))
 }
@@ -142,17 +137,15 @@ list_plate_well_ref <- function(token,
                                 experiment = NULL,
                                 include_datasets = FALSE) {
 
-  if (!is_json_vec(material_id))
-    material_id <- as_json_vec(material_id)
+  material_id <- as_json_vec(material_id)
 
   assert_that(all(sapply(material_id, has_subclass,
                          "MaterialIdentifierScreening")))
 
   if (is.null(experiment)) {
 
-    res <- lapply(material_id, function(mat)
-      request_openbis("listPlateWells", list(token, mat, include_datasets),
-                      "IScreeningApiServer"))
+    params <- lapply(material_id,
+                     function(mat) list(token, mat, include_datasets))
   } else {
 
     if (get_subclass(experiment) == "Experiment")
@@ -163,11 +156,12 @@ list_plate_well_ref <- function(token,
 
     assert_that(has_subclass(experiment, "ExperimentIdentifier"))
 
-    res <- lapply(material_id, function(mat)
-      request_openbis("listPlateWells", list(token, experiment, mat,
-                                             include_datasets),
-                      "IScreeningApiServer"))
+    params <- lapply(material_id,
+                     function(mat) list(token, experiment, mat,
+                                        include_datasets))
   }
+
+  res <- make_requests(api_url("sas"), "listPlateWells", params)
 
   as_json_vec(do.call(c, res))
 }
@@ -182,12 +176,12 @@ list_plate_metadata <- function(token, x, ...)
 #' @export
 #' 
 list_plate_metadata.PlateIdentifier <- function(token, x, ...)
-  request_openbis("getPlateMetadataList", list(token, as_json_vec(x)),
-                  "IScreeningApiServer")
+  make_requests(api_url("sas"), "getPlateMetadataList",
+                list(token, as_json_vec(x)))
 
 #' @rdname list_plate_well
 #' @export
 #' 
 list_plate_metadata.Plate <- function(token, x, ...)
-  request_openbis("getPlateMetadataList", list(token, plate_to_plateid(x)),
-                  "IScreeningApiServer")
+  make_requests(api_url("sas"), "getPlateMetadataList",
+                list(token, plate_to_plateid(x)))
