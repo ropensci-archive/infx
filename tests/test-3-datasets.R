@@ -2,4 +2,4 @@
 library(testthat)
 library(infx)
 
-test_check("infx", "image")
+test_check("infx", "^dataset$")
