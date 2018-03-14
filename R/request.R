@@ -4,7 +4,7 @@
 #' The function `make_requests()` and a wrapper for single requests
 #' (`make_request()`) issues one or several POST request to the specified
 #' JSON-RPC server. The urls for the various openBIS endpoints can be
-#' constructed using the `api_url()` function. If several requests are issued,
+#' constructed using the [api_url()] function. If several requests are issued,
 #' these can be run asynchronously using `do_requests_parallel()` or serially
 #' using `do_requests_serial()`. For both functions, a number of retries can be
 #' specified and a function can be supplied that will be run on the returned
@@ -115,8 +115,55 @@ make_request <- function(url,
 #' 
 do_requests_serial <- function(urls,
                                bodies,
-                               n_try = 2L,
+                               n_try = 1L,
                                done = process_json) {
+
+  add_request <- function(i, tries) {
+
+    if (tries == 0L) {
+      warning("could not carry out request within ", n_try, " tries.")
+      return(invisible(NULL))
+    }
+
+    body_raw <- charToRaw(jsonlite::toJSON(bodies[[i]], auto_unbox = TRUE))
+
+    handle <- curl::new_handle(post = TRUE,
+                               postfieldsize = length(body_raw),
+                               postfields = body_raw)
+    handle <- curl::handle_setheaders(handle,
+                                      "Content-Type" = "application/json")
+
+    resp <- curl::curl_fetch_memory(urls[i], handle = handle)
+
+    if (resp$status_code != 200) {
+
+      warning("request returned with code ", resp$status_code)
+
+      add_request(i, tries - 1L)
+
+    } else {
+
+      resp <- jsonlite::fromJSON(rawToChar(resp$content),
+                                 simplifyVector = FALSE)
+      assert_that(resp$id == bodies[[i]]$id)
+
+      if (!is.null(resp$error)) {
+
+        data <- resp$error$data[!grepl("^@", names(resp$error$data))]
+        warning("\nerror with code ", resp$error$code, ":\n",
+                paste(strwrap(paste(names(data), data, sep = ": "),
+                              indent = 2L, exdent = 4L), collapse = "\n"))
+        add_request(i, tries - 1L)
+
+      } else {
+
+        res[[i]] <<- done(resp$result)
+
+        if (length(urls) > 1L)
+          pb$tick(1L)
+      }
+    }
+  }
 
   if (length(urls) > 1L) {
     pb <- progress::progress_bar$new(
@@ -127,61 +174,8 @@ do_requests_serial <- function(urls,
 
   res <- vector("list", length(urls))
 
-  repeat {
-
-    to_do <- sapply(res, is.null)
-    if (sum(to_do) == 0L)
-      break
-
-    n_try <- n_try - 1L
-    if (n_try < 0L)
-      stop("could not fetched data within ", n_try, " tries.")
-
-    res[to_do] <- mapply(function(url, body) {
-      body_raw <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
-
-      handle <- curl::new_handle(post = TRUE,
-                                 postfieldsize = length(body_raw),
-                                 postfields = body_raw)
-      handle <- curl::handle_setheaders(handle,
-                                        "Content-Type" = "application/json")
-
-      resp <- curl::curl_fetch_memory(url, handle = handle)
-
-      if (resp$status_code != 200) {
-
-        warning("request returned with code ", resp$status_code)
-
-        NULL
-
-      } else {
-        resp <- jsonlite::fromJSON(rawToChar(resp$content),
-                                   simplifyVector = FALSE)
-        assert_that(resp$id == body$id)
-
-        if (!is.null(resp$error)) {
-
-          data <- resp$error$data[!grepl("^@", names(resp$error$data))]
-          warning("\nerror with code ", resp$error$code, ":\n",
-                  paste(strwrap(paste(names(data), data, sep = ": "),
-                                indent = 2L, exdent = 4L), collapse = "\n"))
-          NULL
-
-        } else {
-
-          resp <- done(resp$result)
-          assert_that(!is.null(resp))
-
-          if (length(urls) > 1L)
-            pb$tick(1L)
-
-          resp
-        }
-      }
-    }, urls[to_do], bodies[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
-  }
-
-  assert_that(all(sapply(res, Negate(is.null))))
+  for (j in seq_along(urls))
+    add_request(j, n_try)
 
   res
 }
@@ -192,14 +186,15 @@ do_requests_serial <- function(urls,
 do_requests_parallel <- function(urls,
                                  bodies,
                                  n_con = 5L,
-                                 n_try = 2L,
+                                 n_try = 1L,
                                  done = process_json) {
 
-  add_request <- function(i) {
+  add_request <- function(i, tries) {
 
-    tries[i] <<- tries[i] - 1L
-    if (tries[i] < 0L)
-      stop("could not download file within ", n_try, " tries.")
+    if (tries == 0L) {
+      warning("could not carry out request within ", n_try, " tries.")
+      return(invisible(NULL))
+    }
 
     body_raw <- charToRaw(jsonlite::toJSON(bodies[[i]], auto_unbox = TRUE))
 
@@ -218,7 +213,7 @@ do_requests_parallel <- function(urls,
         if (x$status_code != 200) {
 
           warning("request returned with code ", x$status_code)
-          add_request(i)
+          add_request(i, tries - 1L)
 
         } else {
 
@@ -232,7 +227,7 @@ do_requests_parallel <- function(urls,
             warning("\nerror with code ", resp$error$code, ":\n",
                     paste(strwrap(paste(names(data), data, sep = ": "),
                                   indent = 2L, exdent = 4L), collapse = "\n"))
-            add_request(i)
+            add_request(i, tries - 1L)
 
           } else {
 
@@ -243,7 +238,7 @@ do_requests_parallel <- function(urls,
           }
         }
       },
-      fail = function(x) add_request(i)
+      fail = function(x) add_request(i, tries - 1L)
     )
   }
 
@@ -260,11 +255,9 @@ do_requests_parallel <- function(urls,
   pool <- curl::new_pool(host_con = n_con)
 
   for (j in seq_along(urls))
-    add_request(j)
+    add_request(j, n_try)
 
   curl::multi_run(pool = pool)
-
-  assert_that(all(sapply(res, Negate(is.null))))
 
   res
 }

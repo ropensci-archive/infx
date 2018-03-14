@@ -14,9 +14,9 @@ make_requests(urls, methods, params, ids = NULL, version = "2.0",
 
 make_request(url, method, params, ...)
 
-do_requests_serial(urls, bodies, n_try = 2L, done = process_json)
+do_requests_serial(urls, bodies, n_try = 1L, done = process_json)
 
-do_requests_parallel(urls, bodies, n_con = 5L, n_try = 2L,
+do_requests_parallel(urls, bodies, n_con = 5L, n_try = 1L,
   done = process_json)
 
 process_json(x)
@@ -59,7 +59,7 @@ are turned into class attributes and \code{@id} fields are recursively removed.}
 The function \code{make_requests()} and a wrapper for single requests
 (\code{make_request()}) issues one or several POST request to the specified
 JSON-RPC server. The urls for the various openBIS endpoints can be
-constructed using the \code{api_url()} function. If several requests are issued,
+constructed using the \code{\link[=api_url]{api_url()}} function. If several requests are issued,
 these can be run asynchronously using \code{do_requests_parallel()} or serially
 using \code{do_requests_serial()}. For both functions, a number of retries can be
 specified and a function can be supplied that will be run on the returned

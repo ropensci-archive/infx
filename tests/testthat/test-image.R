@@ -75,9 +75,9 @@ test_that("image data can be fetched", {
                   `[[`, "width") == 300L))
 
   # test plate DatasetIdentifier with CLUSTER_JOB_LOGS type
-  expect_error(suppressWarnings(fetch_images(tok, ds_ids[[2]], "DAPI",
-                                             well_pos[[1]], img_size)),
-               "could not fetched data within")
+  expect_warning(fetch_images(tok, ds_ids[[2]], "DAPI",
+                              well_pos[[1]], img_size),
+               "could not carry out request")
 
   img_ds <- list_references(tok, plates[1:2])
 
@@ -223,8 +223,7 @@ test_that("image data can be fetched", {
   expect_equal(length(thumb_2), 2L)
   expect_true(all(sapply(lapply(thumb_2, `[[`, "data"), length) == 0L))
 
-  expect_error(suppressWarnings(fetch_images(tok, pi_ref[[1]],
-                                             format = img_rep,
-                                             thumbnails = TRUE)),
-               "could not fetched data within")
+  expect_warning(fetch_images(tok, pi_ref[[1]], format = img_rep,
+                              thumbnails = TRUE),
+               "could not carry out request")
 })
