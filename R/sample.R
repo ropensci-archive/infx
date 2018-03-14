@@ -43,8 +43,10 @@ list_samples.Experiment <- function(token, x, ...) {
 }
 
 list_samples_for_exp <- function(token, x) {
-  res <- lapply(exp_id_str(x), function(exp)
-    request_openbis("listSamplesForExperiment", list(token, exp)))
+
+  params <- lapply(exp_id_str(x), function(exp) list(token, exp))
+
+  res <- make_requests(api_url("gis"), "listSamplesForExperiment", params)
 
   as_json_vec(do.call(c, res))
 }
@@ -54,12 +56,9 @@ list_samples_for_exp <- function(token, x) {
 #' 
 list_samples.PlateIdentifier <- function(token, x, ...) {
 
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
+  params <- lapply(as_json_vec(x), function(plate) list(token, plate))
 
-  res <- lapply(x, function(plate)
-    request_openbis("getPlateSample", list(token, plate),
-                    "IScreeningApiServer"))
+  res <- make_requests(api_url("sas"), "getPlateSample", params)
 
   as_json_vec(do.call(c, res))
 }
@@ -75,13 +74,10 @@ list_samples.Plate <- function(token, x, ...)
 #' 
 list_samples.WellIdentifier <- function(token, x, ...) {
 
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
+  params <- lapply(as_json_vec(x),
+                   function(well) list(token, well))
 
-  res <- lapply(x, function(well) {
-    request_openbis("getWellSample", list(token, remove_null(well)),
-                    "IScreeningApiServer")
-  })
+  res <- make_requests(api_url("sas"), "getWellSample", params)
 
   as_json_vec(do.call(c, res))
 }
@@ -90,4 +86,4 @@ list_samples.WellIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_sample_types <- function(token)
-  request_openbis("listSampleTypes", list(token))
+  make_request(api_url("gis"), "listSampleTypes", list(token))
