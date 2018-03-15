@@ -1,14 +1,22 @@
 
 #' Make a JSON-RPC request
 #'
-#' The function `make_requests()` and a wrapper for single requests
-#' (`make_request()`) issues one or several POST request to the specified
-#' JSON-RPC server. The urls for the various openBIS endpoints can be
-#' constructed using the [api_url()] function. If several requests are issued,
-#' these can be run asynchronously using `do_requests_parallel()` or serially
-#' using `do_requests_serial()`. For both functions, a number of retries can be
-#' specified and a function can be supplied that will be run on the returned
-#' data if the request returns successfully.
+#' The function `make_requests()` (and a wrapper for single requests,
+#' `make_request()`) issues one or several JSON-RPC request(s) to the specified
+#' server. Urls can be either passed as a character vector or a list of calls
+#' which will be evaluated using [base::eval()]. The urls for the various
+#' openBIS endpoints can be constructed using the [api_url()] function.
+#' 
+#' If several requests are issued, these can be run asynchronously using
+#' `do_requests_parallel()` or serially using `do_requests_serial()`, which
+#' is controlled by the argument `n_con`, specifying the number of allowed
+#' simultaneous connections. The arguments `methods` and `params`, as well as
+#' the optional arguments `ids` and `version` are assembled into a list of
+#' JSON-RPC request objects which are subsequently passed to `do_requests_*()`
+#' along with all further arguments passed as `...`. These include `n_try`,
+#' specifying a maximum number of allowed retries for failed requests, as well
+#' as `create_handle`, `check` and `finally`, which can be used to modify the
+#' behavior of `do_requests_*()`.
 #' 
 #' All `@type` fields are converted to/from `json_class` attributes, using
 #' [rm_json_class()] and [as_json_class()]. Furthermore, as part of the
@@ -33,7 +41,7 @@
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
-#'   projects <- request_openbis("listProjects", tok)
+#'   projects <- make_request(api_url("gis"), "listProjects", list(token))
 #'   print(projects[[1]])
 #' }
 #' 
@@ -77,16 +85,14 @@ make_requests <- function(urls,
                    params = rm_json_class(params),
                    SIMPLIFY = FALSE)
 
-  assert_that(length(bodies) == length(urls))
-
   if (length(urls) > 1L && n_con > 1L)
     do_requests_parallel(urls, bodies, n_con, ...)
   else
     do_requests_serial(urls, bodies, ...)
 }
 
-#' @param ... Further arguments to `make_request` are passed to
-#' `make_requests` and from `make_requests` to `do_requests_serial`.
+#' @param ... Further arguments to `make_request()` are passed to
+#' `make_requests()` and from `make_requests()` to `do_requests_*()`.
 #' 
 #' @rdname request
 #' @export
@@ -122,8 +128,8 @@ make_request <- function(url,
 do_requests_serial <- function(urls,
                                bodies,
                                n_try = 1L,
-                               create_handle = create_post_handle,
-                               check = check_result,
+                               create_handle = create_request_handle,
+                               check = check_request_result,
                                finally = process_json) {
 
   add_request <- function(i, tries) {
@@ -133,8 +139,10 @@ do_requests_serial <- function(urls,
       return(invisible(NULL))
     }
 
-    res <- curl::curl_fetch_memory(urls[i],
-                                   handle = create_handle(bodies[[i]]))
+    res <- curl::curl_fetch_memory(
+      eval(urls[[i]]),
+      handle = create_handle(bodies[[i]])
+    )
 
     res <- check(res, bodies[[i]])
 
@@ -149,7 +157,7 @@ do_requests_serial <- function(urls,
     }
   }
 
-  assert_that(is.string(urls),
+  assert_that(is.character(urls) || all(sapply(urls, is.call)),
               is.list(bodies),
               length(urls) == length(bodies),
               is.count(n_try),
@@ -174,8 +182,8 @@ do_requests_parallel <- function(urls,
                                  bodies,
                                  n_con = 5L,
                                  n_try = 1L,
-                                 create_handle = create_post_handle,
-                                 check = check_result,
+                                 create_handle = create_request_handle,
+                                 check = check_request_result,
                                  finally = process_json) {
 
   add_request <- function(i, tries) {
@@ -186,7 +194,7 @@ do_requests_parallel <- function(urls,
     }
 
     curl::curl_fetch_multi(
-      url = urls[i],
+      url = eval(urls[[i]]),
       handle = create_handle(bodies[[i]]),
       pool = pool,
       done = function(x) {
@@ -206,7 +214,7 @@ do_requests_parallel <- function(urls,
     )
   }
 
-  assert_that(is.string(urls),
+  assert_that(is.character(urls) || all(sapply(urls, is.call)),
               is.list(bodies),
               length(urls) == length(bodies),
               is.count(n_con),
@@ -234,7 +242,7 @@ do_requests_parallel <- function(urls,
   res
 }
 
-create_post_handle <- function(body) {
+create_request_handle <- function(body) {
   body_raw <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
 
   handle <- curl::new_handle(post = TRUE,
@@ -244,7 +252,7 @@ create_post_handle <- function(body) {
   curl::handle_setheaders(handle, "Content-Type" = "application/json")
 }
 
-check_result <- function(resp, body) {
+check_request_result <- function(resp, body) {
 
   if (resp$status_code != 200) {
 

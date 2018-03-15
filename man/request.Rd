@@ -15,11 +15,11 @@ make_requests(urls, methods, params, ids = NULL, version = "2.0",
 make_request(url, method, params, ...)
 
 do_requests_serial(urls, bodies, n_try = 1L,
-  create_handle = create_post_handle, check = check_result,
+  create_handle = create_request_handle, check = check_request_result,
   finally = process_json)
 
 do_requests_parallel(urls, bodies, n_con = 5L, n_try = 1L,
-  create_handle = create_post_handle, check = check_result,
+  create_handle = create_request_handle, check = check_request_result,
   finally = process_json)
 
 process_json(x)
@@ -39,8 +39,8 @@ requests are issued per HTTP request.}
 
 \item{n_con}{The number of simultaneous connections.}
 
-\item{...}{Further arguments to \code{make_request} are passed to
-\code{make_requests} and from \code{make_requests} to \code{do_requests_serial}.}
+\item{...}{Further arguments to \code{make_request()} are passed to
+\code{make_requests()} and from \code{make_requests()} to \code{do_requests_*()}.}
 
 \item{url, urls, }{Destination url(s), the request is sent to.}
 
@@ -67,16 +67,24 @@ returned by the \code{check} function.}
 are turned into class attributes and \code{@id} fields are recursively removed.}
 }
 \description{
-The function \code{make_requests()} and a wrapper for single requests
-(\code{make_request()}) issues one or several POST request to the specified
-JSON-RPC server. The urls for the various openBIS endpoints can be
-constructed using the \code{\link[=api_url]{api_url()}} function. If several requests are issued,
-these can be run asynchronously using \code{do_requests_parallel()} or serially
-using \code{do_requests_serial()}. For both functions, a number of retries can be
-specified and a function can be supplied that will be run on the returned
-data if the request returns successfully.
+The function \code{make_requests()} (and a wrapper for single requests,
+\code{make_request()}) issues one or several JSON-RPC request(s) to the specified
+server. Urls can be either passed as a character vector or a list of calls
+which will be evaluated using \code{\link[base:eval]{base::eval()}}. The urls for the various
+openBIS endpoints can be constructed using the \code{\link[=api_url]{api_url()}} function.
 }
 \details{
+If several requests are issued, these can be run asynchronously using
+\code{do_requests_parallel()} or serially using \code{do_requests_serial()}, which
+is controlled by the argument \code{n_con}, specifying the number of allowed
+simultaneous connections. The arguments \code{methods} and \code{params}, as well as
+the optional arguments \code{ids} and \code{version} are assembled into a list of
+JSON-RPC request objects which are subsequently passed to \code{do_requests_*()}
+along with all further arguments passed as \code{...}. These include \code{n_try},
+specifying a maximum number of allowed retries for failed requests, as well
+as \code{create_handle}, \code{check} and \code{finally}, which can be used to modify the
+behavior of \code{do_requests_*()}.
+
 All \code{@type} fields are converted to/from \code{json_class} attributes, using
 \code{\link[=rm_json_class]{rm_json_class()}} and \code{\link[=as_json_class]{as_json_class()}}. Furthermore, as part of the
 JSON-RPC specification, all objects returned form the API will have \code{@id}
@@ -87,7 +95,7 @@ such that each object is self-contained.
 \examples{
 \donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
-  projects <- request_openbis("listProjects", tok)
+  projects <- make_request(api_url("gis"), "listProjects", list(token))
   print(projects[[1]])
 }
 
