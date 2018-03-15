@@ -13,8 +13,6 @@
 \alias{fetch_files.PlateImageReference}
 \alias{fetch_files.DataSetFileDTO}
 \alias{fetch_files.FileInfoDssDTO}
-\alias{fetch_files_serial}
-\alias{fetch_files_parallel}
 \title{Fetch files}
 \usage{
 fetch_files(token, x, ...)
@@ -46,15 +44,11 @@ fetch_files(token, x, ...)
 \method{fetch_files}{PlateImageReference}(token, x, files = NULL,
   file_regex = NULL, ...)
 
-\method{fetch_files}{DataSetFileDTO}(token, x, n_con = 5L, ...)
+\method{fetch_files}{DataSetFileDTO}(token, x, n_con = 5L,
+  finally = identity, ...)
 
-\method{fetch_files}{FileInfoDssDTO}(token, x, data_sets, n_con = 5L, ...)
-
-fetch_files_serial(urls, n_try = 2L, file_sizes = NULL, done = identity,
-  ...)
-
-fetch_files_parallel(urls, n_try = 2L, file_sizes = NULL, done = identity,
-  n_con = 5L, ...)
+\method{fetch_files}{FileInfoDssDTO}(token, x, data_sets, n_con = 5L,
+  finally = identity, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -71,18 +65,11 @@ corresponding to the specified datasets are assumed.}
 
 \item{n_con}{The number of simultaneous connections.}
 
+\item{finally}{A function that is applied to the result of a successful
+download.}
+
 \item{data_sets}{Either a single dataset object (anything that has a
 \code{dataset_code()} method) or a set of objects of the same length as \code{x}.}
-
-\item{urls}{Either a caracter vector or a list of calls that each yields an
-url when \code{eval}d.}
-
-\item{n_try}{The number of tries for each url.}
-
-\item{file_sizes}{A vector of expected file sizes or NULL.}
-
-\item{done}{A function with a single argument which is applied to each
-downloaded file.}
 }
 \description{
 The function \code{fetch_files()} downloads files associated to a dataset.

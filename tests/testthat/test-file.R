@@ -151,27 +151,101 @@ test_that("file fetchers work", {
 
   check_skip()
 
-  expect_silent(fetch_files_serial("https://httpbin.org/get", n_try = 1L))
-  expect_silent(fetch_files_serial(rep("https://httpbin.org/get", 2),
-                                  n_try = 1L))
-  expect_error(fetch_files_serial("https://httpbin.org/get", n_try = 1L,
-                                  file_sizes = 10L))
-  expect_error(fetch_files_serial("https://httpbin.org/status/500",
-                                  n_try = 1L))
-  expect_error(fetch_files_serial(rep("https://httpbin.org/get", 2),
-                                  n_try = 1L, file_sizes = c(10L, 10L)))
-  expect_error(fetch_files_serial(rep("https://httpbin.org/status/500", 2),
-                                  n_try = 1L))
+  expect_silent(
+    do_requests_serial("https://httpbin.org/get", NA, n_try = 1L,
+                       create_handle = infx:::create_download_handle,
+                       check = infx:::check_download_result,
+                       finally = identity)
+  )
 
-  expect_silent(fetch_files_parallel("https://httpbin.org/get", n_try = 1L))
-  expect_silent(fetch_files_parallel(rep("https://httpbin.org/get", 2),
-                                    n_try = 1L))
-  expect_error(fetch_files_parallel("https://httpbin.org/get", n_try = 1L,
-                                    file_sizes = 10L))
-  expect_error(fetch_files_parallel("https://httpbin.org/status/500",
-                                    n_try = 1L))
-  expect_error(fetch_files_parallel(rep("https://httpbin.org/get", 2),
-                                    n_try = 1L, file_sizes = c(10L, 10L)))
-  expect_error(fetch_files_parallel(rep("https://httpbin.org/status/500", 2),
-                                    n_try = 1L))
+  expect_silent(
+    do_requests_serial(rep("https://httpbin.org/get", 2), rep(NA, 2),
+                       n_try = 1L,
+                       create_handle = infx:::create_download_handle,
+                       check = infx:::check_download_result,
+                       finally = identity)
+  )
+
+  expect_warning(
+    do_requests_serial("https://httpbin.org/get", 1000L, n_try = 1L,
+                       create_handle = infx:::create_download_handle,
+                       check = infx:::check_download_result,
+                       finally = identity),
+    "download incomplete"
+  )
+
+  expect_warning(
+    do_requests_serial("https://httpbin.org/status/500", NA, n_try = 1L,
+                       create_handle = infx:::create_download_handle,
+                       check = infx:::check_download_result,
+                       finally = identity),
+    "could not carry out request"
+  )
+
+  expect_warning(
+    do_requests_serial(rep("https://httpbin.org/get", 2), rep(1000L, 2),
+                       n_try = 1L,
+                       create_handle = infx:::create_download_handle,
+                       check = infx:::check_download_result,
+                       finally = identity),
+    "download incomplete"
+  )
+
+  expect_warning(
+    do_requests_serial(rep("https://httpbin.org/status/500", 2), rep(NA, 2),
+                       n_try = 1L,
+                       create_handle = infx:::create_download_handle,
+                       check = infx:::check_download_result,
+                       finally = identity),
+    "could not carry out request"
+  )
+
+  expect_silent(
+    do_requests_parallel("https://httpbin.org/get", NA, n_try = 1L,
+                         create_handle = infx:::create_download_handle,
+                         check = infx:::check_download_result,
+                         finally = identity)
+  )
+
+  expect_silent(
+    do_requests_parallel(rep("https://httpbin.org/get", 2), rep(NA, 2),
+                         n_try = 1L,
+                         create_handle = infx:::create_download_handle,
+                         check = infx:::check_download_result,
+                         finally = identity)
+  )
+
+  expect_warning(
+    do_requests_parallel("https://httpbin.org/get", 1000L, n_try = 1L,
+                         create_handle = infx:::create_download_handle,
+                         check = infx:::check_download_result,
+                         finally = identity),
+    "download incomplete"
+  )
+
+  expect_warning(
+    do_requests_parallel("https://httpbin.org/status/500", NA, n_try = 1L,
+                         create_handle = infx:::create_download_handle,
+                         check = infx:::check_download_result,
+                         finally = identity),
+    "could not carry out request"
+  )
+
+  expect_warning(
+    do_requests_parallel(rep("https://httpbin.org/get", 2), rep(1000L, 2),
+                         n_try = 1L,
+                         create_handle = infx:::create_download_handle,
+                         check = infx:::check_download_result,
+                         finally = identity),
+    "download incomplete"
+  )
+
+  expect_warning(
+    do_requests_parallel(rep("https://httpbin.org/status/500", 2), rep(NA, 2),
+                         n_try = 1L,
+                         create_handle = infx:::create_download_handle,
+                         check = infx:::check_download_result,
+                         finally = identity),
+    "could not carry out request"
+  )
 })

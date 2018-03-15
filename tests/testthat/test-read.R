@@ -4,7 +4,7 @@ test_that("matlab data files can be read", {
 
   data <- fetch_files(tok, "20120629084351794-603357",
                       file_regex = "Image\\.Count_[A-z]+\\.mat$",
-                      done = read_mat_files)
+                      finally = read_mat_files)
 
   expect_gte(length(data), 1L)
   for (i in seq_along(data)) {
@@ -20,7 +20,7 @@ test_that("matlab data files can be read", {
 
   expect_warning(data <- fetch_files(tok, "20120629084351794-603357",
                                      file_regex = "metadata.properties$",
-                                     done = read_mat_files))
+                                     finally = read_mat_files))
 
   expect_gte(length(data), 1L)
   for (i in seq_along(data)) {

@@ -234,6 +234,8 @@ fetch_files.MicroscopyImageReference <- fetch_dataset_files
 fetch_files.PlateImageReference <- fetch_dataset_files
 
 #' @param n_con The number of simultaneous connections.
+#' @param finally A function that is applied to the result of a successful
+#' download.
 #' 
 #' @rdname fetch_files
 #' @export
@@ -241,6 +243,7 @@ fetch_files.PlateImageReference <- fetch_dataset_files
 fetch_files.DataSetFileDTO <- function(token,
                                        x,
                                        n_con = 5L,
+                                       finally = identity,
                                        ...) {
 
   x <- as_json_vec(x)
@@ -250,10 +253,19 @@ fetch_files.DataSetFileDTO <- function(token,
 
   url_calls <- lapply(x, function(y) call("list_download_urls", token, y))
 
-  res <- if (n_con <= 1L)
-    fetch_files_serial(url_calls, ...)
+  file_sizes <- as.list(rep(NA, length(url_calls)))
+
+  res <- if (length(url_calls) > 1L && n_con > 1L)
+    do_requests_parallel(url_calls, file_sizes, n_con, 
+                         chunked = TRUE,
+                         create_handle = create_download_handle,
+                         check = check_download_result,
+                         finally = finally, ...)
   else
-    fetch_files_parallel(url_calls, n_con = n_con, ...)
+    do_requests_serial(url_calls, file_sizes,
+                       create_handle = create_download_handle,
+                       check = check_download_result,
+                       finally = finally, ...)
 
   mapply(list, file = x, data = res, SIMPLIFY = FALSE, USE.NAMES = FALSE)
 }
@@ -268,6 +280,7 @@ fetch_files.FileInfoDssDTO <- function(token,
                                        x,
                                        data_sets,
                                        n_con = 5L,
+                                       finally = identity,
                                        ...) {
 
   x <- as_json_vec(x)
@@ -303,170 +316,45 @@ fetch_files.FileInfoDssDTO <- function(token,
                       data_sets, sapply(x, `[[`, "pathInDataSet"),
                       SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  res <- if (n_con <= 1L)
-    fetch_files_serial(url_calls,
-                       file_sizes = sapply(x, `[[`, "fileSize"),
-                       ...)
+  file_sizes <- lapply(x, `[[`, "fileSize")
+
+  res <- if (length(url_calls) > 1L && n_con > 1L)
+    do_requests_parallel(url_calls, file_sizes, n_con, 
+                         chunked = TRUE,
+                         create_handle = create_download_handle,
+                         check = check_download_result,
+                         finally = finally, ...)
   else
-    fetch_files_parallel(url_calls,
-                         file_sizes = sapply(x, `[[`, "fileSize"),
-                         n_con = n_con,
-                         ...)
+    do_requests_serial(url_calls, file_sizes,
+                       create_handle = create_download_handle,
+                       check = check_download_result,
+                       finally = finally, ...)
 
   mapply(list, data_set = data_sets, file = x, data = res,
          SIMPLIFY = FALSE, USE.NAMES = FALSE)
 }
 
-#' @param urls Either a caracter vector or a list of calls that each yields an
-#' url when `eval`d.
-#' @param n_try The number of tries for each url.
-#' @param file_sizes A vector of expected file sizes or NULL.
-#' @param done A function with a single argument which is applied to each
-#' downloaded file.
-#' 
-#' @rdname fetch_files
-#' @export
-#' 
-fetch_files_serial <- function(urls,
-                               n_try = 2L,
-                               file_sizes = NULL,
-                               done = identity,
-                               ...) {
-
-  assert_that(is.function(done),
-              length(n_try) == 1L, as.integer(n_try) == n_try,
-              all(is.character(urls) | sapply(urls, is.call)))
-
-  if (is.null(file_sizes))
-    sizes <- rep(NA, length(urls))
-  else {
-    assert_that(all(as.integer(file_sizes) == file_sizes),
-                length(file_sizes) == length(urls))
-    sizes <- as.integer(file_sizes)
-  }
-
-  if (length(urls) > 1L) {
-    tot <- if (is.null(file_sizes))
-      length(urls)
-    else
-      sum(sizes, na.rm = TRUE)
-
-    pb <- progress::progress_bar$new(
-      format = paste0("downloading [:bar] :percent in :elapsed"),
-      total = tot)
-
-    pb$tick(0)
-  }
-
-  res <- vector("list", length(urls))
-
-  repeat {
-
-    to_do <- sapply(res, is.null)
-    if (sum(to_do) == 0L)
-      break
-
-    n_try <- n_try - 1L
-    if (n_try < 0L)
-      stop("data could not be fetched successfully.")
-
-    res[to_do] <- mapply(function(a, b) {
-      resp <- curl::curl_fetch_memory(eval(a))
-      if (resp$status_code != 200)
-        NULL
-      else if (!is.na(b) && length(resp$content) != b)
-        NULL
-      else {
-        resp <- done(resp$content)
-        if (length(urls) > 1L && !is.na(b) && b > 0L)
-          pb$tick(if (is.null(file_sizes)) 1L else b)
-        resp
-      }
-    }, urls[to_do], sizes[to_do], SIMPLIFY = FALSE, USE.NAMES = FALSE)
-  }
-
-  assert_that(all(sapply(res, Negate(is.null))))
-
-  res
+create_download_handle <- function(size) {
+  if (!is.na(size))
+    assert_that(as.integer(size) == size)
+  curl::new_handle()
 }
 
-#' @rdname fetch_files
-#' @export
-#' 
-fetch_files_parallel <- function(urls,
-                                 n_try = 2L,
-                                 file_sizes = NULL,
-                                 done = identity,
-                                 n_con = 5L,
-                                 ...) {
+check_download_result <- function(resp, size) {
 
-  add_download <- function(i) {
+  if (resp$status_code != 200) {
 
-    if (i < 1L || i > length(urls))
-      return(invisible(NULL))
+    warning("request returned with code ", resp$status_code)
+    NULL
 
-    tries[i] <<- tries[i] - 1L
-    if (tries[i] < 0L)
-      stop("could not download file within ", n_try, " tries.")
+  } else if (!is.na(size) && length(resp$content) != size) {
 
-    curl::curl_fetch_multi(
-      url = eval(urls[[i]]),
-      pool = pool,
-      done = function(x) {
-        if (x$status_code != 200)
-          add_download(i)
-        else if (!is.na(sizes[i]) && length(x$content) != sizes[i])
-          add_download(i)
-        else {
-          add_download(i + n_con)
-          res[[i]] <<- done(x$content)
-          if (length(urls) > 1L && !is.na(sizes[i]) && sizes[i] > 0L)
-            pb$tick(if (is.null(file_sizes)) 1L else sizes[i])
-        }
-      },
-      fail = function(x) add_download(i)
-    )
+    warning("download incomplete: missing ", size - length(resp$content),
+            " bytes")
+    NULL
 
-    invisible(NULL)
+  } else {
+
+    list(result = resp$content)
   }
-
-  assert_that(is.function(done),
-              length(n_try) == 1L, as.integer(n_try) == n_try,
-              length(n_con) == 1L, as.integer(n_con) == n_con,
-              all(is.character(urls) | sapply(urls, is.call)))
-
-  if (is.null(file_sizes))
-    sizes <- rep(NA, length(urls))
-  else {
-    assert_that(all(as.integer(file_sizes) == file_sizes),
-                length(file_sizes) == length(urls))
-    sizes <- as.integer(file_sizes)
-  }
-
-  if (length(urls) > 1L) {
-    tot <- if (is.null(file_sizes))
-      length(urls)
-    else
-      sum(sizes, na.rm = TRUE)
-
-    pb <- progress::progress_bar$new(
-      format = paste0("downloading [:bar] :percent in :elapsed"),
-      total = tot)
-
-    pb$tick(0)
-  }
-
-  res <- vector("list", length(urls))
-  tries <- rep(n_try, length(urls))
-
-  pool <- curl::new_pool(host_con = n_con)
-
-  for (j in seq.int(n_con))
-    add_download(j)
-
-  curl::multi_run(pool = pool)
-
-  assert_that(all(sapply(res, Negate(is.null))))
-
-  res
 }
