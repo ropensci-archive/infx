@@ -158,7 +158,7 @@ do_requests_serial <- function(urls,
   }
 
   assert_that(is.character(urls) || all(sapply(urls, is.call)),
-              is.list(bodies),
+              is.vector(bodies),
               length(urls) == length(bodies),
               is.count(n_try),
               is.function(create_handle),
@@ -214,7 +214,7 @@ do_requests_parallel <- function(urls,
         } else {
           assert_that(is.list(resp), "result" %in% names(resp))
           if (chunked)
-            add_request(i + n_con)
+            add_request(i + n_con, n_try)
           res[[i]] <<- finally(resp$result)
           if (length(urls) > 1L)
             pb$tick(1L)
@@ -225,7 +225,7 @@ do_requests_parallel <- function(urls,
   }
 
   assert_that(is.character(urls) || all(sapply(urls, is.call)),
-              is.list(bodies),
+              is.vector(bodies),
               length(urls) == length(bodies),
               is.count(n_con),
               is.count(n_try),
@@ -233,6 +233,8 @@ do_requests_parallel <- function(urls,
               is.function(create_handle),
               is.function(check),
               is.function(finally))
+
+  n_con <- min(n_con, length(urls))
 
   if (length(urls) > 1L) {
     pb <- progress::progress_bar$new(
