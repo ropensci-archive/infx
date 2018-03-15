@@ -107,8 +107,14 @@ make_request <- function(url,
 #' `id`, `jsonrpc`, `method` and `params`.
 #' @param n_try Number of tries each request is performed in case of failed
 #' requests.
-#' @param done A function that is applied to the result of a successful
-#' request.
+#' @param create_handle A function that will receive a single entry of the
+#' `bodies` list at the time and should return a curl handle created by
+#' [curl::new_handle()].
+#' @param check A function that receives both the result of a request and the
+#' corresponding entry of the `bodies` list. Is expected to return NULL in
+#' which case the request is retried or a list with an entry named `result`.
+#' @param finally A function that is applied to the `result` entry of the list
+#' returned by the `check` function.
 #' 
 #' @rdname request
 #' @export
@@ -116,7 +122,9 @@ make_request <- function(url,
 do_requests_serial <- function(urls,
                                bodies,
                                n_try = 1L,
-                               done = process_json) {
+                               create_handle = create_post_handle,
+                               check = check_result,
+                               finally = process_json) {
 
   add_request <- function(i, tries) {
 
@@ -126,20 +134,28 @@ do_requests_serial <- function(urls,
     }
 
     res <- curl::curl_fetch_memory(urls[i],
-                                   handle = create_post_handle(bodies[[i]]))
+                                   handle = create_handle(bodies[[i]]))
 
-    res <- check_result(res, bodies[[i]]$id)
+    res <- check(res, bodies[[i]])
 
     if (is.null(res)) {
       add_request(i, tries - 1L)
     } else {
       assert_that(is.list(res), "result" %in% names(res))
-      res <- done(res$result)
+      res <- finally(res$result)
       if (length(urls) > 1L)
         pb$tick(1L)
       res
     }
   }
+
+  assert_that(is.string(urls),
+              is.list(bodies),
+              length(urls) == length(bodies),
+              is.count(n_try),
+              is.function(create_handle),
+              is.function(check),
+              is.function(finally))
 
   if (length(urls) > 1L) {
     pb <- progress::progress_bar$new(
@@ -158,7 +174,9 @@ do_requests_parallel <- function(urls,
                                  bodies,
                                  n_con = 5L,
                                  n_try = 1L,
-                                 done = process_json) {
+                                 create_handle = create_post_handle,
+                                 check = check_result,
+                                 finally = process_json) {
 
   add_request <- function(i, tries) {
 
@@ -169,17 +187,17 @@ do_requests_parallel <- function(urls,
 
     curl::curl_fetch_multi(
       url = urls[i],
-      handle = create_post_handle(bodies[[i]]),
+      handle = create_handle(bodies[[i]]),
       pool = pool,
       done = function(x) {
 
-        resp <- check_result(x, bodies[[i]]$id)
+        resp <- check(x, bodies[[i]])
 
         if (is.null(resp)) {
           add_request(i, tries - 1L)
         } else {
           assert_that(is.list(resp), "result" %in% names(resp))
-          res[[i]] <<- done(resp$result)
+          res[[i]] <<- finally(resp$result)
           if (length(urls) > 1L)
             pb$tick(1L)
         }
@@ -187,6 +205,15 @@ do_requests_parallel <- function(urls,
       fail = function(x) add_request(i, tries - 1L)
     )
   }
+
+  assert_that(is.string(urls),
+              is.list(bodies),
+              length(urls) == length(bodies),
+              is.count(n_con),
+              is.count(n_try),
+              is.function(create_handle),
+              is.function(check),
+              is.function(finally))
 
   if (length(urls) > 1L) {
     pb <- progress::progress_bar$new(
@@ -217,7 +244,7 @@ create_post_handle <- function(body) {
   curl::handle_setheaders(handle, "Content-Type" = "application/json")
 }
 
-check_result <- function(resp, id) {
+check_result <- function(resp, body) {
 
   if (resp$status_code != 200) {
 
@@ -228,7 +255,7 @@ check_result <- function(resp, id) {
 
     resp <- jsonlite::fromJSON(rawToChar(resp$content),
                                simplifyVector = FALSE)
-    assert_that(resp$id == id)
+    assert_that(resp$id == body$id)
 
     if (!is.null(resp$error)) {
 

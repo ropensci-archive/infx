@@ -221,7 +221,7 @@ fetch_img_for_ds <- function(token,
            x, channels, SIMPLIFY = FALSE)
   }
 
-  res <- make_requests(api_url("dsrs"), fun, params, done = process_imgs)
+  res <- make_requests(api_url("dsrs"), fun, params, finally = process_imgs)
 
   mapply(function(param, x) {
 
@@ -361,7 +361,7 @@ fetch_images.PlateImageReference <- function(token,
     agruments <- list(sessionToken = token, imageReferences = x)
   }
 
-  res <- make_request(api_url("dsrs"), fun, agruments, done = process_imgs)
+  res <- make_request(api_url("dsrs"), fun, agruments, finally = process_imgs)
 
   if (length(res) == 0L)
     res <- rep(list(NULL), length(x))

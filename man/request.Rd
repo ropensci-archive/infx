@@ -14,10 +14,13 @@ make_requests(urls, methods, params, ids = NULL, version = "2.0",
 
 make_request(url, method, params, ...)
 
-do_requests_serial(urls, bodies, n_try = 1L, done = process_json)
+do_requests_serial(urls, bodies, n_try = 1L,
+  create_handle = create_post_handle, check = check_result,
+  finally = process_json)
 
 do_requests_parallel(urls, bodies, n_con = 5L, n_try = 1L,
-  done = process_json)
+  create_handle = create_post_handle, check = check_result,
+  finally = process_json)
 
 process_json(x)
 
@@ -49,8 +52,16 @@ requests are issued per HTTP request.}
 \item{n_try}{Number of tries each request is performed in case of failed
 requests.}
 
-\item{done}{A function that is applied to the result of a successful
-request.}
+\item{create_handle}{A function that will receive a single entry of the
+\code{bodies} list at the time and should return a curl handle created by
+\code{\link[curl:new_handle]{curl::new_handle()}}.}
+
+\item{check}{A function that receives both the result of a request and the
+corresponding entry of the \code{bodies} list. Is expected to return NULL in
+which case the request is retried or a list with an entry named \code{result}.}
+
+\item{finally}{A function that is applied to the \code{result} entry of the list
+returned by the \code{check} function.}
 
 \item{x}{A (possibly nested) list structure for which all \code{@type} fields
 are turned into class attributes and \code{@id} fields are recursively removed.}

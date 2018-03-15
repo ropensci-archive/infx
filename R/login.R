@@ -69,7 +69,8 @@ logout_openbis <- function(token) {
     else
       list()
   }
-  make_request(api_url("gis"), "logout", list(token), done = process_logoout)
+  make_request(api_url("gis"), "logout", list(token),
+               finally = process_logoout)
   invisible(NULL)
 }
 
