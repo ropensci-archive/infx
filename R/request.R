@@ -35,6 +35,8 @@
 #' requests are issued per HTTP request.
 #' @param version JSON-RPC protocol version to be used (defaults to `"2.0"`.
 #' @param n_con The number of simultaneous connections.
+#' @param finally A function that is applied to the `result` entry of a
+#' successful JSON RPC request.
 #' 
 #' @rdname request
 #' 
@@ -53,6 +55,7 @@ make_requests <- function(urls,
                           ids = NULL,
                           version = "2.0",
                           n_con = 5L,
+                          finally = process_json,
                           ...) {
 
   check_rep <- function(vec, len) {
@@ -86,9 +89,12 @@ make_requests <- function(urls,
                    SIMPLIFY = FALSE)
 
   if (length(urls) > 1L && n_con > 1L)
-    do_requests_parallel(urls, bodies, n_con, ...)
+    do_requests_parallel(urls, bodies, n_con,
+                         create_handle = create_request_handle,
+                         check = check_request_result, finally = finally, ...)
   else
-    do_requests_serial(urls, bodies, ...)
+    do_requests_serial(urls, bodies, create_handle = create_request_handle,
+                        check = check_request_result, finally = finally, ...)
 }
 
 #' @param ... Further arguments to `make_request()` are passed to
@@ -119,8 +125,6 @@ make_request <- function(url,
 #' @param check A function that receives both the result of a request and the
 #' corresponding entry of the `bodies` list. Is expected to return NULL in
 #' which case the request is retried or a list with an entry named `result`.
-#' @param finally A function that is applied to the `result` entry of the list
-#' returned by the `check` function.
 #' 
 #' @rdname request
 #' @export
@@ -128,9 +132,9 @@ make_request <- function(url,
 do_requests_serial <- function(urls,
                                bodies,
                                n_try = 1L,
-                               create_handle = create_request_handle,
-                               check = check_request_result,
-                               finally = process_json) {
+                               create_handle = create_default_handle,
+                               check = check_default_result,
+                               finally = identity) {
 
   add_request <- function(i, tries) {
 
@@ -187,9 +191,9 @@ do_requests_parallel <- function(urls,
                                  n_con = 5L,
                                  n_try = 1L,
                                  chunked = FALSE,
-                                 create_handle = create_request_handle,
-                                 check = check_request_result,
-                                 finally = process_json) {
+                                 create_handle = create_default_handle,
+                                 check = check_default_result,
+                                 finally = identity) {
 
   add_request <- function(i, tries) {
 
@@ -260,7 +264,24 @@ do_requests_parallel <- function(urls,
   res
 }
 
+create_default_handle <- function(...)
+  curl::new_handle()
+
+check_default_result <- function(resp, ...) {
+
+  if (resp$status_code != 200) {
+
+    warning("request returned with code ", resp$status_code)
+    NULL
+
+  } else {
+
+    list(result = resp$content)
+  }
+}
+
 create_request_handle <- function(body) {
+
   body_raw <- charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
 
   handle <- curl::new_handle(post = TRUE,

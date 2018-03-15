@@ -10,17 +10,17 @@
 \title{Make a JSON-RPC request}
 \usage{
 make_requests(urls, methods, params, ids = NULL, version = "2.0",
-  n_con = 5L, ...)
+  n_con = 5L, finally = process_json, ...)
 
 make_request(url, method, params, ...)
 
 do_requests_serial(urls, bodies, n_try = 1L,
-  create_handle = create_request_handle, check = check_request_result,
-  finally = process_json)
+  create_handle = create_default_handle, check = check_default_result,
+  finally = identity)
 
 do_requests_parallel(urls, bodies, n_con = 5L, n_try = 1L,
-  chunked = FALSE, create_handle = create_request_handle,
-  check = check_request_result, finally = process_json)
+  chunked = FALSE, create_handle = create_default_handle,
+  check = check_default_result, finally = identity)
 
 process_json(x)
 
@@ -38,6 +38,9 @@ requests are issued per HTTP request.}
 \item{version}{JSON-RPC protocol version to be used (defaults to \code{"2.0"}.}
 
 \item{n_con}{The number of simultaneous connections.}
+
+\item{finally}{A function that is applied to the \code{result} entry of a
+successful JSON RPC request.}
 
 \item{...}{Further arguments to \code{make_request()} are passed to
 \code{make_requests()} and from \code{make_requests()} to \code{do_requests_*()}.}
@@ -59,9 +62,6 @@ requests.}
 \item{check}{A function that receives both the result of a request and the
 corresponding entry of the \code{bodies} list. Is expected to return NULL in
 which case the request is retried or a list with an entry named \code{result}.}
-
-\item{finally}{A function that is applied to the \code{result} entry of the list
-returned by the \code{check} function.}
 
 \item{chunked}{Flag indicating whether to add downloads in chunks or all at
 once. Can be used for download links which expire, such that they are only
