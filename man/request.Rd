@@ -19,8 +19,8 @@ do_requests_serial(urls, bodies, n_try = 1L,
   finally = process_json)
 
 do_requests_parallel(urls, bodies, n_con = 5L, n_try = 1L,
-  create_handle = create_request_handle, check = check_request_result,
-  finally = process_json)
+  chunked = FALSE, create_handle = create_request_handle,
+  check = check_request_result, finally = process_json)
 
 process_json(x)
 
@@ -62,6 +62,10 @@ which case the request is retried or a list with an entry named \code{result}.}
 
 \item{finally}{A function that is applied to the \code{result} entry of the list
 returned by the \code{check} function.}
+
+\item{chunked}{Flag indicating whether to add downloads in chunks or all at
+once. Can be used for download links which expire, such that they are only
+created shortly before they are consumed.}
 
 \item{x}{A (possibly nested) list structure for which all \code{@type} fields
 are turned into class attributes and \code{@id} fields are recursively removed.}

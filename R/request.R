@@ -175,6 +175,10 @@ do_requests_serial <- function(urls,
   lapply(seq_along(urls), add_request, n_try)
 }
 
+#' @param chunked Flag indicating whether to add downloads in chunks or all at
+#' once. Can be used for download links which expire, such that they are only
+#' created shortly before they are consumed.
+#' 
 #' @rdname request
 #' @export
 #' 
@@ -182,13 +186,17 @@ do_requests_parallel <- function(urls,
                                  bodies,
                                  n_con = 5L,
                                  n_try = 1L,
+                                 chunked = FALSE,
                                  create_handle = create_request_handle,
                                  check = check_request_result,
                                  finally = process_json) {
 
   add_request <- function(i, tries) {
 
-    if (tries == 0L) {
+    if (chunked && (i < 1L || i > length(urls)))
+      return(invisible(NULL))
+
+    if (tries <= 0L) {
       warning("could not carry out request within ", n_try, " tries.")
       return(invisible(NULL))
     }
@@ -205,6 +213,8 @@ do_requests_parallel <- function(urls,
           add_request(i, tries - 1L)
         } else {
           assert_that(is.list(resp), "result" %in% names(resp))
+          if (chunked)
+            add_request(i + n_con)
           res[[i]] <<- finally(resp$result)
           if (length(urls) > 1L)
             pb$tick(1L)
@@ -219,6 +229,7 @@ do_requests_parallel <- function(urls,
               length(urls) == length(bodies),
               is.count(n_con),
               is.count(n_try),
+              is.flag(chunked),
               is.function(create_handle),
               is.function(check),
               is.function(finally))
@@ -234,7 +245,12 @@ do_requests_parallel <- function(urls,
 
   pool <- curl::new_pool(host_con = n_con)
 
-  for (j in seq_along(urls))
+  start_inds <- if (chunked)
+    seq.int(n_con)
+  else
+    seq_along(urls)
+
+  for (j in start_inds)
     add_request(j, n_try)
 
   curl::multi_run(pool = pool)
