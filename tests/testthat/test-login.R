@@ -17,6 +17,6 @@ test_that("openbis login is possible", {
   tok_chr <- as.character(token)
   expect_true(is_token_valid(tok_chr))
   rm(token)
-  gc()
+  expect_message(gc(), "please call .+ when no longer using a token")
   expect_false(is_token_valid(tok_chr))
 })
