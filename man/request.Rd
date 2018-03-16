@@ -14,13 +14,14 @@ make_requests(urls, methods, params, ids = NULL, version = "2.0",
 
 make_request(url, method, params, ...)
 
-do_requests_serial(urls, bodies, n_try = 1L,
+do_requests_serial(urls, bodies = vector("list", length(urls)), n_try = 2L,
   create_handle = create_default_handle, check = check_default_result,
   finally = identity)
 
-do_requests_parallel(urls, bodies, n_con = 5L, n_try = 1L,
-  chunked = FALSE, create_handle = create_default_handle,
-  check = check_default_result, finally = identity)
+do_requests_parallel(urls, bodies = vector("list", length(urls)),
+  n_con = 5L, n_try = 2L, chunked = FALSE,
+  create_handle = create_default_handle, check = check_default_result,
+  finally = identity)
 
 process_json(x)
 
@@ -71,30 +72,51 @@ created shortly before they are consumed.}
 are turned into class attributes and \code{@id} fields are recursively removed.}
 }
 \description{
-The function \code{make_requests()} (and a wrapper for single requests,
-\code{make_request()}) issues one or several JSON-RPC request(s) to the specified
-server. Urls can be either passed as a character vector or a list of calls
-which will be evaluated using \code{\link[base:eval]{base::eval()}}. The urls for the various
-openBIS endpoints can be constructed using the \code{\link[=api_url]{api_url()}} function.
+The functions powering all HTTP requests to OpenBIS are
+\code{do_requests_serial()} for sequential calls and \code{do_requests_parallel()}
+for asynchronous calls. Both take one or several urls, either as character
+vector or list of unevaluated function calls which will be evaluated using
+\code{\link[base:eval]{base::eval()}} shortly before being used (this is used for urls that are
+only valid for a limited amount of time). The behavior of \code{do_requests_*()}
+can be customized with the three functions passed as arguments
+\code{create_handle}, \code{check} and \code{finally} together with the vector (of the
+same length as \code{urls}) passed as argument \code{bodies}.
 }
 \details{
-If several requests are issued, these can be run asynchronously using
-\code{do_requests_parallel()} or serially using \code{do_requests_serial()}, which
-is controlled by the argument \code{n_con}, specifying the number of allowed
-simultaneous connections. The arguments \code{methods} and \code{params}, as well as
-the optional arguments \code{ids} and \code{version} are assembled into a list of
-JSON-RPC request objects which are subsequently passed to \code{do_requests_*()}
-along with all further arguments passed as \code{...}. These include \code{n_try},
-specifying a maximum number of allowed retries for failed requests, as well
-as \code{create_handle}, \code{check} and \code{finally}, which can be used to modify the
-behavior of \code{do_requests_*()}.
+The function passed as \code{create_handle} receives one entry at the time of
+the \code{bodies} object and is expected to return a curl handle created by
+\code{\link[curl:new_handle]{curl::new_handle()}}. The \code{check} function receives as first argument
+the response of a single curl request alongside the corresponding entry of
+the \code{bodies} object. This function should check whether the request was
+successful or not, e.g. check the HTTP status code, size of the downloaded
+file, etc. In case of failure it should return a \code{simpleError} error object,
+created by \code{\link[base:simpleError]{base::simpleError()}} with message \code{retry} and in case of success
+it should return the response data, e.g. the \code{content} entry of a curl
+response. The third function, \code{finally}, is applied to the object returned
+by the \code{check} function (in case of success) and can be used to parse JSON,
+read a binary file, etc.
 
-All \code{@type} fields are converted to/from \code{json_class} attributes, using
-\code{\link[=rm_json_class]{rm_json_class()}} and \code{\link[=as_json_class]{as_json_class()}}. Furthermore, as part of the
-JSON-RPC specification, all objects returned form the API will have \code{@id}
-fields, which may be referenced if an objects is used multiple times. The
-helper function \code{resolve_references()} recursively resolves all references
-such that each object is self-contained.
+Both \code{do_requests_serial()} and \code{do_requests_parallel()} have the option of
+retrying failed requests and the number of allowed retries can be controlled
+with the argument \code{n_try}. Furthermore, \code{do_requests_parallel()} offers
+control over the number of simultaneous connections using the argument
+\code{n_con} and it has the option of performing the requests in a chunked
+manner. This means that instead of adding all requests at once and letting
+curl handle the queuing, only \code{n_con} requests are initially made and for
+each successful one an additional request is added. This comes in handy for
+urls that have a limited lifetime.
+
+The function \code{make_requests()} is used to construct JSON-RPC requests. The
+arguments \code{methods}, \code{params}, \code{ids} and \code{version} are combined into one
+or several request objects according to the JSON-RPC specification and
+together with the \code{urls} argument are passed to \code{do_requests_*()}. The
+objects passed as \code{urls}, \code{methods} and \code{params} should all be of the same
+length but in case any are of length 1, they will be \code{\link[base:rep]{base::rep()}}'ed to
+the required length. Care has to be taken that the list passed as \code{params}
+has the correct degree of nesting. As \code{make_requests()} iterates over the
+topmost list level, a single request should be wrapped in a list such that
+the topmost list level is on length 1. The function \code{make_request()} is a
+wrapper around \code{make_requests()} that does exactly this.
 }
 \examples{
 \donttest{

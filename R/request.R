@@ -1,29 +1,50 @@
 
 #' Make a JSON-RPC request
+#' 
+#' The functions powering all HTTP requests to OpenBIS are
+#' `do_requests_serial()` for sequential calls and `do_requests_parallel()`
+#' for asynchronous calls. Both take one or several urls, either as character
+#' vector or list of unevaluated function calls which will be evaluated using
+#' [base::eval()] shortly before being used (this is used for urls that are
+#' only valid for a limited amount of time). The behavior of `do_requests_*()`
+#' can be customized with the three functions passed as arguments
+#' `create_handle`, `check` and `finally` together with the vector (of the
+#' same length as `urls`) passed as argument `bodies`.
+#' 
+#' The function passed as `create_handle` receives one entry at the time of
+#' the `bodies` object and is expected to return a curl handle created by
+#' [curl::new_handle()]. The `check` function receives as first argument
+#' the response of a single curl request alongside the corresponding entry of
+#' the `bodies` object. This function should check whether the request was
+#' successful or not, e.g. check the HTTP status code, size of the downloaded
+#' file, etc. In case of failure it should return a `simpleError` error object,
+#' created by [base::simpleError()] with message `retry` and in case of success
+#' it should return the response data, e.g. the `content` entry of a curl
+#' response. The third function, `finally`, is applied to the object returned
+#' by the `check` function (in case of success) and can be used to parse JSON,
+#' read a binary file, etc.
+#' 
+#' Both `do_requests_serial()` and `do_requests_parallel()` have the option of
+#' retrying failed requests and the number of allowed retries can be controlled
+#' with the argument `n_try`. Furthermore, `do_requests_parallel()` offers
+#' control over the number of simultaneous connections using the argument
+#' `n_con` and it has the option of performing the requests in a chunked
+#' manner. This means that instead of adding all requests at once and letting
+#' curl handle the queuing, only `n_con` requests are initially made and for
+#' each successful one an additional request is added. This comes in handy for
+#' urls that have a limited lifetime.
 #'
-#' The function `make_requests()` (and a wrapper for single requests,
-#' `make_request()`) issues one or several JSON-RPC request(s) to the specified
-#' server. Urls can be either passed as a character vector or a list of calls
-#' which will be evaluated using [base::eval()]. The urls for the various
-#' openBIS endpoints can be constructed using the [api_url()] function.
-#' 
-#' If several requests are issued, these can be run asynchronously using
-#' `do_requests_parallel()` or serially using `do_requests_serial()`, which
-#' is controlled by the argument `n_con`, specifying the number of allowed
-#' simultaneous connections. The arguments `methods` and `params`, as well as
-#' the optional arguments `ids` and `version` are assembled into a list of
-#' JSON-RPC request objects which are subsequently passed to `do_requests_*()`
-#' along with all further arguments passed as `...`. These include `n_try`,
-#' specifying a maximum number of allowed retries for failed requests, as well
-#' as `create_handle`, `check` and `finally`, which can be used to modify the
-#' behavior of `do_requests_*()`.
-#' 
-#' All `@type` fields are converted to/from `json_class` attributes, using
-#' [rm_json_class()] and [as_json_class()]. Furthermore, as part of the
-#' JSON-RPC specification, all objects returned form the API will have `@id`
-#' fields, which may be referenced if an objects is used multiple times. The
-#' helper function `resolve_references()` recursively resolves all references
-#' such that each object is self-contained.
+#' The function `make_requests()` is used to construct JSON-RPC requests. The
+#' arguments `methods`, `params`, `ids` and `version` are combined into one
+#' or several request objects according to the JSON-RPC specification and
+#' together with the `urls` argument are passed to `do_requests_*()`. The
+#' objects passed as `urls`, `methods` and `params` should all be of the same
+#' length but in case any are of length 1, they will be [base::rep()]'ed to
+#' the required length. Care has to be taken that the list passed as `params`
+#' has the correct degree of nesting. As `make_requests()` iterates over the
+#' topmost list level, a single request should be wrapped in a list such that
+#' the topmost list level is on length 1. The function `make_request()` is a
+#' wrapper around `make_requests()` that does exactly this.
 #' 
 #' @param url,urls, Destination url(s), the request is sent to.
 #' @param method,methods The API method name(s).
@@ -130,8 +151,8 @@ make_request <- function(url,
 #' @export
 #' 
 do_requests_serial <- function(urls,
-                               bodies,
-                               n_try = 1L,
+                               bodies = vector("list", length(urls)),
+                               n_try = 2L,
                                create_handle = create_default_handle,
                                check = check_default_result,
                                finally = identity) {
@@ -150,11 +171,11 @@ do_requests_serial <- function(urls,
 
     res <- check(res, bodies[[i]])
 
-    if (is.null(res)) {
+    if (inherits(res, "simpleError") && conditionMessage(res) == "retry")
       add_request(i, tries - 1L)
-    } else {
+    else {
       assert_that(is.list(res), "result" %in% names(res))
-      res <- finally(res$result)
+      res <- finally(res)
       if (length(urls) > 1L)
         pb$tick(1L)
       res
@@ -187,9 +208,9 @@ do_requests_serial <- function(urls,
 #' @export
 #' 
 do_requests_parallel <- function(urls,
-                                 bodies,
+                                 bodies = vector("list", length(urls)),
                                  n_con = 5L,
-                                 n_try = 1L,
+                                 n_try = 2L,
                                  chunked = FALSE,
                                  create_handle = create_default_handle,
                                  check = check_default_result,
@@ -213,13 +234,13 @@ do_requests_parallel <- function(urls,
 
         resp <- check(x, bodies[[i]])
 
-        if (is.null(resp)) {
+        if (inherits(resp, "simpleError") && conditionMessage(resp) == "retry")
           add_request(i, tries - 1L)
-        } else {
+        else {
           assert_that(is.list(resp), "result" %in% names(resp))
           if (chunked)
             add_request(i + n_con, n_try)
-          res[[i]] <<- finally(resp$result)
+          res[[i]] <<- finally(resp)
           if (length(urls) > 1L)
             pb$tick(1L)
         }
@@ -272,11 +293,11 @@ check_default_result <- function(resp, ...) {
   if (resp$status_code != 200) {
 
     warning("request returned with code ", resp$status_code)
-    NULL
+    simpleError("retry")
 
   } else {
 
-    list(result = resp$content)
+    resp$content
   }
 }
 
@@ -296,7 +317,7 @@ check_request_result <- function(resp, body) {
   if (resp$status_code != 200) {
 
     warning("request returned with code ", resp$status_code)
-    NULL
+    simpleError("retry")
 
   } else {
 
@@ -310,7 +331,7 @@ check_request_result <- function(resp, body) {
       warning("\nerror with code ", resp$error$code, ":\n",
               paste(strwrap(paste(names(data), data, sep = ": "),
                             indent = 2L, exdent = 4L), collapse = "\n"))
-      NULL
+      simpleError("retry")
 
     } else
       resp

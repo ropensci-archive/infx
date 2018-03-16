@@ -345,16 +345,16 @@ check_download_result <- function(resp, size) {
   if (resp$status_code != 200) {
 
     warning("request returned with code ", resp$status_code)
-    NULL
+    simpleError("retry")
 
   } else if (!is.na(size) && length(resp$content) != size) {
 
     warning("download incomplete: missing ", size - length(resp$content),
             " bytes")
-    NULL
+    simpleError("retry")
 
   } else {
 
-    list(result = resp$content)
+    resp$content
   }
 }
