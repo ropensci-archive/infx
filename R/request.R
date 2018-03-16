@@ -345,6 +345,7 @@ check_request_result <- function(resp, body) {
 #' @export
 #' 
 process_json <- function(x) {
+  x <- x$result
   if (is.null(x)) {
     warning("an api call returned NULL.")
     x <- list()
