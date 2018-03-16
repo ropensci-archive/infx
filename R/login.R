@@ -62,17 +62,9 @@ login_openbis <- function(user,
 #' * \Sexpr{infx::docs_link("gis", "logout")}
 #' @export
 #' 
-logout_openbis <- function(token) {
-  process_logoout <- function(x) {
-    if (!is.null(x))
-      stop(x)
-    else
-      list()
-  }
-  make_request(api_url("gis"), "logout", list(token),
-               finally = process_logoout)
-  invisible(NULL)
-}
+logout_openbis <- function(token)
+  invisible(unlist(make_request(api_url("gis"), "logout", list(token),
+                                finally = function(x) x$result)))
 
 #' @rdname login
 #' @section openBIS:

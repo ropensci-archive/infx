@@ -378,4 +378,6 @@ fetch_images.PlateImageReference <- function(token,
 #' @export
 #' 
 process_imgs <- function(imgs)
-  lapply(imgs, function(x) magick::image_read(base64enc::base64decode(x)))
+  lapply(imgs$result,
+         function(x) magick::image_read(base64enc::base64decode(x)))
+

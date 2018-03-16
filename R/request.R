@@ -174,7 +174,6 @@ do_requests_serial <- function(urls,
     if (inherits(res, "simpleError") && conditionMessage(res) == "retry")
       add_request(i, tries - 1L)
     else {
-      assert_that(is.list(res), "result" %in% names(res))
       res <- finally(res)
       if (length(urls) > 1L)
         pb$tick(1L)
@@ -237,7 +236,6 @@ do_requests_parallel <- function(urls,
         if (inherits(resp, "simpleError") && conditionMessage(resp) == "retry")
           add_request(i, tries - 1L)
         else {
-          assert_that(is.list(resp), "result" %in% names(resp))
           if (chunked)
             add_request(i + n_con, n_try)
           res[[i]] <<- finally(resp)
@@ -346,10 +344,8 @@ check_request_result <- function(resp, body) {
 #' 
 process_json <- function(x) {
   x <- x$result
-  if (is.null(x)) {
+  if (is.null(x))
     warning("an api call returned NULL.")
-    x <- list()
-  }
   x <- as_json_class(x, force = TRUE)
   x <- resolve_references(x)
   as_json_vec(x, force = TRUE)
