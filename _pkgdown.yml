@@ -42,3 +42,4 @@ reference:
       - make_requests
       - login_openbis
       - starts_with("read_")
+      - api_url
