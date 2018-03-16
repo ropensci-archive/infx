@@ -53,24 +53,6 @@ api_calls <- strsplit(api_calls, ":")
 ```
 
 ```{r api-info, include = FALSE}
-badger <- function(value) {
-  color <- if (value < 15)
-    "red"
-  else if (value < 30)
-    "orange"
-  else if (value < 45)
-    "yellow"
-  else if (value < 60)
-    "yellowgreen"
-  else if (value < 75)
-    "green"
-  else
-    "brightgreen"
-
-  paste0("![coverage](https://img.shields.io/badge/coverage-",
-         value, "%25-", color, ".svg)")
-}
-
 info <- lapply(sort(unique(urls)), function(x) {
   docs <- read_html(x)
   api <- html_nodes(docs,
@@ -94,18 +76,23 @@ info <- lapply(sort(unique(urls)), function(x) {
                                gsub("\n", "", desc))))
   })
 
-  title <- html_nodes(docs, xpath = "/html/body/div[3]/h2")
+  title <- html_text(html_nodes(docs, xpath = "/html/body/div[3]/h2"))
   desc <- html_nodes(docs, xpath = "/html/body/div[4]/div[1]/ul/li/div")
   desc <- strsplit(html_text(desc), "\\.")[[1]]
   desc <- paste0(desc[1], ". More information available [here](", x, ").\n")
   tabl <- do.call(rbind, tab)
+  link <- paste0("[", sub("^Interface ", "", title), "](", x, ")")
 
-  list(title = html_text(title),
+  list(title = title,
        description = desc,
        table = tabl,
-       badge = badger(round(mean(tabl[, 2] == "implemented") * 100)))
+       status = round(mean(tabl[, 2] == "implemented") * 100),
+       link = link)
 })
 ```
+
+This vignette serves to document which sections of the openBIS API are implemented by this client and which functionality was omitted. Furthermore,
+the basic mechanisms for making requests to openBIS are explained such that a user who wishes to add some of the omitted API functions has some information on how to do this, using this package. Some general documentation on the API, offered by the openBIS developers is available [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API).
 
 # Outline
 
@@ -122,12 +109,18 @@ No methods from the API sections
 * [IQueryApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/query/shared/api/v1/IQueryApiServer.html)
 * [IWebInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IWebInformationService.html)
 
-are currently implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package however is retrieving data and therefore only methods from the following API sections have been implemented.
+are currently implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package however is retrieving data and therefore only methods from the API sections
+
+```{r api-summary, echo = FALSE, results = "asis", tidy = FALSE}
+for (i in seq_along(info))
+  cat(paste0("* ", info[[i]]$link, ", ", info[[i]]$status), "% implemented\n")
+```
+
+have been implemented to a varying degree, as indicated. A more detailed overview of what functionality is available is given in the following sections.
 
 ```{r api-tables, echo = FALSE, results = "asis", tidy = FALSE}
 for (i in seq_along(info)) {
-  cat(paste0("##", info[[i]]$title, "\n", info[[i]]$badge, "\n",
-             info[[i]]$description, "\n"))
+  cat(paste0("##", info[[i]]$title, "\n", info[[i]]$description, "\n"))
   print(kable(info[[i]]$table))
   cat("\n")
 }
