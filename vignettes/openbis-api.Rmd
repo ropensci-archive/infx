@@ -73,7 +73,8 @@ info <- lapply(sort(unique(urls)), function(x) {
          Description = sub("IDssServiceRpcScreening\\.",
                            "IDssServiceRpcScreening ",
                            sub("ch\\..+\\.dto\\.", "",
-                               gsub("\n", "", desc))))
+                               gsub("\n", "",
+                                    sub("^/\\*\\* ", "", desc)))))
   })
 
   title <- html_text(html_nodes(docs, xpath = "/html/body/div[3]/h2"))
@@ -91,25 +92,77 @@ info <- lapply(sort(unique(urls)), function(x) {
 })
 ```
 
-This vignette serves to document which sections of the openBIS API are implemented by this client and which functionality was omitted. Furthermore,
-the basic mechanisms for making requests to openBIS are explained such that a user who wishes to add some of the omitted API functions has some information on how to do this, using this package. Some general documentation on the API, offered by the openBIS developers is available [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API).
+This vignette serves to document which sections of the openBIS API are implemented by this client and which functionality was omitted. Furthermore, the basic mechanisms for making requests to openBIS are explained such that a user who wishes to add some of the omitted API functions has some information on how to do this, using this package. Some general documentation on the API, offered by the openBIS developers is available [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API).
 
-# Outline
+# Creating a REST call
 
-Documentation to the full JSON-RPC API can be accessed [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API).
+The basic functionality powering all REST calls of this package is provided by `do_requests_serial()` or `do_requests_parallel()`. Both functions take roughly the same input produce identical results, but differ in how curl is called. The former function makes requests in a sequential fashion, iteratively calling `curl::curl_fetch_memory()` and the latter performs asynchronous requests, using `curl::curl_fetch_multi()` to assemble all requests and `curl::multi_run()` to carry them out in parallel.
 
-* implementing further methods howto
-* detailed list of implemented methods
+Much of the behavior of `do_requests_serial()` and `do_requests_parallel()` can be customized using three functions passed as arguments `create_handle`, `check` and `finally`. Additionally, `do_requests_*()` take a vector of `urls` and an optional object `bodies` which expected to be of the same length as `urls`. Urls can either be passed as a character vector or a list of unevaluated function calls which will be `base::eval()`ued shortly before being used. Both functions support retrying failed requests up to `n_try` times.
+
+For constructing the requests, both `urls` and `bodies` are iterated together. First, the function passed as `create_handle`, which receives as input the current entry of the `bodies` object is used to construct a curl handle using `curl::create_handle()`. Together with the current url entry, `curl::curl_fetch_*()` is called and the resulting object is passed as first argument to the `check` function, which receives as second argument the current entry of the `bodies` object. The function passed as `check` argument should make sure the request completed successfully and in case of failure return a `simpleError` object, created by `base::simpleError()` with message `retry`, whereas in case of success, it should return the part of the curl response object that is of further interest (most likely the `content` entry). If the `check` function signaled a failure and the number of available tries as specified by `n_try` is not used up, the request is made again. Otherwise the `finally` function is called on the object returned by `check` to do some final processing (e.g. parsing JSON or reading a binary file).
+
+Two features are unique to `do_requests_parallel()`: Firstly, the number of concurrent connections can be specified with the argument `n_con`. The second difference to `do_requests_serial()` is support for a chunked download mode. In conjunction with passing urls as unevaluated function calls, this helps with urls that have a limited lifetime in that the url is only created right before being consumed. Instead of adding all requests at the same time and letting curl handle queuing, in `chunked` mode, only `n_con` requests are handled by curl at any given time and only if a request completes, a new one is added.
+
+A very basic use of `do_requests_serial()` is shown in the following example. The default function of the `create_handle` argument creates a new clean curl handle with no options set and the default for `check` makes sure that the status code is equal to 200 and returns the `content` entry of the list returned by `curl::curl_fetch_memory()`. The default function for `finally` is `base::identity()`, in which case a raw vector would be returned by `do_requests_serial()`. In order to receive a human-readable result, a function `process_raw()` is created, which converts the raw vector to a character vector yielding a JSON string.
+
+```{r rest-simple}
+urls <- "https://httpbin.org/ip"
+
+pretty_json <- function(x)
+  jsonlite::prettify(rawToChar(x))
+
+do_requests_serial(urls, finally = pretty_json)
+```
+
+Note that a list of length 1 is returned by `do_requests_serial()`. This is because the `do_requests_*()` functions are vectorized over requests and therefore return a list with as many entries as requests. A slightly more involved example for creating a request using `do_requests_serial()` is as follows.
+
+```{r rest-json}
+urls <- rep("https://httpbin.org/post", 2)
+json <- list(list(a = "foo"),
+             list(a = "bar"))
+
+post_handle <- function(x)
+  curl::handle_setheaders(
+    curl::new_handle(postfields = charToRaw(jsonlite::toJSON(x))),
+    "Content-Type" = "application/json"
+  )
+  
+process_json <- function(x) 
+  jsonlite::fromJSON(rawToChar(x))$json
+
+res <- do_requests_serial(urls, json,
+                          create_handle = post_handle,
+                          finally = process_json)
+identical(res, json)
+```
+
+In order to customize the curl handle, a `create_handle` function is supplied, which receives for each request the corresponding entry of the object passed as `bodies` argument. The `finally` function in this example parses the returned JSON object into a list and as for POST requests, `httpbin` mirrors the POST data, the initial `json` list is returned.
+
+# Creating a JSON-RPC request
+
+Building on functionality offered by the `do_requests_*()` functions, `make_requests()` helps with constructing JSON-RPC calls. As per the JSON-RPC 2.0 specification, a request object is a JSON string with the following members:[^1]
+
+* `jsonrpc`: A String specifying the version of the JSON-RPC protocol.
+* `method`: A String containing the name of the method to be invoked.
+* `params`: A Structured value that holds the parameter values to be used during the invocation of the method.
+* `id`: An identifier established by the Client.
+
+In order to create a list of such request objects, the arguments `methods`, `params`, `ids` and `version`, which map to `method`, `params`, `id` and `jsonrpc`, respectively, are combined and converted to JSON. OpenBIS API endpoint urls can be constructed with the helper function `api_url()` and the argument `n_con` specifies the maximal number of simultaneous connections made to the server.
+
+As `make_requests()` is designed to construct several requests at the time, the arguments `urls`, `methods` and `params` are vectorized. If any of the passed objects if of length 1, it is `base::rep()`eated to the required length such that all three objects are of the same length. Care has to be taken with the list passed as `params` such that its length corresponds to the number of requests. This means that if only a single set of parameters is passed, this list has to be wrapped by another list.
+
+As a last argument, a `finally` function can be passed, which defaults to `process_json()`. This function first converts all typed JSON objects to `json_class` objects using `as_json_class()`, resolves object references using `resolve_references()` in order to make all `json_class` objects self-contained and then creates a `json_vec` object using `as_json_vec()`, therefore allowing S3 method dispatch on lists of `json_class` objects. For more information on the specifics of this, please refer to the vignette ["JSON object handling"](https://nbenn.github.io/infx/articles/json-class.html).
 
 # Summary of API methods
 
-No methods from the API sections
+Currently no methods from the API sections
 
 * [IGeneralInformationChangingService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationChangingService.html)
 * [IQueryApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/query/shared/api/v1/IQueryApiServer.html)
 * [IWebInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IWebInformationService.html)
 
-are currently implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package however is retrieving data and therefore only methods from the API sections
+are implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package however is retrieving data and therefore only methods from the API sections
 
 ```{r api-summary, echo = FALSE, results = "asis", tidy = FALSE}
 for (i in seq_along(info))
@@ -125,3 +178,5 @@ for (i in seq_along(info)) {
   cat("\n")
 }
 ```
+
+[^1]: [**JSON-RPC 2.0 Specification** Rev. 2013-01-04. JSON-RPC Working Group](http://www.jsonrpc.org/specification)
