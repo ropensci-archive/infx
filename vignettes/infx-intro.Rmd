@@ -110,3 +110,17 @@ Several different types of data sets (possibly in multiple versions) are typical
 * `HCS_ANALYSIS_CELL_CLASSIFICATIONS_MAT`: decision tree-based infection scoring data
 
 The way openBIS is set up for InfectX, data sets are only available on the plate sample level and not per well, as is demonstrated by passing a well sample object to `list_datasets()`, which returns an empty list.
+
+## Searching in OpenBIS 
+
+Search queries for OpenBIS are constructed with `search_criteria()` and the search is executed by calling `search_openbis()`. The function `search_criteria()` instantiates a `SearchCriteria` object which consists of a set of match clauses combined with either an `any` or `all` operator. Nesting of `SearchCriteria` objects is possibly by supplying a `SearchCriteria` object as `sub_criteria` argument to a call to `search_criteria()`, in turn creating the enclosing `SearchCriteria` object.
+
+Five different types of match clauses can be constructed:
+
+* `PropertyMatchClause`: A `MatchClause` for checking that a property equals a desired value.
+* `AnyPropertyMatchClause`: A `MatchClause` for checking that any of the properties equals a desired value.
+* `AnyFieldMatchClause`: A `MatchClause` for checking that any of the properties or attributes equals a desired value.
+* `AttributeMatchClause`: A `MatchClause` for checking that an attribute equals a desired value.
+* `TimeAttributeMatchClause`: A `MatchClause` for comparing a time attribute to a specified value.
+
+For every match clause, a desired value has to be supplied, as well as a comparison mode which can either be `eq` (equal to), `lte` (less than or equal to) or `gte` (greater than or equal to). Additionally, for a `PropertyMatchClause`, a property code (possibilities can be enumerated with `list_property_types()`) has to be specified, for an `AttributeMatchClause`, an attribute^[possible values are `code`, `type`, `perm_id`, `space`, `project`, `project_perm_id`, `metaproject`, `registrator_user_id`, `registrator_first_name`, `registrator_last_name`, `registrator_email`, `modifier_user_id`, `modifier_first_name`, `modifier_last_name` or `modifier_email`] and for a `TimeAttributeMatchClause`, a time attribute (either `registration_date` or `modification_date`).
