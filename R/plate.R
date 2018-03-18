@@ -108,7 +108,7 @@ plate_to_plateid <- function(x) {
 #' @rdname list_plate_well
 #' @export
 #' 
-list_wells <- function(token, x = NULL, ...)
+list_wells <- function(token, x, ...)
   UseMethod("list_wells", x)
 
 #' @rdname list_plate_well

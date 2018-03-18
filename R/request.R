@@ -241,6 +241,7 @@ do_requests_parallel <- function(urls,
           res[[i]] <<- finally(resp)
           if (length(urls) > 1L)
             pb$tick(1L)
+          invisible(NULL)
         }
       },
       fail = function(x) add_request(i, tries - 1L)
@@ -275,8 +276,7 @@ do_requests_parallel <- function(urls,
   else
     seq_along(urls)
 
-  for (j in start_inds)
-    add_request(j, n_try)
+  sapply(start_inds, add_request, n_try)
 
   curl::multi_run(pool = pool)
 
