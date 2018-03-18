@@ -154,6 +154,37 @@ As `make_requests()` is designed to construct several requests at the time, the 
 
 As a last argument, a `finally` function can be passed, which defaults to `process_json()`. This function first converts all typed JSON objects to `json_class` objects using `as_json_class()`, resolves object references using `resolve_references()` in order to make all `json_class` objects self-contained and then creates a `json_vec` object using `as_json_vec()`, therefore allowing S3 method dispatch on lists of `json_class` objects. For more information on the specifics of this, please refer to the vignette ["JSON object handling"](https://nbenn.github.io/infx/articles/json-class.html).
 
+For single requests, a wrapper around `make_requests()` is available as `make_request()`. This function wraps the `params` argument in a list such that a list of length 1 is passed to `make_requests()` and returns the first entry of the list resulting from calling `make_requests()`. The following example shows how `make_request()` is used to implement the API method [`listProjects`](https://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationService.html#listProjects%28java.lang.String%29), which takes an access token passed as a list as its only argument.
+
+```{r simple-rpc}
+token <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
+
+projects <- make_request(url = api_url("gis"),
+                         method = "listProjects",
+                         params = list(token))
+print(projects[[1]])
+```
+
+The illustrate the used of `make_requests()`, the API method [`getDownloadUrlForFileForDataSet`](https://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/generic/shared/api/v1/IDssServiceRpcGeneric.html#getDownloadUrlForFileForDataSet%28java.lang.String,%20java.lang.String,%20java.lang.String%29) is implemented. This function generates a download url for a file in a data set and requires a separate API call for each combination of data set and file path. In order to carry out several of these requests asynchronously, a list has to be passed as `params` argument such that each entry contains a list holding a login token, a dataset code and a file path.
+
+```{r multi-rpc}
+dataset_codes <- c("20120629093035782-603380", "20121011143734361-1359915")
+file_path <- c("original/aThresholdedInfectionScoring_bBB01-1I.csv")
+
+params <- lapply(dataset_codes, function(x) list(token, x, file_path))
+
+str(params)
+
+donwload_urls <- make_requests(urls = api_url("dsrg"),
+                               method = "getDownloadUrlForFileForDataSet",
+                               params = params)
+str(donwload_urls)
+
+logout_openbis(token)
+```
+
+In addition to the JSON-RPC calls enabled by `make_request()`/`make_requests()`, the `do_requests_*()` functions are also used for (asynchronous) file downloads in `fetch_files()`. Slightly different functions are used as `create_handle` and `check` arguments but apart from that the logic remains largely the same.
+
 # Summary of API methods
 
 Currently no methods from the API sections
