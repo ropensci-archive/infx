@@ -94,7 +94,7 @@ info <- lapply(sort(unique(urls)), function(x) {
 
 This vignette serves to document which sections of the openBIS API are implemented by this client and which functionality was omitted. Furthermore, the basic mechanisms for making requests to openBIS are explained such that a user who wishes to add some of the omitted API functions has some information on how to do this, using this package. Some general documentation on the API, offered by the openBIS developers is available [here](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API).
 
-# Creating a REST call
+## Creating a REST call
 
 The basic functionality powering all REST calls of this package is provided by `do_requests_serial()` or `do_requests_parallel()`. Both functions take roughly the same input produce identical results, but differ in how curl is called. The former function makes requests in a sequential fashion, iteratively calling `curl::curl_fetch_memory()` and the latter performs asynchronous requests, using `curl::curl_fetch_multi()` to assemble all requests and `curl::multi_run()` to carry them out in parallel.
 
@@ -139,9 +139,9 @@ identical(res, json)
 
 In order to customize the curl handle, a `create_handle` function is supplied, which receives for each request the corresponding entry of the object passed as `bodies` argument. The `finally` function in this example parses the returned JSON object into a list and as for POST requests, `httpbin` mirrors the POST data, the initial `json` list is returned.
 
-# Creating a JSON-RPC request
+## Creating a JSON-RPC request
 
-Building on functionality offered by the `do_requests_*()` functions, `make_requests()` helps with constructing JSON-RPC calls. As per the JSON-RPC 2.0 specification, a request object is a JSON string with the following members:[^1]
+Building on functionality offered by the `do_requests_*()` functions, `make_requests()` helps with constructing JSON-RPC calls. As per the JSON-RPC 2.0 specification, a request object is a JSON string with the following members^[[**JSON-RPC 2.0 Specification** Rev. 2013-01-04. JSON-RPC Working Group](http://www.jsonrpc.org/specification)]:
 
 * `jsonrpc`: A String specifying the version of the JSON-RPC protocol.
 * `method`: A String containing the name of the method to be invoked.
@@ -185,7 +185,7 @@ logout_openbis(token)
 
 In addition to the JSON-RPC calls enabled by `make_request()`/`make_requests()`, the `do_requests_*()` functions are also used for (asynchronous) file downloads in `fetch_files()`. Slightly different functions are used as `create_handle` and `check` arguments but apart from that the logic remains largely the same.
 
-# Summary of API methods
+## Summary of API methods
 
 Currently no methods from the API sections
 
@@ -193,21 +193,19 @@ Currently no methods from the API sections
 * [IQueryApiServer](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/plugin/query/shared/api/v1/IQueryApiServer.html)
 * [IWebInformationService](http://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IWebInformationService.html)
 
-are implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package however is retrieving data and therefore only methods from the API sections
+are implemented as they mostly deal with modifying metadata and creating new aggregation reports. The main focus of this package is retrieving data and therefore only methods from the API sections
 
 ```{r api-summary, echo = FALSE, results = "asis", tidy = FALSE}
 for (i in seq_along(info))
   cat(paste0("* ", info[[i]]$link, ", ", info[[i]]$status), "% implemented\n")
 ```
 
-have been implemented to a varying degree, as indicated. A more detailed overview of what functionality is available is given in the following sections.
+are currently available. A more detailed overview of what functionality is implemented in this API client is given in the following sections.
 
 ```{r api-tables, echo = FALSE, results = "asis", tidy = FALSE}
 for (i in seq_along(info)) {
-  cat(paste0("##", info[[i]]$title, "\n", info[[i]]$description, "\n"))
+  cat(paste0("###", info[[i]]$title, "\n", info[[i]]$description, "\n"))
   print(kable(info[[i]]$table))
   cat("\n")
 }
 ```
-
-[^1]: [**JSON-RPC 2.0 Specification** Rev. 2013-01-04. JSON-RPC Working Group](http://www.jsonrpc.org/specification)

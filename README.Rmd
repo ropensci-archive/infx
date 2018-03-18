@@ -37,7 +37,7 @@ devtools::install_github("nbenn/infx")
 
 ## InfectX
 
-[InfectX](http://www.infectx.ch) and its successor project [TargetInfectX](https://www.targetinfectx.ch) are large-scale high throughput screening experiments focused on the human infectome of a set of viral and bacterial pathogens. In order to identify host-provided components involved in pathogen entry and host colonization, several RNA interference screens were carried out on HeLa cells, using siRNA libraries from vendors such as Dharmacon, Quiagen and Ambion. Of the many performed screens, currently the data of kinome-wide screens for five bacterial pathogens (*Bartonella henselae*, *Brucella abortus*, *Listeria monocytogenes*, *Salmonella* typhimurium, and *Shigella flexneri*) and three viruses (Adenovirus, Rhinovirus, and *Vaccinia virus*) is publicly available.[^1] Additionally, several genome-wide screens will follow suit in the coming months.
+[InfectX](http://www.infectx.ch) and its successor project [TargetInfectX](https://www.targetinfectx.ch) are large-scale high throughput screening experiments focused on the human infectome of a set of viral and bacterial pathogens. In order to identify host-provided components involved in pathogen entry and host colonization, several RNA interference screens were carried out on HeLa cells, using siRNA libraries from vendors such as Dharmacon, Quiagen and Ambion. Of the many performed screens, currently the data of kinome-wide screens for five bacterial pathogens (*Bartonella henselae*, *Brucella abortus*, *Listeria monocytogenes*, *Salmonella* typhimurium, and *Shigella flexneri*) and three viruses (Adenovirus, Rhinovirus, and *Vaccinia virus*) is publicly available^[[*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)]. Additionally, several genome-wide screens will follow suit in the coming months.
 
 All collected data, including raw imaging data, [CellProfiler](http://cellprofiler.org) derived feature data and infection scoring at single cell resolution, alongside extensive metadata, is hosted by the laboratory information management system [openBIS](https://wiki-bsse.ethz.ch/display/bis/Home). This R package provides access to the openBIS [JSON-RPC API](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API), enabling listing of data organization objects, searching for and downloading of data sets.
 
@@ -67,5 +67,3 @@ Finally, the login token should be destroyed, using [`logout_openbis()`](https:/
 logout_openbis(tok)
 is_token_valid(tok)
 ```
-
-[^1]: [*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)
