@@ -25,7 +25,7 @@ list_plates(token, x = NULL, ...)
 
 plate_to_plateid(x)
 
-list_wells(token, x = NULL, ...)
+list_wells(token, x, ...)
 
 \method{list_wells}{PlateIdentifier}(token, x, ...)
 
