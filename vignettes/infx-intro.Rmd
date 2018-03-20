@@ -176,8 +176,9 @@ dat <- fetch_files(token, cell_ds[[1]],
                    file_regex = "Image\\.Count_",
                    finally = read_mat_files)
 
-dat <- lapply(lapply(dat, `[[`, "data"), as.integer)
+dat <- lapply(dat, `[[`, "data")
 names(dat) <- sapply(dat, attr, "feature")
+dat <- lapply(dat, as.integer)
 
 tibble::as_tibble(lapply(dat, unlist))
 ```
