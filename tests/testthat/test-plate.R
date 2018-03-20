@@ -97,7 +97,7 @@ test_that("plate metadata be listed", {
 
   check_skip()
 
-  plate_ids <- plate_to_plateid(plates)
+  plate_ids <- as_plateid(plates)
 
   meta_1 <- list_plate_metadata(tok, plate_ids[[1]])
   expect_is(meta_1, "PlateMetadata")
@@ -115,4 +115,43 @@ test_that("plate metadata be listed", {
 
   expect_identical(list_plate_metadata(tok, plates[[1]]), meta_1)
   expect_identical(list_plate_metadata(tok, plates[1:2]), meta_2)
+})
+
+test_that("plates/samples can be converted to plate ids", {
+
+  plate_id <- as_plateid(plates[[1]])
+  expect_is(plate_id, "PlateIdentifier")
+  expect_is(plate_id, "json_vec")
+  expect_identical(get_subclass(plate_id), "PlateIdentifier")
+  expect_true(all(sapply(plate_id, has_subclass, "PlateIdentifier")))
+  expect_true(all(sapply(plate_id, has_fields,
+                         c("plateCode", "spaceCodeOrNull"))))
+  expect_equal(length(plate_id), 1L)
+
+  plate_ids <- as_plateid(plates[1:2])
+  expect_is(plate_ids, "PlateIdentifier")
+  expect_is(plate_ids, "json_vec")
+  expect_identical(get_subclass(plate_ids), "PlateIdentifier")
+  expect_true(all(sapply(plate_ids, has_subclass, "PlateIdentifier")))
+  expect_true(all(sapply(plate_ids, has_fields,
+                         c("plateCode", "spaceCodeOrNull"))))
+  expect_equal(length(plate_ids), 2L)
+
+  plate_id <- as_plateid(samples[[1]])
+  expect_is(plate_id, "PlateIdentifier")
+  expect_is(plate_id, "json_vec")
+  expect_identical(get_subclass(plate_id), "PlateIdentifier")
+  expect_true(all(sapply(plate_id, has_subclass, "PlateIdentifier")))
+  expect_true(all(sapply(plate_id, has_fields,
+                         c("plateCode", "spaceCodeOrNull"))))
+  expect_equal(length(plate_id), 1L)
+
+  plate_ids <- as_plateid(samples[1:2])
+  expect_is(plate_ids, "PlateIdentifier")
+  expect_is(plate_ids, "json_vec")
+  expect_identical(get_subclass(plate_ids), "PlateIdentifier")
+  expect_true(all(sapply(plate_ids, has_subclass, "PlateIdentifier")))
+  expect_true(all(sapply(plate_ids, has_fields,
+                         c("plateCode", "spaceCodeOrNull"))))
+  expect_equal(length(plate_ids), 2L)
 })

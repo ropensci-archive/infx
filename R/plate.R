@@ -14,7 +14,7 @@
 #' (e.g. a `json_vec` of plates), an API call for each object has to be made.
 #' 
 #' A convenience function that allows for the conversion of plate objects into
-#' plate id objects is available as `plate_to_plateid()`. This function does
+#' plate id objects is available as `as_plateid()`. This function does
 #' not incur an API call and can act on both a single plate object or a vector
 #' of plate objects (passed as a `json_vec` object) and will return a
 #' `json_vec` object of type `PlateIdentifier`.
@@ -85,7 +85,13 @@ list_plates.Experiment <- function(token, x, ...) {
 #' @rdname list_plate_well
 #' @export
 #' 
-plate_to_plateid <- function(x) {
+as_plateid <- function(x, ...)
+  UseMethod("as_plateid", x)
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plateid.Plate <- function(x, ...) {
 
   convert <- function(x)
     json_class(plateCode = x[["plateCode"]],
@@ -94,8 +100,7 @@ plate_to_plateid <- function(x) {
 
   fields <- c("plateCode", "spaceCodeOrNull")
 
-  assert_that(inherits(x, "Plate"),
-              has_fields(x, fields))
+  assert_that(has_fields(x, fields))
 
   if (is_json_class(x))
     res <- convert(x)
@@ -103,6 +108,26 @@ plate_to_plateid <- function(x) {
     res <- lapply(x, convert)
 
   as_json_vec(res)
+}
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plateid.Sample <- function(x, ...) {
+
+  convert <- function(x)
+    json_class(plateCode = x[["code"]],
+               spaceCodeOrNull = x[["spaceCode"]],
+               class = "PlateIdentifier")
+
+  fields <- c("code", "spaceCode")
+
+  x <- as_json_vec(x)
+
+  assert_that(all(sapply(x, `[[`, "sampleTypeCode") == "PLATE"),
+              has_fields(x, fields))
+
+  as_json_vec(lapply(x, convert))
 }
 
 #' @rdname list_plate_well
@@ -127,7 +152,7 @@ list_wells.PlateIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_wells.Plate <- function(token, x, ...)
-  list_wells(token, plate_to_plateid(x))
+  list_wells(token, as_plateid(x))
 
 #' @rdname list_plate_well
 #' @export
@@ -184,4 +209,4 @@ list_plate_metadata.PlateIdentifier <- function(token, x, ...)
 #' 
 list_plate_metadata.Plate <- function(token, x, ...)
   make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, plate_to_plateid(x)))
+               list(token, as_plateid(x)))

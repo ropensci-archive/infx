@@ -54,7 +54,7 @@ test_that("materials can be listed", {
   expect_true(all(sapply(mat_2, has_subclass, "MaterialGeneric")))
   expect_equal(length(mat_2), 2L)
 
-  plate_ids <- plate_to_plateid(plates[1:2])
+  plate_ids <- as_plateid(plates[1:2])
 
   mat_1 <- list_material(tok, plates[[2]])
   expect_is(mat_1, "PlateWellMaterialMapping")

@@ -5,7 +5,9 @@
 \alias{list_plates.NULL}
 \alias{list_plates.ExperimentIdentifier}
 \alias{list_plates.Experiment}
-\alias{plate_to_plateid}
+\alias{as_plateid}
+\alias{as_plateid.Plate}
+\alias{as_plateid.Sample}
 \alias{list_wells}
 \alias{list_wells.PlateIdentifier}
 \alias{list_wells.Plate}
@@ -23,7 +25,11 @@ list_plates(token, x = NULL, ...)
 
 \method{list_plates}{Experiment}(token, x, ...)
 
-plate_to_plateid(x)
+as_plateid(x, ...)
+
+\method{as_plateid}{Plate}(x, ...)
+
+\method{as_plateid}{Sample}(x, ...)
 
 list_wells(token, x, ...)
 
@@ -71,7 +77,7 @@ instance for one or more plate(s). If multiple plates are searched for
 (e.g. a \code{json_vec} of plates), an API call for each object has to be made.
 
 A convenience function that allows for the conversion of plate objects into
-plate id objects is available as \code{plate_to_plateid()}. This function does
+plate id objects is available as \code{as_plateid()}. This function does
 not incur an API call and can act on both a single plate object or a vector
 of plate objects (passed as a \code{json_vec} object) and will return a
 \code{json_vec} object of type \code{PlateIdentifier}.

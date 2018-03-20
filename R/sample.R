@@ -67,7 +67,7 @@ list_samples.PlateIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_samples.Plate <- function(token, x, ...)
-  list_samples(token, plate_to_plateid(x))
+  list_samples(token, as_plateid(x))
 
 #' @rdname list_samples
 #' @export
