@@ -75,7 +75,7 @@ make_requests <- function(urls,
                           params,
                           ids = NULL,
                           version = "2.0",
-                          n_con = 5L,
+                          n_con = 1L,
                           finally = process_json,
                           ...) {
 
