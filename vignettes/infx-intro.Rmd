@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 )
 
 library(infx)
+library(tibble)
+library(magick)
 ```
 
 OpenBIS (Open Biology Information System) is a laboratory information management system designed for robust data management of large-scale experiments in biological sciences. As storage infrastructure it is therefore well suited for the needs of the image-based high throughput screening (HTS) performed by the InfectX consortium. For data access, JSON-RPC services are provided by openBIS, which can be called from the presented client package `infx`.
@@ -35,13 +37,13 @@ token <- login_openbis("rdgr2014", "IXPubReview")
 
 projects <- list_projects(token)
 
+print(projects, length = 10L)
 length(projects)
-print(projects[[1]])
 
 adeno_exps <- list_experiments(token, projects[[1]])
 
+print(adeno_exps, length = 15L)
 length(adeno_exps)
-print(adeno_exps[[1]])
 
 str(adeno_exps[[1]]$properties)
 ```
@@ -54,13 +56,13 @@ Experiments in high-throughput screening are typically carried out on microtiter
 ```{r plate-well}
 plates <- list_plates(token, adeno_exps[[1]])
 
+print(plates, length = 15L)
 length(plates)
-print(plates[[2]])
 
 wells <- list_wells(token, plates[[2]])
 
+print(wells, length = 15, depth = 2)
 length(wells)
-print(wells[1:2], depth = 2)
 ```
 
 The functions for listing plates and wells are `list_plates()` and `list_wells()`, respectively. The above example shows how for a single experiment, all associated plates and for a single plate, all contained wells can be retrieved.
@@ -74,12 +76,12 @@ The function `list_samples()` retrieves `Sample` objects, which generalize `Plat
 ```{r sample}
 plate_samp <- list_samples(token, adeno_exps[[1]])
 
+print(plate_samp, length = 20L)
 length(plate_samp)
-print(plate_samp[[2]])
 
 wells_samp <- list_samples(token, wells[1:2])
 
-print(wells_samp)
+print(wells_samp, length = 20L)
 ```
 
 The sample type is encoded in the `sampleTypeCode` field of each `Sample` object and an exhaustive list of available sample types can be shown using `list_sample_types()`.
@@ -93,8 +95,8 @@ Essentially, a data set represents a collection of files associated with a sampl
 ```{r data-set}
 data_sets <- list_datasets(token, plate_samp[[2]])
 
+print(data_sets, length = 30L)
 length(data_sets)
-print(data_sets[[1]])
 
 unique(sapply(data_sets, `[[`, "dataSetTypeCode"))
 
@@ -124,3 +126,120 @@ Five different types of match clauses can be constructed:
 * `TimeAttributeMatchClause`: A `MatchClause` for comparing a time attribute to a specified value.
 
 For every match clause, a desired value has to be supplied, as well as a comparison mode which can either be `eq` (equal to), `lte` (less than or equal to) or `gte` (greater than or equal to). Additionally, for a `PropertyMatchClause`, a property code (possibilities can be enumerated with `list_property_types()`) has to be specified, for an `AttributeMatchClause`, an attribute^[possible values are `code`, `type`, `perm_id`, `space`, `project`, `project_perm_id`, `metaproject`, `registrator_user_id`, `registrator_first_name`, `registrator_last_name`, `registrator_email`, `modifier_user_id`, `modifier_first_name`, `modifier_last_name` or `modifier_email`] and for a `TimeAttributeMatchClause`, a time attribute (either `registration_date` or `modification_date`).
+
+```{r simple-search}
+amb_kin <- search_criteria(property_clause("Ambion", "LIBRARY"),
+                           property_clause("Kinome", "GENESET"),
+                           operator = "all")
+
+ak_exps <- search_openbis(token, amb_kin,
+                          target_object = "experiment")
+
+print(ak_exps, length = 15L)
+sapply(ak_exps, `[[`, "code")
+```
+For a small example, openBIS is queried for all experiments that involve kinome-wide screens with Ambion libraries. First, a `SearchCriteria` object is created containing two property match clauses that both have to be met simultaneously. This `SearchCriteria` object is then passed to `search_openbis()` along with the specification of a target type which can be either `data_set`, `experiment`, `material` or `sample`.
+
+<!-- TODO: more involved example with sub criteria & a material -->
+
+## Retrieving openBIS data resources
+
+Three different types of what within the scope of this documentation is considered data resources are available from OpenBIS: The most straightforward is `files`. As explained above, each data set contains a set of files, for each of which a download url can be created. As this OpenBIS instance is hosting image-based HTS data, a second available data resource is `images`. Raw images can be retrieved as files in a `HCS_IMAGE_CONTAINER_RAW` data set but in addition to that, OpenBIS can be queried for specific images and is able to serve transformations of raw images. A final type of data resource is `features`. This data is also available as files in a data set but similar to images is teated specially by OpenBIS in order to allow fine-grained queries.
+
+### File download
+
+The following example demonstrates how InfectX single cell feature data, calculated by CellProfiler, can be accessed. First a search for data sets of type `HCS_ANALYSIS_CELL_FEATURES_CC_MAT` is carried out. This search is limited to the `ADENO-AU-K1` experiment, using a `search_sub_criteria` object. One of the resulting data sets is then passed to `fetch_files()` together with a regular expression to filter the list of available files (several hundred feature files are typically available for such data sets). The function `read_mat_files()` is passed as finally argument and reads the binary Matlab files using `R.matlab::readMat()`.
+
+```{r fetch-files}
+adeno_au_sub <- search_sub_criteria(
+  search_criteria(
+    property_clause("Adenovirus", "PATHOGEN"),
+    property_clause("Ambion", "LIBRARY"),
+    property_clause("Kinome", "GENESET"),
+    property_clause(1L, "REPLICATE")
+  ),
+  type = "experiment"
+)
+
+adeno_au_mat <- search_criteria(
+  attribute_clause("HCS_ANALYSIS_CELL_FEATURES_CC_MAT", "type"),
+  sub_criteria = adeno_au_sub
+)
+
+cell_ds <- search_openbis(token, adeno_au_mat,
+                          target_object = "data_set")
+
+print(cell_ds, length = 30L)
+length(cell_ds)
+
+dat <- fetch_files(token, cell_ds[[1]],
+                   file_regex = "Image\\.Count_",
+                   finally = read_mat_files)
+
+dat <- lapply(dat, `[[`, "data")
+names(dat) <- sapply(dat, attr, "feature")
+
+tibble::as_tibble(lapply(dat, unlist))
+```
+
+For each file, `read_mat_files()` will return a list with one entry per imaging site. For this data set, there are 9 imaging sites per well which yields 3456 sites for the entire plate. Additionally, `fetch_files()` returns a list structure per request, containing information on which request corresponds to which data set and file. This is necessary because `fetch_files()` could be called on several data sets at once, each returning multiple files.
+
+The data is contained as `data` entry in each of the list structures per request and the feature name is available as `feature` attribute. To create a table of values, the `data` entries are extracted together with the feature names and the per-site lists are converted to numeric vectors and column-bound with `tibble::as_tibble()`.
+
+### Image access
+
+In order to fetch images, again first a search is constructed. Re-using the previous `search_sub_criteria`, the search is targeted at sample object to type `PLATE`, as image data sets are connected to plates. To find the appropriate data set, the function `list_references()` may be used and since the current target is fetching raw image data, the `type` argument of `list_references()` can be left at default value. The returned `ImageDatasetReference` is then passed to `list_image_metadata()` for some additional information on the image data set, mainly the available channels.
+
+To narrow down the requested set of images, `list_references()` is called again, this time on the `ImageDatasetReference` object and in conjunction with a `WellPosition` object. The returned set of `PlateImageReference` objects precisely specify a single image by containing information on image data set, well position, image tile and image channel. The `ImageDatasetReference` corresponding to the tile with index 0 is passed to `fetch_images()`, yielding a single image. As `fetch_images()` can be called on several objects specifying images, each request returns with some meta data attached and the actual image data is contained in the `data` entry of the resulting list structure.
+
+```{r fetch-images}
+adeno_au_samp <- search_criteria(
+  attribute_clause("PLATE", "type"),
+  sub_criteria = adeno_au_sub
+)
+
+samples <- search_openbis(token, adeno_au_samp,
+                          target_object = "sample")
+
+raw_ref <- list_references(token, samples[[2]])
+
+list_image_metadata(token, raw_ref)
+
+well_raw <- list_references(token, raw_ref,
+                            wells = json_class(wellRow = 1L,
+                                               wellColumn = 2L,
+                                               class = "WellPosition"),
+                            channel = "CY5")
+
+print(well_raw, depth = 2L, length = 15L)
+
+raw_img <- fetch_images(token, well_raw[[2]],
+                        image_size = json_class(width = 700L,
+                                                height = 700L,
+                                                class = "ImageSize"))
+
+print(raw_img[[1]]$data)
+```
+
+As further illustration of the capabilities of the openBIS API, the following example combines the previously fetched image with a segmentation mask for cells. The same sample of object from above is againg passed to `list_references()` but this time an `ImageDatasetReference` object corresponding to an image segmentation dataset is retrieved. Again using `list_image_metadata()`, the available channels are listed and using this information, a request for the image segmentation masks for the desired well and image tile is issued.
+
+```{r fetch-mask}
+segm_ref <- list_references(token, samples[[2]],
+                            type = "segmentation")
+
+list_image_metadata(token, segm_ref)
+
+well_segm <- list_references(token, segm_ref,
+                             wells = json_class(wellRow = 1L,
+                                                wellColumn = 2L,
+                                                class = "WellPosition"),
+                             channel = "CELLS__CY5_")
+
+segm_img <- fetch_images(token, well_segm[[2]],
+                         image_size = json_class(width = 700L,
+                                                 height = 700L,
+                                                 class = "ImageSize"))
+
+cells <- c(raw_img[[1]]$data, image_transparent(segm_img[[1]]$data, "black"))
+print(image_mosaic(cells))
+```
