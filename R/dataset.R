@@ -199,6 +199,12 @@ list_references.Plate <- list_img_ds
 #' @rdname list_datasets
 #' @export
 #' 
+list_references.Sample <- function(token, x, ...)
+  list_img_ds(token, as_plateid(x), ...)
+
+#' @rdname list_datasets
+#' @export
+#' 
 list_references.PlateMetadata <- list_img_ds
 
 #' @rdname list_datasets

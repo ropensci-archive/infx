@@ -138,6 +138,20 @@ test_that("dataset references can be listed", {
   expect_identical(list_references(tok, plate_meta[[1]]), ds_1)
   expect_identical(list_references(tok, plate_meta[1:2]), ds_2)
 
+  ds_1 <- list_references(tok, samples[[1]])
+  expect_is(ds_1, "ImageDatasetReference")
+  expect_is(ds_1, "json_vec")
+  expect_identical(get_subclass(ds_1), "ImageDatasetReference")
+  expect_true(all(sapply(ds_1, has_subclass, "ImageDatasetReference")))
+  expect_equal(length(ds_1), 1L)
+
+  ds_2 <- list_references(tok, samples[1:2])
+  expect_is(ds_2, "ImageDatasetReference")
+  expect_is(ds_2, "json_vec")
+  expect_identical(get_subclass(ds_2), "ImageDatasetReference")
+  expect_true(all(sapply(ds_2, has_subclass, "ImageDatasetReference")))
+  expect_equal(length(ds_2), 2L)
+
   ds_1 <- list_references(tok, plates[[1]], type = "feature")
   expect_is(ds_1, "FeatureVectorDatasetReference")
   expect_is(ds_1, "json_vec")
