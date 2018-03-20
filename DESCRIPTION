@@ -26,7 +26,9 @@ Suggests:
     testthat (>= 2.0.0),
     knitr,
     rmarkdown,
-    rvest
+    rvest,
+    tibble,
+    ggplot2
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
