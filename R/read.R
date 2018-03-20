@@ -14,10 +14,6 @@
 #' 
 read_mat_files <- function(data) {
 
-  is_int <- function(x)
-    isTRUE(all.equal(x, suppressWarnings(as.integer(x)),
-                     check.attributes = FALSE))
-
   reduce_nesting <- function(x) {
     if (is.list(x) && length(x) == 1L)
       x <- x[[1]]
@@ -37,10 +33,7 @@ read_mat_files <- function(data) {
       assert_that(length(info) == 2L)
       attr(x, "object") <- info[1]
       attr(x, "feature") <- info[2]
-      if (is_int(x))
-        as.integer(x)
-      else
-        x
+      x
     }
   }
 
