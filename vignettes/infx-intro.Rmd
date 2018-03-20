@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 library(infx)
 library(tibble)
 library(magick)
+library(ggplot2)
 ```
 
 OpenBIS (Open Biology Information System) is a laboratory information management system designed for robust data management of large-scale experiments in biological sciences. As storage infrastructure it is therefore well suited for the needs of the image-based high throughput screening (HTS) performed by the InfectX consortium. For data access, JSON-RPC services are provided by openBIS, which can be called from the presented client package `infx`.
@@ -193,7 +194,7 @@ In order to fetch images, again first a search is constructed. Re-using the prev
 
 To narrow down the requested set of images, `list_references()` is called again, this time on the `ImageDatasetReference` object and in conjunction with a `WellPosition` object. The returned set of `PlateImageReference` objects precisely specify a single image by containing information on image data set, well position, image tile and image channel. The `ImageDatasetReference` corresponding to the tile with index 0 is passed to `fetch_images()`, yielding a single image. As `fetch_images()` can be called on several objects specifying images, each request returns with some meta data attached and the actual image data is contained in the `data` entry of the resulting list structure.
 
-```{r fetch-images}
+```{r fetch-images, fig.align = "center"}
 adeno_au_samp <- search_criteria(
   attribute_clause("PLATE", "type"),
   sub_criteria = adeno_au_sub
@@ -224,7 +225,7 @@ print(raw_img[[1]]$data)
 
 As further illustration of the capabilities of the openBIS API, the following example combines the previously fetched image with a segmentation mask for cells. The same sample of object from above is againg passed to `list_references()` but this time an `ImageDatasetReference` object corresponding to an image segmentation dataset is retrieved. Again using `list_image_metadata()`, the available channels are listed and using this information, a request for the image segmentation masks for the desired well and image tile is issued.
 
-```{r fetch-mask}
+```{r fetch-mask, fig.align = "center"}
 segm_ref <- list_references(token, samples[[2]],
                             type = "segmentation")
 
@@ -243,4 +244,27 @@ segm_img <- fetch_images(token, well_segm[[2]],
 
 cells <- c(raw_img[[1]]$data, image_transparent(segm_img[[1]]$data, "black"))
 print(image_mosaic(cells))
+```
+
+### OpenBIS feature data
+
+```{r feat-data, fig.align = "center"}
+feat_ref <- list_references(token, samples[[2]],
+                            type = "feature")
+
+print(list_features(token, feat_ref[[1]]), length = 10L)
+
+cell_count <- fetch_features(token, feat_ref[[1]], "COUNT_CELLS")
+
+heatmap <- lapply(cell_count[[1]]$featureVectors, function(x)
+                  c(LETTERS[x$wellPosition$wellRow],
+                    unlist(x$wellPosition$wellColumn),
+                    unlist(x$values)))
+heatmap <- as_tibble(do.call(rbind, heatmap))
+names(heatmap) <- c("WellRow", "WellCol", "CellCount")
+heatmap[, 2:3] <- lapply(heatmap[, 2:3], as.integer)
+print(heatmap)
+
+ggplot(data = heatmap, aes(x = WellCol, y = WellRow)) +
+  geom_tile(aes(fill = CellCount))
 ```
