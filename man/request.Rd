@@ -10,7 +10,7 @@
 \title{Make a JSON-RPC request}
 \usage{
 make_requests(urls, methods, params, ids = NULL, version = "2.0",
-  n_con = 1L, finally = process_json, ...)
+  n_con = 5L, finally = process_json, ...)
 
 make_request(url, method, params, ...)
 
