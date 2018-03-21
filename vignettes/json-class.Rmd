@@ -61,7 +61,7 @@ response <- list(list(`@type` = "WellIdentifier",
                       plate = 2L))
 ```
 
-Turning a list such as `response` into a `json_class` S3 class can be done, using the function `as_json_class()` (or its alias `as.json_class()`). This action is applied recursively, meaning that all sub-lists, containing an `@type` field are turned into `json_class` objects as well.
+Turning the list `response` into a `json_class` S3 class can be done, using the function `as_json_class()` (or its alias `as.json_class()`). This action is applied recursively, meaning that all sub-lists, containing an `@type` field are turned into `json_class` objects as well.
 
 ```{r as-class}
 json_class <- as_json_class(response)
@@ -75,7 +75,7 @@ json_class <- resolve_references(json_class)
 str(json_class)
 ```
 
-In case the user wants to create `json_class` object, the constructor `json_class()` is available. It can be used as follows, e.g. for the recreation of the above `json_class` object
+In case the user wants to create `json_class` object, the constructor `json_class()` is available. It can be used as follows, e.g. for the re-creation of the above `json_class` object
 
 ```{r construct}
 construct <- json_class(a = json_class(b = "c", class = "foo"),
@@ -111,7 +111,7 @@ has_subclass(test, "foobar")
 get_subclass(test)
 ```
 
-The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are width, length and a logical flag for turning off fancy printing (color is disabled and UTF box characters are replaced with ASCI characters).
+The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are `width`, `length` and a logical flag `fancy` for enabling fancy printing (console output is colored and UTF box characters are used for creating a tree structure instead of ASCI characters).
 
 ```{r base-generics}
 json_class[[1]]
@@ -124,9 +124,9 @@ print(json_class[[1]], depth = 2L, fancy = FALSE)
 
 Now that class information of objects fetched from openBIS is available in R, this can be used for method dispatch of S3 generic functions. Assume we have a generic function `list_datasets()`. We could then implement an object-specific method for objects of type `sample` as `list_datasets.sample()` and one for objects of type `experiment` as `list_datasets.experiment()`. Depending on the class of the object passed to `list_datasets()`, datasets for an experiment or for a sample will be listed.
 
-There is an issue with this approach though: how can we list the datasets associated with several experiments? A straightforward approach could be simply iterating over the list of experiments and for each one, issuing a separate request to openBIS. A more efficient way of doing this would be to query openBIS with a single list of several experiment objects. This, however defeats S3 method dispatch, as the object on which dispatch occurs is no longer `experiment` but `list` (containing several `experiment`s). To work around this, `json_vec` objects are used.
+There is an issue with this approach though: listing for example datasets associated with multiple experiments. A straightforward approach could be simply iterating over the list of experiments and for each one, issuing a separate request to openBIS. A more efficient way of doing this would be to query openBIS with a single list of several experiment objects. This, however defeats S3 method dispatch, as the object on which dispatch occurs is no longer `experiment` but `list` (containing several `experiment`s). To work around this, `json_vec` objects are used.
 
-The `json_vec` class can be used to wrap around a list of `json_class` and it serves to bring the common sub-class of all child objects to the surface for using method dispatch on. `json_vec` objects can be created in several ways, using the `json_vec()` constructor, by coercing a list structure with `as_json_vec()` or by combining several `json_class` objects using `c()`. The reverse action can be performed, using `as.list()`. 
+The `json_vec` class wraps around a list of `json_class` and it serves to bring the common sub-class of all child objects to the surface for using method dispatch on. Instantiation of `json_vec` objects is possible in several ways: using the `json_vec()` constructor, by coercing a list structure with `as_json_vec()` or by combining several `json_class` objects using `base::c()`. The reverse action can be performed, using `base::as.list()`. 
 
 ```{r json-vec}
 a <- json_class("a", class = "foo")
@@ -160,7 +160,7 @@ is_json_vec(foo_vec)
 is_json_vec(list(a, b))
 ```
 
-Finally, the base R generics for which `json_vec`-specific methods are provided include `print()`, `c()`, as well as several accessors and assignment functions.
+Finally, the base R generics for which `json_vec`-specific methods are provided include `print()`, `c()`, as well as accessors and assignment functions.
 
 ```{r vec-base}
 foo_vec
