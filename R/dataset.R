@@ -207,16 +207,24 @@ list_references.Sample <- function(token, x, ...)
 #' 
 list_references.PlateMetadata <- list_img_ds
 
+list_ref_for_material <- function(token, x, experiment = NULL, ...)
+  list_plate_well_ref(token, as_screening_material(x), experiment,
+                      include_datasets = TRUE)
+
 #' @rdname list_datasets
 #' @export
 #' 
-list_references.MaterialIdentifierScreening <- function(token,
-                                                        x,
-                                                        experiment = NULL,
-                                                        ...) {
+list_references.MaterialGeneric <- list_ref_for_material
 
-  list_plate_well_ref(token, x, experiment, include_datasets = TRUE)
-}
+#' @rdname list_datasets
+#' @export
+#' 
+list_references.MaterialIdentifierGeneric <- list_ref_for_material
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_references.MaterialIdentifierScreening <- list_ref_for_material
 
 list_img_ref_wrapper <- function(token, x, wells = NULL, channels, ...)
   list_img_ref(token, x, wells, channels)
