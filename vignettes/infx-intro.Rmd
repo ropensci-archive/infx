@@ -21,6 +21,7 @@ library(infx)
 library(tibble)
 library(magick)
 library(ggplot2)
+library(RColorBrewer)
 ```
 
 OpenBIS (Open Biology Information System) is a laboratory information management system designed for robust data management of large-scale experiments in biological sciences. As storage infrastructure it is therefore well suited for the needs of the image-based high throughput screening (HTS) performed by the InfectX consortium. For data access, JSON-RPC services are provided by openBIS, which can be called from the presented client package `infx`.
@@ -248,23 +249,38 @@ print(image_mosaic(cells))
 
 ### OpenBIS feature data
 
+The third type of openBIS data resources are files treated as feature data sets. As such, these can be queried similarly to images. Again using the plate sample object from the previous search query, `list_references()` with type specification set to `feature` will return `FeatureVectorDatasetReference` objects. Several types of feature data sets are available, each of which may contain several features. In order to list all features contained in a feature data set, the function `list_features()` may be used. Finally, `fetch_features()` will return the requested feature data for the specified plates or wells as a `FeatureVectorDataset` object, containing a list of `FeatureVector` objects, each of which holds feature information for a single well.
+
 ```{r feat-data, fig.align = "center"}
 feat_ref <- list_references(token, samples[[2]],
                             type = "feature")
+unique(sapply(feat_ref, `[[`, "dataSetType"))
 
 print(list_features(token, feat_ref[[1]]), length = 10L)
 
 cell_count <- fetch_features(token, feat_ref[[1]], "COUNT_CELLS")
 
-heatmap <- lapply(cell_count[[1]]$featureVectors, function(x)
-                  c(LETTERS[x$wellPosition$wellRow],
-                    unlist(x$wellPosition$wellColumn),
-                    unlist(x$values)))
-heatmap <- as_tibble(do.call(rbind, heatmap))
-names(heatmap) <- c("WellRow", "WellCol", "CellCount")
-heatmap[, 2:3] <- lapply(heatmap[, 2:3], as.integer)
+wells <- lapply(cell_count[[1]]$featureVectors, `[[`, "wellPosition")
+heatmap <- tibble(
+  WellRow = as.factor(LETTERS[sapply(wells, `[[`, "wellRow")]),
+  WellCol = as.factor(as.integer(sapply(wells, `[[`, "wellColumn"))),
+  CellCount = as.integer(sapply(cell_count[[1]]$featureVectors, `[[`,
+                                "values"))
+)
 print(heatmap)
 
-ggplot(data = heatmap, aes(x = WellCol, y = WellRow)) +
-  geom_tile(aes(fill = CellCount))
+ggplot(data = heatmap) +
+  geom_tile(aes(x = WellCol, y = WellRow, fill = CellCount)) +
+  scale_x_discrete(name = "", position = "top") +
+  scale_y_discrete(name = "", limits = rev(levels(heatmap$WellRow))) +
+  theme_bw() +
+  theme(axis.ticks = element_blank(),
+        panel.border=element_blank(),
+        panel.grid=element_blank()) +
+  ggtitle("Plate heatmap of cell count") +
+  scale_fill_gradientn(colours = brewer.pal(9, "OrRd"),
+                       name = "Cell count") +
+  coord_fixed()
 ```
+
+For this example, a feature data set of type `HCS_ANALYSIS_WELL_RESULTS_SUMMARIES` was chosen. Such data sets contain per-well aggregated results from CellProfiler analysis, including object counts, mean area measurements and mean intensity measurements. Other feature data sets hold summarized information on infection scoring, quality metrics such as focus scores, underexposure/overexposure indicators, dynamic range analysis or image acquisition meta data.
