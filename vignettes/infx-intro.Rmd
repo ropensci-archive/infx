@@ -150,12 +150,15 @@ mtor_mat <- search_openbis(
 
 print(mtor_mat, depth = 2L)
 
-well_refs <- list_references(token, mat, ak_exps[[1]])
+well_refs <- list_references(token, mtor_mat, ak_exps[[1]])
+print(well_refs, length = 15L)
 ```
+
+A second example for a query, this time for a material object is given above. The search is constructed such that the returned object represents a compound targeting the gene [`MTOR`](https://www.ncbi.nlm.nih.gov/gene/2475). This `MaterialGeneric` generic object then can be used to list wells on plates, involving this compound using the function `list_references()`. The inverse of this, where for a given plate object all used materials are listed with associated wells, can be achieved using the function `list_material()`.
 
 ## Retrieving openBIS data resources
 
-Three different types of what within the scope of this documentation is considered data resources are available from OpenBIS: The most straightforward is `files`. As explained above, each data set contains a set of files, for each of which a download url can be created. As this OpenBIS instance is hosting image-based HTS data, a second available data resource is `images`. Raw images can be retrieved as files in a `HCS_IMAGE_CONTAINER_RAW` data set but in addition to that, OpenBIS can be queried for specific images and is able to serve transformations of raw images. A final type of data resource is `features`. This data is also available as files in a data set but similar to images is teated specially by OpenBIS in order to allow fine-grained queries.
+Three different types of what within the scope of this documentation is considered data resources are available from OpenBIS: The most straightforward is `files`. As explained above, each data set contains a set of files, for each of which a download url can be created using `list_download_urls()`. As this OpenBIS instance is hosting image-based HTS data, a second available data resource is `images`. Raw images can be retrieved as files in a `HCS_IMAGE_CONTAINER_RAW` data set but in addition to that, OpenBIS can be queried for specific images, instead of the plate-wise access provided by the data set route, and is able to serve transformations of raw images. A final type of data resource is `features`. This data is also available as files in a data set but similar to images is teated specially by OpenBIS in order to allow fine-grained queries.
 
 ### File download
 
@@ -200,9 +203,9 @@ The data is contained as `data` entry in each of the list structures per request
 
 ### Image access
 
-In order to fetch images, again first a search is constructed. Re-using the previous `search_sub_criteria`, the search is targeted at sample object to type `PLATE`, as image data sets are connected to plates. To find the appropriate data set, the function `list_references()` may be used and since the current target is fetching raw image data, the `type` argument of `list_references()` can be left at default value. The returned `ImageDatasetReference` is then passed to `list_image_metadata()` for some additional information on the image data set, mainly the available channels.
+In order to fetch images, again first a search is constructed. Re-using the previous `search_sub_criteria`, the search is targeted at sample objects of type `PLATE`, as image data sets are connected to plates. To find the appropriate data set, the function `list_references()` may be used and since the current target is fetching raw image data, the `type` argument of `list_references()` can be left at default value. The returned `ImageDatasetReference` is then passed to `list_image_metadata()` for some additional information on the image data set, mainly the available channels.
 
-To narrow down the requested set of images, `list_references()` is called again, this time on the `ImageDatasetReference` object and in conjunction with a `WellPosition` object. The returned set of `PlateImageReference` objects precisely specify a single image by containing information on image data set, well position, image tile and image channel. The `ImageDatasetReference` corresponding to the tile with index 0 is passed to `fetch_images()`, yielding a single image. As `fetch_images()` can be called on several objects specifying images, each request returns with some meta data attached and the actual image data is contained in the `data` entry of the resulting list structure.
+To narrow down the requested set of images, `list_references()` is called again, this time on the `ImageDatasetReference` object and in conjunction with a `WellPosition` object. The returned set of `PlateImageReference` objects precisely specify a single image by containing information on image data set, well position, image tile and imaging channel. The `ImageDatasetReference` corresponding to the tile with index 0 is passed to `fetch_images()`, yielding a single image. As `fetch_images()` can be called on several objects specifying images, each request returns with some meta data attached and the actual image data is contained in the `data` entry of the resulting list structure.
 
 ```{r fetch-images, fig.align = "center"}
 adeno_au_samp <- search_criteria(
@@ -233,7 +236,7 @@ raw_img <- fetch_images(token, well_raw[[2]],
 print(raw_img[[1]]$data)
 ```
 
-As further illustration of the capabilities of the openBIS API, the following example combines the previously fetched image with a segmentation mask for cells. The same sample of object from above is againg passed to `list_references()` but this time an `ImageDatasetReference` object corresponding to an image segmentation dataset is retrieved. Again using `list_image_metadata()`, the available channels are listed and using this information, a request for the image segmentation masks for the desired well and image tile is issued.
+As further illustration of the capabilities of the openBIS API, the following example combines the previously fetched image with a segmentation mask for cells. The same sample of object from above is again passed to `list_references()` but this time an `ImageDatasetReference` object corresponding to an image segmentation dataset is retrieved. Again using `list_image_metadata()`, the available channels are listed and using this information, a request for the image segmentation masks for the desired well and image tile is issued.
 
 ```{r fetch-mask, fig.align = "center"}
 segm_ref <- list_references(token, samples[[2]],
@@ -256,9 +259,11 @@ cells <- c(raw_img[[1]]$data, image_transparent(segm_img[[1]]$data, "black"))
 print(image_mosaic(cells))
 ```
 
+Note that in order to create a usable segmentation mask, the black background of the segmentation data set has to be made transparent using `magick::image_transparent()`. Only after applying this transformation, can the segmentation mask be placed on top of the microscopy image.
+
 ### OpenBIS feature data
 
-The third type of openBIS data resources are files treated as feature data sets. As such, these can be queried similarly to images. Again using the plate sample object from the previous search query, `list_references()` with type specification set to `feature` will return `FeatureVectorDatasetReference` objects. Several types of feature data sets are available, each of which may contain several features. In order to list all features contained in a feature data set, the function `list_features()` may be used. Finally, `fetch_features()` will return the requested feature data for the specified plates or wells as a `FeatureVectorDataset` object, containing a list of `FeatureVector` objects, each of which holds feature information for a single well.
+The third type of openBIS data resources are files treated as feature data sets. As such, these can be queried similarly to images. Again using the plate sample object from the previous search query, `list_references()` with type specification set to `feature` will return `FeatureVectorDatasetReference` objects. Several types of feature data sets are available, each of which may contain several features. In order to list all features contained in a feature data set, the function `list_features()` may be used. Finally, `fetch_features()` will return the requested feature data for the specified plates or wells as `FeatureVectorDataset` object. This in turn contains a list of `FeatureVector` objects, each of which holds feature information for a single well.
 
 ```{r feat-data}
 feat_ref <- list_references(token, samples[[2]],
@@ -273,7 +278,7 @@ print(cell_count[[1]])
 print(cell_count[[1]]$featureVectors[[1]], depth = 2L)
 ```
 
-Whenever feature data for an entire plate is fetched it might be more efficient to simply download the corresponding data set file, especially if several of the contained features are of interest. The file will be a `.csv` formatted table with columns corresponding to features and rows to wells. A convenient aspect of feature data is however that it can be queried per well. Passing the `FeatureVectorDatasetReference` object to `list_references()` alsngside a set of `WellPosition` objects will return `FeatureVectorDatasetWellReference` objects which can be used to retrieve subsetted feature information using `fetch_features()`.
+Whenever feature data for an entire plate is fetched it might be more efficient to simply download the associated data set file, especially if several of the contained features are of interest. Such files are `.csv` formatted tables with columns corresponding to features and rows to wells. A convenient aspect of feature data is however that it can be queried per well. Passing the `FeatureVectorDatasetReference` object to `list_references()` alongside a set of `WellPosition` objects will return `FeatureVectorDatasetWellReference` objects which can be used to retrieve subsetted feature information using `fetch_features()`.
 
 For illustration purposes, a heatmap of per-well cell counts, drawn with `ggplot::ggplot()`, is shown below. This is akin to the plate heatmaps that are shown in the openBIS web GUI.
 
@@ -300,4 +305,4 @@ ggplot(data = heatmap) +
   coord_fixed()
 ```
 
-For this example, a feature data set of type `HCS_ANALYSIS_WELL_RESULTS_SUMMARIES` was chosen. Such data sets contain per-well aggregated results from CellProfiler analysis, including object counts, mean area measurements and mean intensity measurements. Other feature data sets hold summarized information on infection scoring, quality metrics such as focus scores, underexposure/overexposure indicators, dynamic range analysis or image acquisition meta data.
+For the above example, a feature data set of type `HCS_ANALYSIS_WELL_RESULTS_SUMMARIES` was chosen. Such data sets contain per-well aggregated results from CellProfiler analysis, including object counts, mean area measurements and mean intensity measurements. Other feature data sets hold summarized information on infection scoring, quality metrics such as focus scores, underexposure/overexposure indicators, dynamic range analysis or image acquisition meta data.
