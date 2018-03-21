@@ -7,6 +7,10 @@
 \alias{list_material.PlateMetadata}
 \alias{list_material.Plate}
 \alias{material_id}
+\alias{as_screening_material}
+\alias{as_screening_material.MaterialGeneric}
+\alias{as_screening_material.MaterialIdentifierGeneric}
+\alias{as_screening_material.MaterialIdentifierScreening}
 \title{List materials}
 \usage{
 list_material(token, x, ...)
@@ -20,6 +24,14 @@ list_material(token, x, ...)
 \method{list_material}{Plate}(token, x, material_type = NULL, ...)
 
 material_id(code, type = "gene", mode = c("generic", "screening"))
+
+as_screening_material(x, ...)
+
+\method{as_screening_material}{MaterialGeneric}(x, ...)
+
+\method{as_screening_material}{MaterialIdentifierGeneric}(x, ...)
+
+\method{as_screening_material}{MaterialIdentifierScreening}(x, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}

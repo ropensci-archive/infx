@@ -83,3 +83,29 @@ test_that("materials can be listed", {
   expect_true(all(sapply(mat_1[[1]][["mapping"]], identical, list())))
   expect_false(all(sapply(map_gen[[1]][["mapping"]], identical, list())))
 })
+
+test_that("materials can be converted to screening materials", {
+
+  check_skip()
+
+  gen_mat <- material_id(c(2475L, 3832L))
+
+  scr_mat_1 <- as_screening_material(gen_mat[[1]])
+  expect_is(scr_mat_1, "MaterialIdentifierScreening")
+  expect_is(scr_mat_1, "json_vec")
+  expect_true(has_subclass(scr_mat_1, "MaterialIdentifierScreening"))
+  expect_true(all(sapply(scr_mat_1, has_subclass,
+              "MaterialIdentifierScreening")))
+  expect_equal(length(scr_mat_1), 1L)
+
+  scr_mat_2 <- as_screening_material(gen_mat)
+  expect_is(scr_mat_2, "MaterialIdentifierScreening")
+  expect_is(scr_mat_2, "json_vec")
+  expect_true(has_subclass(scr_mat_2, "MaterialIdentifierScreening"))
+  expect_true(all(sapply(scr_mat_2, has_subclass,
+              "MaterialIdentifierScreening")))
+  expect_equal(length(scr_mat_2), 2L)
+
+  expect_identical(scr_mat_1, as_screening_material(scr_mat_1))
+  expect_identical(scr_mat_2, as_screening_material(scr_mat_2))
+})

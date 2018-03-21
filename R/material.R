@@ -144,6 +144,9 @@ material_id <- function(code,
                                     "gene",
                                     "oligo"))
 
+  type <- toupper(type)
+  all_types <- toupper(all_types)
+
   assert_that(length(code) == length(type),
               all(type %in% all_types))
 
@@ -162,3 +165,35 @@ material_id <- function(code,
 
   new_json_vec(res)
 }
+
+as_screening_mat <- function(x, ...) {
+  mats <- lapply(as_json_vec(x), function(y)
+    material_id(
+      code = get_field(y, "materialCode"),
+      type = get_field(y[["materialTypeIdentifier"]], "materialTypeCode"),
+      mode = "screening"
+    ))
+  do.call(c, mats)
+}
+
+#' @rdname list_material
+#' @export
+#' 
+as_screening_material <- function(x, ...)
+  UseMethod("as_screening_material", x)
+
+#' @rdname list_material
+#' @export
+#' 
+as_screening_material.MaterialGeneric <- as_screening_mat
+
+#' @rdname list_material
+#' @export
+#' 
+as_screening_material.MaterialIdentifierGeneric <- as_screening_mat
+
+#' @rdname list_material
+#' @export
+#' 
+as_screening_material.MaterialIdentifierScreening <- function(x, ...)
+  x
