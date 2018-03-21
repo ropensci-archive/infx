@@ -327,9 +327,13 @@ check_request_result <- function(resp, body) {
 
     resp <- jsonlite::fromJSON(rawToChar(resp$content),
                                simplifyVector = FALSE)
-    assert_that(resp$id == body$id)
+    if (resp$id != body$id) {
 
-    if (!is.null(resp$error)) {
+      warning("request id (", body$id, ") does no match with response id (",
+              resp$id, ")")
+      simpleError("retry")
+
+    } else if (!is.null(resp$error)) {
 
       data <- resp$error$data[!grepl("^@", names(resp$error$data))]
       warning("\nerror with code ", resp$error$code, ":\n",
