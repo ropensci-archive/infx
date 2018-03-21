@@ -117,6 +117,12 @@ has the correct degree of nesting. As \code{make_requests()} iterates over the
 topmost list level, a single request should be wrapped in a list such that
 the topmost list level is on length 1. The function \code{make_request()} is a
 wrapper around \code{make_requests()} that does exactly this.
+
+As part of the \code{process_json()} function, \code{@type} fields are converted
+to\code{json_class} attributes, using \code{\link[=as_json_class]{as_json_class()}}. Additionally, \code{@id}
+fields, which may be referenced if an objects is used multiple times, are
+recursively resolved using \code{\link[=rm_json_class]{rm_json_class()}} such that each object is
+self-contained.
 }
 \examples{
 \donttest{

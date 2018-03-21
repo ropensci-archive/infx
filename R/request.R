@@ -46,6 +46,12 @@
 #' the topmost list level is on length 1. The function `make_request()` is a
 #' wrapper around `make_requests()` that does exactly this.
 #' 
+#' As part of the `process_json()` function, `@type` fields are converted
+#' to`json_class` attributes, using [as_json_class()]. Additionally, `@id`
+#' fields, which may be referenced if an objects is used multiple times, are
+#' recursively resolved using [rm_json_class()] such that each object is
+#' self-contained.
+#' 
 #' @param url,urls, Destination url(s), the request is sent to.
 #' @param method,methods The API method name(s).
 #' @param params A list structure holding the arguments which, converted to
