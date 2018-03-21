@@ -1,6 +1,12 @@
 context("json requests")
 
 test_that("default requests work", {
+  expect_warning(req_0 <- do_requests_serial("https://httpbin.org/status/400"),
+                 "could not carry out request")
+  expect_is(req_0, "list")
+  expect_length(req_0, 1L)
+  expect_null(req_0[[1]])
+
   req_1 <- do_requests_serial("https://httpbin.org/ip")
   expect_is(req_1, "list")
   expect_length(req_1, 1L)
