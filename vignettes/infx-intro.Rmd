@@ -205,7 +205,7 @@ The data is contained as `data` entry in each of the list structures per request
 
 In order to fetch images, again first a search is constructed. Re-using the previous `search_sub_criteria`, the search is targeted at sample objects of type `PLATE`, as image data sets are connected to plates. To find the appropriate data set, the function `list_references()` may be used and since the current target is fetching raw image data, the `type` argument of `list_references()` can be left at default value. The returned `ImageDatasetReference` is then passed to `list_image_metadata()` for some additional information on the image data set, mainly the available channels.
 
-To narrow down the requested set of images, `list_references()` is called again, this time on the `ImageDatasetReference` object and in conjunction with a `WellPosition` object. The returned set of `PlateImageReference` objects precisely specify a single image by containing information on image data set, well position, image tile and imaging channel. The `ImageDatasetReference` corresponding to the tile with index 0 is passed to `fetch_images()`, yielding a single image. As `fetch_images()` can be called on several objects specifying images, each request returns with some meta data attached and the actual image data is contained in the `data` entry of the resulting list structure.
+To narrow down the requested set of images, `list_references()` is called again, this time on the `ImageDatasetReference` object and in conjunction with a `WellPosition` object. The returned set of `PlateImageReference` objects precisely specify a single image by containing information on image data set, well position, image tile and imaging channel. The `ImageDatasetReference` corresponding to the tile with index 0 is passed to `fetch_images()`, yielding a single image. As `fetch_images()` can be called on several objects specifying images, each request contributes an entry to the resulting list with some meta data attached as attributes.
 
 ```{r fetch-images, fig.align = "center"}
 adeno_au_samp <- search_criteria(
@@ -233,7 +233,8 @@ raw_img <- fetch_images(token, well_raw[[2]],
                                                 height = 600L,
                                                 class = "ImageSize"))
 
-print(raw_img[[1]]$data)
+attributes(raw_img[[1]])
+print(raw_img[[1]])
 ```
 
 As further illustration of the capabilities of the openBIS API, the following example combines the previously fetched image with a segmentation mask for cells. The same sample of object from above is again passed to `list_references()` but this time an `ImageDatasetReference` object corresponding to an image segmentation dataset is retrieved. Again using `list_image_metadata()`, the available channels are listed and using this information, a request for the image segmentation masks for the desired well and image tile is issued.
@@ -255,8 +256,8 @@ segm_img <- fetch_images(token, well_segm[[2]],
                                                  height = 600L,
                                                  class = "ImageSize"))
 
-cells <- c(raw_img[[1]]$data, image_transparent(segm_img[[1]]$data, "black"))
-print(image_mosaic(cells))
+cells <- c(raw_img[[1]], magick::image_transparent(segm_img[[1]], "black"))
+print(magick::image_mosaic(cells))
 ```
 
 Note that in order to create a usable segmentation mask, the black background of the segmentation data set has to be made transparent using `magick::image_transparent()`. Only after applying this transformation, can the segmentation mask be placed on top of the microscopy image.

@@ -223,23 +223,23 @@ fetch_img_for_ds <- function(token,
 
   res <- make_requests(api_url("dsrs"), fun, params, finally = process_imgs)
 
-  mapply(function(param, x) {
+  mapply(function(dat, param) {
 
-    if (length(x) == 0 && is.null(well_positions)) {
-      if (thumbnails)
-        warning("no thumbnails found: make sure the supplied dataset ",
-                "is associated with a plate and has registered thumbnails.")
-      else
-        warning("no images found: when not specifying well positions, make ",
-                "sure the supplied dataset is associated with a plate.")
+    if (length(dat) == 0) {
+      warning("no images found for the given data set.")
+      dat <- list()
     }
 
-    c(stats::setNames(if (is.null(well_positions)) param[2:3] else param[2:4],
-                      if (is.null(well_positions)) c("data_set", "channel")
-                      else c("data_set", "well_positions", "channel")),
-      data = list(x)
-    )
-  }, params, res, SIMPLIFY = FALSE)
+    attr(dat, "data_set") <- param[[2]]
+    if (is.null(well_positions))
+      attr(dat, "channel") <- param[[3]]
+    else {
+      attr(dat, "well_positions") <- param[[3]]
+      attr(dat, "channel") <- param[[4]]
+    }
+
+    dat
+  }, res, params, SIMPLIFY = FALSE)
 }
 
 #' @rdname fetch_images
@@ -368,7 +368,16 @@ fetch_images.PlateImageReference <- function(token,
 
   assert_that(length(res) == length(x))
 
-  mapply(list, data_set = x, data = res, SIMPLIFY = FALSE)
+  mapply(function(dat, param) {
+
+    if (length(dat) == 0) {
+      warning("no images found for the given data set.")
+      dat <- list()
+    }
+
+    attr(dat, "data_set") <- param
+    dat
+  }, res, x, SIMPLIFY = FALSE)
 }
 
 #' @param imgs A list of base64 encoded images, each of which will read by
