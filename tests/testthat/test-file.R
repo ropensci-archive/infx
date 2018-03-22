@@ -57,11 +57,10 @@ test_that("files can be fetched", {
                  "cannot fetch directories")
   expect_length(data, sum(is_file_1))
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("data_set", "file", "data"))
-    expect_is(data[[i]][["data_set"]], "character")
-    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_is(data[[i]], "raw")
+    expect_is(attr(data[[i]], "data_set"), "character")
+    expect_s3_class(attr(data[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
   }
 
   expect_silent(fetch_files(tok, files_1[is_file_1], codes[2], n_con = 1L))
@@ -76,11 +75,10 @@ test_that("files can be fetched", {
                  "cannot fetch directories")
   expect_length(data, sum(is_file_2))
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("data_set", "file", "data"))
-    expect_is(data[[i]][["data_set"]], "character")
-    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_is(attr(data[[i]], "data_set"), "character")
+    expect_s3_class(attr(data[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+    expect_is(data[[i]], "raw")
   }
 
   expect_silent(fetch_files(tok, files_2[is_file_2], names(files_2)[is_file_2],
@@ -93,11 +91,10 @@ test_that("files can be fetched", {
                                     n_con = 5L))
   expect_length(data, length(files))
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("data_set", "file", "data"))
-    expect_is(data[[i]][["data_set"]], "character")
-    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_is(attr(data[[i]], "data_set"), "character")
+    expect_s3_class(attr(data[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+    expect_is(data[[i]], "raw")
   }
 
   paths <- sapply(files_1[is_file_1], `[[`, "pathInDataSet")
@@ -109,29 +106,26 @@ test_that("files can be fetched", {
   data <- fetch_files(tok, ds_file, n_con = 1L)
   expect_length(data, length(ds_file))
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("file", "data"))
-    expect_s3_class(data[[i]][["file"]], "DataSetFileDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_s3_class(attr(data[[i]], "file"), "DataSetFileDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+    expect_is(data[[i]], "raw")
   }
 
   data <- fetch_files(tok, ds_file, n_con = 2L)
   expect_length(data, length(ds_file))
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("file", "data"))
-    expect_s3_class(data[[i]][["file"]], "DataSetFileDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_s3_class(attr(data[[i]], "file"), "DataSetFileDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+    expect_is(data[[i]], "raw")
   }
 
   data <- fetch_files(tok, codes[2])
   expect_gte(length(data), 1L)
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("data_set", "file", "data"))
-    expect_is(data[[i]][["data_set"]], "character")
-    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_is(attr(data[[i]], "data_set"), "character")
+    expect_s3_class(attr(data[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+    expect_is(data[[i]], "raw")
   }
 
   expect_identical(data, fetch_files(tok, codes[2], files_1[is_file_1]))
@@ -139,11 +133,10 @@ test_that("files can be fetched", {
   data <- fetch_files(tok, codes[2], file_regex = "\\.std(out|err)$")
   expect_gte(length(data), 1L)
   for (i in seq_along(data)) {
-    expect_named(data[[i]], c("data_set", "file", "data"))
-    expect_is(data[[i]][["data_set"]], "character")
-    expect_s3_class(data[[i]][["file"]], "FileInfoDssDTO")
-    expect_s3_class(data[[i]][["file"]], "json_class")
-    expect_is(data[[i]][["data"]], "raw")
+    expect_is(attr(data[[i]], "data_set"), "character")
+    expect_s3_class(attr(data[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+    expect_is(data[[i]], "raw")
   }
 })
 

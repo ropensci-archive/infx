@@ -267,7 +267,10 @@ fetch_files.DataSetFileDTO <- function(token,
                        check = check_download_result,
                        finally = finally, ...)
 
-  mapply(list, file = x, data = res, SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  Map(function(dat, f) {
+    attributes(dat) <- c(attributes(dat), list(file = f))
+    dat
+  }, res, x)
 }
 
 #' @param data_sets Either a single dataset object (anything that has a
@@ -330,8 +333,11 @@ fetch_files.FileInfoDssDTO <- function(token,
                        check = check_download_result,
                        finally = finally, ...)
 
-  mapply(list, data_set = data_sets, file = x, data = res,
-         SIMPLIFY = FALSE, USE.NAMES = FALSE)
+
+  Map(function(dat, ds, f) {
+    attributes(dat) <- c(attributes(dat), list(data_set = ds, file = f))
+    dat
+  }, res, data_sets, x)
 }
 
 create_download_handle <- function(size) {

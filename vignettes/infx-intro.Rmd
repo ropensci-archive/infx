@@ -190,7 +190,6 @@ dat <- fetch_files(token, cell_ds[[1]],
                    file_regex = "Image\\.Count_",
                    finally = read_mat_files)
 
-dat <- lapply(dat, `[[`, "data")
 names(dat) <- sapply(dat, attr, "feature")
 dat <- lapply(dat, as.integer)
 
@@ -199,7 +198,9 @@ tibble::as_tibble(lapply(dat, unlist))
 
 For each file, `read_mat_files()` will return a list with one entry per imaging site. For this data set, there are 9 imaging sites per well which yields 3456 sites for the entire plate. Additionally, `fetch_files()` returns a list structure per request, containing information on which request corresponds to which data set and file. This is necessary because `fetch_files()` could be called on several data sets at once, each returning multiple files.
 
-The data is contained as `data` entry in each of the list structures per request and the feature name is available as `feature` attribute. To create a table of values, the `data` entries are extracted together with the feature names and the per-site lists are converted to numeric vectors and column-bound with `tibble::as_tibble()`.
+Several attributes are set for each requested file. The `read_mat_files()` function extracts object (what type of CellProfiler object the feature was calculated on) and feature information (what kind of CellProfiler measurement was performed) from the read file. In addition, `fetch_files()` stores request information such as dataset and file in order for the user to match responses with requests. 
+
+To create a table of values, the `data` entries are extracted together with the feature names and the per-site lists are converted to numeric vectors and column-bound with `tibble::as_tibble()`.
 
 ### Image access
 
