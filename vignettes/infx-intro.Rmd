@@ -164,7 +164,7 @@ Three different types of what within the scope of this documentation is consider
 
 The following example demonstrates how InfectX single cell feature data, calculated by CellProfiler, can be accessed. First a search for data sets of type `HCS_ANALYSIS_CELL_FEATURES_CC_MAT` is carried out. This search is limited to the `ADENO-AU-K1` experiment, using a `search_sub_criteria` object. One of the resulting data sets is then passed to `fetch_files()` together with a regular expression to filter the list of available files (several hundred feature files are typically available for such data sets). The function `read_mat_files()` is passed as finally argument and reads the binary Matlab files using `R.matlab::readMat()`.
 
-```{r fetch-files}
+```{r fetch-counts}
 adeno_au_sub <- search_sub_criteria(
   search_criteria(
     property_clause("Adenovirus", "PATHOGEN"),
@@ -198,9 +198,37 @@ tibble::as_tibble(lapply(dat, unlist))
 
 For each file, `read_mat_files()` will return a list with one entry per imaging site. For this data set, there are 9 imaging sites per well which yields 3456 sites for the entire plate. Additionally, `fetch_files()` returns a list structure per request, containing information on which request corresponds to which data set and file. This is necessary because `fetch_files()` could be called on several data sets at once, each returning multiple files.
 
-Several attributes are set for each requested file. The `read_mat_files()` function extracts object (what type of CellProfiler object the feature was calculated on) and feature information (what kind of CellProfiler measurement was performed) from the read file. In addition, `fetch_files()` stores request information such as dataset and file in order for the user to match responses with requests. 
+As a second example, area features are requested. For the given screen, area measurements are available for the three object types `PeriNuclei`, `Nuclei` and `Cells`. Unlike in the previous example, where a scalar corresponds to each well, here the variables are vector-valued per well. Therefore we need to create a column `Well`, indicating which rows correspond to which wells. Well indices are linearized in row-major fashion with respect to the plate layout.
 
-To create a table of values, the `data` entries are extracted together with the feature names and the per-site lists are converted to numeric vectors and column-bound with `tibble::as_tibble()`.
+```{r fetch-areas}
+dat <- fetch_files(token, cell_ds[[1]],
+                   file_regex = "AreaShape_Area",
+                   finally = read_mat_files)
+
+attributes(dat[[1]])
+
+names(dat) <- paste0("Area_", sapply(dat, attr, "object"))
+well_names <- paste0(rep(LETTERS[1:16], each = 24L), rep(1:24, 16L))
+well_names <- rep(rep(well_names, each = 9L), sapply(dat[[1]], length))
+
+dat <- lapply(dat, unlist)
+
+tibble::as_tibble(c(list(Well = well_names), lapply(dat, as.integer)))
+```
+
+The resulting data matrix $X$ holds all measurements of a plate for the selected features and is structured as
+
+$$X = \begin{bmatrix}
+X_{G_1} \\
+X_{G_2} \\
+... \\
+X_{G_m}
+\end{bmatrix}
+$$
+
+where groups of rows $X_{G_i}$ are $n_i \times p$ matrices holding $p$ features as columns corresponding to $n_i$ single cell measurements under knock-down of gene $G_i$.
+
+Several attributes are set for each requested file. The `read_mat_files()` function extracts object (what type of CellProfiler object the feature was calculated on) and feature information (what kind of CellProfiler measurement was performed) from the read file. In addition, `fetch_files()` stores request information such as dataset and file in order for the user to match responses with requests. 
 
 ### Image access
 
