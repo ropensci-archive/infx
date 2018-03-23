@@ -7,7 +7,6 @@ test_that("files can be listed", {
   codes <- dataset_code(datasets)
 
   files_1 <- list_files(tok, codes[2])
-  expect_named(files_1)
   expect_is(files_1, "FileInfoDssDTO")
   expect_is(files_1, "json_vec")
   expect_identical(get_subclass(files_1), "FileInfoDssDTO")
@@ -15,7 +14,6 @@ test_that("files can be listed", {
   expect_gte(length(files_1), 1L)
 
   files_2 <- list_files(tok, codes[2:3])
-  expect_named(files_2)
   expect_is(files_2, "FileInfoDssDTO")
   expect_is(files_2, "json_vec")
   expect_identical(get_subclass(files_2), "FileInfoDssDTO")
@@ -71,7 +69,9 @@ test_that("files can be fetched", {
   is_file_2 <- !sapply(files_2, `[[`, "isDirectory")
 
   expect_error(data <- fetch_files(tok, files_2, codes[2:3], n_con = 1L))
-  expect_warning(data <- fetch_files(tok, files_2, names(files_2), n_con = 1L),
+  expect_warning(data <- fetch_files(tok, files_2,
+                                     sapply(files_2, attr, "data_set"),
+                                      n_con = 1L),
                  "cannot fetch directories")
   expect_length(data, sum(is_file_2))
   for (i in seq_along(data)) {
@@ -81,7 +81,8 @@ test_that("files can be fetched", {
     expect_is(data[[i]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_2[is_file_2], names(files_2)[is_file_2],
+  expect_silent(fetch_files(tok, files_2[is_file_2],
+                            sapply(files_2[is_file_2], attr, "data_set"),
                             n_con = 1L))
 
   files <- list_files(tok, "20120629084351794-603357")

@@ -186,7 +186,7 @@ fetch_dataset_files <- function(token,
     files <- files[!sapply(files, `[[`, "isDirectory")]
   } else
     assert_that(has_subclass(files, "FileInfoDssDTO"),
-                has_attr(files, "data_set"))
+                all(sapply(files, has_attr, "data_set")))
 
   if (!is.null(file_regex)) {
     assert_that(is.string(file_regex))
