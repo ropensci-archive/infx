@@ -53,8 +53,12 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
 
   res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
 
-  stats::setNames(as_json_vec(do.call(c, res)),
-                  rep(x, sapply(res, length)))
+  res <- Map(function(dat, code) {
+    attr(dat, "data_set") <- code
+    dat
+  }, unlist(res, recursive = FALSE), rep(x, sapply(res, length)))
+
+  as_json_vec(do.call(c, res))
 }
 
 list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
@@ -111,8 +115,12 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
   res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
 
-  stats::setNames(as_json_vec(do.call(c, res)),
-                  rep(dataset_code(x), sapply(res, length)))
+  res <- Map(function(dat, code) {
+    attr(dat, "data_set") <- code
+    dat
+  }, unlist(res, recursive = FALSE), rep(dataset_code(x), sapply(res, length)))
+
+  as_json_vec(do.call(c, res))
 }
 
 #' Fetch files
@@ -178,14 +186,14 @@ fetch_dataset_files <- function(token,
     files <- files[!sapply(files, `[[`, "isDirectory")]
   } else
     assert_that(has_subclass(files, "FileInfoDssDTO"),
-                all(grepl("[0-9]+-[0-9]+", names(files))))
+                has_attr(files, "data_set"))
 
   if (!is.null(file_regex)) {
     assert_that(is.string(file_regex))
     files <- files[grepl(file_regex, sapply(files, `[[`, "pathInDataSet"))]
   }
 
-  fetch_files(token, files, names(files), ...)
+  fetch_files(token, files, sapply(files, attr, "data_set"), ...)
 }
 
 #' @rdname fetch_files
