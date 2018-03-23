@@ -232,7 +232,7 @@ test_that("image data can be fetched", {
 
   expect_warning(thumb_2 <- fetch_images(tok, pi_ref[1:2], thumbnails = TRUE),
                  "no images found")
-  expect_length(thumb_2), 2L)
+  expect_length(thumb_2, 2L)
   for (i in seq_along(thumb_2))
     expect_length(thumb_2[[i]],  0L)
 
