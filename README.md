@@ -63,4 +63,9 @@ is_token_valid(tok)
 #> [1] FALSE
 ```
 
+Acknowledgments
+---------------
+
+This work is partially funded by [SystemsX.ch](http://www.systemsx.ch), the Swiss Initiative for Systems Biology via grants 51RT-0\_126008 and 51RTP0\_151029 for the Research and Technology Development (RTD) projects [InfectX](https://infectx.ch) and [TargetInfectX](https://www.targetinfectx.ch) respectively. Further funding is provided by the [Seminar for Statistics](https://www.math.ethz.ch/sfs) at ETH Zurich.
+
 [1] [*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)

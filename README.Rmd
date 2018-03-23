@@ -67,3 +67,7 @@ Finally, the login token should be destroyed, using [`logout_openbis()`](https:/
 logout_openbis(tok)
 is_token_valid(tok)
 ```
+
+## Acknowledgments
+
+This work is partially funded by [SystemsX.ch](http://www.systemsx.ch), the Swiss Initiative for Systems Biology via grants 51RT-0_126008 and 51RTP0_151029 for the Research and Technology Development (RTD) projects [InfectX](https://infectx.ch) and [TargetInfectX](https://www.targetinfectx.ch) respectively. Further funding is provided by the [Seminar for Statistics](https://www.math.ethz.ch/sfs) at ETH Zurich.
