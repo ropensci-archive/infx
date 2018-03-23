@@ -4,9 +4,19 @@ Version: 0.0.0.9000
 Authors@R: person("Nicolas", "Bennett",
                   email = "nicolas.bennett@stat.math.ethz.ch",
                   role = c("aut", "cre"))
-Description: Screening data from the InfectX/TargetInfectX experiments is
-    stored in an openBIS instance to which this package provides API access.
-URL: https://nbenn.github.io/infx
+Description: Access to image-based high throughput screening data collected by
+    the InfectX/TargetInfectX experiments is provided from R. Several
+    kinome-wide RNA interference screens performed on HeLa cells in presence
+    of a selection of bacterial and viral pathogens, using oligo libraries
+    form Ambion, Dharmacon and Qiagen are available and further genome-wide
+    screens are forthcoming. The full data obtained from these experiments is
+    accessible, including raw microscopy images, object segmentation masks,
+    feature data calculated using CellProfiler and infection scoring data,
+    alongside rich meta data and quality control data.
+URL:
+    https://nbenn.github.io/infx,
+    https://infectx.ch,
+    https://targetinfectx.ch,
 BugReports: https://github.com/nbenn/infx/issues
 Depends:
     R (>= 3.1.0)
