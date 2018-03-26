@@ -22,7 +22,6 @@ reference:
     desc: List and fetch files, images and feature data
     contents:
       - list_features
-      - fetch_features
       - list_files
       - fetch_files
       - list_image_metadata

@@ -1,66 +1,28 @@
 
-#' List features
-#'
-#' For a given set of feature vector data sets, `list_features()` provides the
+#' List and download feature data
+#' 
+#' In openBIS, features are datasets that are treated differently from
+#' generic datasets. Briefly put, tabular datasets where columns correspond
+#' to features and rows to wells can be marked as feature datasets which makes
+#' it possible to query openBIS for individual feature values for selected
+#' wells instead of having to download the entire table for a plate. The
+#' relevant object types for handling feature data are
+#' `FeatureVectorDatasetReference` and `FeatureVectorDatasetWellReference`,
+#' where the former represents feature data at plate level and the latter at
+#' well level. The function `list_features()` can be used to enumerate
+#' available features and `fetch_features()` will download feature data.
+#' 
+#' For a given set of feature vector datasets, `list_features()` provides the
 #' list of all available features. This contains the code, label and
 #' description of the feature, as (set of) `FeatureInformation` object(s). If
-#' for different data sets different sets of features are available,
-#' `list_features()` provides the union of the features of all data sets.
+#' for different datasets different sets of features are available,
+#' `list_features()` provides the union of the features of all datasets.
 #' 
 #' Similarly, `list_feature_codes()` provides the list of all available
-#' features as character vector or feature codes. If for different data sets
+#' features as character vector or feature codes. If for different datasets
 #' different sets of features are available, `list_feature_codes()` provides
-#' the union of the features of all data sets.
+#' the union of the features of all datasets.
 #' 
-#' @inheritParams logout_openbis
-#' @param x Object to specify the set of feature vector datasets of interest.
-#' @param ... Generic compatibility
-#' 
-#' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
-#' @export
-#' 
-list_features <- function(token, x, ...)
-    UseMethod("list_features", x)
-
-list_feats <- function(token, x, ...)
-  make_request(api_url("dsrs"), "listAvailableFeatures",
-               list(token, as_json_vec(remove_null(x))))
-
-#' @rdname list_features
-#' @export
-#' 
-list_features.FeatureVectorDatasetReference <- list_feats
-
-#' @rdname list_features
-#' @export
-#' 
-list_features.FeatureVectorDatasetWellReference <- list_feats
-
-#' @rdname list_features
-#' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
-#' @export
-#' 
-list_feature_codes <- function(token, x, ...)
-    UseMethod("list_feature_codes", x)
-
-list_feat_codes <- function(token, x, ...)
-  make_request(api_url("dsrs"), "listAvailableFeatureCodes",
-               list(token, as_json_vec(remove_null(x))))
-
-#' @rdname list_features
-#' @export
-#' 
-list_feature_codes.FeatureVectorDatasetReference <- list_feat_codes
-
-#' @rdname list_features
-#' @export
-#' 
-list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
-
-#' Fetch feature data
-#'
 #' For a given set of feature vector datasets, `fetch_features()` fetches
 #' feature data for the specified feature codes, or for all available features
 #' in case the argument `feature_codes` is not specified (or `NA`). If
@@ -76,9 +38,57 @@ list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to specify the set of feature vector datasets of interest.
+#' @param ... Generic compatibility
+#' 
+#' @rdname list_fetch_features
+#' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
+#' @export
+#' 
+list_features <- function(token, x, ...)
+    UseMethod("list_features", x)
+
+list_feats <- function(token, x, ...)
+  make_request(api_url("dsrs"), "listAvailableFeatures",
+               list(token, as_json_vec(remove_null(x))))
+
+#' @rdname list_fetch_features
+#' @export
+#' 
+list_features.FeatureVectorDatasetReference <- list_feats
+
+#' @rdname list_fetch_features
+#' @export
+#' 
+list_features.FeatureVectorDatasetWellReference <- list_feats
+
+#' @rdname list_fetch_features
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
+#' @export
+#' 
+list_feature_codes <- function(token, x, ...)
+    UseMethod("list_feature_codes", x)
+
+list_feat_codes <- function(token, x, ...)
+  make_request(api_url("dsrs"), "listAvailableFeatureCodes",
+               list(token, as_json_vec(remove_null(x))))
+
+#' @rdname list_fetch_features
+#' @export
+#' 
+list_feature_codes.FeatureVectorDatasetReference <- list_feat_codes
+
+#' @rdname list_fetch_features
+#' @export
+#' 
+list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
+
+#' @rdname list_fetch_features
+#' 
 #' @param feature_codes A character vector of feature codes or NA (all
 #' available feature codes).
-#' @param ... Generic compatibility
 #' 
 #' @section TODO: Even though there exists a constructor for
 #' `FeatureVectorDatasetWellReference` objects, which takes two arguments, one
@@ -93,7 +103,7 @@ list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
 fetch_features <- function(token, x, feature_codes = NA, ...)
     UseMethod("fetch_features", x)
 
-#' @rdname fetch_features
+#' @rdname list_fetch_features
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("dsrs", "loadFeatures")}
 #' @export
@@ -114,7 +124,7 @@ fetch_features.FeatureVectorDatasetReference <- function(token,
   make_request(api_url("dsrs"), "loadFeatures", list(token, x, feature_codes))
 }
 
-#' @rdname fetch_features
+#' @rdname list_fetch_features
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("dsrs", "loadFeaturesForDatasetWellReferences")}
 #' @export
