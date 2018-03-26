@@ -12,29 +12,37 @@
 #' well level. The function `list_features()` can be used to enumerate
 #' available features and `fetch_features()` will download feature data.
 #' 
-#' For a given set of feature vector datasets, `list_features()` provides the
-#' list of all available features. This contains the code, label and
-#' description of the feature, as (set of) `FeatureInformation` object(s). If
-#' for different datasets different sets of features are available,
+#' Listing of features can be performed by calling `list_features()` on
+#' `FeatureVectorDatasetReference` or `FeatureVectorDatasetWellReference`
+#' objects. Plate-level references of feature datasets can for example be
+#' retrieved using [list_references()] and well-level references are created
+#' whenever a `wells` argument is supplied to `list_features()`, using the
+#' internal function `feat_ds_well_ref()`. The returned objects are of type
+#' `FeatureInformation` and each contain code, label and description of each
+#' feature. If for different datasets different sets of features are available,
 #' `list_features()` provides the union of the features of all datasets.
 #' 
 #' Similarly, `list_feature_codes()` provides the list of all available
-#' features as character vector or feature codes. If for different datasets
+#' features as character vector or feature codes. As for `list_features()`,
+#' either plate-level or well-level feature dataset reference may be passed
+#' and if a `wells` argument is supplied together with a plate-level
+#' reference, the corresponding well-level references are constructed using
+#' the internal function `feat_ds_well_ref()`. If for different datasets
 #' different sets of features are available, `list_feature_codes()` provides
 #' the union of the features of all datasets.
 #' 
 #' For a given set of feature vector datasets, `fetch_features()` fetches
 #' feature data for the specified feature codes, or for all available features
-#' in case the argument `feature_codes` is not specified (or `NA`). If
-#' for different datasets different sets of features are available,
-#' the union of the features of all datasets is searched for. The returned
-#' object is of type `FeatureVectorDataset`, which for each entry contains a
-#' `FeatureVectorDatasetReference` and a set of `FeatureVector`(s), one for
-#' each well.
-#' 
-#' If only a limited set of wells is of interest, the search can be limited by
-#' dispatching `fetch_features()` on a (set of)
-#' `FeatureVectorDatasetWellReference` objects.
+#' in case the argument `feature_codes` is not specified (or `NA`). The
+#' behavior regarding well selection is the same as in `list_features()` and
+#' `list_feature_codes()`. Either plate-level or well-level dataset references
+#' are passed and whenever plate-level references are passed in combination
+#' with `WellPosition` object, the corresponding well-level references are
+#' created and used. If for different datasets different sets of features are
+#' available, the union of the features of all datasets is searched for. The
+#' returned object is of type `FeatureVectorDataset`, which for each entry
+#' contains a `FeatureVectorDatasetReference` and a set of `FeatureVector`(s),
+#' one for each well.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to specify the set of feature vector datasets of interest.
@@ -54,6 +62,10 @@ list_feats <- function(token, x, ...)
                list(token, as_json_vec(remove_null(x))))
 
 #' @rdname list_fetch_features
+#' 
+#' @param wells Set of `WellPosition` objects used to limit the returned
+#' feature data.
+#' 
 #' @export
 #' 
 list_features.FeatureVectorDatasetReference <- function(token,
