@@ -336,15 +336,14 @@ list_references.PlateImageReference <- list_img_ref_wrapper
 #' 
 #' @inheritParams list_datasets
 #' 
-#' @keywords internal
+#' @noRd
 #' 
 #' @export
 #' 
 list_img_ref <- function(token, x, wells = NULL, channels, ...)
   UseMethod("list_img_ref", wells)
 
-#' @rdname list_img_ref
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 list_img_ref.NULL <- function(token, x, wells, channels, ...) {
@@ -360,8 +359,7 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
   as_json_vec(do.call(c, res))
 }
 
-#' @rdname list_img_ref
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
@@ -394,14 +392,12 @@ list_dataset_types <- function(token)
 #' @param x Dataset object(s).
 #' @param ... Generic compatibility.
 #' 
-#' @keywords internal
 #' @export
 #' 
 dataset_code <- function(x, ...)
   UseMethod("dataset_code")
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.DataSet <- function(x, ...)
@@ -410,50 +406,42 @@ dataset_code.DataSet <- function(x, ...)
 ds_code_ds_id <- function(x, ...)
   get_field(x, "datasetCode")
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.DatasetIdentifier <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.DatasetReference <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.FeatureVectorDatasetReference <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.FeatureVectorDatasetWellReference <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.ImageDatasetReference <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.MicroscopyImageReference <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.PlateImageReference <- ds_code_ds_id
 
-#' @rdname dataset_code
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 dataset_code.DataSetFileDTO <- function(x, ...)
