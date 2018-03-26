@@ -13,8 +13,8 @@
 #' the union of the features of all data sets.
 #' 
 #' @inheritParams logout_openbis
-#' @param x Object to specify the set of feature vector data sets of interest.
-#' @param ... Generic compatibility 
+#' @param x Object to specify the set of feature vector datasets of interest.
+#' @param ... Generic compatibility
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
@@ -61,11 +61,11 @@ list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
 
 #' Fetch feature data
 #'
-#' For a given set of feature vector data sets, `fetch_features()` fetches
+#' For a given set of feature vector datasets, `fetch_features()` fetches
 #' feature data for the specified feature codes, or for all available features
 #' in case the argument `feature_codes` is not specified (or `NA`). If
-#' for different data sets different sets of features are available,
-#' the union of the features of all data sets is searched for. The returned
+#' for different datasets different sets of features are available,
+#' the union of the features of all datasets is searched for. The returned
 #' object is of type `FeatureVectorDataset`, which for each entry contains a
 #' `FeatureVectorDatasetReference` and a set of `FeatureVector`(s), one for
 #' each well.
@@ -75,7 +75,7 @@ list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
 #' `FeatureVectorDatasetWellReference` objects.
 #' 
 #' @inheritParams logout_openbis
-#' @param x Object to specify the set of feature vector data sets of interest.
+#' @param x Object to specify the set of feature vector datasets of interest.
 #' @param feature_codes A character vector of feature codes or NA (all
 #' available feature codes).
 #' @param ... Generic compatibility
@@ -145,4 +145,46 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
 
   make_request(api_url("dsrs"), "loadFeaturesForDatasetWellReferences",
                list(token, x, feature_codes))
+}
+
+#' Create well feature dataset reference objects
+#' 
+#' While `FeatureVectorDatasetReference` objects represent feature datasets on
+#' a plate level, `FeatureVectorDatasetWellReference` reference feature
+#' datasets on well-level. In order to create such well-level representations,
+#' a set of `FeatureVectorDatasetReference` and a set of `WellPosition` are
+#' combined to `FeatureVectorDatasetWellReference` objects where each instance
+#' contains a single object of the inputted sets. If either argument is of
+#' length greater than 1, the other argument has to be of the same length or of
+#' length 1, in which case it will be [base:rep()]eated to the required length.
+#' 
+#' @param x A set of `FeatureVectorDatasetReference` objects.
+#' @param wells A set of `WellPosition` objects.
+#' 
+#' @noRd
+#' 
+#' @export
+#' 
+feat_ds_well_ref <- function(x, wells) {
+
+  x <- as_json_vec(x)
+  wells <- as_json_vec(wells)
+
+  max_len <- max(length(x), length(wells))
+
+  if (max_len > 1L) {
+    if (length(x) == 1L)
+      x <- rep(x, max_len)
+    if (length(wells) == 1L)
+      wells <- rep(wells, max_len)
+  }
+
+  assert_that(has_subclass(x, "FeatureVectorDatasetReference"),
+              has_subclass(wells, "WellPosition"),
+              length(x) == length(wells))
+
+  as_json_vec(
+    Map(json_class, fvdr = x, wellPosition = wells,
+        MoreArgs = list(class = "FeatureVectorDatasetWellReference"))
+  )
 }

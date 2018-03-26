@@ -162,3 +162,70 @@ test_that("features can be fetched", {
   expect_true(has_fields(feat_data_12[[1]], "values"))
   expect_equal(length(feat_data_12[[1]][["values"]]), 2L)
 })
+
+test_that("features can be fetched", {
+
+  check_skip()
+
+  refs <- list_references(tok, plates[[1]], type = "feature")
+  wells <- json_vec(
+    json_class(wellRow = 1L, wellColumn = 1L, class = "WellPosition"),
+    json_class(wellRow = 1L, wellColumn = 2L, class = "WellPosition")
+  )
+
+  well_ref_11 <- feat_ds_well_ref(refs[[1]], wells[[1]])
+  expect_is(well_ref_11, "FeatureVectorDatasetWellReference")
+  expect_is(well_ref_11, "json_vec")
+  expect_true(has_subclass(well_ref_11, "FeatureVectorDatasetWellReference"))
+  expect_equal(length(well_ref_11), 1L)
+  expect_true(has_subclass(well_ref_11[[1]],
+                           "FeatureVectorDatasetWellReference"))
+  expect_true(has_subclass(well_ref_11[[1]][["fvdr"]],
+                           "FeatureVectorDatasetReference"))
+  expect_true(has_subclass(well_ref_11[[1]][["wellPosition"]],
+                           "WellPosition"))
+
+  well_ref_12 <- feat_ds_well_ref(refs[[1]], wells)
+  expect_is(well_ref_12, "FeatureVectorDatasetWellReference")
+  expect_is(well_ref_12, "json_vec")
+  expect_true(has_subclass(well_ref_12, "FeatureVectorDatasetWellReference"))
+  expect_equal(length(well_ref_12), 2L)
+  for (i in seq_along(well_ref_12)) {
+    expect_true(has_subclass(well_ref_12[[i]],
+                             "FeatureVectorDatasetWellReference"))
+    expect_true(has_subclass(well_ref_12[[i]][["fvdr"]],
+                             "FeatureVectorDatasetReference"))
+    expect_true(has_subclass(well_ref_12[[i]][["wellPosition"]],
+                             "WellPosition"))
+  }
+
+  well_ref_21 <- feat_ds_well_ref(refs[1:2], wells[[1]])
+  expect_is(well_ref_21, "FeatureVectorDatasetWellReference")
+  expect_is(well_ref_21, "json_vec")
+  expect_true(has_subclass(well_ref_21, "FeatureVectorDatasetWellReference"))
+  expect_equal(length(well_ref_21), 2L)
+  for (i in seq_along(well_ref_21)) {
+    expect_true(has_subclass(well_ref_21[[i]],
+                             "FeatureVectorDatasetWellReference"))
+    expect_true(has_subclass(well_ref_21[[i]][["fvdr"]],
+                             "FeatureVectorDatasetReference"))
+    expect_true(has_subclass(well_ref_21[[i]][["wellPosition"]],
+                             "WellPosition"))
+  }
+
+  well_ref_22 <- feat_ds_well_ref(refs[1:2], wells)
+  expect_is(well_ref_22, "FeatureVectorDatasetWellReference")
+  expect_is(well_ref_22, "json_vec")
+  expect_true(has_subclass(well_ref_22, "FeatureVectorDatasetWellReference"))
+  expect_equal(length(well_ref_22), 2L)
+  for (i in seq_along(well_ref_22)) {
+    expect_true(has_subclass(well_ref_22[[i]],
+                             "FeatureVectorDatasetWellReference"))
+    expect_true(has_subclass(well_ref_22[[i]][["fvdr"]],
+                             "FeatureVectorDatasetReference"))
+    expect_true(has_subclass(well_ref_22[[i]][["wellPosition"]],
+                             "WellPosition"))
+  }
+
+  expect_error(feat_ds_well_ref(refs, wells))
+})
