@@ -23,7 +23,6 @@ reference:
     contents:
       - list_features
       - list_files
-      - fetch_files
       - list_image_metadata
       - fetch_images
       - list_datastores

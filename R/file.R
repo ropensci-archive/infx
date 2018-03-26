@@ -1,5 +1,5 @@
 
-#' List files
+#' List and download files
 #'
 #' The function `list_files()` lists files associated with one or more
 #' dataset(s). Datasets can be specified as character vector of dataset codes
@@ -14,117 +14,6 @@
 #' `path` and `recursive` have to be euther of length 1 or of the same length
 #' as `x`.
 #' 
-#' @inheritParams logout_openbis
-#' @param x Object to limit search for datasets/files with.
-#' @param path A (vector of) file path(s) to be searched within a dataset.
-#' @param recursive A (vector of) logicals, indicating whether to list files
-#' recursively.
-#' @param ... Generic compatibility.
-#' 
-#' @export
-#' 
-list_files <- function(token, x, ...)
-  UseMethod("list_files", x)
-
-#' @rdname list_files
-#' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrg", "listFilesForDataSet")}
-#' @export
-#' 
-list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
-
-  check_rep <- function(vec, len) {
-    if (length(vec) == 1L)
-      vec <- rep(vec, len)
-    assert_that(length(vec) == len || length(vec) == 1L)
-    vec
-  }
-
-  max_length <- max(length(x), length(path), length(recursive))
-
-  if (max_length > 1L) {
-    x <- check_rep(x, max_length)
-    path <- check_rep(path, max_length)
-    recursive <- check_rep(recursive, max_length)
-  }
-
-  params <- mapply(function(a, b, c) list(token, a, b, c), x, path, recursive,
-                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
-
-  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
-
-  res <- Map(function(dat, code) {
-    attr(dat, "data_set") <- code
-    dat
-  }, unlist(res, recursive = FALSE), rep(x, sapply(res, length)))
-
-  as_json_vec(do.call(c, res))
-}
-
-list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
-  list_files(token, dataset_code(x), path, recursive)
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.DataSet <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.DatasetIdentifier <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.DatasetReference <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.FeatureVectorDatasetReference <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.FeatureVectorDatasetWellReference <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.ImageDatasetReference <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.MicroscopyImageReference <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.PlateImageReference <- list_dataset_files
-
-#' @rdname list_files
-#' @export
-#' 
-list_files.DataSetFileDTO <- function(token, x, ...) {
-
-  x <- as_json_vec(x)
-
-  params <- lapply(x, function(y) list(token, y))
-
-  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
-
-  res <- Map(function(dat, code) {
-    attr(dat, "data_set") <- code
-    dat
-  }, unlist(res, recursive = FALSE), rep(dataset_code(x), sapply(res, length)))
-
-  as_json_vec(do.call(c, res))
-}
-
-#' Fetch files
-#'
 #' The function `fetch_files()` downloads files associated to a dataset.
 #' Whenever dispatch occurs on a set of datasets (can either be a character
 #' vector or any object for which a [dataset_code()] method exists), the set
@@ -163,9 +52,121 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 #' `done`, which takes the downloaded data as input and does some processing.
 #' 
 #' @inheritParams logout_openbis
-#' @param x Object to specify which files to download.
-#' @param ... Generic compatibility. May be passed to [list_files()] and/or
-#' `fetch_files_serial`/`fetch_files_parallel`.
+#' @param x Object to limit search for datasets/files with.
+#' @param ... Generic compatibility.
+#' 
+#' @rdname list_fetch_files
+#' 
+#' @export
+#' 
+list_files <- function(token, x, ...)
+  UseMethod("list_files", x)
+
+#' @rdname list_fetch_files
+#' 
+#' @param path A (vector of) file path(s) to be searched within a dataset.
+#' @param recursive A (vector of) logicals, indicating whether to list files
+#' recursively.
+#' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("dsrg", "listFilesForDataSet")}
+#' 
+#' @export
+#' 
+list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
+
+  check_rep <- function(vec, len) {
+    if (length(vec) == 1L)
+      vec <- rep(vec, len)
+    assert_that(length(vec) == len || length(vec) == 1L)
+    vec
+  }
+
+  max_length <- max(length(x), length(path), length(recursive))
+
+  if (max_length > 1L) {
+    x <- check_rep(x, max_length)
+    path <- check_rep(path, max_length)
+    recursive <- check_rep(recursive, max_length)
+  }
+
+  params <- mapply(function(a, b, c) list(token, a, b, c), x, path, recursive,
+                   SIMPLIFY = FALSE, USE.NAMES = FALSE)
+
+  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
+
+  res <- Map(function(dat, code) {
+    attr(dat, "data_set") <- code
+    dat
+  }, unlist(res, recursive = FALSE), rep(x, sapply(res, length)))
+
+  as_json_vec(do.call(c, res))
+}
+
+list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
+  list_files(token, dataset_code(x), path, recursive)
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.DataSet <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.DatasetIdentifier <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.DatasetReference <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.FeatureVectorDatasetReference <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.FeatureVectorDatasetWellReference <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.ImageDatasetReference <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.MicroscopyImageReference <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.PlateImageReference <- list_dataset_files
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+list_files.DataSetFileDTO <- function(token, x, ...) {
+
+  x <- as_json_vec(x)
+
+  params <- lapply(x, function(y) list(token, y))
+
+  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
+
+  res <- Map(function(dat, code) {
+    attr(dat, "data_set") <- code
+    dat
+  }, unlist(res, recursive = FALSE), rep(dataset_code(x), sapply(res, length)))
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_fetch_files
+#' 
 #' @param files Optional set of `FileInfoDssDTO` objects. If NULL, all files
 #' corresponding to the specified datasets are assumed.
 #' @param file_regex Regular expression applied to filenames. 
@@ -196,47 +197,47 @@ fetch_dataset_files <- function(token,
   fetch_files(token, files, sapply(files, attr, "data_set"), ...)
 }
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.character <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.DataSet <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.DatasetIdentifier <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.DatasetReference <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.FeatureVectorDatasetReference <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.FeatureVectorDatasetWellReference <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.ImageDatasetReference <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.MicroscopyImageReference <- fetch_dataset_files
 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.PlateImageReference <- fetch_dataset_files
@@ -245,7 +246,7 @@ fetch_files.PlateImageReference <- fetch_dataset_files
 #' @param finally A function that is applied to the result of a successful
 #' download.
 #' 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.DataSetFileDTO <- function(token,
@@ -284,7 +285,7 @@ fetch_files.DataSetFileDTO <- function(token,
 #' @param data_sets Either a single dataset object (anything that has a
 #' `dataset_code()` method) or a set of objects of the same length as `x`.
 #' 
-#' @rdname fetch_files
+#' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.FileInfoDssDTO <- function(token,
