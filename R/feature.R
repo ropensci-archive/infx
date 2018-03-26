@@ -56,7 +56,15 @@ list_feats <- function(token, x, ...)
 #' @rdname list_fetch_features
 #' @export
 #' 
-list_features.FeatureVectorDatasetReference <- list_feats
+list_features.FeatureVectorDatasetReference <- function(token,
+                                                        x,
+                                                        wells = NULL,
+                                                        ...) {
+  if (is.null(wells))
+    list_feats(token, x)
+  else
+    list_feats(token, feat_ds_well_ref(x, wells))
+}
 
 #' @rdname list_fetch_features
 #' @export
@@ -78,7 +86,15 @@ list_feat_codes <- function(token, x, ...)
 #' @rdname list_fetch_features
 #' @export
 #' 
-list_feature_codes.FeatureVectorDatasetReference <- list_feat_codes
+list_feature_codes.FeatureVectorDatasetReference <- function(token,
+                                                             x,
+                                                             wells = NULL,
+                                                             ...) {
+  if (is.null(wells))
+    list_feat_codes(token, x)
+  else
+    list_feat_codes(token, feat_ds_well_ref(x, wells))
+}
 
 #' @rdname list_fetch_features
 #' @export
@@ -111,17 +127,24 @@ fetch_features <- function(token, x, feature_codes = NA, ...)
 fetch_features.FeatureVectorDatasetReference <- function(token,
                                                          x,
                                                          feature_codes = NA,
+                                                         wells = NULL,
                                                          ...) {
-  x <- as_json_vec(remove_null(x))
 
-  if (length(feature_codes) == 1L && is.na(feature_codes)) {
-    feature_codes <- list_feature_codes(token, x)
+  if (is.null(wells)) {
+    x <- as_json_vec(remove_null(x))
+
+    if (length(feature_codes) == 1L && is.na(feature_codes)) {
+      feature_codes <- list_feature_codes(token, x)
+    } else {
+      assert_that(is.character(feature_codes))
+      feature_codes <- as.list(feature_codes)
+    }
+
+    make_request(api_url("dsrs"), "loadFeatures",
+                 list(token, x, feature_codes))
   } else {
-    assert_that(is.character(feature_codes))
-    feature_codes <- as.list(feature_codes)
+    fetch_features(token, feat_ds_well_ref(x, wells), feature_codes)
   }
-
-  make_request(api_url("dsrs"), "loadFeatures", list(token, x, feature_codes))
 }
 
 #' @rdname list_fetch_features
@@ -189,12 +212,22 @@ feat_ds_well_ref <- function(x, wells) {
       wells <- rep(wells, max_len)
   }
 
+  fields <- c("datasetCode", "datastoreServerUrl", "plate",
+              "experimentIdentifier", "plateGeometry", "registrationDate",
+              "properties")
+
   assert_that(has_subclass(x, "FeatureVectorDatasetReference"),
               has_subclass(wells, "WellPosition"),
-              length(x) == length(wells))
+              length(x) == length(wells),
+              has_fields(x, fields))
 
   as_json_vec(
-    Map(json_class, fvdr = x, wellPosition = wells,
-        MoreArgs = list(class = "FeatureVectorDatasetWellReference"))
+    Map(function(ref, well) {
+      new_json_class(c(
+        as.list(ref[fields], keep_asis = FALSE, recursive = FALSE,
+                restore_type = FALSE),
+        list(wellPosition = well)
+      ), class = "FeatureVectorDatasetWellReference")
+    }, x, wells)
   )
 }

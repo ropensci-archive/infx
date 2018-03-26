@@ -14,20 +14,22 @@
 \usage{
 list_features(token, x, ...)
 
-\method{list_features}{FeatureVectorDatasetReference}(token, x, ...)
+\method{list_features}{FeatureVectorDatasetReference}(token, x, wells = NULL,
+  ...)
 
 \method{list_features}{FeatureVectorDatasetWellReference}(token, x, ...)
 
 list_feature_codes(token, x, ...)
 
-\method{list_feature_codes}{FeatureVectorDatasetReference}(token, x, ...)
+\method{list_feature_codes}{FeatureVectorDatasetReference}(token, x,
+  wells = NULL, ...)
 
 \method{list_feature_codes}{FeatureVectorDatasetWellReference}(token, x, ...)
 
 fetch_features(token, x, feature_codes = NA, ...)
 
 \method{fetch_features}{FeatureVectorDatasetReference}(token, x,
-  feature_codes = NA, ...)
+  feature_codes = NA, wells = NULL, ...)
 
 \method{fetch_features}{FeatureVectorDatasetWellReference}(token, x,
   feature_codes = NA, ...)
