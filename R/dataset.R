@@ -3,18 +3,18 @@
 #'
 #' All available datasets for the specified experiment(s), sample(s) or
 #' dataset code(s) are retrieved as `DataSet` objects by
-#' `list_datasets()`. Each data set has a type and all realized type
+#' `list_datasets()`. Each dataset has a type and all realized type
 #' identifiers can be listed using `list_dataset_types()`. A more compact
 #' object type, uniquely identifying a `DataSet`, is a that of a
 #' `DatasetIdentifier`. Given either a set of `DataSet` objects or a character
-#' vector holding (a) data set code(s), `list_dataset_id()` fetched the
+#' vector holding (a) dataset code(s), `list_dataset_id()` fetched the
 #' corresponding `DatasetIdentifier` objects. Behavior of the function
 #' `list_references()`, in particular the returned object type, depends on
 #' input types. For more information, please refer to the details section.
 #' 
 #' `list_datasets()` is an s3 generic function that can be dispatched on
 #' `Sample` and `Experiment` objects, as well as character vectors containing
-#' data set codes and it returns sets of `DataSet` objects. Additionally it
+#' dataset codes and it returns sets of `DataSet` objects. Additionally it
 #' can be requested that parent or child datasets are to be included as well.
 #' 
 #' Several classes in addition to `DatasetIdentifier` implement the
@@ -50,8 +50,8 @@
 #' `areOnlyDirectlyConnectedIncluded`, which is currently fixed to `TRUE`. The
 #' documentation contains the following explanation:
 #' 
-#' > If true, only data sets that are directly connected to the sample are
-#' > included, otherwise data sets of child samples are included as well.
+#' > If true, only datasets that are directly connected to the sample are
+#' > included, otherwise datasets of child samples are included as well.
 #' 
 #' This does however not seem to correspond to including child datasets in the
 #' API call to `listDataSets()` via its `connectionsToGet` argument. As long
@@ -70,10 +70,10 @@
 #'                          ),
 #'                          target_object = "sample")
 #' 
-#'   # list all data sets associated with this plate
+#'   # list all datasets associated with this plate
 #'   ds <- list_datasets(tok, samp)
 #' 
-#'   # select a feature data set, note how the fields "parentCodes" and
+#'   # select a feature dataset, note how the fields "parentCodes" and
 #'   # "childrenCodes" both are not set
 #'   feat_ds <- ds[[grep("FEATURES_CC_MAT",
 #'                       sapply(ds, `[[`, "dataSetTypeCode"))]]

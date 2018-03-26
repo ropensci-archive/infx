@@ -116,11 +116,11 @@ dataset listing to.}
 \description{
 All available datasets for the specified experiment(s), sample(s) or
 dataset code(s) are retrieved as \code{DataSet} objects by
-\code{list_datasets()}. Each data set has a type and all realized type
+\code{list_datasets()}. Each dataset has a type and all realized type
 identifiers can be listed using \code{list_dataset_types()}. A more compact
 object type, uniquely identifying a \code{DataSet}, is a that of a
 \code{DatasetIdentifier}. Given either a set of \code{DataSet} objects or a character
-vector holding (a) data set code(s), \code{list_dataset_id()} fetched the
+vector holding (a) dataset code(s), \code{list_dataset_id()} fetched the
 corresponding \code{DatasetIdentifier} objects. Behavior of the function
 \code{list_references()}, in particular the returned object type, depends on
 input types. For more information, please refer to the details section.
@@ -128,7 +128,7 @@ input types. For more information, please refer to the details section.
 \details{
 \code{list_datasets()} is an s3 generic function that can be dispatched on
 \code{Sample} and \code{Experiment} objects, as well as character vectors containing
-data set codes and it returns sets of \code{DataSet} objects. Additionally it
+dataset codes and it returns sets of \code{DataSet} objects. Additionally it
 can be requested that parent or child datasets are to be included as well.
 
 Several classes in addition to \code{DatasetIdentifier} implement the
@@ -163,8 +163,8 @@ returned, while \code{PlateImageReference} objects are returned otherwise.
 \code{areOnlyDirectlyConnectedIncluded}, which is currently fixed to \code{TRUE}. The
 documentation contains the following explanation:
 
-If true, only data sets that are directly connected to the sample are
-included, otherwise data sets of child samples are included as well.
+If true, only datasets that are directly connected to the sample are
+included, otherwise datasets of child samples are included as well.
 
 This does however not seem to correspond to including child datasets in the
 API call to \code{listDataSets()} via its \code{connectionsToGet} argument. As long
@@ -226,10 +226,10 @@ option is not exposed to the user.
                          ),
                          target_object = "sample")
 
-  # list all data sets associated with this plate
+  # list all datasets associated with this plate
   ds <- list_datasets(tok, samp)
 
-  # select a feature data set, note how the fields "parentCodes" and
+  # select a feature dataset, note how the fields "parentCodes" and
   # "childrenCodes" both are not set
   feat_ds <- ds[[grep("FEATURES_CC_MAT",
                       sapply(ds, `[[`, "dataSetTypeCode"))]]
