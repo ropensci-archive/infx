@@ -1,28 +1,48 @@
 
 #' List experiments
 #'
-#' Given a login token and a set of experiment ids or projects, all available
-#' experiments are listed. In case of projects being used as filtering
-#' criterion, it is also possible to limit the search to experiments that are
-#' of a certain type and exclude experiments that either have no datasets or
-#' samples associated. If several experiment types are requested (default: all
-#' available), an API call per experiment type has to be made.
+#' Experiments can be represented by two object classes: `Experiment` and
+#' `ExperimentIdentifier`. The fields that make up an `ExperimentIdentifier`
+#' object are a subset of those required for an `Experiment` object. Therefore
+#' an experiment can be turned into an experiment id object without an API
+#' call, using the function `exp_to_expid()`. The reverse can be achieved by
+#' calling `list_experiments()` on experiment id objects. In general,
+#' experiments and experiment id objects can be listed using
+#' `list_experiments()` and `list_experiment_ids()`.
 #' 
-#' The two utility functions `list_experiment_ids()` and
-#' `list_experiment_types()` list all available experiment ids and experiment
-#' types of the queried openBIS instance. Furthermore, experiment objects can
-#' be converted to experiment id objects using `exp_to_expid()`. This function
-#' does not incur an API call and can act on both a single experiment object
-#' or a vector of experiment objects (passed as a `json_vec` object) and will
-#' return a `json_vec` object of type `ExperimentIdentifier`.
+#' By calling `list_experiments()` on project objects, all corresponding
+#' experiments are listed. It is possible to limit the search to experiments
+#' that are of a certain type and exclude experiments that either have no
+#' datasets or samples associated. An exhaustive list of realized experiment
+#' types can be retrieved using `list_experiment_types()`. If several
+#' experiment types are requested in `list_experiments()`, the default is to
+#' iterate over all available types, an API call per experiment type has to be
+#' made.
+#' 
+#' `ExperimentIdentifier` objects present a more compact way of uniquely
+#' representing experiments. All experiments that are available to the current
+#' user can be listed with `list_experiment_ids()`. There is no way of limiting
+#' the search for experiments.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned experiments, e.g. a set of
 #' `ExperimentIdentifier` or `Project` objects.
-#' @param types Either a single of vector of `ExperimentType` objects
-#' @param require A switch to require the resulting experiments to contain a
-#' nonzero number of dataset or sample. Default behavior is no requirement.
 #' @param ... Generic compatibility
+#' 
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#' 
+#'   # list all available projects to limit the search for experiments
+#'   proj <- list_projects(tok)
+#' 
+#'   # list all experiments corresponding to the project with index 1
+#'   exps <- list_experiments(tok, proj[[1]])
+#' 
+#'   # convert experiment to experiment ids and back
+#'   exp_ids <- exp_to_expid(exps)
+#'   identical(exps, list_experiments(tok, exp_ids))
+#' }
 #' 
 #' @export
 #' 
@@ -38,9 +58,15 @@ list_experiments.ExperimentIdentifier <- function(token, x, ...)
   make_request(api_url("gis"), "listExperiments", list(token, exp_id_str(x)))
 
 #' @rdname list_experiments
+#' 
+#' @param types Either a single or set of `ExperimentType` objects
+#' @param require A switch to require the resulting experiments to contain a
+#' nonzero number of dataset or sample. Default behavior is no requirement.
+#' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "listExperimentsHavingDataSets")}
 #' * \Sexpr{infx::docs_link("gis", "listExperimentsHavingSamples")}
+#' 
 #' @export
 #' 
 list_experiments.Project <- function(token,
@@ -125,14 +151,13 @@ exp_to_expid <- function(x) {
 #' @param x Experiment object(s).
 #' @param ... Generic compatibility.
 #' 
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 exp_id_str <- function(x, ...)
   UseMethod("exp_id_str")
 
-#' @rdname exp_id_str
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 exp_id_str.ExperimentIdentifier <- function(x, ...) {
@@ -144,8 +169,7 @@ exp_id_str.ExperimentIdentifier <- function(x, ...) {
   lapply(as_json_vec(x), function(y) paste0("/", y[fields], collapse = ""))
 }
 
-#' @rdname exp_id_str
-#' @keywords internal
+#' @noRd
 #' @export
 #' 
 exp_id_str.Experiment <- function(x, ...) {

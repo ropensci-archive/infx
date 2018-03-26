@@ -31,27 +31,35 @@ exp_to_expid(x)
 
 \item{...}{Generic compatibility}
 
-\item{types}{Either a single of vector of \code{ExperimentType} objects}
+\item{types}{Either a single or set of \code{ExperimentType} objects}
 
 \item{require}{A switch to require the resulting experiments to contain a
 nonzero number of dataset or sample. Default behavior is no requirement.}
 }
 \description{
-Given a login token and a set of experiment ids or projects, all available
-experiments are listed. In case of projects being used as filtering
-criterion, it is also possible to limit the search to experiments that are
-of a certain type and exclude experiments that either have no datasets or
-samples associated. If several experiment types are requested (default: all
-available), an API call per experiment type has to be made.
+Experiments can be represented by two object classes: \code{Experiment} and
+\code{ExperimentIdentifier}. The fields that make up an \code{ExperimentIdentifier}
+object are a subset of those required for an \code{Experiment} object. Therefore
+an experiment can be turned into an experiment id object without an API
+call, using the function \code{exp_to_expid()}. The reverse can be achieved by
+calling \code{list_experiments()} on experiment id objects. In general,
+experiments and experiment id objects can be listed using
+\code{list_experiments()} and \code{list_experiment_ids()}.
 }
 \details{
-The two utility functions \code{list_experiment_ids()} and
-\code{list_experiment_types()} list all available experiment ids and experiment
-types of the queried openBIS instance. Furthermore, experiment objects can
-be converted to experiment id objects using \code{exp_to_expid()}. This function
-does not incur an API call and can act on both a single experiment object
-or a vector of experiment objects (passed as a \code{json_vec} object) and will
-return a \code{json_vec} object of type \code{ExperimentIdentifier}.
+By calling \code{list_experiments()} on project objects, all corresponding
+experiments are listed. It is possible to limit the search to experiments
+that are of a certain type and exclude experiments that either have no
+datasets or samples associated. An exhaustive list of realized experiment
+types can be retrieved using \code{list_experiment_types()}. If several
+experiment types are requested in \code{list_experiments()}, the default is to
+iterate over all available types, an API call per experiment type has to be
+made.
+
+\code{ExperimentIdentifier} objects present a more compact way of uniquely
+representing experiments. All experiments that are available to the current
+user can be listed with \code{list_experiment_ids()}. There is no way of limiting
+the search for experiments.
 }
 \section{openBIS}{
 
@@ -76,3 +84,19 @@ return a \code{json_vec} object of type \code{ExperimentIdentifier}.
 }
 }
 
+\examples{
+\dontrun{
+  tok <- login_openbis("rdgr2014", "IXPubReview")
+
+  # list all available projects to limit the search for experiments
+  proj <- list_projects(tok)
+
+  # list all experiments corresponding to the project with index 1
+  exps <- list_experiments(tok, proj[[1]])
+
+  # convert experiment to experiment ids and back
+  exp_ids <- exp_to_expid(exps)
+  identical(exps, list_experiments(tok, exp_ids))
+}
+
+}
