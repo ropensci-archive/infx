@@ -25,7 +25,7 @@
 \alias{list_references.MicroscopyImageReference}
 \alias{list_references.PlateImageReference}
 \alias{list_dataset_types}
-\title{List datasets}
+\title{List datasets and dataset reference objects}
 \usage{
 list_datasets(token, x, ...)
 

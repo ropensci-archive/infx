@@ -1,5 +1,5 @@
 
-#' List datasets
+#' List datasets and dataset reference objects
 #'
 #' All available datasets for the specified experiment(s), sample(s) or
 #' dataset code(s) are retrieved as `DataSet` objects by
@@ -392,6 +392,7 @@ list_dataset_types <- function(token)
 #' @param x Dataset object(s).
 #' @param ... Generic compatibility.
 #' 
+#' @noRd
 #' @export
 #' 
 dataset_code <- function(x, ...)
