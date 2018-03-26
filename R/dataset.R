@@ -1,11 +1,21 @@
 
 #' List datasets
 #'
-#' Given a login token, all available datasets are listed for the given
-#' experiment(s), sample(s) or dataset code(s). Additionally it can be
-#' specified whether parent or child datasets are to be included as well.
-#' For the above object types, `list_datasets()` returns sets of `DataSet`
-#' objects. Dataset id objects can be listed using `list_dataset_id()`.
+#' All available datasets for the specified experiment(s), sample(s) or
+#' dataset code(s) are retrieved as `DataSet` objects by
+#' `list_datasets()`. Each data set has a type and all realized type
+#' identifiers can be listed using `list_dataset_types()`. A more compact
+#' object type, uniquely identifying a `DataSet`, is a that of a
+#' `DatasetIdentifier`. Given either a set of `DataSet` objects or a character
+#' vector holding (a) data set code(s), `list_dataset_id()` fetched the
+#' corresponding `DatasetIdentifier` objects. Behavior of the function
+#' `list_references()`, in particular the returned object type, depends on
+#' input types. For more information, please refer to the details section.
+#' 
+#' `list_datasets()` is an s3 generic function that can be dispatched on
+#' `Sample` and `Experiment` objects, as well as character vectors containing
+#' data set codes and it returns sets of `DataSet` objects. Additionally it
+#' can be requested that parent or child datasets are to be included as well.
 #' 
 #' Several classes in addition to `DatasetIdentifier` implement the
 #' `IDatasetIdentifier` interface, including
@@ -16,39 +26,24 @@
 #'   * `MicroscopyImageReference`
 #'   * `PlateImageReference`
 #' 
-#' The above objects are returned by `list_references()` and the exact return
-#' type depends on the argument types. If `list_references()` is dispatched on
-#' plate objects (`Plate`, `PlateIdentifier` or `PlateMetadata`),
-#' `ImageDatasetReference` objects are returned (except if the type argument
-#' is set to `feature`, in which case, `FeatureVectorDatasetReference`
-#' object(s) are returned). Similarly, if `MaterialIdentifierScreening`
-#' objects are used as input, `PlateWellReferenceWithDatasets` objects are
-#' returned, which each contain `ImageDatasetReference` and
-#' `FeatureVectorDatasetReference` objects.
+#' Any of these object types may returned by `list_references()`, depending on
+#' argument types. If the s3 generic function `list_references()` is
+#' dispatched on plate objects (`Plate`, `PlateIdentifier` or `PlateMetadata`
+#' or `Sample` objects, representing plates), `ImageDatasetReference` objects
+#' are returned (except if the type argument is set to `feature`, in which
+#' case, `FeatureVectorDatasetReference` object(s) are returned). Similarly,
+#' if `MaterialIdentifierScreening` objects are used as input,
+#' `PlateWellReferenceWithDatasets` objects are returned, which each contain
+#' `ImageDatasetReference` and `FeatureVectorDatasetReference` objects.
 #' 
-#' Whenever `list_references()` is dispatched on (a) dataset id(s) or dataset
-#' reference object(s), the resulting object type depends on whether a (set of)
+#' Whenever `list_references()` is dispatched on dataset ids or dataset
+#' reference objects, the resulting object type depends on whether a (set of)
 #' `WellPosition` object(s) were specified as `wells` argument. For its
 #' default value (NULL), a set of `MicroscopyImageReference` objects is
 #' returned, while `PlateImageReference` objects are returned otherwise.  
 #' 
-#' `list_dataset_types()` lists all available data set types on the given
-#' openBIS instance and `list_dataset_id()` returns a list of dataset id
-#' objects corresponding to the supplied character vector of one or more
-#' dataset codes or set of `DataSet` objects.
-#' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
-#' @param include Whether to include parent/child datasets as well.
-#' @param experiment When searching for datasets associated with materials,
-#' the search can be limited to a single experiment.
-#' @param type For listing image datasets, it can be specified, whether only
-#' raw image datasets, only segmentation image datasets or any kind of image
-#' datasets (default) are to be listed.
-#' @param wells A (set of) `WellPosition` object(s) to limit the dataset
-#' listing to.
-#' @param channels A character vector with imaging channel names to limit the
-#' dataset listing to.
 #' @param ... Generic compatibility.
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
@@ -64,15 +59,61 @@
 #' differs from setting `areOnlyDirectlyConnectedIncluded` to `FALSE`, this
 #' option is not exposed to the user.
 #' 
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#' 
+#'   # search for a sample object corresponding to plate KB2-03-1I
+#'   samp <- search_openbis(tok,
+#'                          search_criteria(
+#'                            attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")
+#'                          ),
+#'                          target_object = "sample")
+#' 
+#'   # list all data sets associated with this plate
+#'   ds <- list_datasets(tok, samp)
+#' 
+#'   # select a feature data set, note how the fields "parentCodes" and
+#'   # "childrenCodes" both are not set
+#'   feat_ds <- ds[[grep("FEATURES_CC_MAT",
+#'                       sapply(ds, `[[`, "dataSetTypeCode"))]]
+#' 
+#'   # fetch parent and child datasets and now both the "parentCodes" and
+#'   # "childrenCodes" fields are populated with the corresponding codes
+#'   feat_ds <- list_datasets(tok, feat_ds[["code"]], include = "all")
+#' 
+#'   # re-using the plate sample from above, an ImageDatasetReference object
+#'   # corresponding to the associated raw imaging dataset is listed
+#'   raw_ref <- list_references(tok, samp)
+#'   # available imaging channels are
+#'   raw_ref[[1]][["properties"]][["IMAGE.CHANNEL.LIST"]]
+#' 
+#'   # a more specific image reference object can be retrieved by passing a
+#'   # well specification to list_references()
+#'   well_ref <- list_references(tok, raw_ref,
+#'                               wells = json_class(wellRow = 1L,
+#'                                                  wellColumn = 2L,
+#'                                                  class = "WellPosition"),
+#'                               channel = "DAPI")
+#'   # a reference to 9 images is returned, as there are 3 x 3 imaging tiles
+#'   # per well
+#'   length(well_ref)
+#' }
+#' 
 #' @export
 #' 
 list_datasets <- function(token, x, ...)
   UseMethod("list_datasets", x)
 
 #' @rdname list_datasets
+#' 
+#' @param include String indicating whether to include parent/child datasets
+#' as well.
+#' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "listDataSetsForSample")}
 #' * \Sexpr{infx::docs_link("gis", "listDataSets")}
+#' 
 #' @export
 #' 
 list_datasets.Sample <- function(token,
@@ -108,13 +149,11 @@ list_datasets.Experiment <- function(token,
                                      include = c(NA, "children", "parents",
                                                  "all"),
                                      ...) {
-  x <- remove_null(x)
-
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
 
   make_request(api_url("gis"), "listDataSetsForExperiments",
-               list(token, x, resolve_fetch_opts(include)))
+               list(token,
+                    as_json_vec(remove_null(x)),
+                    resolve_fetch_opts(include)))
 }
 
 #' @rdname list_datasets
@@ -187,6 +226,11 @@ list_img_ds <- function(token,
 }
 
 #' @rdname list_datasets
+#' 
+#' @param type For listing image datasets, it can be specified, whether only
+#' raw image datasets, only segmentation image datasets or any kind of image
+#' datasets (default) are to be listed.
+#' 
 #' @export
 #' 
 list_references.PlateIdentifier <- list_img_ds
@@ -212,6 +256,10 @@ list_ref_for_material <- function(token, x, experiment = NULL, ...)
                       include_datasets = TRUE)
 
 #' @rdname list_datasets
+#' 
+#' @param experiment When searching for datasets associated with materials,
+#' the search can be limited to a single experiment.
+#' 
 #' @export
 #' 
 list_references.MaterialGeneric <- list_ref_for_material
@@ -230,9 +278,16 @@ list_img_ref_wrapper <- function(token, x, wells = NULL, channels, ...)
   list_img_ref(token, x, wells, channels)
 
 #' @rdname list_datasets
+#' 
+#' @param wells A (set of) `WellPosition` object(s) to limit the dataset
+#' listing to.
+#' @param channels A character vector with imaging channel names to limit the
+#' dataset listing to.
+#' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("dsrs", "listImageReferences")}
 #' * \Sexpr{infx::docs_link("dsrs", "listPlateImageReferences")}
+#' 
 #' @export
 #' 
 list_references.DatasetIdentifier <- list_img_ref_wrapper
