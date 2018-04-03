@@ -242,7 +242,7 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
 #' @param x A set of `FeatureVectorDatasetReference` objects.
 #' @param wells A set of `WellPosition` objects.
 #' 
-#' @noRd
+#' @keywords internal
 #' 
 #' @export
 #' 

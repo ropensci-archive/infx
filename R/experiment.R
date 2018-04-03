@@ -151,13 +151,15 @@ exp_to_expid <- function(x) {
 #' @param x Experiment object(s).
 #' @param ... Generic compatibility.
 #' 
-#' @noRd
+#' @keywords internal
+#' 
 #' @export
 #' 
 exp_id_str <- function(x, ...)
   UseMethod("exp_id_str")
 
-#' @noRd
+#' @rdname exp_id_str
+#' @keywords internal
 #' @export
 #' 
 exp_id_str.ExperimentIdentifier <- function(x, ...) {
@@ -169,7 +171,8 @@ exp_id_str.ExperimentIdentifier <- function(x, ...) {
   lapply(as_json_vec(x), function(y) paste0("/", y[fields], collapse = ""))
 }
 
-#' @noRd
+#' @rdname exp_id_str
+#' @keywords internal
 #' @export
 #' 
 exp_id_str.Experiment <- function(x, ...) {
