@@ -155,3 +155,40 @@ test_that("plates/samples can be converted to plate ids", {
                          c("plateCode", "spaceCodeOrNull"))))
   expect_equal(length(plate_ids), 2L)
 })
+
+test_that("well position objects can be created", {
+  pos_1 <- well_pos(1L, 1L)
+
+  expect_is(pos_1, "WellPosition")
+  expect_is(pos_1, "json_vec")
+  expect_identical(get_subclass(pos_1), "WellPosition")
+  expect_true(all(sapply(pos_1, has_subclass, "WellPosition")))
+  expect_length(pos_1, 1L)
+
+  pos_2 <- well_pos(1L, 1L:2L)
+
+  expect_is(pos_2, "WellPosition")
+  expect_is(pos_2, "json_vec")
+  expect_identical(get_subclass(pos_2), "WellPosition")
+  expect_true(all(sapply(pos_2, has_subclass, "WellPosition")))
+  expect_length(pos_2, 2L)
+
+  pos_2 <- well_pos(2L:3L, 1L:2L)
+
+  expect_is(pos_2, "WellPosition")
+  expect_is(pos_2, "json_vec")
+  expect_identical(get_subclass(pos_2), "WellPosition")
+  expect_true(all(sapply(pos_2, has_subclass, "WellPosition")))
+  expect_length(pos_2, 2L)
+
+  pos_1 <- well_pos("a", 1L)
+
+  expect_is(pos_1, "WellPosition")
+  expect_is(pos_1, "json_vec")
+  expect_identical(get_subclass(pos_1), "WellPosition")
+  expect_true(all(sapply(pos_1, has_subclass, "WellPosition")))
+  expect_length(pos_1, 1L)
+
+  expect_error(well_pos(c("a", "b"), 1L:3L))
+  expect_error(well_pos(1L:2L, c("a", "b")))
+})

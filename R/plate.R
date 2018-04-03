@@ -220,23 +220,23 @@ list_plate_metadata.Plate <- function(token, x, ...)
 #' 
 well_pos <- function(row, col) {
 
-  col <- as.integer(col)
-
   if (is.character(row)) {
     row <- toupper(row)
     row <- sapply(row, match, LETTERS)
-  } else
-   row <- as.integer(row)
+  }
 
-  assert_that(is.integer(row), is.integer(col))
+  assert_that(isTRUE(all.equal(row, suppressWarnings(as.integer(row)),
+                               check.attributes = FALSE)),
+              isTRUE(all.equal(col, suppressWarnings(as.integer(col)),
+                               check.attributes = FALSE)))
 
   max_len <- max(length(row), length(col))
 
-  if (max_length > 1L) {
+  if (max_len > 1L) {
     if (length(row) == 1L)
-      row <- rep(row, max_length)
+      row <- rep(row, max_len)
     if (length(col) == 1L)
-      col <- rep(col, max_length)
+      col <- rep(col, max_len)
   }
 
   assert_that(length(row) == length(col))
