@@ -124,3 +124,40 @@ cannot be supplied as this will cause an error as well (hence the use of
 behaves this way is currently unclear.
 }
 
+\examples{
+\dontrun{
+  tok <- login_openbis("rdgr2014", "IXPubReview")
+
+  # search for a sample object corresponding to plate KB2-03-1I
+  samp <- search_openbis(tok,
+                         search_criteria(
+                           attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")
+                         ),
+                         target_object = "sample")
+  # for the plate sample object, list all feature data sets
+  feat_ref <- list_references(tok, samp, type = "feature")
+
+  # several data set types can act as feature data sets
+  sapply(feat_ref, `[[`, "dataSetType")
+  feat_ref <- feat_ref[[7L]]
+
+  # for a feature data set, list all features
+  feat_info <- list_features(tok, feat_ref)
+  feat_info <- feat_info[c(2L, 6L)]
+
+  # for a feature data set, a set of feature coded and a set of wells,
+  # retrieve the corresponding feature data
+  feats <- fetch_features(tok, feat_ref,
+                          feature_codes = sapply(feat_info, `[[`, "code"),
+                          wells = well_pos(1:2, 2:3))
+
+  extract_feats <- function(x) {
+    c(well_row = x[["wellPosition"]][["wellRow"]],
+      well_col = x[["wellPosition"]][["wellColumn"]],
+      setNames(as.numeric(x[["values"]]), tolower(x[["featureNames"]])))
+  }
+
+  do.call(rbind, lapply(feats, extract_feats))
+}
+
+}
