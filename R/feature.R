@@ -71,7 +71,7 @@
 #'   feat_info <- list_features(tok, feat_ref)
 #'   feat_info <- feat_info[c(2L, 6L)]
 #' 
-#'   # for a feature data set, a set of feature coded and a set of wells,
+#'   # for a feature data set, a set of feature codes and a set of wells,
 #'   # retrieve the corresponding feature data
 #'   feats <- fetch_features(tok, feat_ref,
 #'                           feature_codes = sapply(feat_info, `[[`, "code"),
