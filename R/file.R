@@ -3,25 +3,41 @@
 #' 
 #' A dataset in openBIS represents a collection of files. The function
 #' `list_files()` lists files associated with one or more datasets by
-#' returning a set of `FileInfoDssDTO` objects. As this object type 
+#' returning a set of `FileInfoDssDTO` objects. As this object type does not
+#' contain information on data set association, the data set code is saved
+#' as `data_set` attribute with each `FileInfoDssDTO` object. Data set files
+#' can be fetched using `fetch_files()`, which can either retrieve all
+#' associated files or use file path information, for example from
+#' `FileInfoDssDTO` objects to only download a subset of files.
 #' 
-#' Datasets can be specified as character vector of dataset codes
-#' and therefore all objects for which the internal method `dataset_code()`
-#' exists can be used to select datasets. In addition to these dataset-like
-#' objects,
+#' Data sets for `list_files()` can be specified as character vector of
+#' dataset codes and therefore all objects for which the internal method
+#' `dataset_code()` exists can be used to select datasets. This includes data
+#' set and data set id objects as well as the various flavors of data set
+#' reference objects. In addition to these dataset-representing objects,
 #' dispatch on `DataSetFileDTO` objects is possible as well.
 #' 
-#' Furthermore, the file search can be limited to a certain path within the
-#' dataset and the search can be carried out recursively or non-recursively.
+#' File listing can be limited to a certain path within the dataset and the
+#' search can be carried out recursively or non-recursively. In case a set of
+#' objects is passed, the search-tuning arguments `path` and `recursive` have
+#' to be either of length 1 or of the same length as `x`. If dispatch occurs
+#' on `DataSetFileDTO` objects, the `path` and `recursive` arguments are not
+#' needed, as this information is already encoded in the objects passed as `x`.
 #' A separate API call is necessary for each of the objects the dispatch
-#' occurs on. In case a set of objects is passed, the search-tuning arguments
-#' `path` and `recursive` have to be either of length 1 or of the same length
-#' as `x`.
+#' occurs on. 
 #' 
-#' The function `fetch_files()` downloads files associated to a dataset.
-#' Whenever dispatch occurs on a set of datasets (can either be a character
-#' vector or any object for which an internal `dataset_code()` method exists), the set
-#' of files to be downloaded can either be passed as the `files` argument or
+#' The function `fetch_files()` downloads files associated to a dataset. The
+#' main object types to specify which files to download are either
+#' `DataSetFileDTO` or `FileInfoDssDTO`. Whenever dispatch occurs on
+#' `FileInfoDssDTO`, either a character vector of data set codes has to be
+#' passed as `data_sets` argument to `fetch_files()` or each `FileInfoDssDTO`
+#' object has to contain a `data_set` attribute.
+#' 
+#' Additionally, for convenience, `fetch_files()` can be dispatched on a set
+#' of datasets (either specified as character vector or any object for which
+#' the internal `dataset_code()` method exists, including data set and data
+#' set id objects as well as data set reference objects), the set of files to be downloaded can either be passed as the
+#' `files` argument or
 #' all available files for that dataset are listed using [list_files()]
 #' (folders themselves are removed), and this set of files is filtered if a
 #' regular expression is passed as argument `file_regex`. The resulting set

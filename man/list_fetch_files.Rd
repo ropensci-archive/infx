@@ -120,26 +120,42 @@ to contain a \code{data_set} attribute.}
 \description{
 A dataset in openBIS represents a collection of files. The function
 \code{list_files()} lists files associated with one or more datasets by
-returning a set of \code{FileInfoDssDTO} objects. As this object type
+returning a set of \code{FileInfoDssDTO} objects. As this object type does not
+contain information on data set association, the data set code is saved
+as \code{data_set} attribute with each \code{FileInfoDssDTO} object. Data set files
+can be fetched using \code{fetch_files()}, which can either retrieve all
+associated files or use file path information, for example from
+\code{FileInfoDssDTO} objects to only download a subset of files.
 }
 \details{
-Datasets can be specified as character vector of dataset codes
-and therefore all objects for which the internal method \code{dataset_code()}
-exists can be used to select datasets. In addition to these dataset-like
-objects,
+Data sets for \code{list_files()} can be specified as character vector of
+dataset codes and therefore all objects for which the internal method
+\code{dataset_code()} exists can be used to select datasets. This includes data
+set and data set id objects as well as the various flavors of data set
+reference objects. In addition to these dataset-representing objects,
 dispatch on \code{DataSetFileDTO} objects is possible as well.
 
-Furthermore, the file search can be limited to a certain path within the
-dataset and the search can be carried out recursively or non-recursively.
+File listing can be limited to a certain path within the dataset and the
+search can be carried out recursively or non-recursively. In case a set of
+objects is passed, the search-tuning arguments \code{path} and \code{recursive} have
+to be either of length 1 or of the same length as \code{x}. If dispatch occurs
+on \code{DataSetFileDTO} objects, the \code{path} and \code{recursive} arguments are not
+needed, as this information is already encoded in the objects passed as \code{x}.
 A separate API call is necessary for each of the objects the dispatch
-occurs on. In case a set of objects is passed, the search-tuning arguments
-\code{path} and \code{recursive} have to be either of length 1 or of the same length
-as \code{x}.
+occurs on.
 
-The function \code{fetch_files()} downloads files associated to a dataset.
-Whenever dispatch occurs on a set of datasets (can either be a character
-vector or any object for which an internal \code{dataset_code()} method exists), the set
-of files to be downloaded can either be passed as the \code{files} argument or
+The function \code{fetch_files()} downloads files associated to a dataset. The
+main object types to specify which files to download are either
+\code{DataSetFileDTO} or \code{FileInfoDssDTO}. Whenever dispatch occurs on
+\code{FileInfoDssDTO}, either a character vector of data set codes has to be
+passed as \code{data_sets} argument to \code{fetch_files()} or each \code{FileInfoDssDTO}
+object has to contain a \code{data_set} attribute.
+
+Additionally, for convenience, \code{fetch_files()} can be dispatched on a set
+of datasets (either specified as character vector or any object for which
+the internal \code{dataset_code()} method exists, including data set and data
+set id objects as well as data set reference objects), the set of files to be downloaded can either be passed as the
+\code{files} argument or
 all available files for that dataset are listed using \code{\link[=list_files]{list_files()}}
 (folders themselves are removed), and this set of files is filtered if a
 regular expression is passed as argument \code{file_regex}. The resulting set
