@@ -15,6 +15,7 @@
 \alias{list_plate_metadata}
 \alias{list_plate_metadata.PlateIdentifier}
 \alias{list_plate_metadata.Plate}
+\alias{well_pos}
 \title{List wells/plates}
 \usage{
 list_plates(token, x = NULL, ...)
@@ -45,6 +46,8 @@ list_plate_metadata(token, x, ...)
 \method{list_plate_metadata}{PlateIdentifier}(token, x, ...)
 
 \method{list_plate_metadata}{Plate}(token, x, ...)
+
+well_pos(row, col)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -61,6 +64,11 @@ experiment, specified either as \code{Experiment} or \code{ExperimentIdentifier}
 
 \item{include_datasets}{Logical switch indicating whether to also return
 the connected image and image analysis data sets.}
+
+\item{row}{Character vector plate row names or numeric vector of plate row
+indices.}
+
+\item{col}{Numeric vector of plate row indices.}
 }
 \description{
 Using \code{list_plates()}, all plates available to the user (corresponding to

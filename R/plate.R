@@ -210,3 +210,39 @@ list_plate_metadata.PlateIdentifier <- function(token, x, ...)
 list_plate_metadata.Plate <- function(token, x, ...)
   make_request(api_url("sas"), "getPlateMetadataList",
                list(token, as_plateid(x)))
+
+#' @param row Character vector plate row names or numeric vector of plate row
+#' indices.
+#' @param col Numeric vector of plate row indices.
+#' 
+#' @rdname list_plate_well
+#' @export
+#' 
+well_pos <- function(row, col) {
+
+  col <- as.integer(col)
+
+  if (is.character(row)) {
+    row <- toupper(row)
+    row <- sapply(row, match, LETTERS)
+  } else
+   row <- as.integer(row)
+
+  assert_that(is.integer(row), is.integer(col))
+
+  max_len <- max(length(row), length(col))
+
+  if (max_length > 1L) {
+    if (length(row) == 1L)
+      row <- rep(row, max_length)
+    if (length(col) == 1L)
+      col <- rep(col, max_length)
+  }
+
+  assert_that(length(row) == length(col))
+
+  new_json_vec(
+    Map(json_class, wellRow = row, wellColumn = col,
+        MoreArgs = list(class = "WellPosition"))
+  )
+}
