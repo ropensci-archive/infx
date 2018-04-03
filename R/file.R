@@ -1,22 +1,26 @@
 
 #' List and download files
-#'
-#' The function `list_files()` lists files associated with one or more
-#' dataset(s). Datasets can be specified as character vector of dataset codes
-#' and therefore all objects for which a [dataset_code()] method exists can
-#' be used to select datasets. In addition to these dataset-like objects,
+#' 
+#' A dataset in openBIS represents a collection of files. The function
+#' `list_files()` lists files associated with one or more datasets by
+#' returning a set of `FileInfoDssDTO` objects. As this object type 
+#' 
+#' Datasets can be specified as character vector of dataset codes
+#' and therefore all objects for which the internal method `dataset_code()`
+#' exists can be used to select datasets. In addition to these dataset-like
+#' objects,
 #' dispatch on `DataSetFileDTO` objects is possible as well.
 #' 
 #' Furthermore, the file search can be limited to a certain path within the
 #' dataset and the search can be carried out recursively or non-recursively.
 #' A separate API call is necessary for each of the objects the dispatch
 #' occurs on. In case a set of objects is passed, the search-tuning arguments
-#' `path` and `recursive` have to be euther of length 1 or of the same length
+#' `path` and `recursive` have to be either of length 1 or of the same length
 #' as `x`.
 #' 
 #' The function `fetch_files()` downloads files associated to a dataset.
 #' Whenever dispatch occurs on a set of datasets (can either be a character
-#' vector or any object for which a [dataset_code()] method exists), the set
+#' vector or any object for which an internal `dataset_code()` method exists), the set
 #' of files to be downloaded can either be passed as the `files` argument or
 #' all available files for that dataset are listed using [list_files()]
 #' (folders themselves are removed), and this set of files is filtered if a
@@ -283,14 +287,16 @@ fetch_files.DataSetFileDTO <- function(token,
 }
 
 #' @param data_sets Either a single dataset object (anything that has a
-#' `dataset_code()` method) or a set of objects of the same length as `x`.
+#' `dataset_code()` method) or a set of objects of the same length as `x`. If
+#' `NULL` (default), each `FileInfoDssDTO` object passed as `x` is expected
+#' to contain a `data_set` attribute.
 #' 
 #' @rdname list_fetch_files
 #' @export
 #' 
 fetch_files.FileInfoDssDTO <- function(token,
                                        x,
-                                       data_sets,
+                                       data_sets = NULL,
                                        n_con = 5L,
                                        finally = identity,
                                        ...) {
@@ -300,20 +306,31 @@ fetch_files.FileInfoDssDTO <- function(token,
   assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
   n_con <- min(as.integer(n_con), length(x))
 
-  if (!is.character(data_sets))
-    data_sets <- dataset_code(data_sets)
+  if (is.null(data_sets)) {
 
-  max_length <- max(length(x), length(data_sets))
+    assert_that(all(sapply(x, has_attr, "data_set")))
+    data_sets <- sapply(x, attr, "data_set")
 
-  if (max_length > 1L) {
+    if (!is.character(data_sets))
+      data_sets <- dataset_code(data_sets)
 
-    if (length(x) == 1L)
-      x <- rep(x, max_length)
+  } else {
 
-    if (length(data_sets) == 1L)
-      data_sets <- rep(data_sets, max_length)
+    if (!is.character(data_sets))
+      data_sets <- dataset_code(data_sets)
 
-    assert_that(length(x) == length(data_sets))
+    max_length <- max(length(x), length(data_sets))
+
+    if (max_length > 1L) {
+
+      if (length(x) == 1L)
+        x <- rep(x, max_length)
+
+      if (length(data_sets) == 1L)
+        data_sets <- rep(data_sets, max_length)
+
+      assert_that(length(x) == length(data_sets))
+    }
   }
 
   dirs <- sapply(x, `[[`, "isDirectory")

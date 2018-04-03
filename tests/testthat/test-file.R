@@ -61,7 +61,15 @@ test_that("files can be fetched", {
     expect_s3_class(attr(data[[i]], "file"), "json_class")
   }
 
-  expect_silent(fetch_files(tok, files_1[is_file_1], codes[2], n_con = 1L))
+  data <- fetch_files(tok, files_1[is_file_1], n_con = 1L)
+  expect_length(data, sum(is_file_1))
+  for (i in seq_along(data)) {
+    expect_is(data[[i]], "raw")
+    expect_is(attr(data[[i]], "data_set"), "character")
+    expect_s3_class(attr(data[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(data[[i]], "file"), "json_class")
+  }
+
   expect_error(fetch_files(tok, files_1[is_file_1], codes[2], n_con = 1L,
                            n_try = 0L))
 
@@ -71,7 +79,7 @@ test_that("files can be fetched", {
   expect_error(data <- fetch_files(tok, files_2, codes[2:3], n_con = 1L))
   expect_warning(data <- fetch_files(tok, files_2,
                                      sapply(files_2, attr, "data_set"),
-                                      n_con = 1L),
+                                     n_con = 1L),
                  "cannot fetch directories")
   expect_length(data, sum(is_file_2))
   for (i in seq_along(data)) {
@@ -81,15 +89,15 @@ test_that("files can be fetched", {
     expect_is(data[[i]], "raw")
   }
 
-  expect_silent(fetch_files(tok, files_2[is_file_2],
-                            sapply(files_2[is_file_2], attr, "data_set"),
-                            n_con = 1L))
+  expect_identical(fetch_files(tok, files_2[is_file_2],
+                               sapply(files_2[is_file_2], attr, "data_set"),
+                               n_con = 1L),
+                   data)
 
   files <- list_files(tok, "20120629084351794-603357")
   files <- files[grepl("Image\\.", sapply(files, `[[`, "pathInDataSet"))]
 
-  expect_silent(data <- fetch_files(tok, files, "20120629084351794-603357",
-                                    n_con = 5L))
+  data <- fetch_files(tok, files, "20120629084351794-603357", n_con = 5L)
   expect_length(data, length(files))
   for (i in seq_along(data)) {
     expect_is(attr(data[[i]], "data_set"), "character")
@@ -145,101 +153,148 @@ test_that("file fetchers work", {
 
   check_skip()
 
-  expect_silent(
-    do_requests_serial("https://httpbin.org/get", NA, n_try = 1L,
-                       create_handle = infx:::create_download_handle,
-                       check = infx:::check_download_result,
-                       finally = identity)
-  )
+  dat <- do_requests_serial("https://httpbin.org/get", NA, n_try = 1L,
+                            create_handle = infx:::create_download_handle,
+                            check = infx:::check_download_result,
+                            finally = identity)
+  expect_is(dat, "list")
+  expect_length(dat, 1L)
+  expect_is(dat[[1]], "raw")
 
-  expect_silent(
-    do_requests_serial(rep("https://httpbin.org/get", 2), rep(NA, 2),
-                       n_try = 1L,
-                       create_handle = infx:::create_download_handle,
-                       check = infx:::check_download_result,
-                       finally = identity)
-  )
+  dat <- do_requests_serial(rep("https://httpbin.org/get", 2), rep(NA, 2),
+                            n_try = 1L,
+                            create_handle = infx:::create_download_handle,
+                            check = infx:::check_download_result,
+                            finally = identity)
+  expect_is(dat, "list")
+  expect_length(dat, 2L)
+  for (i in seq_along(dat))
+    expect_is(dat[[i]], "raw")
+
 
   expect_warning(
-    do_requests_serial("https://httpbin.org/get", 1000L, n_try = 1L,
-                       create_handle = infx:::create_download_handle,
-                       check = infx:::check_download_result,
-                       finally = identity),
+    dat <- do_requests_serial("https://httpbin.org/get", 1000L, n_try = 1L,
+                              create_handle = infx:::create_download_handle,
+                              check = infx:::check_download_result,
+                              finally = identity),
     "download incomplete"
   )
 
+  expect_is(dat, "list")
+  expect_length(dat, 1L)
+  expect_null(dat[[1L]])
+
   expect_warning(
-    do_requests_serial("https://httpbin.org/status/500", NA, n_try = 1L,
-                       create_handle = infx:::create_download_handle,
-                       check = infx:::check_download_result,
-                       finally = identity),
+    dat <- do_requests_serial("https://httpbin.org/status/500", NA, n_try = 1L,
+                              create_handle = infx:::create_download_handle,
+                              check = infx:::check_download_result,
+                              finally = identity),
     "could not carry out request"
   )
 
+  expect_is(dat, "list")
+  expect_length(dat, 1L)
+  expect_null(dat[[1L]])
+
   expect_warning(
-    do_requests_serial(rep("https://httpbin.org/get", 2), rep(1000L, 2),
-                       n_try = 1L,
-                       create_handle = infx:::create_download_handle,
-                       check = infx:::check_download_result,
-                       finally = identity),
+    dat <- do_requests_serial(rep("https://httpbin.org/get", 2), rep(1000L, 2),
+                              n_try = 1L,
+                              create_handle = infx:::create_download_handle,
+                              check = infx:::check_download_result,
+                              finally = identity),
     "download incomplete"
   )
 
+  expect_is(dat, "list")
+  expect_length(dat, 2L)
+  for (i in seq_along(dat))
+    expect_null(dat[[i]])
+
   expect_warning(
-    do_requests_serial(rep("https://httpbin.org/status/500", 2), rep(NA, 2),
-                       n_try = 1L,
-                       create_handle = infx:::create_download_handle,
-                       check = infx:::check_download_result,
-                       finally = identity),
+    dat <- do_requests_serial(rep("https://httpbin.org/status/500", 2),
+                              rep(NA, 2),
+                              n_try = 1L,
+                              create_handle = infx:::create_download_handle,
+                              check = infx:::check_download_result,
+                              finally = identity),
     "could not carry out request"
   )
 
-  expect_silent(
-    do_requests_parallel("https://httpbin.org/get", NA, n_try = 1L,
-                         create_handle = infx:::create_download_handle,
-                         check = infx:::check_download_result,
-                         finally = identity)
-  )
+  expect_is(dat, "list")
+  expect_length(dat, 2L)
+  for (i in seq_along(dat))
+    expect_null(dat[[i]])
 
-  expect_silent(
-    do_requests_parallel(rep("https://httpbin.org/get", 2), rep(NA, 2),
-                         n_try = 1L,
-                         create_handle = infx:::create_download_handle,
-                         check = infx:::check_download_result,
-                         finally = identity)
-  )
+  dat <- do_requests_parallel("https://httpbin.org/get", NA, n_try = 1L,
+                              create_handle = infx:::create_download_handle,
+                              check = infx:::check_download_result,
+                              finally = identity)
+  expect_is(dat, "list")
+  expect_length(dat, 1L)
+  expect_is(dat[[1]], "raw")
+
+  dat <- do_requests_parallel(rep("https://httpbin.org/get", 2), rep(NA, 2),
+                              n_try = 1L,
+                              create_handle = infx:::create_download_handle,
+                              check = infx:::check_download_result,
+                              finally = identity)
+  expect_is(dat, "list")
+  expect_length(dat, 2L)
+  for (i in seq_along(dat))
+    expect_is(dat[[i]], "raw")
 
   expect_warning(
-    do_requests_parallel("https://httpbin.org/get", 1000L, n_try = 1L,
-                         create_handle = infx:::create_download_handle,
-                         check = infx:::check_download_result,
-                         finally = identity),
+    dat <- do_requests_parallel("https://httpbin.org/get", 1000L, n_try = 1L,
+                                create_handle = infx:::create_download_handle,
+                                check = infx:::check_download_result,
+                                finally = identity),
     "download incomplete"
   )
 
+  expect_is(dat, "list")
+  expect_length(dat, 1L)
+  expect_null(dat[[1L]])
+
   expect_warning(
-    do_requests_parallel("https://httpbin.org/status/500", NA, n_try = 1L,
-                         create_handle = infx:::create_download_handle,
-                         check = infx:::check_download_result,
-                         finally = identity),
+    dat <- do_requests_parallel("https://httpbin.org/status/500", NA,
+                                n_try = 1L,
+                                create_handle = infx:::create_download_handle,
+                                check = infx:::check_download_result,
+                                finally = identity),
     "could not carry out request"
   )
 
+  expect_is(dat, "list")
+  expect_length(dat, 1L)
+  expect_null(dat[[1L]])
+
   expect_warning(
-    do_requests_parallel(rep("https://httpbin.org/get", 2), rep(1000L, 2),
-                         n_try = 1L,
-                         create_handle = infx:::create_download_handle,
-                         check = infx:::check_download_result,
-                         finally = identity),
+    dat <- do_requests_parallel(rep("https://httpbin.org/get", 2),
+                                rep(1000L, 2),
+                                n_try = 1L,
+                                create_handle = infx:::create_download_handle,
+                                check = infx:::check_download_result,
+                                finally = identity),
     "download incomplete"
   )
 
+  expect_is(dat, "list")
+  expect_length(dat, 2L)
+  for (i in seq_along(dat))
+    expect_null(dat[[i]])
+
   expect_warning(
-    do_requests_parallel(rep("https://httpbin.org/status/500", 2), rep(NA, 2),
-                         n_try = 1L,
-                         create_handle = infx:::create_download_handle,
-                         check = infx:::check_download_result,
-                         finally = identity),
+    dat <- do_requests_parallel(rep("https://httpbin.org/status/500", 2),
+                                rep(NA, 2),
+                                n_try = 1L,
+                                create_handle = infx:::create_download_handle,
+                                check = infx:::check_download_result,
+                                finally = identity),
     "could not carry out request"
   )
+
+  expect_is(dat, "list")
+  expect_length(dat, 2L)
+  for (i in seq_along(dat))
+    expect_null(dat[[i]])
 })
