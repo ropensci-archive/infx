@@ -237,7 +237,8 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
 #' combined to `FeatureVectorDatasetWellReference` objects where each instance
 #' contains a single object of the inputted sets. If either argument is of
 #' length greater than 1, the other argument has to be of the same length or of
-#' length 1, in which case it will be [base:rep()]eated to the required length.
+#' length 1, in which case it will be [base::rep()]eated to the required
+#' length.
 #' 
 #' @param x A set of `FeatureVectorDatasetReference` objects.
 #' @param wells A set of `WellPosition` objects.

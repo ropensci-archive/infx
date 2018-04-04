@@ -19,6 +19,7 @@ a set of \code{FeatureVectorDatasetReference} and a set of \code{WellPosition} a
 combined to \code{FeatureVectorDatasetWellReference} objects where each instance
 contains a single object of the inputted sets. If either argument is of
 length greater than 1, the other argument has to be of the same length or of
-length 1, in which case it will be \code{\link[=base:rep]{base:rep()}}eated to the required length.
+length 1, in which case it will be \code{\link[base:rep]{base::rep()}}eated to the required
+length.
 }
 \keyword{internal}
