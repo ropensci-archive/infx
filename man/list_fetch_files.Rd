@@ -14,6 +14,7 @@
 \alias{list_files.DataSetFileDTO}
 \alias{fetch_files}
 \alias{fetch_files.character}
+\alias{fetch_files.NULL}
 \alias{fetch_files.DataSet}
 \alias{fetch_files.DatasetIdentifier}
 \alias{fetch_files.DatasetReference}
@@ -57,38 +58,29 @@ list_files(token, x, ...)
 
 fetch_files(token, x, ...)
 
-\method{fetch_files}{character}(token, x, files = NULL, file_regex = NULL,
-  ...)
+\method{fetch_files}{character}(token, x, files = NULL, n_con = 5L, ...)
 
-\method{fetch_files}{DataSet}(token, x, files = NULL, file_regex = NULL,
-  ...)
+\method{fetch_files}{NULL}(token, x, files, n_con = 5L, ...)
 
-\method{fetch_files}{DatasetIdentifier}(token, x, files = NULL,
-  file_regex = NULL, ...)
+\method{fetch_files}{DataSet}(token, x, ...)
 
-\method{fetch_files}{DatasetReference}(token, x, files = NULL,
-  file_regex = NULL, ...)
+\method{fetch_files}{DatasetIdentifier}(token, x, ...)
 
-\method{fetch_files}{FeatureVectorDatasetReference}(token, x, files = NULL,
-  file_regex = NULL, ...)
+\method{fetch_files}{DatasetReference}(token, x, ...)
 
-\method{fetch_files}{FeatureVectorDatasetWellReference}(token, x,
-  files = NULL, file_regex = NULL, ...)
+\method{fetch_files}{FeatureVectorDatasetReference}(token, x, ...)
 
-\method{fetch_files}{ImageDatasetReference}(token, x, files = NULL,
-  file_regex = NULL, ...)
+\method{fetch_files}{FeatureVectorDatasetWellReference}(token, x, ...)
 
-\method{fetch_files}{MicroscopyImageReference}(token, x, files = NULL,
-  file_regex = NULL, ...)
+\method{fetch_files}{ImageDatasetReference}(token, x, ...)
 
-\method{fetch_files}{PlateImageReference}(token, x, files = NULL,
-  file_regex = NULL, ...)
+\method{fetch_files}{MicroscopyImageReference}(token, x, ...)
 
-\method{fetch_files}{DataSetFileDTO}(token, x, n_con = 5L,
-  finally = identity, ...)
+\method{fetch_files}{PlateImageReference}(token, x, ...)
 
-\method{fetch_files}{FileInfoDssDTO}(token, x, data_sets = NULL, n_con = 5L,
-  finally = identity, ...)
+\method{fetch_files}{DataSetFileDTO}(token, x, ...)
+
+\method{fetch_files}{FileInfoDssDTO}(token, x, data_sets = NULL, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -103,14 +95,11 @@ fetch_files(token, x, ...)
 recursively.}
 
 \item{files}{Optional set of \code{FileInfoDssDTO} objects. If NULL, all files
-corresponding to the specified datasets are assumed.}
-
-\item{file_regex}{Regular expression applied to filenames.}
+corresponding to the specified datasets are assumed. This file list can be
+filtered, by passing a regular expression as \code{file_regex} argument via
+\code{...}.}
 
 \item{n_con}{The number of simultaneous connections.}
-
-\item{finally}{A function that is applied to the result of a successful
-download.}
 
 \item{data_sets}{Either a single dataset object (anything that has a
 \code{dataset_code()} method) or a set of objects of the same length as \code{x}. If
@@ -130,7 +119,7 @@ associated files or use file path information, for example from
 \details{
 Data sets for \code{list_files()} can be specified as character vector of
 dataset codes and therefore all objects for which the internal method
-\code{dataset_code()} exists can be used to select datasets. This includes data
+\code{\link[=dataset_code]{dataset_code()}} exists can be used to select datasets. This includes data
 set and data set id objects as well as the various flavors of data set
 reference objects. In addition to these dataset-representing objects,
 dispatch on \code{DataSetFileDTO} objects is possible as well.
@@ -153,7 +142,7 @@ object has to contain a \code{data_set} attribute.
 
 Additionally, for convenience, \code{fetch_files()} can be dispatched on a set
 of datasets (either specified as character vector or any object for which
-the internal \code{dataset_code()} method exists, including data set and data
+the internal \code{\link[=dataset_code]{dataset_code()}} method exists, including data set and data
 set id objects as well as data set reference objects), the set of files to be downloaded can either be passed as the
 \code{files} argument or
 all available files for that dataset are listed using \code{\link[=list_files]{list_files()}}

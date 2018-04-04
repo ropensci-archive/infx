@@ -12,7 +12,7 @@
 #' 
 #' Data sets for `list_files()` can be specified as character vector of
 #' dataset codes and therefore all objects for which the internal method
-#' `dataset_code()` exists can be used to select datasets. This includes data
+#' [dataset_code()] exists can be used to select datasets. This includes data
 #' set and data set id objects as well as the various flavors of data set
 #' reference objects. In addition to these dataset-representing objects,
 #' dispatch on `DataSetFileDTO` objects is possible as well.
@@ -35,7 +35,7 @@
 #' 
 #' Additionally, for convenience, `fetch_files()` can be dispatched on a set
 #' of datasets (either specified as character vector or any object for which
-#' the internal `dataset_code()` method exists, including data set and data
+#' the internal [dataset_code()] method exists, including data set and data
 #' set id objects as well as data set reference objects), the set of files to be downloaded can either be passed as the
 #' `files` argument or
 #' all available files for that dataset are listed using [list_files()]
@@ -186,99 +186,181 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 }
 
 #' @rdname list_fetch_files
-#' 
-#' @param files Optional set of `FileInfoDssDTO` objects. If NULL, all files
-#' corresponding to the specified datasets are assumed.
-#' @param file_regex Regular expression applied to filenames. 
-#' 
 #' @export
 #' 
 fetch_files <- function(token, x, ...)
   UseMethod("fetch_files", x)
 
-fetch_dataset_files <- function(token,
+#' @param files Optional set of `FileInfoDssDTO` objects. If NULL, all files
+#' corresponding to the specified datasets are assumed. This file list can be
+#' filtered, by passing a regular expression as `file_regex` argument via
+#' `...`.
+#' @param n_con The number of simultaneous connections.
+#' 
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.character <- function(token,
+                                  x,
+                                  files = NULL,
+                                  n_con = 5L,
+                                  ...) {
+
+  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
+
+  if (!is.null(files) && length(files) != length(x)) {
+
+    max_len <- max(length(files), length(x))
+
+    if (max_len > 1L) {
+      if (length(files) == 1L)
+        files <- rep(files, max_len)
+      if (length(x) == 1L)
+        x <- rep(x, max_len)
+    }
+
+    assert_that(length(x) == length(files))
+  }
+
+  n_con <- min(as.integer(n_con), length(x))
+
+  fetch_ds_files(token, files, data_sets = x, n_con = n_con, ...)
+}
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.NULL <- function(token,
+                             x,
+                             files,
+                             n_con = 5L,
+                             ...) {
+
+  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
+  n_con <- min(as.integer(n_con), length(files))
+
+  fetch_ds_files(token, files, n_con = n_con, ...)
+}
+
+fetch_ds <- function(token, x, ...)
+  fetch_files(token, dataset_code(x), ...)
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.DataSet <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.DatasetIdentifier <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.DatasetReference <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.FeatureVectorDatasetReference <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.FeatureVectorDatasetWellReference <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.ImageDatasetReference <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.MicroscopyImageReference <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.PlateImageReference <- fetch_ds
+
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.DataSetFileDTO <- function(token, x, ...)
+  fetch_files(token, NULL, x, ...)
+
+#' @param data_sets Either a single dataset object (anything that has a
+#' `dataset_code()` method) or a set of objects of the same length as `x`. If
+#' `NULL` (default), each `FileInfoDssDTO` object passed as `x` is expected
+#' to contain a `data_set` attribute.
+#' 
+#' @rdname list_fetch_files
+#' @export
+#' 
+fetch_files.FileInfoDssDTO <- function(token, x, data_sets = NULL, ...)
+  fetch_files(token, data_sets, x, ...)
+
+fetch_ds_files <- function(token, x, ...)
+  UseMethod("fetch_ds_files", x)
+
+fetch_ds_files.NULL <- function(token,
                                 x,
-                                files = NULL,
+                                data_sets,
                                 file_regex = NULL,
                                 ...) {
 
-  if (is.null(files)) {
-    files <- list_files(token, x, ...)
-    files <- files[!sapply(files, `[[`, "isDirectory")]
-  } else
-    assert_that(has_subclass(files, "FileInfoDssDTO"),
-                all(sapply(files, has_attr, "data_set")))
+  files <- list_files(token, data_sets, ...)
+  files <- files[!sapply(files, `[[`, "isDirectory")]
 
   if (!is.null(file_regex)) {
     assert_that(is.string(file_regex))
     files <- files[grepl(file_regex, sapply(files, `[[`, "pathInDataSet"))]
   }
 
-  fetch_files(token, files, sapply(files, attr, "data_set"), ...)
+  fetch_files(token, sapply(files, attr, "data_set"), files, ...)
 }
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.character <- fetch_dataset_files
+fetch_ds_files.character <- function(token,
+                                     x,
+                                     data_sets,
+                                     n_con,
+                                     ...) {
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.DataSet <- fetch_dataset_files
+  assert_that(is.character(data_sets),
+              length(data_sets) == length(x))
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.DatasetIdentifier <- fetch_dataset_files
+  url_calls <- Map(function(ds, path) {
+    call("list_download_urls", token, ds, path)
+  }, data_sets, x)
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.DatasetReference <- fetch_dataset_files
+  file_sizes <- as.list(rep(NA, length(url_calls)))
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.FeatureVectorDatasetReference <- fetch_dataset_files
+  res <- if (length(url_calls) > 1L && n_con > 1L)
+    do_requests_parallel(url_calls, file_sizes, n_con, 
+                         chunked = TRUE,
+                         create_handle = create_download_handle,
+                         check = check_download_result,
+                         ...)
+  else
+    do_requests_serial(url_calls, file_sizes,
+                       create_handle = create_download_handle,
+                       check = check_download_result,
+                       ...)
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.FeatureVectorDatasetWellReference <- fetch_dataset_files
+  Map(function(dat, ds, f) {
+    attributes(dat) <- c(attributes(dat), list(data_set = ds, file = f))
+    dat
+  }, res, data_sets, x)
+}
 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.ImageDatasetReference <- fetch_dataset_files
-
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.MicroscopyImageReference <- fetch_dataset_files
-
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.PlateImageReference <- fetch_dataset_files
-
-#' @param n_con The number of simultaneous connections.
-#' @param finally A function that is applied to the result of a successful
-#' download.
-#' 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.DataSetFileDTO <- function(token,
-                                       x,
-                                       n_con = 5L,
-                                       finally = identity,
-                                       ...) {
+fetch_ds_files.DataSetFileDTO <- function(token,
+                                          x,
+                                          n_con,
+                                          ...) {
 
   x <- as_json_vec(x)
-
-  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
-  n_con <- min(as.integer(n_con), length(x))
 
   url_calls <- lapply(x, function(y) call("list_download_urls", token, y))
 
@@ -289,12 +371,12 @@ fetch_files.DataSetFileDTO <- function(token,
                          chunked = TRUE,
                          create_handle = create_download_handle,
                          check = check_download_result,
-                         finally = finally, ...)
+                         ...)
   else
     do_requests_serial(url_calls, file_sizes,
                        create_handle = create_download_handle,
                        check = check_download_result,
-                       finally = finally, ...)
+                       ...)
 
   Map(function(dat, f) {
     attributes(dat) <- c(attributes(dat), list(file = f))
@@ -302,52 +384,21 @@ fetch_files.DataSetFileDTO <- function(token,
   }, res, x)
 }
 
-#' @param data_sets Either a single dataset object (anything that has a
-#' `dataset_code()` method) or a set of objects of the same length as `x`. If
-#' `NULL` (default), each `FileInfoDssDTO` object passed as `x` is expected
-#' to contain a `data_set` attribute.
-#' 
-#' @rdname list_fetch_files
-#' @export
-#' 
-fetch_files.FileInfoDssDTO <- function(token,
-                                       x,
-                                       data_sets = NULL,
-                                       n_con = 5L,
-                                       finally = identity,
-                                       ...) {
+fetch_ds_files.FileInfoDssDTO <- function(token,
+                                          x,
+                                          data_sets = NULL,
+                                          n_con,
+                                          ...) {
 
   x <- as_json_vec(x)
 
-  assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
-  n_con <- min(as.integer(n_con), length(x))
-
   if (is.null(data_sets)) {
-
     assert_that(all(sapply(x, has_attr, "data_set")))
     data_sets <- sapply(x, attr, "data_set")
-
-    if (!is.character(data_sets))
-      data_sets <- dataset_code(data_sets)
-
-  } else {
-
-    if (!is.character(data_sets))
-      data_sets <- dataset_code(data_sets)
-
-    max_length <- max(length(x), length(data_sets))
-
-    if (max_length > 1L) {
-
-      if (length(x) == 1L)
-        x <- rep(x, max_length)
-
-      if (length(data_sets) == 1L)
-        data_sets <- rep(data_sets, max_length)
-
-      assert_that(length(x) == length(data_sets))
-    }
   }
+
+  assert_that(is.character(data_sets),
+              length(data_sets) == length(x))
 
   dirs <- sapply(x, `[[`, "isDirectory")
   if (any(dirs)) {
@@ -357,9 +408,8 @@ fetch_files.FileInfoDssDTO <- function(token,
     data_sets <- data_sets[!dirs]
   }
 
-  url_calls <- mapply(function(a, b) call("list_download_urls", token, a, b),
-                      data_sets, sapply(x, `[[`, "pathInDataSet"),
-                      SIMPLIFY = FALSE, USE.NAMES = FALSE)
+  url_calls <- Map(function(a, b) call("list_download_urls", token, a, b),
+                   data_sets, sapply(x, `[[`, "pathInDataSet"))
 
   file_sizes <- lapply(x, `[[`, "fileSize")
 
@@ -368,13 +418,12 @@ fetch_files.FileInfoDssDTO <- function(token,
                          chunked = TRUE,
                          create_handle = create_download_handle,
                          check = check_download_result,
-                         finally = finally, ...)
+                         ...)
   else
     do_requests_serial(url_calls, file_sizes,
                        create_handle = create_download_handle,
                        check = check_download_result,
-                       finally = finally, ...)
-
+                       ...)
 
   Map(function(dat, ds, f) {
     attributes(dat) <- c(attributes(dat), list(data_set = ds, file = f))
