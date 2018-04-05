@@ -133,50 +133,49 @@ needed, as this information is already encoded in the objects passed as \code{x}
 A separate API call is necessary for each of the objects the dispatch
 occurs on.
 
-The function \code{fetch_files()} downloads files associated to a dataset. The
-main object types to specify which files to download are either
-\code{DataSetFileDTO} or \code{FileInfoDssDTO}. Whenever dispatch occurs on
-\code{FileInfoDssDTO}, either a character vector of data set codes has to be
-passed as \code{data_sets} argument to \code{fetch_files()} or each \code{FileInfoDssDTO}
-object has to contain a \code{data_set} attribute.
+The function \code{fetch_files()} downloads files associated with a dataset.
+In order to identify a file, both a data set code and a file path, relative
+to the data set root, are required. \code{fetch_files()} can be called in a
+variety of ways and internally uses a double dispatch mechanism, first
+resolving the data set codes and then calling the non-exported function
+\code{fetch_ds_files()} which dispatches on file path objects.
 
-Additionally, for convenience, \code{fetch_files()} can be dispatched on a set
-of datasets (either specified as character vector or any object for which
-the internal \code{\link[=dataset_code]{dataset_code()}} method exists, including data set and data
-set id objects as well as data set reference objects), the set of files to be downloaded can either be passed as the
-\code{files} argument or
-all available files for that dataset are listed using \code{\link[=list_files]{list_files()}}
-(folders themselves are removed), and this set of files is filtered if a
-regular expression is passed as argument \code{file_regex}. The resulting set
-of \code{FileInfoDssDTO} objects alongside the corresponding dataset ids are then
-fetched, using \code{fetch_files()}. All named arguments passed as \code{...} are
-forwarded to \code{\link[=list_files]{list_files()}} and the \code{FileInfoDssDTO}-specific
-\code{fetch_files()} method.
+Data set code information can either be communicated using any of the
+objects understood by \code{\link[=dataset_code]{dataset_code()}} (including data set, data set id and
+data set reference objects) or directly as a character vector, passed as
+\code{x} argument. In case data set code information is omitted (passed to \code{x}
+as \code{NULL}), the objects encoding file paths have to specify the
+corresponding data sets. Furthermore, \code{DataSetFileDTO} objects may be
+passed as \code{x} argument to \code{fetch_files()}, which will internally call
+\code{fetch_files()} again, setting the argument \code{x} to \code{NULL} and pass the
+\code{DataSetFileDTO} objects as files argument. Finally, if \code{FileInfoDssDTO}
+are passed to \code{fetch_files()} as \code{x} argument, an optional argument
+\code{data_sets} may be specified (it defaults to \code{NULL}) and as above,
+\code{fetch_files()} is called again with these two arguments rearranged.
 
-In addition to datasets, dispatch can be on \code{FileInfoDssDTO} or
-\code{DataSetFileDTO} objects. In case of \code{FileInfoDssDTO} objects being passed,
-an additional character vector specifying the corresponding dataset ids is
-required, as \code{FileInfoDssDTO} objects do not contain any dataset identifying
-information. This character vector of dataset ids may be of length 1 or of
-the same length as the number of \code{FileInfoDssDTO} objects. Finally,
-\code{DataSetFileDTO} objects contain both path and dataset information so a
-single object uniquely identifies a file in a dataset.
+The internal generic function \code{fetch_ds_files()} can be dispatched on
+several objects again. When no files are specified (\code{NULL} is passed as
+\code{files} argument to \code{fetch_files()}), All available files for the given
+data sets are queried. This list can be filtered using the \code{file_regex()}
+argument which can be a single regular expression and is applied to file
+paths. File paths can be specified as character vector, \code{FileInfoDssDTO} or
+\code{DataSetFileDTO} objects. If dispatch occurs on \code{FileInfoDssDTO}, and no
+data set code information is available (\code{NULL} passed as \code{x} or \code{data_sets}
+argument to \code{fetch_files()}) each \code{FileInfoDssDTO} must contain a \code{data_set}
+attribute. Additionally, downloaded files are checked for completeness, as
+these objects contain file sizes. If dispatch occurs on \code{DataSetFileDTO}
+objects or a character vector, this sanity check is not possible.
 
-File fetching may be carried out in serial or in parallel fashion,
-controlled by the \code{n_con} argument. If values \code{FALSE} or any integer \code{<= 1L}
-are passed, downloads are performed non-concurrently and otherwise the
-number of simultaneous connections is controlled by the integer passed as
-\code{n_con}.
-
-The actual file fetching is done by \code{fetch_files_serial}/
-\code{fetch_files_parallel}, both of which accept a set of urls either as a
-character vector or a list of \code{call} objects (see \code{\link[base:call]{base::call()}}). This is
-because file urls in openBIS have a limited lifetime and therefore must be
-used shortly after being created. In case a download fails, it is retried
-again up to the number of times specified as \code{n_try}. A vector of file sizes
-may be passed which is used to make sure the file was downloaded entirely.
-Finally, a function with a single argument can be passed as the argument
-\code{done}, which takes the downloaded data as input and does some processing.
+Files can only be retrieved after previously having created a corresponding
+download url using \code{\link[=list_download_urls]{list_download_urls()}}. As file urls in openBIS have a
+limited lifetime and therefore must be used shortly after being created. A
+list of \code{call} objects (see \code{\link[base:call]{base::call()}}) is created and passed to either
+\code{\link[=fetch_files_serial]{fetch_files_serial()}} or \code{\link[=fetch_files_parallel]{fetch_files_parallel()}}. Whether file fetching
+is carried out in serial or parallel is controlled by the \code{n_con} argument.
+In case a download fails, it is retried again up to the number of times
+specified as \code{n_try}. Finally, a function with a single argument can be
+passed as the argument \code{done}, which takes the downloaded data as input and
+does some processing.
 }
 \section{openBIS}{
 

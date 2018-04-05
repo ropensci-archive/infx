@@ -26,50 +26,49 @@
 #' A separate API call is necessary for each of the objects the dispatch
 #' occurs on. 
 #' 
-#' The function `fetch_files()` downloads files associated to a dataset. The
-#' main object types to specify which files to download are either
-#' `DataSetFileDTO` or `FileInfoDssDTO`. Whenever dispatch occurs on
-#' `FileInfoDssDTO`, either a character vector of data set codes has to be
-#' passed as `data_sets` argument to `fetch_files()` or each `FileInfoDssDTO`
-#' object has to contain a `data_set` attribute.
+#' The function `fetch_files()` downloads files associated with a dataset.
+#' In order to identify a file, both a data set code and a file path, relative
+#' to the data set root, are required. `fetch_files()` can be called in a
+#' variety of ways and internally uses a double dispatch mechanism, first
+#' resolving the data set codes and then calling the non-exported function
+#' `fetch_ds_files()` which dispatches on file path objects.
 #' 
-#' Additionally, for convenience, `fetch_files()` can be dispatched on a set
-#' of datasets (either specified as character vector or any object for which
-#' the internal [dataset_code()] method exists, including data set and data
-#' set id objects as well as data set reference objects), the set of files to be downloaded can either be passed as the
-#' `files` argument or
-#' all available files for that dataset are listed using [list_files()]
-#' (folders themselves are removed), and this set of files is filtered if a
-#' regular expression is passed as argument `file_regex`. The resulting set
-#' of `FileInfoDssDTO` objects alongside the corresponding dataset ids are then
-#' fetched, using `fetch_files()`. All named arguments passed as `...` are
-#' forwarded to [list_files()] and the `FileInfoDssDTO`-specific
-#' `fetch_files()` method.
+#' Data set code information can either be communicated using any of the
+#' objects understood by [dataset_code()] (including data set, data set id and
+#' data set reference objects) or directly as a character vector, passed as
+#' `x` argument. In case data set code information is omitted (passed to `x`
+#' as `NULL`), the objects encoding file paths have to specify the
+#' corresponding data sets. Furthermore, `DataSetFileDTO` objects may be
+#' passed as `x` argument to `fetch_files()`, which will internally call
+#' `fetch_files()` again, setting the argument `x` to `NULL` and pass the
+#' `DataSetFileDTO` objects as files argument. Finally, if `FileInfoDssDTO`
+#' are passed to `fetch_files()` as `x` argument, an optional argument
+#' `data_sets` may be specified (it defaults to `NULL`) and as above,
+#' `fetch_files()` is called again with these two arguments rearranged.
 #' 
-#' In addition to datasets, dispatch can be on `FileInfoDssDTO` or
-#' `DataSetFileDTO` objects. In case of `FileInfoDssDTO` objects being passed,
-#' an additional character vector specifying the corresponding dataset ids is
-#' required, as `FileInfoDssDTO` objects do not contain any dataset identifying
-#' information. This character vector of dataset ids may be of length 1 or of
-#' the same length as the number of `FileInfoDssDTO` objects. Finally,
-#' `DataSetFileDTO` objects contain both path and dataset information so a
-#' single object uniquely identifies a file in a dataset.
+#' The internal generic function `fetch_ds_files()` can be dispatched on
+#' several objects again. When no files are specified (`NULL` is passed as
+#' `files` argument to `fetch_files()`), All available files for the given
+#' data sets are queried. This list can be filtered using the `file_regex()`
+#' argument which can be a single regular expression and is applied to file
+#' paths. File paths can be specified as character vector, `FileInfoDssDTO` or
+#' `DataSetFileDTO` objects. If dispatch occurs on `FileInfoDssDTO`, and no
+#' data set code information is available (`NULL` passed as `x` or `data_sets`
+#' argument to `fetch_files()`) each `FileInfoDssDTO` must contain a `data_set`
+#' attribute. Additionally, downloaded files are checked for completeness, as
+#' these objects contain file sizes. If dispatch occurs on `DataSetFileDTO`
+#' objects or a character vector, this sanity check is not possible. 
 #' 
-#' File fetching may be carried out in serial or in parallel fashion,
-#' controlled by the `n_con` argument. If values `FALSE` or any integer `<= 1L`
-#' are passed, downloads are performed non-concurrently and otherwise the
-#' number of simultaneous connections is controlled by the integer passed as
-#' `n_con`.
-#' 
-#' The actual file fetching is done by `fetch_files_serial`/
-#' `fetch_files_parallel`, both of which accept a set of urls either as a
-#' character vector or a list of `call` objects (see [base::call()]). This is
-#' because file urls in openBIS have a limited lifetime and therefore must be
-#' used shortly after being created. In case a download fails, it is retried
-#' again up to the number of times specified as `n_try`. A vector of file sizes
-#' may be passed which is used to make sure the file was downloaded entirely.
-#' Finally, a function with a single argument can be passed as the argument
-#' `done`, which takes the downloaded data as input and does some processing.
+#' Files can only be retrieved after previously having created a corresponding
+#' download url using [list_download_urls()]. As file urls in openBIS have a
+#' limited lifetime and therefore must be used shortly after being created. A
+#' list of `call` objects (see [base::call()]) is created and passed to either
+#' [fetch_files_serial()] or [fetch_files_parallel()]. Whether file fetching
+#' is carried out in serial or parallel is controlled by the `n_con` argument.
+#' In case a download fails, it is retried again up to the number of times
+#' specified as `n_try`. Finally, a function with a single argument can be
+#' passed as the argument `done`, which takes the downloaded data as input and
+#' does some processing.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
