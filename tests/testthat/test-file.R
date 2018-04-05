@@ -138,6 +138,12 @@ test_that("files can be fetched", {
   }
 
   expect_identical(data, fetch_files(tok, codes[2], files_1[is_file_1]))
+  expect_identical(data, fetch_files(tok, datasets[2], files_1[is_file_1]))
+
+  files_chr <- sapply(files_1[is_file_1], `[[`, "pathInDataSet")
+
+  expect_equivalent(data, fetch_files(tok, codes[2], files_chr, n_con = 1L))
+  expect_equivalent(data, fetch_files(tok, codes[2], files_chr, n_con = 5L))
 
   data <- fetch_files(tok, codes[2], file_regex = "\\.std(out|err)$")
   expect_gte(length(data), 1L)
