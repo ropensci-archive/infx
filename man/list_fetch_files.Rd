@@ -184,3 +184,41 @@ does some processing.
 }
 }
 
+\examples{
+\dontrun{
+  tok <- login_openbis("rdgr2014", "IXPubReview")
+
+  # search for a cell profiler feature data set from plate KB2-03-1I
+  search <- search_criteria(
+    attribute_clause("HCS_ANALYSIS_CELL_FEATURES_CC_MAT", "type"),
+    sub_criteria = search_sub_criteria(
+      search_criteria(attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")),
+      type = "sample"
+    )
+  )
+  ds <- search_openbis(tok, search)
+
+  # list all filed of this data set
+  all_files <- list_files(tok, ds)
+  length(all_files)
+
+  # select some of the files, e.g. all count features per image
+  some_files <- all_files[grepl("Image\\\\.Count_",
+                                sapply(all_files, `[[`, "pathInDataSet"))]
+  length(some_files)
+
+  # download the selected files
+  data <- fetch_files(tok, some_files)
+
+  # the same can be achieved by passing a file_regex argument to
+  # fetch_files(), which internally calls list_files() and filters files
+  identical(data, fetch_files(tok, ds, file_regex = "Image\\\\.Count_"))
+
+  # all returned data is raw, the finally argument can be used to supply
+  # a function that processes the downloaded data
+  sapply(data, class)
+  data <- fetch_files(tok, some_files, finally = read_mat_files)
+  sapply(data, class)
+}
+
+}

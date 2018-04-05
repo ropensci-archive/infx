@@ -76,6 +76,43 @@
 #' 
 #' @rdname list_fetch_files
 #' 
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#' 
+#'   # search for a cell profiler feature data set from plate KB2-03-1I
+#'   search <- search_criteria(
+#'     attribute_clause("HCS_ANALYSIS_CELL_FEATURES_CC_MAT", "type"),
+#'     sub_criteria = search_sub_criteria(
+#'       search_criteria(attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")),
+#'       type = "sample"
+#'     )
+#'   )
+#'   ds <- search_openbis(tok, search)
+#' 
+#'   # list all filed of this data set
+#'   all_files <- list_files(tok, ds)
+#'   length(all_files)
+#' 
+#'   # select some of the files, e.g. all count features per image
+#'   some_files <- all_files[grepl("Image\\.Count_",
+#'                                 sapply(all_files, `[[`, "pathInDataSet"))]
+#'   length(some_files)
+#' 
+#'   # download the selected files
+#'   data <- fetch_files(tok, some_files)
+#' 
+#'   # the same can be achieved by passing a file_regex argument to
+#'   # fetch_files(), which internally calls list_files() and filters files
+#'   identical(data, fetch_files(tok, ds, file_regex = "Image\\.Count_"))
+#' 
+#'   # all returned data is raw, the finally argument can be used to supply
+#'   # a function that processes the downloaded data
+#'   sapply(data, class)
+#'   data <- fetch_files(tok, some_files, finally = read_mat_files)
+#'   sapply(data, class)
+#' }
+#' 
 #' @export
 #' 
 list_files <- function(token, x, ...)
@@ -339,13 +376,13 @@ fetch_ds_files.character <- function(token,
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
                          chunked = TRUE,
-                         create_handle = create_download_handle,
-                         check = check_download_result,
+                         create_handle = create_file_handle,
+                         check = check_file_result,
                          ...)
   else
     do_requests_serial(url_calls, file_sizes,
-                       create_handle = create_download_handle,
-                       check = check_download_result,
+                       create_handle = create_file_handle,
+                       check = check_file_result,
                        ...)
 
   Map(function(dat, ds, f) {
@@ -368,13 +405,13 @@ fetch_ds_files.DataSetFileDTO <- function(token,
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
                          chunked = TRUE,
-                         create_handle = create_download_handle,
-                         check = check_download_result,
+                         create_handle = create_file_handle,
+                         check = check_file_result,
                          ...)
   else
     do_requests_serial(url_calls, file_sizes,
-                       create_handle = create_download_handle,
-                       check = check_download_result,
+                       create_handle = create_file_handle,
+                       check = check_file_result,
                        ...)
 
   Map(function(dat, f) {
@@ -415,13 +452,13 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
                          chunked = TRUE,
-                         create_handle = create_download_handle,
-                         check = check_download_result,
+                         create_handle = create_file_handle,
+                         check = check_file_result,
                          ...)
   else
     do_requests_serial(url_calls, file_sizes,
-                       create_handle = create_download_handle,
-                       check = check_download_result,
+                       create_handle = create_file_handle,
+                       check = check_file_result,
                        ...)
 
   Map(function(dat, ds, f) {
@@ -430,13 +467,13 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
   }, res, data_sets, x)
 }
 
-create_download_handle <- function(size) {
+create_file_handle <- function(size) {
   if (!is.na(size))
     assert_that(as.integer(size) == size)
   curl::new_handle()
 }
 
-check_download_result <- function(resp, size) {
+check_file_result <- function(resp, size) {
 
   if (resp$status_code != 200) {
 
