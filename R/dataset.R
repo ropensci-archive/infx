@@ -405,10 +405,10 @@ dataset_code <- function(x, ...)
 #' @export
 #' 
 dataset_code.DataSet <- function(x, ...)
-  sapply(as_json_vec(x), get_field, "code")
+  get_field(x, "code")
 
 ds_code_ds_id <- function(x, ...)
-  sapply(as_json_vec(x), get_field, "datasetCode")
+  get_field(x, "datasetCode")
 
 #' @rdname dataset_code
 #' @keywords internal
@@ -457,7 +457,7 @@ dataset_code.PlateImageReference <- ds_code_ds_id
 #' @export
 #' 
 dataset_code.DataSetFileDTO <- function(x, ...)
-  sapply(as_json_vec(x), get_field, "dataSetCode")
+  get_field(x, "dataSetCode")
 
 resolve_fetch_opts <- function(x = c(NA, "children", "parents", "all")) {
 
