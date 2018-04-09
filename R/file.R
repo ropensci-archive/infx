@@ -63,7 +63,7 @@
 #' download url using [list_download_urls()]. As file urls in openBIS have a
 #' limited lifetime and therefore must be used shortly after being created. A
 #' list of `call` objects (see [base::call()]) is created and passed to either
-#' [fetch_files_serial()] or [fetch_files_parallel()]. Whether file fetching
+#' [do_requests_serial()] or [do_requests_parallel()]. Whether file fetching
 #' is carried out in serial or parallel is controlled by the `n_con` argument.
 #' In case a download fails, it is retried again up to the number of times
 #' specified as `n_try`. Finally, a function with a single argument can be
@@ -233,6 +233,8 @@ fetch_files <- function(token, x, ...)
 #' filtered, by passing a regular expression as `file_regex` argument via
 #' `...`.
 #' @param n_con The number of simultaneous connections.
+#' @param reader A function to read the downloaded data. Is forwarded as
+#' finally argument to [do_requests_serial()]/[do_requests_parallel()].
 #' 
 #' @rdname list_fetch_files
 #' @export
@@ -241,6 +243,7 @@ fetch_files.character <- function(token,
                                   x,
                                   files = NULL,
                                   n_con = 5L,
+                                  reader = identity,
                                   ...) {
 
   assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
@@ -261,7 +264,8 @@ fetch_files.character <- function(token,
 
   n_con <- min(as.integer(n_con), length(x))
 
-  fetch_ds_files(token, files, data_sets = x, n_con = n_con, ...)
+  fetch_ds_files(token, files, data_sets = x, n_con = n_con,
+                 reader = reader, ...)
 }
 
 #' @rdname list_fetch_files
@@ -271,12 +275,13 @@ fetch_files.NULL <- function(token,
                              x,
                              files,
                              n_con = 5L,
+                             reader = identity,
                              ...) {
 
   assert_that(length(n_con) == 1L, as.integer(n_con) == n_con)
   n_con <- min(as.integer(n_con), length(files))
 
-  fetch_ds_files(token, files, n_con = n_con, ...)
+  fetch_ds_files(token, files, n_con = n_con, reader = reader, ...)
 }
 
 fetch_ds <- function(token, x, ...)
@@ -363,7 +368,7 @@ fetch_ds_files.character <- function(token,
                                      x,
                                      data_sets,
                                      n_con,
-                                     reader = identity,
+                                     reader,
                                      ...) {
 
   assert_that(is.character(data_sets),
@@ -397,7 +402,7 @@ fetch_ds_files.character <- function(token,
 fetch_ds_files.DataSetFileDTO <- function(token,
                                           x,
                                           n_con,
-                                          reader = identity,
+                                          reader,
                                           ...) {
 
   x <- as_json_vec(x)
@@ -429,7 +434,7 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
                                           x,
                                           data_sets = NULL,
                                           n_con,
-                                          reader = identity,
+                                          reader,
                                           ...) {
 
   x <- as_json_vec(x)

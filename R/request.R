@@ -247,7 +247,7 @@ do_requests_parallel <- function(urls,
         resp <- check(x, bodies[[i]])
 
         if (inherits(resp, "simpleError")) {
-          errors[[i]] <- c(errors[[i]], conditionMessage(resp))
+          errors[[i]] <<- c(errors[[i]], conditionMessage(resp))
           add_request(i, tries - 1L)
         } else {
           add_request(i + n_con, n_try)

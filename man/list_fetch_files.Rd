@@ -58,9 +58,11 @@ list_files(token, x, ...)
 
 fetch_files(token, x, ...)
 
-\method{fetch_files}{character}(token, x, files = NULL, n_con = 5L, ...)
+\method{fetch_files}{character}(token, x, files = NULL, n_con = 5L,
+  reader = identity, ...)
 
-\method{fetch_files}{NULL}(token, x, files, n_con = 5L, ...)
+\method{fetch_files}{NULL}(token, x, files, n_con = 5L, reader = identity,
+  ...)
 
 \method{fetch_files}{DataSet}(token, x, ...)
 
@@ -101,6 +103,9 @@ filtered, by passing a regular expression as \code{file_regex} argument via
 \code{...}.}
 
 \item{n_con}{The number of simultaneous connections.}
+
+\item{reader}{A function to read the downloaded data. Is forwarded as
+finally argument to \code{\link[=do_requests_serial]{do_requests_serial()}}/\code{\link[=do_requests_parallel]{do_requests_parallel()}}.}
 
 \item{data_sets}{Either a single dataset object (anything that has a
 \code{dataset_code()} method) or a set of objects of the same length as \code{x}. If
@@ -171,7 +176,7 @@ Files can only be retrieved after previously having created a corresponding
 download url using \code{\link[=list_download_urls]{list_download_urls()}}. As file urls in openBIS have a
 limited lifetime and therefore must be used shortly after being created. A
 list of \code{call} objects (see \code{\link[base:call]{base::call()}}) is created and passed to either
-\code{\link[=fetch_files_serial]{fetch_files_serial()}} or \code{\link[=fetch_files_parallel]{fetch_files_parallel()}}. Whether file fetching
+\code{\link[=do_requests_serial]{do_requests_serial()}} or \code{\link[=do_requests_parallel]{do_requests_parallel()}}. Whether file fetching
 is carried out in serial or parallel is controlled by the \code{n_con} argument.
 In case a download fails, it is retried again up to the number of times
 specified as \code{n_try}. Finally, a function with a single argument can be

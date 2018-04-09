@@ -160,8 +160,8 @@ test_that("file fetchers work", {
   check_skip()
 
   dat <- do_requests_serial("https://httpbin.org/get", NA, n_try = 1L,
-                            create_handle = infx:::create_download_handle,
-                            check = infx:::check_download_result,
+                            create_handle = infx:::create_file_handle,
+                            check = infx:::check_file_result,
                             finally = identity)
   expect_is(dat, "list")
   expect_length(dat, 1L)
@@ -169,8 +169,8 @@ test_that("file fetchers work", {
 
   dat <- do_requests_serial(rep("https://httpbin.org/get", 2), rep(NA, 2),
                             n_try = 1L,
-                            create_handle = infx:::create_download_handle,
-                            check = infx:::check_download_result,
+                            create_handle = infx:::create_file_handle,
+                            check = infx:::check_file_result,
                             finally = identity)
   expect_is(dat, "list")
   expect_length(dat, 2L)
@@ -180,8 +180,8 @@ test_that("file fetchers work", {
 
   expect_warning(
     dat <- do_requests_serial("https://httpbin.org/get", 1000L, n_try = 1L,
-                              create_handle = infx:::create_download_handle,
-                              check = infx:::check_download_result,
+                              create_handle = infx:::create_file_handle,
+                              check = infx:::check_file_result,
                               finally = identity),
     "download incomplete"
   )
@@ -192,8 +192,8 @@ test_that("file fetchers work", {
 
   expect_warning(
     dat <- do_requests_serial("https://httpbin.org/status/500", NA, n_try = 1L,
-                              create_handle = infx:::create_download_handle,
-                              check = infx:::check_download_result,
+                              create_handle = infx:::create_file_handle,
+                              check = infx:::check_file_result,
                               finally = identity),
     "could not carry out request"
   )
@@ -205,8 +205,8 @@ test_that("file fetchers work", {
   expect_warning(
     dat <- do_requests_serial(rep("https://httpbin.org/get", 2), rep(1000L, 2),
                               n_try = 1L,
-                              create_handle = infx:::create_download_handle,
-                              check = infx:::check_download_result,
+                              create_handle = infx:::create_file_handle,
+                              check = infx:::check_file_result,
                               finally = identity),
     "download incomplete"
   )
@@ -220,8 +220,8 @@ test_that("file fetchers work", {
     dat <- do_requests_serial(rep("https://httpbin.org/status/500", 2),
                               rep(NA, 2),
                               n_try = 1L,
-                              create_handle = infx:::create_download_handle,
-                              check = infx:::check_download_result,
+                              create_handle = infx:::create_file_handle,
+                              check = infx:::check_file_result,
                               finally = identity),
     "could not carry out request"
   )
@@ -232,8 +232,8 @@ test_that("file fetchers work", {
     expect_null(dat[[i]])
 
   dat <- do_requests_parallel("https://httpbin.org/get", NA, n_try = 1L,
-                              create_handle = infx:::create_download_handle,
-                              check = infx:::check_download_result,
+                              create_handle = infx:::create_file_handle,
+                              check = infx:::check_file_result,
                               finally = identity)
   expect_is(dat, "list")
   expect_length(dat, 1L)
@@ -241,8 +241,8 @@ test_that("file fetchers work", {
 
   dat <- do_requests_parallel(rep("https://httpbin.org/get", 2), rep(NA, 2),
                               n_try = 1L,
-                              create_handle = infx:::create_download_handle,
-                              check = infx:::check_download_result,
+                              create_handle = infx:::create_file_handle,
+                              check = infx:::check_file_result,
                               finally = identity)
   expect_is(dat, "list")
   expect_length(dat, 2L)
@@ -251,8 +251,8 @@ test_that("file fetchers work", {
 
   expect_warning(
     dat <- do_requests_parallel("https://httpbin.org/get", 1000L, n_try = 1L,
-                                create_handle = infx:::create_download_handle,
-                                check = infx:::check_download_result,
+                                create_handle = infx:::create_file_handle,
+                                check = infx:::check_file_result,
                                 finally = identity),
     "download incomplete"
   )
@@ -264,8 +264,8 @@ test_that("file fetchers work", {
   expect_warning(
     dat <- do_requests_parallel("https://httpbin.org/status/500", NA,
                                 n_try = 1L,
-                                create_handle = infx:::create_download_handle,
-                                check = infx:::check_download_result,
+                                create_handle = infx:::create_file_handle,
+                                check = infx:::check_file_result,
                                 finally = identity),
     "could not carry out request"
   )
@@ -278,8 +278,8 @@ test_that("file fetchers work", {
     dat <- do_requests_parallel(rep("https://httpbin.org/get", 2),
                                 rep(1000L, 2),
                                 n_try = 1L,
-                                create_handle = infx:::create_download_handle,
-                                check = infx:::check_download_result,
+                                create_handle = infx:::create_file_handle,
+                                check = infx:::check_file_result,
                                 finally = identity),
     "download incomplete"
   )
@@ -293,8 +293,8 @@ test_that("file fetchers work", {
     dat <- do_requests_parallel(rep("https://httpbin.org/status/500", 2),
                                 rep(NA, 2),
                                 n_try = 1L,
-                                create_handle = infx:::create_download_handle,
-                                check = infx:::check_download_result,
+                                create_handle = infx:::create_file_handle,
+                                check = infx:::check_file_result,
                                 finally = identity),
     "could not carry out request"
   )

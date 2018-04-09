@@ -76,9 +76,10 @@ test_that("image data can be fetched", {
   }
 
   # test plate DatasetIdentifier with CLUSTER_JOB_LOGS type
-  expect_warning(fetch_images(tok, ds_ids[[2]], "DAPI",
+  expect_error(fetch_images(tok, ds_ids[[2]], "DAPI",
                               well_pos[[1]], img_size),
-                 "could not carry out request")
+               paste("Dataset", ".+", "not", "found", "in", "the", "imaging",
+                     "database", sep = "\\s+"))
 
   img_ds <- list_references(tok, plates[1:2])
 
@@ -236,9 +237,7 @@ test_that("image data can be fetched", {
   for (i in seq_along(thumb_2))
     expect_length(thumb_2[[i]],  0L)
 
-  expect_warning(thumb_1 <- fetch_images(tok, pi_ref[[1]], format = img_rep,
-                                         thumbnails = TRUE),
-                 "could not carry out request")
-  expect_length(thumb_1, 1L)
-  expect_length(thumb_1[[1]], 0L)
+  expect_error(fetch_images(tok, pi_ref[[1]], format = img_rep,
+                            thumbnails = TRUE),
+                 "Couldn't fetch the image as raw content")
 })
