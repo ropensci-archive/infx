@@ -18,11 +18,11 @@
 #' the `bodies` object. This function should check whether the request was
 #' successful or not, e.g. check the HTTP status code, size of the downloaded
 #' file, etc. In case of failure it should return a `simpleError` error object,
-#' created by [base::simpleError()] with message `retry` and in case of success
-#' it should return the response data, e.g. the `content` entry of a curl
-#' response. The third function, `finally`, is applied to the object returned
-#' by the `check` function (in case of success) and can be used to parse JSON,
-#' read a binary file, etc.
+#' created by [base::simpleError()] and in case of success it should return
+#' the response data, e.g. the `content` entry of a curl response. The third
+#' function, `finally`, is applied to the object returned by the `check`
+#' function (in case of success) and can be used to parse JSON, read a binary
+#' file, etc.
 #' 
 #' Both `do_requests_serial()` and `do_requests_parallel()` have the option of
 #' retrying failed requests and the number of allowed retries can be controlled
@@ -163,10 +163,16 @@ do_requests_serial <- function(urls,
                                check = check_default_result,
                                finally = identity) {
 
-  add_request <- function(i, tries) {
+  add_request <- function(i, tries, errors = NULL) {
 
     if (tries <= 0L) {
-      warning("could not carry out request within ", n_try, " tries.")
+      reasons <- if (is.null(errors))
+        ""
+      else
+        paste("\n  ", paste0(seq_along(errors), ". ", errors,
+                             collapse = "\n  "))
+      warning("could not carry out request within ", n_try, " tries.",
+              reasons)
       return(invisible(NULL))
     }
 
@@ -177,8 +183,8 @@ do_requests_serial <- function(urls,
 
     res <- check(res, bodies[[i]])
 
-    if (inherits(res, "simpleError") && conditionMessage(res) == "retry")
-      add_request(i, tries - 1L)
+    if (inherits(res, "simpleError"))
+      add_request(i, tries - 1L, c(errors, conditionMessage(res)))
     else {
       res <- finally(res)
       if (length(urls) > 1L)
@@ -205,10 +211,6 @@ do_requests_serial <- function(urls,
   lapply(seq_along(urls), add_request, n_try)
 }
 
-#' @param chunked Flag indicating whether to add downloads in chunks or all at
-#' once. Can be used for download links which expire, such that they are only
-#' created shortly before they are consumed.
-#' 
 #' @rdname request
 #' @export
 #' 
@@ -216,18 +218,23 @@ do_requests_parallel <- function(urls,
                                  bodies = vector("list", length(urls)),
                                  n_con = 5L,
                                  n_try = 2L,
-                                 chunked = FALSE,
                                  create_handle = create_default_handle,
                                  check = check_default_result,
                                  finally = identity) {
 
   add_request <- function(i, tries) {
 
-    if (chunked && (i < 1L || i > length(urls)))
+    if (i < 1L || i > length(urls))
       return(invisible(NULL))
 
     if (tries <= 0L) {
-      warning("could not carry out request within ", n_try, " tries.")
+      reasons <- if (is.null(errors[[i]]))
+        ""
+      else
+        paste("\n  ", paste0(seq_along(errors[[i]]), ". ", errors[[i]],
+                             collapse = "\n  "))
+      warning("could not carry out request within ", n_try, " tries.",
+              reasons)
       return(invisible(NULL))
     }
 
@@ -239,11 +246,11 @@ do_requests_parallel <- function(urls,
 
         resp <- check(x, bodies[[i]])
 
-        if (inherits(resp, "simpleError") && conditionMessage(resp) == "retry")
+        if (inherits(resp, "simpleError")) {
+          errors[[i]] <- c(errors[[i]], conditionMessage(resp))
           add_request(i, tries - 1L)
-        else {
-          if (chunked)
-            add_request(i + n_con, n_try)
+        } else {
+          add_request(i + n_con, n_try)
           res[[i]] <<- finally(resp)
           if (length(urls) > 1L)
             pb$tick(1L)
@@ -259,7 +266,6 @@ do_requests_parallel <- function(urls,
               length(urls) == length(bodies),
               is.count(n_con),
               is.count(n_try),
-              is.flag(chunked),
               is.function(create_handle),
               is.function(check),
               is.function(finally))
@@ -274,16 +280,10 @@ do_requests_parallel <- function(urls,
   }
 
   res <- vector("list", length(urls))
+  errors <- vector("list", length(urls))
 
-  pool <- curl::new_pool(host_con = n_con)
-
-  start_inds <- if (chunked)
-    seq.int(n_con)
-  else
-    seq_along(urls)
-
-  sapply(start_inds, add_request, n_try)
-
+  pool <- curl::new_pool(total_con = n_con, host_con = n_con)
+  sapply(seq_len(n_con), add_request, n_try)
   curl::multi_run(pool = pool)
 
   res
@@ -294,15 +294,10 @@ create_default_handle <- function(...)
 
 check_default_result <- function(resp, ...) {
 
-  if (resp$status_code != 200) {
-
-    warning("request returned with code ", resp$status_code)
-    simpleError("retry")
-
-  } else {
-
+  if (resp$status_code != 200)
+    simpleError(paste0("request returned with code ", resp$status_code))
+  else
     resp$content
-  }
 }
 
 create_request_handle <- function(body) {
@@ -320,8 +315,7 @@ check_request_result <- function(resp, body) {
 
   if (resp$status_code != 200) {
 
-    warning("request returned with code ", resp$status_code)
-    simpleError("retry")
+    simpleError(paste0("request returned with code ", resp$status_code))
 
   } else {
 
@@ -329,17 +323,15 @@ check_request_result <- function(resp, body) {
                                simplifyVector = FALSE)
     if (resp$id != body$id) {
 
-      warning("request id (", body$id, ") does no match with response id (",
-              resp$id, ")")
-      simpleError("retry")
+      simpleError(paste0("request id (", body$id, ") does no match with ",
+                         "response id (", resp$id, ")"))
 
     } else if (!is.null(resp$error)) {
 
       data <- resp$error$data[!grepl("^@", names(resp$error$data))]
-      warning("\nerror with code ", resp$error$code, ":\n",
-              paste(strwrap(paste(names(data), data, sep = ": "),
-                            indent = 2L, exdent = 4L), collapse = "\n"))
-      simpleError("retry")
+      stop("\nerror with code ", resp$error$code, ":\n",
+           paste(strwrap(paste(names(data), data, sep = ": "),
+                         indent = 2L, exdent = 4L), collapse = "\n"))
 
     } else
       resp

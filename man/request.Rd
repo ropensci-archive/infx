@@ -19,9 +19,8 @@ do_requests_serial(urls, bodies = vector("list", length(urls)), n_try = 2L,
   finally = identity)
 
 do_requests_parallel(urls, bodies = vector("list", length(urls)),
-  n_con = 5L, n_try = 2L, chunked = FALSE,
-  create_handle = create_default_handle, check = check_default_result,
-  finally = identity)
+  n_con = 5L, n_try = 2L, create_handle = create_default_handle,
+  check = check_default_result, finally = identity)
 
 process_json(x)
 
@@ -64,10 +63,6 @@ requests.}
 corresponding entry of the \code{bodies} list. Is expected to return NULL in
 which case the request is retried or a list with an entry named \code{result}.}
 
-\item{chunked}{Flag indicating whether to add downloads in chunks or all at
-once. Can be used for download links which expire, such that they are only
-created shortly before they are consumed.}
-
 \item{x}{A (possibly nested) list structure for which all \code{@type} fields
 are turned into class attributes and \code{@id} fields are recursively removed.}
 }
@@ -90,11 +85,11 @@ the response of a single curl request alongside the corresponding entry of
 the \code{bodies} object. This function should check whether the request was
 successful or not, e.g. check the HTTP status code, size of the downloaded
 file, etc. In case of failure it should return a \code{simpleError} error object,
-created by \code{\link[base:simpleError]{base::simpleError()}} with message \code{retry} and in case of success
-it should return the response data, e.g. the \code{content} entry of a curl
-response. The third function, \code{finally}, is applied to the object returned
-by the \code{check} function (in case of success) and can be used to parse JSON,
-read a binary file, etc.
+created by \code{\link[base:simpleError]{base::simpleError()}} and in case of success it should return
+the response data, e.g. the \code{content} entry of a curl response. The third
+function, \code{finally}, is applied to the object returned by the \code{check}
+function (in case of success) and can be used to parse JSON, read a binary
+file, etc.
 
 Both \code{do_requests_serial()} and \code{do_requests_parallel()} have the option of
 retrying failed requests and the number of allowed retries can be controlled
