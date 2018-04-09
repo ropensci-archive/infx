@@ -16,11 +16,11 @@ make_request(url, method, params, ...)
 
 do_requests_serial(urls, bodies = vector("list", length(urls)), n_try = 2L,
   create_handle = create_default_handle, check = check_default_result,
-  finally = identity)
+  finally = identity, ...)
 
 do_requests_parallel(urls, bodies = vector("list", length(urls)),
   n_con = 5L, n_try = 2L, create_handle = create_default_handle,
-  check = check_default_result, finally = identity)
+  check = check_default_result, finally = identity, ...)
 
 process_json(x)
 

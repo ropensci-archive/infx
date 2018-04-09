@@ -107,10 +107,10 @@
 #'   # fetch_files(), which internally calls list_files() and filters files
 #'   identical(data, fetch_files(tok, ds, file_regex = "Image\\.Count_"))
 #' 
-#'   # all returned data is raw, the finally argument can be used to supply
+#'   # all returned data is raw, the reader argument can be used to supply
 #'   # a function that processes the downloaded data
 #'   sapply(data, class)
-#'   data <- fetch_files(tok, some_files, finally = read_mat_files)
+#'   data <- fetch_files(tok, some_files, reader = read_mat_files)
 #'   sapply(data, class)
 #' }
 #' 
@@ -363,6 +363,7 @@ fetch_ds_files.character <- function(token,
                                      x,
                                      data_sets,
                                      n_con,
+                                     reader = identity,
                                      ...) {
 
   assert_that(is.character(data_sets),
@@ -378,11 +379,13 @@ fetch_ds_files.character <- function(token,
     do_requests_parallel(url_calls, file_sizes, n_con, 
                          create_handle = create_file_handle,
                          check = check_file_result,
+                         finally = reader,
                          ...)
   else
     do_requests_serial(url_calls, file_sizes,
                        create_handle = create_file_handle,
                        check = check_file_result,
+                       finally = reader,
                        ...)
 
   Map(function(dat, ds, f) {
@@ -394,6 +397,7 @@ fetch_ds_files.character <- function(token,
 fetch_ds_files.DataSetFileDTO <- function(token,
                                           x,
                                           n_con,
+                                          reader = identity,
                                           ...) {
 
   x <- as_json_vec(x)
@@ -406,11 +410,13 @@ fetch_ds_files.DataSetFileDTO <- function(token,
     do_requests_parallel(url_calls, file_sizes, n_con, 
                          create_handle = create_file_handle,
                          check = check_file_result,
+                         finally = reader,
                          ...)
   else
     do_requests_serial(url_calls, file_sizes,
                        create_handle = create_file_handle,
                        check = check_file_result,
+                       finally = reader,
                        ...)
 
   Map(function(dat, f) {
@@ -423,6 +429,7 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
                                           x,
                                           data_sets = NULL,
                                           n_con,
+                                          reader = identity,
                                           ...) {
 
   x <- as_json_vec(x)
@@ -452,11 +459,13 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
     do_requests_parallel(url_calls, file_sizes, n_con, 
                          create_handle = create_file_handle,
                          check = check_file_result,
+                         finally = reader,
                          ...)
   else
     do_requests_serial(url_calls, file_sizes,
                        create_handle = create_file_handle,
                        check = check_file_result,
+                       finally = reader,
                        ...)
 
   Map(function(dat, ds, f) {

@@ -215,10 +215,10 @@ does some processing.
   # fetch_files(), which internally calls list_files() and filters files
   identical(data, fetch_files(tok, ds, file_regex = "Image\\\\.Count_"))
 
-  # all returned data is raw, the finally argument can be used to supply
+  # all returned data is raw, the reader argument can be used to supply
   # a function that processes the downloaded data
   sapply(data, class)
-  data <- fetch_files(tok, some_files, finally = read_mat_files)
+  data <- fetch_files(tok, some_files, reader = read_mat_files)
   sapply(data, class)
 }
 

@@ -162,7 +162,7 @@ Three different types of what within the scope of this documentation is consider
 
 ### File download
 
-The following example demonstrates how InfectX single cell feature data, calculated by CellProfiler, can be accessed. First a search for data sets of type `HCS_ANALYSIS_CELL_FEATURES_CC_MAT` is carried out. This search is limited to the `ADENO-AU-K1` experiment, using a `search_sub_criteria` object. One of the resulting data sets is then passed to `fetch_files()` together with a regular expression to filter the list of available files (several hundred feature files are typically available for such data sets). The function `read_mat_files()` is passed as finally argument and reads the binary Matlab files using `R.matlab::readMat()`.
+The following example demonstrates how InfectX single cell feature data, calculated by CellProfiler, can be accessed. First a search for data sets of type `HCS_ANALYSIS_CELL_FEATURES_CC_MAT` is carried out. This search is limited to the `ADENO-AU-K1` experiment, using a `search_sub_criteria` object. One of the resulting data sets is then passed to `fetch_files()` together with a regular expression to filter the list of available files (several hundred feature files are typically available for such data sets). The function `read_mat_files()` is passed as `reader` argument and reads the binary Matlab files using `R.matlab::readMat()`.
 
 ```{r fetch-counts}
 adeno_au_sub <- search_sub_criteria(
@@ -188,7 +188,7 @@ length(cell_ds)
 
 dat <- fetch_files(token, cell_ds[[1]],
                    file_regex = "Image\\.Count_",
-                   finally = read_mat_files)
+                   reader = read_mat_files)
 
 names(dat) <- sapply(dat, attr, "feature")
 dat <- lapply(dat, as.integer)
@@ -203,7 +203,7 @@ As a second example, area features are requested. For the given screen, area mea
 ```{r fetch-areas}
 dat <- fetch_files(token, cell_ds[[1]],
                    file_regex = "AreaShape_Area",
-                   finally = read_mat_files)
+                   reader = read_mat_files)
 
 attributes(dat[[1]])
 

@@ -159,7 +159,8 @@ do_requests_serial <- function(urls,
                                n_try = 2L,
                                create_handle = create_default_handle,
                                check = check_default_result,
-                               finally = identity) {
+                               finally = identity,
+                               ...) {
 
   add_request <- function(i, tries, errors = NULL) {
 
@@ -218,7 +219,8 @@ do_requests_parallel <- function(urls,
                                  n_try = 2L,
                                  create_handle = create_default_handle,
                                  check = check_default_result,
-                                 finally = identity) {
+                                 finally = identity,
+                                 ...) {
 
   add_request <- function(i, tries) {
 
