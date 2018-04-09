@@ -95,11 +95,9 @@ Both \code{do_requests_serial()} and \code{do_requests_parallel()} have the opti
 retrying failed requests and the number of allowed retries can be controlled
 with the argument \code{n_try}. Furthermore, \code{do_requests_parallel()} offers
 control over the number of simultaneous connections using the argument
-\code{n_con} and it has the option of performing the requests in a chunked
-manner. This means that instead of adding all requests at once and letting
-curl handle the queuing, only \code{n_con} requests are initially made and for
-each successful one an additional request is added. This comes in handy for
-urls that have a limited lifetime.
+\code{n_con}. Only \code{n_con} requests are initially added to the curl multi handle
+and for each successful one an additional request is added. This
+implementation helps with urls that have a limited lifetime.
 
 The function \code{make_requests()} is used to construct JSON-RPC requests. The
 arguments \code{methods}, \code{params}, \code{ids} and \code{version} are combined into one

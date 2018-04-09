@@ -28,11 +28,9 @@
 #' retrying failed requests and the number of allowed retries can be controlled
 #' with the argument `n_try`. Furthermore, `do_requests_parallel()` offers
 #' control over the number of simultaneous connections using the argument
-#' `n_con` and it has the option of performing the requests in a chunked
-#' manner. This means that instead of adding all requests at once and letting
-#' curl handle the queuing, only `n_con` requests are initially made and for
-#' each successful one an additional request is added. This comes in handy for
-#' urls that have a limited lifetime.
+#' `n_con`. Only `n_con` requests are initially added to the curl multi handle
+#' and for each successful one an additional request is added. This
+#' implementation helps with urls that have a limited lifetime.
 #'
 #' The function `make_requests()` is used to construct JSON-RPC requests. The
 #' arguments `methods`, `params`, `ids` and `version` are combined into one

@@ -376,7 +376,6 @@ fetch_ds_files.character <- function(token,
 
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
-                         chunked = TRUE,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          ...)
@@ -405,7 +404,6 @@ fetch_ds_files.DataSetFileDTO <- function(token,
 
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
-                         chunked = TRUE,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          ...)
@@ -452,7 +450,6 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
 
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
-                         chunked = TRUE,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          ...)
