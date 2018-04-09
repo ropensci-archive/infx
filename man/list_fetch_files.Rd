@@ -199,7 +199,7 @@ does some processing.
   )
   ds <- search_openbis(tok, search)
 
-  # list all filed of this data set
+  # list all files of this data set
   all_files <- list_files(tok, ds)
   length(all_files)
 

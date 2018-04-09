@@ -1,125 +1,61 @@
 
-#' List image metadata
-#'
-#' Experiment level image meta data is listed using `list_image_metadata()`,
-#' which accepts either a (set of) `Experiment` or `ExperimentIdentifier`
-#' object(s) and returns all corresponding meta data as `json_vec` of
-#' `ExperimentImageMetadata` (objects).
+#' List image meta data and download images
 #' 
-#' Experiment level image meta data can be listed by passing a (set of)
-#' object(s), which implement the `IDatasetIdentifier` interface and are
-#' connected to image datasets (this rules out feature vector datasets). Two
+#' Experiment level image meta data can be listed by passing experiment
+#' representing objects (`Experiment` or `ExperimentIdentifier`) to
+#' `list_image_metadata()` and data set level image meta data can be retrieved
+#' by passing data set identifying objects which can be associated with image
+#' data sets (data set id and data set reference objects). Images themselves
+#' can be retrieved using `fetch_images()`. As with meta data listing, this
+#' function can be dispatched on objects referencing or identifying data sets
+#' associated with image data.
+#' 
+#' Data set level image meta data can be listed by passing a objects, which
+#' implement the `IDatasetIdentifier` interface and are connected to image
+#' data sets (this rules out feature data set references and leaves
+#' `DatasetIdentifier`, `DatasetReference`, `ImageDatasetReference`,
+#' `MicroscopyImageReference` and `PlateImageReference` objects). Two
 #' different types of meta data objects are returned, depending on the `type`
 #' argument: if it is set to `metadata` (default), objects of type
 #' `ImageDatasetMetadata` and it it is set to `format`, objects of type
-#' `DatasetImageRepresentationFormats` are returned.
-#' 
-#' @inheritParams logout_openbis
-#' @param x Object to limit the number of returned experiments, e.g. a set of
-#' `ExperimentIdentifier` or `Project` objects.
-#' @param type Switch to specify the type of meta data objects to be returned.
-#' @param ... Generic compatibility
-#' 
-#' @export
-#' 
-list_image_metadata <- function(token, x, ...)
-  UseMethod("list_image_metadata", x)
-
-#' @rdname list_image_metadata
-#' @section openBIS:
-#' * \Sexpr{infx::docs_link("sas", "getExperimentImageMetadata")}
-#' * \Sexpr{infx::docs_link("dsrs", "listImageMetadata")}
-#' * \Sexpr{infx::docs_link("dsrs", "listAvailableImageRepresentationFormats")}
-#' @export
-#' 
-list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
-
-  params <- lapply(as_json_vec(x), function(y) list(token, y))
-
-  res <- make_requests(api_url("sas"), "getExperimentImageMetadata", params)
-  as_json_vec(do.call(c, res))
-}
-
-#' @rdname list_image_metadata
-#' @export
-#' 
-list_image_metadata.Experiment <- function(token, x, ...)
-  list_image_metadata(token, exp_to_expid(x))
-
-fetch_img_meta <- function(token, x, type = c("metadata", "format"), ...) {
-
-  fun <- switch(match.arg(type),
-                metadata = "listImageMetadata",
-                format = "listAvailableImageRepresentationFormats")
-
-  make_request(api_url("dsrs"), fun, list(token, as_json_vec(x)))
-}
-
-#' @rdname list_image_metadata
-#' @export
-#' 
-list_image_metadata.DatasetIdentifier <- fetch_img_meta
-
-#' @rdname list_image_metadata
-#' @export
-#' 
-list_image_metadata.DatasetReference <- fetch_img_meta
-
-#' @rdname list_image_metadata
-#' @export
-#' 
-list_image_metadata.ImageDatasetReference <- fetch_img_meta
-
-#' @rdname list_image_metadata
-#' @export
-#' 
-list_image_metadata.MicroscopyImageReference <- fetch_img_meta
-
-#' @rdname list_image_metadata
-#' @export
-#' 
-list_image_metadata.PlateImageReference <- fetch_img_meta
-
-
-#' Fetch images
+#' `DatasetImageRepresentationFormats` are returned. For experiment-level
+#' image meta data, `ExperimentImageMetadata` objects are returned.
 #'
-#' Dispatch is - as per openBis implementation - possible on any object that
-#' implements the `IDatasetIdentifier` interface. However objects referencing
-#' feature are not connected to image datasets and therefore dispatch on
-#' `FeatureVectorDatasetReference` and `FeatureVectorDatasetWellReference`
-#' is not enabled. The highest level of control over which images are retrieves
-#' is achieved with `PlateImageReference` objects, which specify an image
-#' dataset, a well, a tile and a channel. The returned image format can be
-#' modified by either passing an `ImageRepresentationFormat` object as the
+#' Dispatch of `fetch_images()` is available for the same object types as data
+#' set-level image meta data listing: `DatasetIdentifier`, `DatasetReference`,
+#' `ImageDatasetReference`, `MicroscopyImageReference` and
+#' `PlateImageReference`. The highest level of control over which images are
+#' retrieved is achieved with `PlateImageReference` objects, which specify an
+#' image data set, a well, a tile and a channel. The returned image format can
+#' be modified by either passing an `ImageRepresentationFormat` object as the
 #' `format` argument, by passing a single/list of format selection criterion
-#' objects, which will be used to filter the available image
-#' representation format objects or by specifying one or both of the
-#' `image_size` (expects an `ImageSize` object) and `force_png` (logical
-#' switch) arguments.
+#' objects, which will be used to filter the available image representation
+#' format objects or by specifying one or both of the `image_size` (expects an
+#' `ImageSize` object) and `force_png` (logical switch) arguments.
 #' 
 #' `MicroscopyImageReference` objects contain channel information (as well as
 #' tile information, which is not taken into account though). Therefore a
 #' (list of) `WellPosition` object(s) has/have to be specified, for which then
-#' all tiles are fetched for the given imaging channel. If the inputed list of
+#' all tiles are fetched for the given imaging channel. If the passed list of
 #' `MicroscopyImageReference` objects contain instances that only differ in
 #' tile number, redundancies are filtered out. An API call is necessary for
 #' each non-redundant object.
 #' 
 #' Finally, `DatasetIdentifier`, `DatasetReference` and `ImageDatasetReference`
-#' objects are all handled identically. For each of the specified datasets,
-#' an imaging channel has to be provided and whenever the dataset is associated
-#' with an entire plate, a (list of) `WellPosition` object(s) as well. If the
-#' dataset is associated with a single well, the `well_positions` can be left
-#' at its default value (NULL). If several datasets are passed, an API call is
-#' necessary per dataset. Possible redundancies are not checked for.
+#' objects are all handled identically. For each of the specified data sets,
+#' an imaging channel has to be provided and whenever the data set is
+#' associated with an entire plate, a (list of) `WellPosition` object(s) as
+#' well. If the data set is associated with a single well, the
+#' `well_positions` can be left at its default value (NULL). If several data
+#' sets are passed, an API call is necessary per data set. Possible
+#' redundancies are not filtered.
 #' 
 #' Images are retrieved as Base64 encoded strings, which are converted to
 #' binary using [base64enc::base64decode()] and subsequently read by
-#' [magick::image_read()]. Attached to the image(s) is the information with
-#' based on which they/it were/was retrieved , including dataset object, well
-#' positions (where applicable) and channel (where applicable). This results
-#' in a list with length corresponding to the number of API calls that were
-#' necessary.
+#' [magick::image_read()]. Attached to the images is the information, based
+#' on which they were retrieved, including data set object, well positions
+#' (where applicable) and channel (where applicable). This results in a list
+#' with length corresponding to the number of API calls that were necessary.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned images
@@ -150,7 +86,7 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' currently not implemented.
 #' 
 #' @section TODO 2: When filtering `ImageRepresentationFormat` objects
-#' associated with a dataset, only `SizeCriterion` objects can be used. The
+#' associated with a data set, only `SizeCriterion` objects can be used. The
 #' remaining criteria (`ColorDepthCriterion`, `FileTypeCriterion` and
 #' `OriginalCriterion`) are currently disabled as they extend the abstract
 #' class `AbstractFormatSelectionCriterion`, which causes an issue with JSON
@@ -159,6 +95,48 @@ list_image_metadata.PlateImageReference <- fetch_img_meta
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("dsrs", "loadImagesBase64")}
 #' * \Sexpr{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
+#' 
+#' @rdname list_fetch_images
+#' 
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#' 
+#'   # search for a sample object corresponding to plate KB2-03-1I
+#'   samp <- search_openbis(tok,
+#'                          search_criteria(
+#'                            attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")
+#'                          ),
+#'                          target_object = "sample")
+#'   # for the plate sample object, list raw image data set references
+#'   ds_ref <- list_references(tok, samp)
+#' 
+#'   # the returned image dataset reference can be used to list image meta data
+#'   img_meta <- list_image_metadata(tok, ds_ref)
+#'   channels <- img_meta[[1]][["channelCodes"]]
+#' 
+#'   imgs <- fetch_images(tok, ds_ref,
+#'                        channels = channels[[1]],
+#'                        well_positions = well_pos(1, 1),
+#'                        image_size = json_class(width = 300, height = 300,
+#'                                                class = "ImageSize"))
+#'   # this yields 9 images, one per tile
+#'   length(imgs[[1]]) == img_meta[[1]][["numberOfTiles"]]
+#'   # and each image is scaled to fit within 300 x 300 pixels
+#'   magick::image_info(imgs[[1]][[1]])
+#' 
+#'   # if not the entire well is of interest, but only certain tiles
+#'   img_ref <- list_references(tok, ds_ref,
+#'                              wells = well_pos(1, 1),
+#'                              channels = channels[[1]])
+#'   # this yields 9 objects, one reference per tile
+#'   length(img_ref)
+#'   # select a tile, for example the center one
+#'   img <- fetch_images(tok, img_ref[[5]],
+#'                       image_size = json_class(width = 300, height = 300,
+#'                                               class = "ImageSize"))
+#'   identical(as.raster(img[[1]]), as.raster(imgs[[1]][[5]]))
+#' }
 #' 
 #' @export
 #' 
@@ -221,7 +199,8 @@ fetch_img_for_ds <- function(token,
            x, channels, SIMPLIFY = FALSE)
   }
 
-  res <- make_requests(api_url("dsrs"), fun, params, finally = process_imgs)
+  res <- make_requests(api_url("dsrs"), fun, params, finally = process_imgs,
+                       ...)
 
   mapply(function(dat, param) {
 
@@ -242,22 +221,22 @@ fetch_img_for_ds <- function(token,
   }, res, params, SIMPLIFY = FALSE)
 }
 
-#' @rdname fetch_images
+#' @rdname list_fetch_images
 #' @export
 #' 
 fetch_images.DatasetIdentifier <- fetch_img_for_ds
 
-#' @rdname fetch_images
+#' @rdname list_fetch_images
 #' @export
 #' 
 fetch_images.DatasetReference <- fetch_img_for_ds
 
-#' @rdname fetch_images
+#' @rdname list_fetch_images
 #' @export
 #' 
 fetch_images.ImageDatasetReference <- fetch_img_for_ds
 
-#' @rdname fetch_images
+#' @rdname list_fetch_images
 #' @export
 #' 
 fetch_images.MicroscopyImageReference <- function(token,
@@ -278,7 +257,7 @@ fetch_images.MicroscopyImageReference <- function(token,
                    thumbnails, ...)
 }
 
-#' @rdname fetch_images
+#' @rdname list_fetch_images
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("dsrs", "loadPhysicalThumbnailsBase64")}
 #' @export
@@ -316,7 +295,7 @@ fetch_images.PlateImageReference <- function(token,
 
     fun <- "loadImagesBase64"
 
-    if (force_png  && is.null(image_size))
+    if (force_png && is.null(image_size))
       agruments <- list(sessionToken = token, imageReferences = x,
                         convertToPng = force_png)
     else if (!force_png  && !is.null(image_size))
@@ -361,7 +340,8 @@ fetch_images.PlateImageReference <- function(token,
     agruments <- list(sessionToken = token, imageReferences = x)
   }
 
-  res <- make_request(api_url("dsrs"), fun, agruments, finally = process_imgs)
+  res <- make_request(api_url("dsrs"), fun, agruments, finally = process_imgs,
+                      ...)
 
   if (length(res) == 0L)
     res <- rep(list(NULL), length(x))
@@ -380,13 +360,73 @@ fetch_images.PlateImageReference <- function(token,
   }, res, x, SIMPLIFY = FALSE)
 }
 
-#' @param imgs A list of base64 encoded images, each of which will read by
-#' image magick.
-#' 
-#' @rdname fetch_images
-#' @export
-#' 
 process_imgs <- function(imgs)
   lapply(imgs$result,
          function(x) magick::image_read(base64enc::base64decode(x)))
 
+#' @param type Switch to specify the type of meta data objects to be returned.
+#' 
+#' @rdname list_fetch_images
+#' 
+#' @export
+#' 
+list_image_metadata <- function(token, x, ...)
+  UseMethod("list_image_metadata", x)
+
+#' @rdname list_fetch_images
+#' 
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("sas", "getExperimentImageMetadata")}
+#' * \Sexpr{infx::docs_link("dsrs", "listImageMetadata")}
+#' * \Sexpr{infx::docs_link("dsrs", "listAvailableImageRepresentationFormats")}
+#' 
+#' @export
+#' 
+list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
+
+  params <- lapply(as_json_vec(x), function(y) list(token, y))
+
+  res <- make_requests(api_url("sas"), "getExperimentImageMetadata", params,
+                       ...)
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_fetch_images
+#' @export
+#' 
+list_image_metadata.Experiment <- function(token, x, ...)
+  list_image_metadata(token, exp_to_expid(x), ...)
+
+fetch_img_meta <- function(token, x, type = c("metadata", "format"), ...) {
+
+  fun <- switch(match.arg(type),
+                metadata = "listImageMetadata",
+                format = "listAvailableImageRepresentationFormats")
+
+  make_request(api_url("dsrs"), fun, list(token, as_json_vec(x)), ...)
+}
+
+#' @rdname list_fetch_images
+#' @export
+#' 
+list_image_metadata.DatasetIdentifier <- fetch_img_meta
+
+#' @rdname list_fetch_images
+#' @export
+#' 
+list_image_metadata.DatasetReference <- fetch_img_meta
+
+#' @rdname list_fetch_images
+#' @export
+#' 
+list_image_metadata.ImageDatasetReference <- fetch_img_meta
+
+#' @rdname list_fetch_images
+#' @export
+#' 
+list_image_metadata.MicroscopyImageReference <- fetch_img_meta
+
+#' @rdname list_fetch_images
+#' @export
+#' 
+list_image_metadata.PlateImageReference <- fetch_img_meta
