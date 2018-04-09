@@ -88,14 +88,15 @@ list_references(token, x, ...)
 \method{list_references}{PlateImageReference}(token, x, wells = NULL,
   channels, ...)
 
-list_dataset_types(token)
+list_dataset_types(token, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
 
 \item{x}{Object to limit search for datasets/files with.}
 
-\item{...}{Generic compatibility.}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 
 \item{include}{String indicating whether to include parent/child datasets
 as well.}

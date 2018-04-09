@@ -39,7 +39,7 @@ list_wells(token, x, ...)
 \method{list_wells}{Plate}(token, x, ...)
 
 list_plate_well_ref(token, material_id, experiment = NULL,
-  include_datasets = FALSE)
+  include_datasets = FALSE, ...)
 
 list_plate_metadata(token, x, ...)
 

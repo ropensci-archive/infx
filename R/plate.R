@@ -61,7 +61,7 @@ list_plates <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_plates.NULL <- function(token, x, ...)
-  make_request(api_url("sas"), "listPlates", list(token))
+  make_request(api_url("sas"), "listPlates", list(token), ...)
 
 #' @rdname list_plate_well
 #' @export
@@ -70,7 +70,7 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x), function(exp) list(token, exp))
 
-  res <- make_requests(api_url("sas"), "listPlates", params)
+  res <- make_requests(api_url("sas"), "listPlates", params, ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -79,7 +79,7 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_plates.Experiment <- function(token, x, ...) {
-  list_plates(token, exp_to_expid(x))
+  list_plates(token, exp_to_expid(x), ...)
 }
 
 #' @rdname list_plate_well
@@ -143,7 +143,7 @@ list_wells.PlateIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x), function(plate) list(token, plate))
 
-  res <- make_requests(api_url("sas"), "listPlateWells", params)
+  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -152,7 +152,7 @@ list_wells.PlateIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_wells.Plate <- function(token, x, ...)
-  list_wells(token, as_plateid(x))
+  list_wells(token, as_plateid(x), ...)
 
 #' @rdname list_plate_well
 #' @export
@@ -160,7 +160,8 @@ list_wells.Plate <- function(token, x, ...)
 list_plate_well_ref <- function(token,
                                 material_id,
                                 experiment = NULL,
-                                include_datasets = FALSE) {
+                                include_datasets = FALSE,
+                                ...) {
 
   material_id <- as_json_vec(material_id)
 
@@ -186,7 +187,7 @@ list_plate_well_ref <- function(token,
                                         include_datasets))
   }
 
-  res <- make_requests(api_url("sas"), "listPlateWells", params)
+  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -202,14 +203,14 @@ list_plate_metadata <- function(token, x, ...)
 #' 
 list_plate_metadata.PlateIdentifier <- function(token, x, ...)
   make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, as_json_vec(x)))
+               list(token, as_json_vec(x)), ...)
 
 #' @rdname list_plate_well
 #' @export
 #' 
 list_plate_metadata.Plate <- function(token, x, ...)
   make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, as_plateid(x)))
+               list(token, as_plateid(x)), ...)
 
 #' @param row Character vector plate row names or numeric vector of plate row
 #' indices.

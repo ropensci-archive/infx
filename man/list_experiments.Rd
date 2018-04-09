@@ -17,9 +17,9 @@ list_experiments(token, x, ...)
   types = list_experiment_types(token), require = c(NA, "DataSets",
   "Samples"), ...)
 
-list_experiment_ids(token)
+list_experiment_ids(token, ...)
 
-list_experiment_types(token)
+list_experiment_types(token, ...)
 
 exp_to_expid(x)
 }
@@ -29,7 +29,8 @@ exp_to_expid(x)
 \item{x}{Object to limit the number of returned experiments, e.g. a set of
 \code{ExperimentIdentifier} or \code{Project} objects.}
 
-\item{...}{Generic compatibility}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 
 \item{types}{Either a single or set of \code{ExperimentType} objects}
 

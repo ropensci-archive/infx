@@ -32,21 +32,21 @@ list_samples <- function(token, x, ...)
 #' @export
 #' 
 list_samples.ExperimentIdentifier <- function(token, x, ...) {
-  list_samples_for_exp(token, x)
+  list_samples_for_exp(token, x, ...)
 }
 
 #' @rdname list_samples
 #' @export
 #' 
 list_samples.Experiment <- function(token, x, ...) {
-  list_samples_for_exp(token, x)
+  list_samples_for_exp(token, x, ...)
 }
 
-list_samples_for_exp <- function(token, x) {
+list_samples_for_exp <- function(token, x, ...) {
 
   params <- lapply(exp_id_str(x), function(exp) list(token, exp))
 
-  res <- make_requests(api_url("gis"), "listSamplesForExperiment", params)
+  res <- make_requests(api_url("gis"), "listSamplesForExperiment", params, ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -58,7 +58,7 @@ list_samples.PlateIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x), function(plate) list(token, plate))
 
-  res <- make_requests(api_url("sas"), "getPlateSample", params)
+  res <- make_requests(api_url("sas"), "getPlateSample", params, ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -67,7 +67,7 @@ list_samples.PlateIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_samples.Plate <- function(token, x, ...)
-  list_samples(token, as_plateid(x))
+  list_samples(token, as_plateid(x), ...)
 
 #' @rdname list_samples
 #' @export
@@ -77,7 +77,7 @@ list_samples.WellIdentifier <- function(token, x, ...) {
   params <- lapply(as_json_vec(x),
                    function(well) list(token, remove_null(well)))
 
-  res <- make_requests(api_url("sas"), "getWellSample", params)
+  res <- make_requests(api_url("sas"), "getWellSample", params, ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -85,5 +85,5 @@ list_samples.WellIdentifier <- function(token, x, ...) {
 #' @rdname list_samples
 #' @export
 #' 
-list_sample_types <- function(token)
-  make_request(api_url("gis"), "listSampleTypes", list(token))
+list_sample_types <- function(token, ...)
+  make_request(api_url("gis"), "listSampleTypes", list(token), ...)

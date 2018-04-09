@@ -10,9 +10,9 @@
 \alias{list_download_urls.DataSetFileDTO}
 \title{List data store servers}
 \usage{
-list_datastores(token)
+list_datastores(token, ...)
 
-list_datastore_urls(token, data_set = NULL)
+list_datastore_urls(token, data_set = NULL, ...)
 
 list_download_urls(token, x, ...)
 
@@ -28,13 +28,13 @@ list_download_urls(token, x, ...)
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
 
+\item{...}{Generic compatibility.}
+
 \item{data_set}{Set of datasets (specified as dataset codes, \code{DataSet} or
 \code{DatasetIdentifier} objects) or NULL.}
 
 \item{x}{Object representing a (set of) dataset(s), e.g. a vector of dataset
 codes, or a set of \code{DataSet}s or \code{DatasetIdentifier}s.}
-
-\item{...}{Generic compatibility.}
 
 \item{path}{A character vector of file paths within datasets.}
 

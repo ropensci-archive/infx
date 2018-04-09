@@ -26,7 +26,7 @@ attribute_clause(desired_value, attribute = "code")
 time_attribute_clause(desired_date = Sys.Date(), attribute = "registration",
   timezone = 0L, mode = "eq")
 
-list_property_types(token, with_relations = FALSE)
+list_property_types(token, with_relations = FALSE, ...)
 }
 \arguments{
 \item{desired_value}{The value used in the comparison.}

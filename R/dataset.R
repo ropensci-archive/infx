@@ -44,7 +44,8 @@
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
-#' @param ... Generic compatibility.
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @section TODO: The API function `listDataSetsForSample()` has a parameter
 #' `areOnlyDirectlyConnectedIncluded`, which is currently fixed to `TRUE`. The
@@ -131,12 +132,12 @@ list_datasets.Sample <- function(token,
 
     if (length(x) == 1L)
       make_request(api_url("gis"), "listDataSetsForSample",
-                   list(token, x[[1]], TRUE))
+                   list(token, x[[1]], TRUE), ...)
     else
-      make_request(api_url("gis"), "listDataSets", list(token, x))
+      make_request(api_url("gis"), "listDataSets", list(token, x), ...)
 
   } else
-    make_request(api_url("gis"), "listDataSets", list(token, x, include))
+    make_request(api_url("gis"), "listDataSets", list(token, x, include), ...)
 }
 
 #' @rdname list_datasets
@@ -153,7 +154,8 @@ list_datasets.Experiment <- function(token,
   make_request(api_url("gis"), "listDataSetsForExperiments",
                list(token,
                     as_json_vec(remove_null(x)),
-                    resolve_fetch_opts(include)))
+                    resolve_fetch_opts(include)),
+               ...)
 }
 
 #' @rdname list_datasets
@@ -171,10 +173,10 @@ list_datasets.character <- function(token,
 
   if (length(include) == 2L)
     make_request(api_url("gis"), "getDataSetMetaData",
-                 list(token, as.list(x)))
+                 list(token, as.list(x)), ...)
   else
     make_request(api_url("gis"), "getDataSetMetaData",
-                 list(token, as.list(x), include))
+                 list(token, as.list(x), include), ...)
 }
 
 #' @rdname list_datasets
@@ -190,13 +192,13 @@ list_dataset_ids <- function(token, x, ...)
 #' 
 list_dataset_ids.character <- function(token, x, ...)
   make_request(api_url("sas"), "getDatasetIdentifiers",
-               list(token, as.list(x)))
+               list(token, as.list(x)), ...)
 
 #' @rdname list_datasets
 #' @export
 #' 
 list_dataset_ids.DataSet <- function(token, x, ...)
-  list_dataset_ids(token, dataset_code(x))
+  list_dataset_ids(token, dataset_code(x), ...)
 
 #' @rdname list_datasets
 #' @section openBIS:
@@ -222,7 +224,7 @@ list_img_ds <- function(token,
                 segmentation = "listSegmentationImageDatasets",
                 feature = "listFeatureVectorDatasets")
 
-  make_request(api_url("sas"), fun, list(token, as_json_vec(x)))
+  make_request(api_url("sas"), fun, list(token, as_json_vec(x)), ...)
 }
 
 #' @rdname list_datasets
@@ -253,7 +255,7 @@ list_references.PlateMetadata <- list_img_ds
 
 list_ref_for_material <- function(token, x, experiment = NULL, ...)
   list_plate_well_ref(token, as_screening_material(x), experiment,
-                      include_datasets = TRUE)
+                      include_datasets = TRUE, ...)
 
 #' @rdname list_datasets
 #' 
@@ -275,7 +277,7 @@ list_references.MaterialIdentifierGeneric <- list_ref_for_material
 list_references.MaterialIdentifierScreening <- list_ref_for_material
 
 list_img_ref_wrapper <- function(token, x, wells = NULL, channels, ...)
-  list_img_ref(token, x, wells, channels)
+  list_img_ref(token, x, wells, channels, ...)
 
 #' @rdname list_datasets
 #' 
@@ -356,7 +358,7 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
 
   params <- lapply(x, function(z) list(token, z, channels))
 
-  res <- make_requests(api_url("dsrs"), "listImageReferences", params)
+  res <- make_requests(api_url("dsrs"), "listImageReferences", params, ...)
   as_json_vec(do.call(c, res))
 }
 
@@ -374,7 +376,8 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 
   params <- lapply(x, function(z) list(token, z, wells, channels))
 
-  res <- make_requests(api_url("dsrs"), "listPlateImageReferences", params)
+  res <- make_requests(api_url("dsrs"), "listPlateImageReferences", params,
+                       ...)
   as_json_vec(do.call(c, res))
 }
 
@@ -383,8 +386,8 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 #' * \Sexpr{infx::docs_link("gis", "listDataSetTypes")}
 #' @export
 #' 
-list_dataset_types <- function(token)
-  make_request(api_url("gis"), "listDataSetTypes", list(token))
+list_dataset_types <- function(token, ...)
+  make_request(api_url("gis"), "listDataSetTypes", list(token), ...)
 
 #' Extract dataset code
 #' 

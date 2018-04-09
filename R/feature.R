@@ -46,7 +46,8 @@
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to specify the set of feature vector datasets of interest.
-#' @param ... Generic compatibility
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @rdname list_fetch_features
 #' 
@@ -95,7 +96,7 @@ list_features <- function(token, x, ...)
 
 list_feats <- function(token, x, ...)
   make_request(api_url("dsrs"), "listAvailableFeatures",
-               list(token, as_json_vec(remove_null(x))))
+               list(token, as_json_vec(remove_null(x))), ...)
 
 #' @rdname list_fetch_features
 #' 
@@ -109,9 +110,9 @@ list_features.FeatureVectorDatasetReference <- function(token,
                                                         wells = NULL,
                                                         ...) {
   if (is.null(wells))
-    list_feats(token, x)
+    list_feats(token, x, ...)
   else
-    list_feats(token, feat_ds_well_ref(x, wells))
+    list_feats(token, feat_ds_well_ref(x, wells), ...)
 }
 
 #' @rdname list_fetch_features
@@ -129,7 +130,7 @@ list_feature_codes <- function(token, x, ...)
 
 list_feat_codes <- function(token, x, ...)
   make_request(api_url("dsrs"), "listAvailableFeatureCodes",
-               list(token, as_json_vec(remove_null(x))))
+               list(token, as_json_vec(remove_null(x))), ...)
 
 #' @rdname list_fetch_features
 #' @export
@@ -139,9 +140,9 @@ list_feature_codes.FeatureVectorDatasetReference <- function(token,
                                                              wells = NULL,
                                                              ...) {
   if (is.null(wells))
-    list_feat_codes(token, x)
+    list_feat_codes(token, x, ...)
   else
-    list_feat_codes(token, feat_ds_well_ref(x, wells))
+    list_feat_codes(token, feat_ds_well_ref(x, wells), ...)
 }
 
 #' @rdname list_fetch_features
@@ -189,9 +190,9 @@ fetch_features.FeatureVectorDatasetReference <- function(token,
     }
 
     make_request(api_url("dsrs"), "loadFeatures",
-                 list(token, x, feature_codes))
+                 list(token, x, feature_codes), ...)
   } else {
-    fetch_features(token, feat_ds_well_ref(x, wells), feature_codes)
+    fetch_features(token, feat_ds_well_ref(x, wells), feature_codes, ...)
   }
 }
 
@@ -225,7 +226,7 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
               restore_type = FALSE)
 
   make_request(api_url("dsrs"), "loadFeaturesForDatasetWellReferences",
-               list(token, x, feature_codes))
+               list(token, x, feature_codes), ...)
 }
 
 #' Create well feature dataset reference objects

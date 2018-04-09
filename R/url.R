@@ -30,17 +30,18 @@
 #' 
 #' @export
 #' 
-list_datastores <- function(token)
-  make_request(api_url("gis"), "listDataStores", list(token))
+list_datastores <- function(token, ...)
+  make_request(api_url("gis"), "listDataStores", list(token), ...)
 
 #' @rdname list_urls
 #' @export
 #' 
-list_datastore_urls <- function(token, data_set = NULL) {
+list_datastore_urls <- function(token, data_set = NULL, ...) {
 
   if (is.null(data_set)) {
 
-    make_request(api_url("gis"), "getDefaultPutDataStoreBaseURL", list(token))
+    make_request(api_url("gis"), "getDefaultPutDataStoreBaseURL", list(token),
+                 ...)
 
   } else {
 
@@ -55,14 +56,14 @@ list_datastore_urls <- function(token, data_set = NULL) {
     if (length(data_set) == 1L) {
 
       urls <- make_request(api_url("gis"), "tryGetDataStoreBaseURL",
-                           list(token, data_set))
+                           list(token, data_set), ...)
       assert_that(!is.null(urls))
       stats::setNames(urls, data_set)
 
     } else {
 
       urls <- make_request(api_url("gis"), "getDataStoreBaseURLs",
-                           list(token, as.list(data_set)))
+                           list(token, as.list(data_set)), ...)
       res <- unlist(lapply(urls, function(url) {
         assert_that(has_subclass(url, "DataStoreURLForDataSets"),
                     has_fields(url, c("dataStoreURL", "dataSetCodes")))
@@ -120,7 +121,7 @@ list_download_urls.character <- function(token,
                      SIMPLIFY = FALSE)
   }
 
-  unlist(make_requests(api_url("dsrg"), fun, params))
+  unlist(make_requests(api_url("dsrg"), fun, params), ...)
 }
 
 #' @rdname list_urls
@@ -132,7 +133,7 @@ list_download_urls.DataSet <- function(token,
                                        timeout = NA,
                                        ...) {
 
-  list_download_urls(token, dataset_code(x), path, timeout)
+  list_download_urls(token, dataset_code(x), path, timeout, ...)
 }
 
 #' @rdname list_urls
@@ -144,7 +145,7 @@ list_download_urls.DatasetIdentifier <- function(token,
                                                  timeout = NA,
                                                  ...) {
 
-  list_download_urls(token, dataset_code(x), path, timeout)
+  list_download_urls(token, dataset_code(x), path, timeout, ...)
 }
 
 #' @rdname list_urls
@@ -165,5 +166,5 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
     params <- lapply(as_json_vec(x), function(y) list(token, y, timeout))
   }
   
-  unlist(make_requests(api_url("dsrg"), fun, params))
+  unlist(make_requests(api_url("dsrg"), fun, params), ...)
 }

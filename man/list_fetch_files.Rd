@@ -87,7 +87,8 @@ fetch_files(token, x, ...)
 
 \item{x}{Object to limit search for datasets/files with.}
 
-\item{...}{Generic compatibility.}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}} or \code{\link[=do_requests_serial]{do_requests_serial()}}/\code{\link[=do_requests_parallel]{do_requests_parallel()}}.}
 
 \item{path}{A (vector of) file path(s) to be searched within a dataset.}
 

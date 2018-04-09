@@ -83,7 +83,7 @@ list_material <- function(token, x, ...)
 #' 
 list_material.MaterialIdentifierGeneric <- function(token, x, ...)
   make_request(api_url("gis"), "getMaterialByCodes",
-               list(token, as_json_vec(x)))
+               list(token, as_json_vec(x)), ...)
 
 #' @rdname list_material
 #' @export
@@ -93,29 +93,29 @@ list_material.PlateIdentifier <- function(token,
                                           material_type = NULL,
                                           ...) {
 
-  list_plate_mat_map(token, x, material_type)
+  list_plate_mat_map(token, x, material_type, ...)
 }
 
 #' @rdname list_material
 #' @export
 #' 
 list_material.PlateMetadata <- function(token, x, material_type = NULL, ...)
-  list_plate_mat_map(token, x, material_type)
+  list_plate_mat_map(token, x, material_type, ...)
 
 #' @rdname list_material
 #' @export
 #' 
 list_material.Plate <- function(token, x, material_type = NULL, ...)
-  list_plate_mat_map(token, x, material_type)
+  list_plate_mat_map(token, x, material_type, ...)
 
-list_plate_mat_map <- function(token, x, material_type = NULL) {
+list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
 
   if (!is.null(material_type))
     assert_that(is_json_class(material_type),
                 has_subclass(material_type, "MaterialTypeIdentifierScreening"))
 
   make_request(api_url("sas"), "listPlateMaterialMapping",
-               list(token, as_json_vec(x), material_type))
+               list(token, as_json_vec(x), material_type), ...)
 }
 
 #' @rdname list_material

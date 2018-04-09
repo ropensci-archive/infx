@@ -4,10 +4,12 @@
 \alias{list_projects}
 \title{List projects}
 \usage{
-list_projects(token)
+list_projects(token, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
+
+\item{...}{Further arguments will be passed to \code{\link[=make_requests]{make_requests()}}.}
 }
 \description{
 List all projects available on the queried openBIS instance. A project forms

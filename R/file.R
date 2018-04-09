@@ -72,7 +72,8 @@
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
-#' @param ... Generic compatibility.
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()] or [do_requests_serial()]/[do_requests_parallel()].
 #' 
 #' @rdname list_fetch_files
 #' 
@@ -149,7 +150,7 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
   params <- mapply(function(a, b, c) list(token, a, b, c), x, path, recursive,
                    SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
+  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params, ...)
 
   res <- Map(function(dat, code) {
     attr(dat, "data_set") <- code
@@ -160,7 +161,7 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
 }
 
 list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
-  list_files(token, dataset_code(x), path, recursive)
+  list_files(token, dataset_code(x), path, recursive, ...)
 
 #' @rdname list_fetch_files
 #' @export
@@ -211,7 +212,7 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
   params <- lapply(x, function(y) list(token, y))
 
-  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params)
+  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params, ...)
 
   res <- Map(function(dat, code) {
     attr(dat, "data_set") <- code

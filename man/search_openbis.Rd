@@ -7,7 +7,7 @@
 \title{Search for objects}
 \usage{
 search_openbis(token, criteria, target_object = c("data_set", "experiment",
-  "material", "sample"), fetch_options = NULL)
+  "material", "sample"), fetch_options = NULL, ...)
 
 search_criteria(..., operator = "all", sub_criteria = NULL)
 

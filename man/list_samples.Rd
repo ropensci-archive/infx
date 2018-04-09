@@ -22,7 +22,7 @@ list_samples(token, x, ...)
 
 \method{list_samples}{WellIdentifier}(token, x, ...)
 
-list_sample_types(token)
+list_sample_types(token, ...)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}

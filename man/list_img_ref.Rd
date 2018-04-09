@@ -23,7 +23,8 @@ listing to.}
 \item{channels}{A character vector with imaging channel names to limit the
 dataset listing to.}
 
-\item{...}{Generic compatibility.}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 }
 \description{
 Used for double dispatching on the \code{list_datasets()} generic, list image

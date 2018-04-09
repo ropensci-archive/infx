@@ -59,7 +59,8 @@ search_openbis <- function(token,
                            criteria,
                            target_object = c("data_set", "experiment",
                                              "material", "sample"),
-                           fetch_options = NULL) {
+                           fetch_options = NULL,
+                           ...) {
 
   fun <- switch(match.arg(target_object),
                 data_set = "searchForDataSets",
@@ -86,7 +87,7 @@ search_openbis <- function(token,
     params <- list(token, criteria)
   }
 
-  make_request(api_url("gis"), fun, params)
+  make_request(api_url("gis"), fun, params, ...)
 }
 
 #' @rdname search_openbis
@@ -286,12 +287,12 @@ time_attribute_clause <- function(desired_date = Sys.Date(),
 #' @rdname match_clause
 #' @export
 #' 
-list_property_types <- function(token, with_relations = FALSE) {
+list_property_types <- function(token, with_relations = FALSE, ...) {
 
   assert_that(is.logical(with_relations), length(with_relations) == 1L)
 
   res <- make_request(api_url("gis"), "listPropertyTypes",
-                      list(token, with_relations))
+                      list(token, with_relations), ...)
 
   classes <- sapply(res, get_subclass)
 

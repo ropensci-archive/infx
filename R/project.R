@@ -8,11 +8,12 @@
 #' experiments.
 #' 
 #' @inheritParams logout_openbis
+#' @param ... Further arguments will be passed to [make_requests()].
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "listProjects")}
 #' 
 #' @export
 #' 
-list_projects <- function(token)
-  make_request(api_url("gis"), "listProjects", list(token))
+list_projects <- function(token, ...)
+  make_request(api_url("gis"), "listProjects", list(token), ...)

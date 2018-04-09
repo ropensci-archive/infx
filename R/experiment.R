@@ -27,7 +27,8 @@
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned experiments, e.g. a set of
 #' `ExperimentIdentifier` or `Project` objects.
-#' @param ... Generic compatibility
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @examples
 #' \dontrun{
@@ -55,7 +56,8 @@ list_experiments <- function(token, x, ...)
 #' @export
 #' 
 list_experiments.ExperimentIdentifier <- function(token, x, ...)
-  make_request(api_url("gis"), "listExperiments", list(token, exp_id_str(x)))
+  make_request(api_url("gis"), "listExperiments", list(token, exp_id_str(x)),
+               ...)
 
 #' @rdname list_experiments
 #' 
@@ -96,7 +98,7 @@ list_experiments.Project <- function(token,
 
   params <- lapply(types, function(type) list(token, x, as.character(type)))
 
-  res <- make_requests(api_url("gis"), fun, params)
+  res <- make_requests(api_url("gis"), fun, params, ...)
   as_json_vec(do.call(c, res))
 }
 
@@ -105,16 +107,16 @@ list_experiments.Project <- function(token,
 #' * \Sexpr{infx::docs_link("sas", "listExperiments")}
 #' @export
 #' 
-list_experiment_ids <- function(token)
-  make_request(api_url("sas"), "listExperiments", list(token))
+list_experiment_ids <- function(token, ...)
+  make_request(api_url("sas"), "listExperiments", list(token), ...)
 
 #' @rdname list_experiments
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "listExperimentTypes")}
 #' @export
 #' 
-list_experiment_types <- function(token)
-  make_request(api_url("gis"), "listExperimentTypes", list(token))
+list_experiment_types <- function(token, ...)
+  make_request(api_url("gis"), "listExperimentTypes", list(token), ...)
 
 #' @rdname list_experiments
 #' @export
