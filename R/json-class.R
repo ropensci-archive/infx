@@ -1,5 +1,5 @@
 
-#' Create JSON class objects
+#' Create and validate JSON class objects
 #'
 #' To communicate object type information via JSON to the Jackson-powered
 #' openBis interface, the `@type` field is used. Data received from openBis is
@@ -17,13 +17,25 @@
 #' to `FALSE`. Furthermore, the action can be applied recursively with the
 #' argument `recursive`. The function `as.list()` can also be used to perform
 #' the above actions, but with default arguments, it does nothing, as
-#' functions such as `base::sapply()` and `base::lapply()`, call `as.list()`.
+#' functions such as [base::sapply()] and [base::lapply()], call `as.list()`.
 #' 
 #' JSON class objects have custom sub-setting and printing functions available.
 #' Sub-setting of JSON objects that preserve class and `json_class`
 #' attributes. This is useful when objects are created from openBIS results
 #' which are subsequently used in further queries, but the constructors they
 #' are passed to require only a subset of the fetched fields.
+#' 
+#' The functions `is_json_class()` tests whether an object is a proper JSON
+#' class object, meaning that:
+#'   * it is a list
+#'   * it inherits `json_class`
+#'   * the last class attribute is `json_class`
+#'   * apart from `json_class` there exists at least one more class attribute
+#' 
+#' In order to recursively test a `json_class` object for being properly
+#' formed, the function `check_json_class()` can be used. This recurses through
+#' a list structure and whenever an object inherits from `json_class` it is
+#' tested with `is_json_class()`.
 #' 
 #' @param x Object to process.
 #' @param class JSON sub-class name.
@@ -37,17 +49,46 @@
 #' the list structure into the `@type` field.
 #' @param ... Generic compatibility.
 #' 
-#' @rdname json_class_create
+#' @rdname json_class
 #'  
 #' @examples
-#' lst <- list(`@type` = "foo", "a", "b")
-#' cls <- as_json_class(lst)
+#' lst <- list(`@type` = "foobar",
+#'             a = list(`@type` = "foo", b = "c"),
+#'             d = list(`@type` = "bar", e = "f"))
 #' 
-#' print(cls)
+#' cls <- as_json_class(lst)
+#' print(cls, depth = 2)
+#' 
 #' is_json_class(cls)
 #' get_subclass(cls)
 #' 
-#' identical(rm_json_class(cls), lst)
+#' # recursive validation of json_class objects with check_json_class()
+#' attr(cls[["d"]], "class") <- "json_class"
+#' is_json_class(cls)
+#' check_json_class(cls)
+#' 
+#' # as_json_class() is idempotent
+#' identical(as_json_class(lst), as_json_class(as_json_class(lst)))
+#' 
+#' # rm_json_class() reverses the action of as_json_class()
+#' identical(lst, rm_json_class(as_json_class(lst)))
+#' 
+#' # json_class objects can be instantiated using the constructor json_class()
+#' identical(as_json_class(lst), 
+#'           json_class(a = json_class(b = "c", class = "foo"),
+#'                      d = json_class(e = "f", class = "bar"),
+#'                      class = "foobar"))
+#' 
+#' cls <- as_json_class(lst)
+#' 
+#' # the default of as_list does nothing
+#' identical(cls, as_list(cls))
+#' # this can be disabled, by setting keep_asis to FALSE
+#' identical(lst, as_list(cls, keep_asis = FALSE))
+#' # further options are disabling recursive action
+#' as_list(cls, keep_asis = FALSE, recursive = FALSE)
+#' # and dropping type information
+#' as_list(cls, keep_asis = FALSE, recursive = FALSE, restore_type = FALSE)
 #' 
 #' @export
 #' 
@@ -76,26 +117,26 @@ new_json_class <- function(x, class = NULL) {
   structure(x, class = c(class, "json_class"))
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as_json_class <- function(x, ...) {
   UseMethod("as_json_class")
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as.json_class <- as_json_class
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as_json_class.json_class <- function(x, ...) {
   x
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as_json_class.list <- function(x, ...) {
@@ -110,7 +151,7 @@ as_json_class.list <- function(x, ...) {
     x
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as_json_class.json_vec <- function(x, ...) {
@@ -119,7 +160,7 @@ as_json_class.json_vec <- function(x, ...) {
   x[[1]]
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as_json_class.default <- function(x, force = FALSE, ...) {
@@ -131,7 +172,7 @@ as_json_class.default <- function(x, force = FALSE, ...) {
          "), if param force is FALSE.")
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
@@ -154,7 +195,7 @@ rm_json_class <- function(x, recursive = TRUE, restore_type = TRUE) {
     x
 }
 
-#' @rdname json_class_create
+#' @rdname json_class
 #' @export
 #' 
 as.list.json_class <- function(x,
@@ -168,33 +209,7 @@ as.list.json_class <- function(x,
     rm_json_class(x, recursive, restore_type)
 }
 
-#' Validate JSON class objects
-#'
-#' The functions `is_json_class()` tests whether an object is a proper JSON
-#' class object, meaning that:
-#'   * it is a list
-#'   * it inherits `json_class`
-#'   * the last class attribute is `json_class`
-#'   * apart from `json_class` there exists at least one more class attribute
-#' 
-#' In order to recursively test a `json_class` object for being properly
-#' formed, the function `check_json_class()` can be used. This recurses through
-#' a list structure and whenever an object inherits from `json_class` it is
-#' tested with `is_json_class()`.
-#' 
-#' @param x Object to process.
-#' @param recursive Recursively apply the function.
-#' 
-#' @rdname json_class_validate
-#'  
-#' @examples
-#' lst <- list(`@type` = "foo", "a", "b")
-#' cls <- as_json_class(lst)
-#' 
-#' is_json_class(cls)
-#' 
-#' identical(rm_json_class(cls), lst)
-#' 
+#' @rdname json_class
 #' @export
 #' 
 is_json_class <- function(x) {
@@ -205,12 +220,12 @@ is_json_class <- function(x) {
          utils::tail(class(x), 1) == "json_class")
 }
 
-#' @rdname json_class_validate
+#' @rdname json_class
 #' @export
 #' 
 is.json_class <- is_json_class
 
-#' @rdname json_class_validate
+#' @rdname json_class
 #' @export
 #' 
 check_json_class <- function(x, recursive = TRUE) {

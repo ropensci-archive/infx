@@ -10,7 +10,10 @@
 \alias{as_json_class.default}
 \alias{rm_json_class}
 \alias{as.list.json_class}
-\title{Create JSON class objects}
+\alias{is_json_class}
+\alias{is.json_class}
+\alias{check_json_class}
+\title{Create and validate JSON class objects}
 \usage{
 json_class(..., class)
 
@@ -30,6 +33,12 @@ rm_json_class(x, recursive = TRUE, restore_type = TRUE)
 
 \method{as.list}{json_class}(x, keep_asis = TRUE, recursive = !keep_asis,
   restore_type = !keep_asis, ...)
+
+is_json_class(x)
+
+is.json_class(x)
+
+check_json_class(x, recursive = TRUE)
 }
 \arguments{
 \item{...}{Generic compatibility.}
@@ -68,22 +77,65 @@ of type information can be disabled, by setting the argument \code{restore_type}
 to \code{FALSE}. Furthermore, the action can be applied recursively with the
 argument \code{recursive}. The function \code{as.list()} can also be used to perform
 the above actions, but with default arguments, it does nothing, as
-functions such as \code{base::sapply()} and \code{base::lapply()}, call \code{as.list()}.
+functions such as \code{\link[base:sapply]{base::sapply()}} and \code{\link[base:lapply]{base::lapply()}}, call \code{as.list()}.
 
 JSON class objects have custom sub-setting and printing functions available.
 Sub-setting of JSON objects that preserve class and \code{json_class}
 attributes. This is useful when objects are created from openBIS results
 which are subsequently used in further queries, but the constructors they
 are passed to require only a subset of the fetched fields.
+
+The functions \code{is_json_class()} tests whether an object is a proper JSON
+class object, meaning that:
+\itemize{
+\item it is a list
+\item it inherits \code{json_class}
+\item the last class attribute is \code{json_class}
+\item apart from \code{json_class} there exists at least one more class attribute
+}
+
+In order to recursively test a \code{json_class} object for being properly
+formed, the function \code{check_json_class()} can be used. This recurses through
+a list structure and whenever an object inherits from \code{json_class} it is
+tested with \code{is_json_class()}.
 }
 \examples{
-lst <- list(`@type` = "foo", "a", "b")
-cls <- as_json_class(lst)
+lst <- list(`@type` = "foobar",
+            a = list(`@type` = "foo", b = "c"),
+            d = list(`@type` = "bar", e = "f"))
 
-print(cls)
+cls <- as_json_class(lst)
+print(cls, depth = 2)
+
 is_json_class(cls)
 get_subclass(cls)
 
-identical(rm_json_class(cls), lst)
+# recursive validation of json_class objects with check_json_class()
+attr(cls[["d"]], "class") <- "json_class"
+is_json_class(cls)
+check_json_class(cls)
+
+# as_json_class() is idempotent
+identical(as_json_class(lst), as_json_class(as_json_class(lst)))
+
+# rm_json_class() reverses the action of as_json_class()
+identical(lst, rm_json_class(as_json_class(lst)))
+
+# json_class objects can be instantiated using the constructor json_class()
+identical(as_json_class(lst), 
+          json_class(a = json_class(b = "c", class = "foo"),
+                     d = json_class(e = "f", class = "bar"),
+                     class = "foobar"))
+
+cls <- as_json_class(lst)
+
+# the default of as_list does nothing
+identical(cls, as_list(cls))
+# this can be disabled, by setting keep_asis to FALSE
+identical(lst, as_list(cls, keep_asis = FALSE))
+# further options are disabling recursive action
+as_list(cls, keep_asis = FALSE, recursive = FALSE)
+# and dropping type information
+as_list(cls, keep_asis = FALSE, recursive = FALSE, restore_type = FALSE)
 
 }
