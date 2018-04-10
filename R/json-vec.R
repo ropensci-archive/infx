@@ -1,28 +1,79 @@
 
-#' Construct JSON object vectors
+#' Construct and validate JSON object vectors
+#' 
+#' In order to allow method dispatch on a set of `json_class` objects without
+#' resorting to iterating over the individual set members, vectors of
+#' `json_class` objects are wrapped by a `json_vec` class. Iterating over
+#' objects is is some cases inefficient because the openBIS API can for some
+#' functions accept lists of objects. Assembling multiple `json_class` objects
+#' as a list in R however breaks method dispatch, as the type of this object
+#' is `list` instead of the desired `json_class` sub-class. A `json_vec` object
+#' therefore represents a list of `json_class` objects of the same sub-class
+#' and brings this sub-class to the surface of the compound object.
+#' 
+#' A `json_vec` object can be instantiated using the `json_vec()` constructor
+#' which takes a list of `json_class` objects of the same sub-class. An
+#' existing list of `json_class` objects can be coerced to `json_vec` using
+#' `as_json_vec()`/`as.json_vec()` and applying `as_list()`/`as.list()` to a
+#' `json_vec` object reverses the action of `as_json_vec()` by removing all
+#' `json_vec` related class information.
 #'
-#' `new_json_vec()` is a low-level constructor that takes a list of
-#' `json_class` objects of the same sub-class. `json_vec()` constructs a
-#' json_vec from individual json_class objects and `as_json_vec()`/
-#' `as.json_vec()` is an S3 generic function that converts existing objects.
-#' Applying `as.list()` to a `json_vec` object reverses the action of
-#' `new_json_vec()` by removing all json vec related class information.
-#'
+#' The function `is_json_vec()` and its alias `is.json_vec()` can be used to
+#' test whether an object is a proper `json_vec` object. This requires that
+#'   * all child elements have to be of the same sub-class
+#'   * all child elements are required to be properly formed `json_class`
+#'     objects
+#'   * the `json_vec` class attribute has to be in last position
+#'   * the remaining class attributes have to be equal to the common sub-class
+#'     determined for the children.
+#' 
+#' Testing whether a list structure consists of `json_class` objects which are
+#' of the same sub-class can be done with `has_common_subclass()`. This always
+#' returns `TRUE` if a `json_class` object is passed and `FALSE` if a non-list
+#' structure is passed.
+#' 
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
 #' @param force Suppress error when casting an object to `json_vec` that
 #' cannot be converted.
 #' 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' 
 #' @examples
-#' a <- structure(list("a"), class = c("foo", "json_class"))
-#' b <- structure(list("b"), class = c("foo", "json_class"))
+#' a <- json_class(field = "a", class = "foo")
+#' b <- json_class(field = "b", class = "foo")
 #'
-#' json_vec(a, b)
+#' ab <- json_vec(a, b)
 #' 
-#' as_json_vec(list(a, b))
-#' as_json_vec(a)
+#' print(ab)
+#' 
+#' identical(ab, as_json_vec(list(a, b)))
+#' # as_json_vec() is idempotent
+#' identical(as_json_vec(list(a, b)),
+#'           as_json_vec(as_json_vec(list(a, b))))
+#' 
+#' # a json_class object can be turned into a json_vec of length 1
+#' ab_class <- json_class(foo1 = a, foo2 = b, class = "bar")
+#' length(ab_class)
+#' ab_vec <- as_json_vec(ab_class)
+#' length(ab_vec)
+#' # this can be reversed using as_json_class()
+#' identical(ab_class, as_json_class(ab_vec))
+#' 
+#' # has_common_subclass() will alway return true for json_class objects
+#' has_common_subclass(a)
+#' # list-based objects are tested
+#' has_common_subclass(list(a, b))
+#' # this includes json_vec objects
+#' has_common_subclass(ab)
+#' # each list entry has to be a json_class object
+#' has_common_subclass(list("a", "b"))
+#' # here sub-classes are "foo" and "bar"
+#' has_common_subclass(list(ab_class, a))
+#' 
+#' is_json_vec(a)
+#' is_json_vec(list(a, b))
+#' is_json_vec(ab)
 #' 
 #' @export
 #' 
@@ -41,33 +92,33 @@ new_json_vec <- function(x) {
   res
 }
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as_json_vec <- function(x, ...) {
   UseMethod("as_json_vec")
 }
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as.json_vec <- as_json_vec
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as_json_vec.json_vec <- function(x, ...) {
   x
 }
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as_json_vec.json_class <- function(x, ...) {
   new_json_vec(list(x))
 }
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as_json_vec.list <- function(x, force = FALSE, ...) {
@@ -80,50 +131,19 @@ as_json_vec.list <- function(x, force = FALSE, ...) {
     new_json_vec(x)
 }
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as_json_vec.default <- as_json_class.default
 
-#' @rdname json_vec_create
+#' @rdname json_vec
 #' @export
 #' 
 as.list.json_vec <- function(x, ...) {
   unclass(x)
 }
 
-#' Validate JSON object vectors
-#'
-#' The function `is_json_vec()` and its alias `is.json_vec()` can be used to
-#' test whether an object is a proper `json_vec` object. This requires that
-#'   * all child elements have to be of the same sub-class
-#'   * all child elements are required to be properly formed `json_class`
-#'     objects
-#'   * the `json_vec` class attribute has to be in last position
-#'   * the remaining class attributes have to be equal to the common sub-class
-#'     determined for the children.
-#' 
-#' Testing whether a list structure consists of `json_class` objects which are
-#' of the same sub-class can be done with `has_common_subclass()`. This always
-#' returns `TRUE` if a `json_class` object is passed and `FALSE` if a non-list
-#' structure is passed.
-#'
-#' @param ... Individual `json_class` objects, or generic compatibility
-#' @param x A single/list of `json_class` object(s), or other object to coerce
-#' 
-#' @rdname json_vec_validate
-#' 
-#' @examples
-#' a <- structure(list("a"), class = c("foo", "json_class"))
-#' b <- structure(list("b"), class = c("foo", "json_class"))
-#'
-#' vec <- json_vec(a, b)
-#' 
-#' is_json_vec(vec)
-#' is_json_vec(a)
-#' 
-#' has_common_subclass(vec)
-#' 
+#' @rdname json_vec
 #' @export
 #' 
 is_json_vec <- function(x) {
@@ -137,12 +157,12 @@ is_json_vec <- function(x) {
              unlist(unique(lapply(x, get_subclass)))))
 }
 
-#' @rdname json_vec_validate
+#' @rdname json_vec
 #' @export
 #' 
 is.json_vec <- is_json_vec
 
-#' @rdname json_vec_validate
+#' @rdname json_vec
 #' @export
 #' 
 has_common_subclass <- function(x) {
