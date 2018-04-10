@@ -66,21 +66,32 @@ extract.}
 to test for.}
 }
 \description{
+Several utility functions for working with \code{json_class} and \code{json_vec}
+objects are provided. This includes \code{has_fields()} for checking whether
+certain fields are available in an object, \code{get_field()} to extract
+values from an object that correspond to a field with a certain name,
+\code{has_subclass()} for testing that an object is of a certain class and
+\code{get_subclass()} to extract this class. Finally, NULL fields can be
+recursively removed using \code{remove_null()}. More information is available
+in the details section.
+}
+\details{
 The generic function \code{has_fields()} tests whether a single \code{json_class}
 object contains all of the specified fields or whether each \code{json_class}
 object contained in a \code{json_vec} object passes this test. If dispatch
 occurs on an object that is neither of class \code{json_class}, nor of class
 \code{json_vec}, \code{has_fields()} returns \code{FALSE}. A single field can be extracted
-from a \code{json_class} or a \code{json_vec} object, using \code{get_field()}.
-}
-\details{
+from a \code{json_class} or a \code{json_vec} object, using \code{get_field()}. Iteration
+for \code{json_vec} objects happens via \code{\link[base:sapply]{base::sapply()}} so that when possible
+the result is simplified.
+
 In order to test whether a \code{json_class} or a \code{json_vec}  object is of a
 certain sub-class (can also be a vector of sub-classes), the generic
-function \code{has_subclass()} can be used. Dispatch on any other type objects
-will return \code{FALSE}. The sub-class of a \code{json_class} or a \code{json_vec}
-object can be determined, using \code{get_subclass}. This will also work if
-dispatched on a \code{list} of objects if that list object passes
-\code{\link[=has_common_subclass]{has_common_subclass()}}.
+function \code{has_subclass()} can be used. Dispatch on objects that do not
+inherit from either \code{json_class} or \code{json_vec} will return \code{FALSE}. The
+sub-class of a \code{json_class} or a \code{json_vec} object can be determined, using
+\code{get_subclass}. This will also work if dispatched on a \code{list} of objects if
+that list object passes \code{\link[=has_common_subclass]{has_common_subclass()}}.
 
 The function \code{remove_null()} recursively removes all NULL fields from a
 nested list structure while preserving \code{json_class} and \code{json_vec} class
@@ -92,15 +103,47 @@ API requests.
 }
 \examples{
 obj_1 <- json_class(a = 1, b = 2, class = "foo")
-obj_2 <- json_class(a = 3, b = 4, class = "foo")
-obj_3 <- json_class(a = 3, c = 4, class = "foo")
+obj_2 <- json_class(a = 2, b = 4, class = "foo")
+obj_3 <- json_class(a = 3, c = 6, class = "foo")
 
+# one or more fields can be tested
 has_fields(obj_1, "a")
 has_fields(obj_1, c("a", "b"))
-
+# dispatch on json_vec objects is possible as well
 has_fields(c(obj_1, obj_2), "a")
-has_fields(c(obj_1, obj_3), "a")
+has_fields(c(obj_1, obj_2), "b")
+has_fields(c(obj_1, obj_3), "b")
 has_fields(c(obj_1, obj_3), c("a", "b"))
+# other types do not pass the test
+has_fields(list(obj_1, obj_3), "a")
+
+get_field(obj_1, "a")
+get_field(c(obj_1, obj_3), "a")
+\dontrun{
+  # the requested field must be available in every instance
+  get_field(c(obj_1, obj_3), "b")
+  # only a single field may be requested
+  get_field(c(obj_1, obj_2), c("a", "b"))
+}
+
+obj_4 <- json_class(a = 4, c = 8, class = "bar")
+
+# dispatch on json_class
+has_subclass(obj_1, "foo")
+# dispatch on json_vec
+has_subclass(c(obj_1, obj_2), "foo")
+# dispatch on other object types always returns FALSE
+has_subclass(list(obj_1, obj_2), "foo")
+
+# dispatch on json_class
+get_subclass(obj_1)
+# dispatch on json_vec
+get_subclass(c(obj_1, obj_2))
+# dispatch on list is possible if the list passes has_common_subclass()
+get_subclass(list(obj_1, obj_2))
+\dontrun{
+  get_subclass(list(obj_1, obj_4))
+}
 
 tmp <- json_class(a = json_class(b = "c", d = NULL, class = "foo"),
                   e = json_class(f = "g", class = "bar"),

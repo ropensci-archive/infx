@@ -1,20 +1,31 @@
 
 #' JSON class utilities
+#' 
+#' Several utility functions for working with `json_class` and `json_vec`
+#' objects are provided. This includes `has_fields()` for checking whether
+#' certain fields are available in an object, `get_field()` to extract
+#' values from an object that correspond to a field with a certain name,
+#' `has_subclass()` for testing that an object is of a certain class and
+#' `get_subclass()` to extract this class. Finally, NULL fields can be
+#' recursively removed using `remove_null()`. More information is available
+#' in the details section.
 #'
 #' The generic function `has_fields()` tests whether a single `json_class`
 #' object contains all of the specified fields or whether each `json_class`
 #' object contained in a `json_vec` object passes this test. If dispatch
 #' occurs on an object that is neither of class `json_class`, nor of class
 #' `json_vec`, `has_fields()` returns `FALSE`. A single field can be extracted
-#' from a `json_class` or a `json_vec` object, using `get_field()`.
+#' from a `json_class` or a `json_vec` object, using `get_field()`. Iteration
+#' for `json_vec` objects happens via [base::sapply()] so that when possible
+#' the result is simplified.
 #' 
 #' In order to test whether a `json_class` or a `json_vec`  object is of a
 #' certain sub-class (can also be a vector of sub-classes), the generic
-#' function `has_subclass()` can be used. Dispatch on any other type objects
-#' will return `FALSE`. The sub-class of a `json_class` or a `json_vec`
-#' object can be determined, using `get_subclass`. This will also work if
-#' dispatched on a `list` of objects if that list object passes
-#' [has_common_subclass()].
+#' function `has_subclass()` can be used. Dispatch on objects that do not
+#' inherit from either `json_class` or `json_vec` will return `FALSE`. The
+#' sub-class of a `json_class` or a `json_vec` object can be determined, using
+#' `get_subclass`. This will also work if dispatched on a `list` of objects if
+#' that list object passes [has_common_subclass()].
 #' 
 #' The function `remove_null()` recursively removes all NULL fields from a
 #' nested list structure while preserving `json_class` and `json_vec` class
@@ -33,15 +44,47 @@
 #'  
 #' @examples
 #' obj_1 <- json_class(a = 1, b = 2, class = "foo")
-#' obj_2 <- json_class(a = 3, b = 4, class = "foo")
-#' obj_3 <- json_class(a = 3, c = 4, class = "foo")
+#' obj_2 <- json_class(a = 2, b = 4, class = "foo")
+#' obj_3 <- json_class(a = 3, c = 6, class = "foo")
 #' 
+#' # one or more fields can be tested
 #' has_fields(obj_1, "a")
 #' has_fields(obj_1, c("a", "b"))
-#' 
+#' # dispatch on json_vec objects is possible as well
 #' has_fields(c(obj_1, obj_2), "a")
-#' has_fields(c(obj_1, obj_3), "a")
+#' has_fields(c(obj_1, obj_2), "b")
+#' has_fields(c(obj_1, obj_3), "b")
 #' has_fields(c(obj_1, obj_3), c("a", "b"))
+#' # other types do not pass the test
+#' has_fields(list(obj_1, obj_3), "a")
+#' 
+#' get_field(obj_1, "a")
+#' get_field(c(obj_1, obj_3), "a")
+#' \dontrun{
+#'   # the requested field must be available in every instance
+#'   get_field(c(obj_1, obj_3), "b")
+#'   # only a single field may be requested
+#'   get_field(c(obj_1, obj_2), c("a", "b"))
+#' }
+#' 
+#' obj_4 <- json_class(a = 4, c = 8, class = "bar")
+#' 
+#' # dispatch on json_class
+#' has_subclass(obj_1, "foo")
+#' # dispatch on json_vec
+#' has_subclass(c(obj_1, obj_2), "foo")
+#' # dispatch on other object types always returns FALSE
+#' has_subclass(list(obj_1, obj_2), "foo")
+#' 
+#' # dispatch on json_class
+#' get_subclass(obj_1)
+#' # dispatch on json_vec
+#' get_subclass(c(obj_1, obj_2))
+#' # dispatch on list is possible if the list passes has_common_subclass()
+#' get_subclass(list(obj_1, obj_2))
+#' \dontrun{
+#'   get_subclass(list(obj_1, obj_4))
+#' }
 #' 
 #' @export
 #' 
@@ -66,7 +109,8 @@ has_fields.default <- function(x, ...) FALSE
 #' 
 get_field <- function(x, field, ...) {
 
-  assert_that(has_fields(x, field))
+  assert_that(has_fields(x, field),
+              length(fields) == 1L)
 
   UseMethod("get_field", x)
 }
