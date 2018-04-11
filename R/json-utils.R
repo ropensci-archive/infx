@@ -110,7 +110,7 @@ has_fields.default <- function(x, ...) FALSE
 get_field <- function(x, field, ...) {
 
   assert_that(has_fields(x, field),
-              length(fields) == 1L)
+              length(field) == 1L)
 
   UseMethod("get_field", x)
 }
