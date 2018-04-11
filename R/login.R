@@ -1,10 +1,11 @@
 
-#' Generate/check/destroy a login token
+#' Create and destroy a login token
 #'
-#' Create a login token for openBis API calls. If the `auto_disconnect` option
-#' is chosen, the user is logged out automatically upon garbage collection of
-#' the token. The validity of a token can be checked using `is_token_valid()`
-#' and a login token can be destroyed using `logout_openbis()`.
+#' Login tokens for openBis API calls can be created using `login_openbis()`.
+#' If the `auto_disconnect` option is enabled, the user is automatically
+#' logged out using `logout_openbis()` upon garbage collection of the token.
+#' The validity of a token can be checked using `is_token_valid()` and a login
+#' token can be manually destroyed by calling `logout_openbis()` on the token.
 #' 
 #' @param user,pwd Login credentials for an openBis instance.
 #' @param auto_disconnect Logical switch for automatically closing the
@@ -17,10 +18,15 @@
 #' * \Sexpr{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
 #' 
 #' @examples
-#' \donttest{
+#' \dontrun{
+#'   # create a login token
 #'   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
+#'   # check token
 #'   is_token_valid(tok)
+#' 
+#'   # destroy token
 #'   logout_openbis(tok)
+#'   # token is no longer valid
 #'   is_token_valid(tok)
 #' }
 #' 

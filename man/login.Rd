@@ -4,7 +4,7 @@
 \alias{login_openbis}
 \alias{logout_openbis}
 \alias{is_token_valid}
-\title{Generate/check/destroy a login token}
+\title{Create and destroy a login token}
 \usage{
 login_openbis(user, pwd, auto_disconnect = TRUE)
 
@@ -21,10 +21,11 @@ connection upon garbage collection of the token.}
 \item{token}{Login token as created by \code{login_openbis()}.}
 }
 \description{
-Create a login token for openBis API calls. If the \code{auto_disconnect} option
-is chosen, the user is logged out automatically upon garbage collection of
-the token. The validity of a token can be checked using \code{is_token_valid()}
-and a login token can be destroyed using \code{logout_openbis()}.
+Login tokens for openBis API calls can be created using \code{login_openbis()}.
+If the \code{auto_disconnect} option is enabled, the user is automatically
+logged out using \code{logout_openbis()} upon garbage collection of the token.
+The validity of a token can be checked using \code{is_token_valid()} and a login
+token can be manually destroyed by calling \code{logout_openbis()} on the token.
 }
 \section{openBIS}{
 
@@ -44,10 +45,15 @@ and a login token can be destroyed using \code{logout_openbis()}.
 }
 
 \examples{
-\donttest{
+\dontrun{
+  # create a login token
   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
+  # check token
   is_token_valid(tok)
+
+  # destroy token
   logout_openbis(tok)
+  # token is no longer valid
   is_token_valid(tok)
 }
 
