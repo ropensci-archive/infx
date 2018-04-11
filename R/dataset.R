@@ -254,7 +254,7 @@ list_references.Sample <- function(token, x, ...)
 list_references.PlateMetadata <- list_img_ds
 
 list_ref_for_material <- function(token, x, experiment = NULL, ...)
-  list_plate_well_ref(token, as_screening_material(x), experiment,
+  list_plate_well_ref(token, as_screening_mat_id(x), experiment,
                       include_datasets = TRUE, ...)
 
 #' @rdname list_datasets

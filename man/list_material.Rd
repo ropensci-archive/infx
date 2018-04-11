@@ -3,19 +3,29 @@
 \name{list_material}
 \alias{list_material}
 \alias{list_material.MaterialIdentifierGeneric}
+\alias{list_material.MaterialIdentifierScreening}
 \alias{list_material.PlateIdentifier}
 \alias{list_material.PlateMetadata}
 \alias{list_material.Plate}
+\alias{list_material.Sample}
 \alias{material_id}
-\alias{as_screening_material}
-\alias{as_screening_material.MaterialGeneric}
-\alias{as_screening_material.MaterialIdentifierGeneric}
-\alias{as_screening_material.MaterialIdentifierScreening}
+\alias{list_material_types}
+\alias{as_screening_mat_id}
+\alias{as_screening_mat_id.MaterialGeneric}
+\alias{as_screening_mat_id.MaterialIdentifierGeneric}
+\alias{as_screening_mat_id.MaterialIdentifierScreening}
+\alias{as_generic_mat_id}
+\alias{as_generic_mat_id.MaterialGeneric}
+\alias{as_generic_mat_id.MaterialIdentifierGeneric}
+\alias{as_generic_mat_id.MaterialIdentifierScreening}
+\alias{extract_well_material}
 \title{List materials}
 \usage{
 list_material(token, x, ...)
 
 \method{list_material}{MaterialIdentifierGeneric}(token, x, ...)
+
+\method{list_material}{MaterialIdentifierScreening}(token, x, ...)
 
 \method{list_material}{PlateIdentifier}(token, x, material_type = NULL, ...)
 
@@ -23,15 +33,29 @@ list_material(token, x, ...)
 
 \method{list_material}{Plate}(token, x, material_type = NULL, ...)
 
-material_id(code, type = "gene", mode = c("generic", "screening"))
+\method{list_material}{Sample}(token, x, material_type = NULL, ...)
 
-as_screening_material(x, ...)
+material_id(code, type = "gene", mode = c("screening", "generic"))
 
-\method{as_screening_material}{MaterialGeneric}(x, ...)
+list_material_types(mode = c("screening", "generic"), types = NULL)
 
-\method{as_screening_material}{MaterialIdentifierGeneric}(x, ...)
+as_screening_mat_id(x, ...)
 
-\method{as_screening_material}{MaterialIdentifierScreening}(x, ...)
+\method{as_screening_mat_id}{MaterialGeneric}(x, ...)
+
+\method{as_screening_mat_id}{MaterialIdentifierGeneric}(x, ...)
+
+\method{as_screening_mat_id}{MaterialIdentifierScreening}(x, ...)
+
+as_generic_mat_id(x, ...)
+
+\method{as_generic_mat_id}{MaterialGeneric}(x, ...)
+
+\method{as_generic_mat_id}{MaterialIdentifierGeneric}(x, ...)
+
+\method{as_generic_mat_id}{MaterialIdentifierScreening}(x, ...)
+
+extract_well_material(x, row, col)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -48,20 +72,38 @@ the material listing to a certain type of materials.}
 \item{type}{The material type (possible values depend on mode).}
 
 \item{mode}{Switch between generic and screening material id objects.}
+
+\item{row}{Either a single integer or a single character specifying a
+plate row.}
+
+\item{col}{A single integer specifying a plate column.}
 }
 \description{
-List all materials available on the queried openBIS instance for a given
-set of material id objects. Unfortunately there is no way for the available
-API version to list material id objects. These have to be instantiated by
-the user, using the function \code{material_id()} or by searching with
-\code{search_openbis()}.
+Materials in openBIS can represent a variety of objects. For the InfectX
+HTS setup, this is mainly limited to either compounds such as oligos or
+small molecule drugs and targeted genes. Three different objects are used to
+identify a material: \code{MaterialGeneric}, \code{MaterialIdentifierGeneric} and
+\code{MaterialIdentifierScreening}. Converting to id object types can be
+achieved with \code{as_generic_mat_id()} and \code{as_screening_mat_id()} while
+listing materials as \code{MaterialGeneric} objects is possible with
+\code{list_material()}.
 }
 \details{
+Unfortunately in this version of the openBIS JSON-RPC API, there is no
+possibility for listing all available materials for a project or
+experiment. Methods that return \code{MaterialGeneric} objects include
+\code{list_material()}, which can be dispatched on material id objects and
+objects representing plates, and \code{\link[=search_openbis]{search_openbis()}} with the target selector
+\code{target_object} set to \code{material}. Coercing \code{MaterialGeneric} objects to
+material id objects is possible with \code{as_generic_mat_id()} and
+\code{as_screening_mat_id()} which do not incur an API call.
+
+Instantiating material id objects is either done manually by calling
+\code{material_id()} or by querying openBIS for \code{MaterialGeneric} objects and
+converting to \code{MaterialIdentifierGeneric} or \code{MaterialIdentifierScreening}.
 A material id object is defined by a material code and a material type.
-Furthermore, two different types of material id objects are used for
-different API sections: \code{MaterialIdentifierGeneric} and
-\code{MaterialIdentifierScreening}. Current types for generic material object
-ids are
+Available types depend on whether generic or screening material objects are
+of interest. For generic material objects, possible ids are
 \itemize{
 \item compound
 \item control
@@ -74,27 +116,34 @@ ids are
 \item sirna
 }
 
-and for generic screening object ids
+and for screening materials, ids can be
 \itemize{
 \item compound
 \item gene
 \item oligo
 }
 
-The construction of material codes depends on material type. Genes, for
-example are identified with Entrez gene ids (e.g. 2475 for MTOR), while for
-compounds, a manufacturer name is used.
+Material type objects can be instantiated by calling
+\code{list_material_types()}, where the \code{mode} argument acts as a switch to
+choose between generic and screening objects. If only a subset of types
+are relevant, the output of \code{list_material_types()} can be limited by
+passing a character vector with type names as \code{types} argument. The second
+piece of information for constructing material id objects, material codes,
+depends on material type. Genes, for example are identified with Entrez
+gene ids (e.g. 2475 for MTOR), while for compounds, a manufacturer name is
+used (e.g. for Ambion and MTOR, AMBION_S602, AMBION_S603 and AMBION_S604).
 
 Whenever \code{list_material()} is dispatched on a (set of) material id
 object(s), a (set of) \code{MaterialGeneric} object(s) is returned. However if
 the dispatch occurs on plate objects (\code{Plate}, \code{PlateIdentifier} or
 \code{PlateMetadata}), a (set of) \code{PlateWellMaterialMapping} objects is returned.
 If \code{material_type} is not specified (i.e. \code{NULL}), the \code{mapping} field in
-the returned object might contain \code{NULL} for each well. While not mentioned
-in the openBis documentation, it is assumed that this occurs in a one to
-many mapping scenario (e.g. a well being linked to both an oligo and a
-gene). This can be overcome by specifying the type of the material of
-interest (see examples).
+the returned object will contain \code{NULL} for each well. When passing a set
+of \code{MaterialTypeIdentifierScreening} objects, as returned by
+\code{list_material_types()}, the \code{mapping} fields will contain material type
+information where available. The convenience function
+\code{extract_well_material()} can be applied to a \code{PlateWellMaterialMapping}
+object and will return the selected \code{MaterialIdentifierScreening} object.
 }
 \section{openBIS}{
 
@@ -106,20 +155,58 @@ interest (see examples).
 
 \examples{
 \dontrun{
-  tok <- login_openbis("username", "password")
-  exp_ids <- list_experiment_ids(tok)
-  plates <- list_plates(tok, exp_ids[[1]])
+  tok <- login_openbis("rdgr2014", "IXPubReview")
 
-  # contains (width x height) times NULL in mapping field
-  mat <- list_material(tok, plates[[2]])
-  print(mat[[1]], 2L)
-  
-  # we now restrict the listing to genes
-  genes <- json_class(materialTypeCode = "GENE",
-                      class = "MaterialTypeIdentifierScreening")
-  
-  mat <- list_material(tok, plates[[2]], genes)
-  print(mat[[1]]$mapping[[1]][[1]], 2L)
+  # search for a sample object corresponding to plate KB2-03-1I
+  samp <- search_openbis(tok,
+                         search_criteria(
+                           attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")
+                         ),
+                         target_object = "sample")
+
+  # list all material types
+  types <- list_material_types()
+  types[[2L]]
+
+  # list all gene targets on plate KB2-03-1I
+  mat_map <- list_material(tok, samp, types[[2L]])
+  print(mat_map[[1L]], depth = 5, length = 20L)
+  # there are width x height entries arranged in a linear, row-major fashion
+  length(mat_map[[1L]][["mapping"]])
+  # well A24 does not have a gene target as it is a MOCK control well
+  extract_well_material(mat_map, "A", 24)
+  # well A22 however has a gene target
+  a_22 <- extract_well_material(mat_map, "A", 22)
+  print(a_22[[1L]], depth = 2L)
+
+  # search for a material with material code 3480
+  igf1r <- search_openbis(tok,
+                          search_criteria(attribute_clause(3480)),
+                          target_object = "material")
+
+  identical(as_screening_mat_id(igf1r), a_22)
+  identical(igf1r, list_material(tok, a_22))
+  identical(igf1r, 
+            search_openbis(tok,
+                           search_criteria(
+                             property_clause("IGF1R", "GENE_SYMBOL")
+                           ),
+                           target_object = "material"))
+
+  # search for an experiment object corresponding to plate KB2-03-1I
+  exp <- search_openbis(tok,
+                        search_criteria(attribute_clause(
+                          samp[[1]][["experimentIdentifierOrNull"]]
+                        )),
+                        target_object = "experiment")
+
+  # list all wells for the current material within the selected experiment
+  wells <- list_plate_well_ref(tok, a_22, experiment = exp)
+  # this yields 3 plates, one of which is KB2-03-1I
+  sapply(lapply(wells, `[[`, "experimentPlateIdentifier"), `[[`,
+         "plateCode")
+  # and the material of interest is in well A22 in each one
+  unique(lapply(wells, `[[`, "wellPosition"))
 }
 
 }
