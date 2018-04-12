@@ -52,19 +52,19 @@ characters for printing.}
 
 \item{...}{Generic compatibility.}
 
-\item{i}{Index for sub-setting. See \code{\link[base:[]{base::`[`()}} and
-\code{\link[base:[[]{base::`[[`()}}.}
+\item{i}{Index for sub-setting. See \code{\link[base:[]{base::[()}} and
+\code{\link[base:[[]{base::[[()}}.}
 
 \item{value}{New values for replacement. See
-\code{\link[base:[<-]{base::`[<-`()}} and
-\code{\link[base:[[<-]{base::`[[<-`()}}.}
+\code{\link[base:[<-]{base::[<-()}} and
+\code{\link[base:[[<-]{base::[[<-()}}.}
 }
 \description{
 Available base generic functions for objects that inherit \code{json_class} are
-\code{\link[base:print]{base::print()}}, \code{\link[base:[]{base::`[`()}}, \code{\link[base:c]{base::c()}} and
+\code{\link[base:print]{base::print()}}, \code{\link[base:[]{base::[()}}, \code{\link[base:c]{base::c()}} and
 \code{\link[base:rep]{base::rep()}} and for \code{json_vec} objects, all of the above in addition
-to \code{\link[base:[<-]{base::`[<-`()}} and
-\code{\link[base:[[<-]{base::`[[<-`()}} are implemented. For further
+to \code{\link[base:[<-]{base::[<-()}} and
+\code{\link[base:[[<-]{base::[[<-()}} are implemented. For further
 information on how these class-specific functions differ from their base
 counterparts, refer to the details section.
 }
@@ -79,12 +79,12 @@ of \code{json_class} objects. Combining or repeating \code{json_class} objects y
 same subtype as the first argument are allowed as further arguments.
 
 Analogously to sub-setting of \code{json_class} objects, sub-setting a \code{json_vec}
-object with \code{\link[base:[]{base::`[`()}} returns a \code{json_vec} object
+object with \code{\link[base:[]{base::[()}} returns a \code{json_vec} object
 with the same sub type as the one used as input, whereas sub-setting a
-\code{json_vec} object with \code{\link[base:[[]{base::`[[`()}} yields the
+\code{json_vec} object with \code{\link[base:[[]{base::[[()}} yields the
 selected \code{json_class} object. Replacement operators
-\code{\link[base:[<-]{base::`[<-`()}} and
-\code{\link[base:[[<-]{base::`[[<-`()}} mainly ensure that the objects
+\code{\link[base:[<-]{base::[<-()}} and
+\code{\link[base:[[<-]{base::[[<-()}} mainly ensure that the objects
 being inserted are of the correct sub-type, guaranteeing that all
 \code{json_class} members of a given \code{json_vec} object are of the same sub-type.
 Combining \code{json_vec} objects with \code{\link[base:c]{base::c()}} is possible whenever the

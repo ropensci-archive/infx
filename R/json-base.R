@@ -2,10 +2,10 @@
 #' Base generics for JSON objects
 #' 
 #' Available base generic functions for objects that inherit `json_class` are
-#' [base::print()], \code{\link[base:[]{base::`[`()}}, [base::c()] and
+#' [base::print()], \code{\link[base:[]{base::[()}}, [base::c()] and
 #' [base::rep()] and for `json_vec` objects, all of the above in addition
-#' to \code{\link[base:[<-]{base::`[<-`()}} and
-#' \code{\link[base:[[<-]{base::`[[<-`()}} are implemented. For further
+#' to \code{\link[base:[<-]{base::[<-()}} and
+#' \code{\link[base:[[<-]{base::[[<-()}} are implemented. For further
 #' information on how these class-specific functions differ from their base
 #' counterparts, refer to the details section.
 #' 
@@ -19,12 +19,12 @@
 #' same subtype as the first argument are allowed as further arguments.
 #' 
 #' Analogously to sub-setting of `json_class` objects, sub-setting a `json_vec`
-#' object with \code{\link[base:[]{base::`[`()}} returns a `json_vec` object
+#' object with \code{\link[base:[]{base::[()}} returns a `json_vec` object
 #' with the same sub type as the one used as input, whereas sub-setting a
-#' `json_vec` object with \code{\link[base:[[]{base::`[[`()}} yields the
+#' `json_vec` object with \code{\link[base:[[]{base::[[()}} yields the
 #' selected `json_class` object. Replacement operators
-#' \code{\link[base:[<-]{base::`[<-`()}} and
-#' \code{\link[base:[[<-]{base::`[[<-`()}} mainly ensure that the objects
+#' \code{\link[base:[<-]{base::[<-()}} and
+#' \code{\link[base:[[<-]{base::[[<-()}} mainly ensure that the objects
 #' being inserted are of the correct sub-type, guaranteeing that all
 #' `json_class` members of a given `json_vec` object are of the same sub-type.
 #' Combining `json_vec` objects with [base::c()] is possible whenever the
@@ -125,8 +125,8 @@ print.json_class <- function(x,
   invisible(x)
 }
 
-#' @param i Index for sub-setting. See \code{\link[base:[]{base::`[`()}} and
-#' \code{\link[base:[[]{base::`[[`()}}.
+#' @param i Index for sub-setting. See \code{\link[base:[]{base::[()}} and
+#' \code{\link[base:[[]{base::[[()}}.
 #' 
 #' @rdname json_base
 #' @export
@@ -199,8 +199,8 @@ print.json_vec <- function(x,
 }
 
 #' @param value New values for replacement. See
-#' \code{\link[base:[<-]{base::`[<-`()}} and
-#' \code{\link[base:[[<-]{base::`[[<-`()}}.
+#' \code{\link[base:[<-]{base::[<-()}} and
+#' \code{\link[base:[[<-]{base::[[<-()}}.
 #' 
 #' @rdname json_base
 #' @export
