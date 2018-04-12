@@ -218,6 +218,9 @@ material_id <- function(code,
   as_json_vec(res)
 }
 
+#' @param types Select one or several material types for which to return the
+#' type id objects. NULL returns all available.
+#' 
 #' @rdname list_material
 #' @export
 #' 

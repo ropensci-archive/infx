@@ -13,7 +13,7 @@ test_that("material ids can be created", {
 
   expect_identical(material, material_id(2475L))
 
-  materials <- material_id(1:3, type = "gene"))
+  materials <- material_id(1:3, type = "gene")
   expect_is(materials, "MaterialIdentifierScreening")
   expect_is(materials, "json_vec")
   expect_true(has_subclass(materials, "MaterialIdentifierScreening"))

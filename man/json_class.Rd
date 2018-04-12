@@ -129,13 +129,13 @@ identical(as_json_class(lst),
 
 cls <- as_json_class(lst)
 
-# the default of as_list does nothing
-identical(cls, as_list(cls))
+# the default of as.list does nothing
+identical(cls, as.list(cls))
 # this can be disabled, by setting keep_asis to FALSE
-identical(lst, as_list(cls, keep_asis = FALSE))
+identical(lst, as.list(cls, keep_asis = FALSE))
 # further options are disabling recursive action
-as_list(cls, keep_asis = FALSE, recursive = FALSE)
+as.list(cls, keep_asis = FALSE, recursive = FALSE)
 # and dropping type information
-as_list(cls, keep_asis = FALSE, recursive = FALSE, restore_type = FALSE)
+as.list(cls, keep_asis = FALSE, recursive = FALSE, restore_type = FALSE)
 
 }

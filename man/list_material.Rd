@@ -73,6 +73,9 @@ the material listing to a certain type of materials.}
 
 \item{mode}{Switch between generic and screening material id objects.}
 
+\item{types}{Select one or several material types for which to return the
+type id objects. NULL returns all available.}
+
 \item{row}{Either a single integer or a single character specifying a
 plate row.}
 
