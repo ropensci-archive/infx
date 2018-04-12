@@ -2,9 +2,6 @@
 #' @import assertthat
 NULL
 
-#' @export
-as_list <- as.list
-
 #' OpenBIS urls
 #' 
 #' The helper function `api_url()` is used to create urls to InfectX

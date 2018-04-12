@@ -40,7 +40,7 @@
 #' several options are available for setting the max printing with/length, as
 #' well as a max recursion depth for nested `json_class` objects.
 #' 
-#' @param x Object to print.
+#' @param x Object to print/combine/subset, etc.
 #' @param depth The maximum recursion depth for printing.
 #' @param width Number of columns to maximally print.
 #' @param length Number of lines to maximally print.
@@ -243,3 +243,8 @@ c.json_vec <- function(x, ...) as_json_vec(NextMethod())
 #' @export
 #' 
 rep.json_vec <- function(x, ...) as_json_vec(NextMethod())
+
+#' @rdname json_base
+#' @export
+#' 
+as_list <- as.list

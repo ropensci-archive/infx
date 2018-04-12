@@ -12,6 +12,7 @@
 \alias{[[<-.json_vec}
 \alias{c.json_vec}
 \alias{rep.json_vec}
+\alias{as_list}
 \title{Base generics for JSON objects}
 \usage{
 \method{print}{json_class}(x, depth = 1L, width = getOption("width"),
@@ -37,9 +38,11 @@
 \method{c}{json_vec}(x, ...)
 
 \method{rep}{json_vec}(x, ...)
+
+as_list(x, ...)
 }
 \arguments{
-\item{x}{Object to print.}
+\item{x}{Object to print/combine/subset, etc.}
 
 \item{depth}{The maximum recursion depth for printing.}
 
