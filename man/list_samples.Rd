@@ -4,11 +4,13 @@
 \alias{list_samples}
 \alias{list_samples.ExperimentIdentifier}
 \alias{list_samples.Experiment}
-\alias{list_samples.PlateIdentifier}
 \alias{list_samples.Plate}
+\alias{list_samples.PlateIdentifier}
+\alias{list_samples.PlateMetadata}
 \alias{list_samples.WellIdentifier}
+\alias{list_samples.WellMetadata}
 \alias{list_sample_types}
-\title{List samples}
+\title{List samples and sample types}
 \usage{
 list_samples(token, x, ...)
 
@@ -16,11 +18,15 @@ list_samples(token, x, ...)
 
 \method{list_samples}{Experiment}(token, x, ...)
 
-\method{list_samples}{PlateIdentifier}(token, x, ...)
-
 \method{list_samples}{Plate}(token, x, ...)
 
+\method{list_samples}{PlateIdentifier}(token, x, ...)
+
+\method{list_samples}{PlateMetadata}(token, x, ...)
+
 \method{list_samples}{WellIdentifier}(token, x, ...)
+
+\method{list_samples}{WellMetadata}(token, x, ...)
 
 list_sample_types(token, ...)
 }
@@ -33,19 +39,27 @@ list_sample_types(token, ...)
 \item{...}{Generic compatibility}
 }
 \description{
-Given a login token, all samples available to the corresponding user on the
-queried openBIS instance are listed for an experiment, plate or well. If
-multiple objects are used for limiting the search (e.g. a \code{json_vec} of
-wells), an API call for each object has to be made. Furthermore, all
-available sample types can be listed using \code{list_sample_types()}.
+In openBIS, samples can be seen as a generalization of plates and wells (
+see \code{\link[=list_plates]{list_plates()}} and \code{\link[=list_wells]{list_wells()}}. In fact, for the HTS focused openBIS
+instance of InfectX, wells and plates represent the only types of samples
+available. Samples can either be retrieved using \code{\link[=search_openbis]{search_openbis()}} and
+setting the argument \code{target_object} to \code{sample} or listed by calling
+\code{list_samples()}. Furthermore, all available sample types can be listed
+using \code{list_sample_types()}.
 }
-\section{TODO}{
-
-Add class specific functions to generic \code{list_samples()} for
-classes \code{PlateIdentifier} and \code{WellIdentifier} (as well as \code{Plate} and
-\code{Well}).
+\details{
+\code{list_samples()} can be dispatched on objects identifying experiments
+(\code{Experiment} and \code{ExperimentIdentifier}), in which case the associated
+plate samples are returned, on objects representing plates (\code{Plate},
+\code{PlateIdentifier} and \code{PlateMetadata}) or on objects representing wells
+(\code{WellIdentifier} and \code{WellMetadata}). For plates, the corresponding plate
+samples and for and wells, the corresponding well samples are returned. It
+is therefore not possible to list all well samples for a plate. This could
+however be achieved by listing all wells of a plate using \code{\link[=list_wells]{list_wells()}}
+and calling \code{list_samples()} on the returned set of \code{WellIdentifier}
+objects. A separate API call is required for each object is a \code{json_vec}
+of objects is passed to \code{list_samples()}.
 }
-
 \section{openBIS}{
 
 \itemize{
@@ -56,3 +70,49 @@ classes \code{PlateIdentifier} and \code{WellIdentifier} (as well as \code{Plate
 }
 }
 
+\examples{
+\dontrun{
+  tok <- login_openbis("rdgr2014", "IXPubReview")
+
+  # search for an experiment, e.g. ADENO-AU-K1
+  exp <- search_openbis(tok,
+                        search_criteria(
+                          property_clause("Adenovirus", "PATHOGEN"),
+                          property_clause("Ambion", "LIBRARY"),
+                          property_clause("Kinome", "GENESET"),
+                          property_clause(1L, "REPLICATE")
+                        ),
+                        target_object = "experiment")
+
+  # list all plate samples associated with this experiment
+  plate_samp <- list_samples(tok, exp)
+  length(plate_samp)
+
+  # the same plates are returned using list_plates(), not regarding order
+  plates <- list_plates(tok, exp)
+  plate_samp <- plate_samp[order(get_field(plate_samp, "code"))]
+
+  identical(as_plate_id(plates), as_plate_id(plate_samp))
+
+  # plates can be converted to samples and back to plates again
+  identical(as_plate_id(plates), as_plate_id(list_samples(tok, plates)))
+
+  # the same is not possible for wells: first well ids are listed for a
+  # plate
+  well_ids <- list_wells(tok, plates[[1L]])
+  # for efficiency only the first 5 wells are retained
+  well_ids <- well_ids[1:5]
+  print(well_ids, length = 10L)
+  # the corresponding well samples are fetched
+  well_samp <- list_samples(tok, well_ids)
+  # from well sample objects it is not possible to directly create well id
+  # objects as no plate id information is available
+  print(well_samp, length = 20L)
+  # with a bit of manual work however it is possible to create well id
+  # objects from well samples
+  wells <- well_id(get_field(well_samp, "permId"), plates[[1L]],
+                   row = "A", col = 1:5)
+  identical(wells, well_ids)
+}
+
+}

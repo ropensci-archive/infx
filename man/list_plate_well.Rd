@@ -78,7 +78,7 @@ list_wells(token, x, ...)
 \method{list_wells}{MaterialIdentifierGeneric}(token, x, experiment = NULL,
   include_datasets = FALSE, ...)
 
-well_id(perm_id, plate, well_pos, row = NULL, col = NULL)
+well_id(perm_id, plate, well_pos = NULL, well_code = NULL, ...)
 
 as_well_id(x, ...)
 
@@ -86,7 +86,7 @@ as_well_id(x, ...)
 
 \method{as_well_id}{WellIdentifier}(x, ...)
 
-well_pos(row, col)
+well_pos(row = NULL, col = NULL, name = NULL)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -108,9 +108,15 @@ the connected image and image analysis data sets.}
 set of well position objects, all of the same length or length 1, that
 together can be used to create \code{WellIdentifier} objects.}
 
+\item{well_code}{Character vector where each entry is of the form
+barcode:well_name, e.g. FOO-BAR-1:A1, FOO-BAR-1:A2, etc.}
+
 \item{row, col}{Character vector of plate row names or numeric vector of
 plate row indices and numeric vector of plate column indices, both of the
 same length or of length 1.}
+
+\item{name}{Character vector of well name, where each entry is of the form
+A1, A2, etc.}
 }
 \description{
 Plates and wells are special cases of \code{Sample} objects and play an

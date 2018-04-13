@@ -182,9 +182,9 @@ plate_id <- function(code, space) {
 
   if (max_len > 1L) {
     if (length(code) == 1L)
-      rep(code, max_len)
+      code <- rep(code, max_len)
     if (length(space) == 1L)
-      rep(space, max_len)
+      space <- rep(space, max_len)
   }
 
   assert_that(is.character(code), is.character(space),
@@ -321,16 +321,26 @@ list_wells.MaterialIdentifierGeneric <- list_wells_for_mat
 #' @param perm_id,plate,well_pos Character vector, set of plate objects and
 #' set of well position objects, all of the same length or length 1, that
 #' together can be used to create `WellIdentifier` objects.
+#' @param well_code Character vector where each entry is of the form
+#' barcode:well_name, e.g. FOO-BAR-1:A1, FOO-BAR-1:A2, etc.
 #' 
 #' @rdname list_plate_well
 #' @export
 #' 
-well_id <- function(perm_id, plate, well_pos, row = NULL, col = NULL) {
+well_id <- function(perm_id,
+                    plate,
+                    well_pos = NULL,
+                    well_code = NULL,
+                    ...) {
 
-  if (!is.null(row) || !is.null(col)) {
-    assert_that(is.null(well_pos) && !is.null(row) && !is.null(col))
-    well_pos <- well_pos(row, col)
-  }
+  if (is.null(well_pos)) {
+    if (is.null(well_code))
+      well_pos <- well_pos(...)
+    else
+      well_pos <- well_pos(name = sapply(strsplit(well_code, ":"), `[`, 2L))
+  } else
+    assert_that(is.null(well_code),
+                length(list(...)) == 0L)
 
   plate <- as_plate_id(plate)
   well_pos <- as_json_vec(well_pos)
@@ -339,11 +349,11 @@ well_id <- function(perm_id, plate, well_pos, row = NULL, col = NULL) {
 
   if (max_len > 1L) {
     if (length(perm_id) == 1L)
-      rep(perm_id, max_len)
+      perm_id <- rep(perm_id, max_len)
     if (length(plate) == 1L)
-      rep(plate, max_len)
+      plate <- rep(plate, max_len)
     if (length(well_pos) == 1L)
-      rep(well_pos, max_len)
+      well_pos <- rep(well_pos, max_len)
   }
 
   assert_that(is.character(perm_id),
@@ -391,11 +401,21 @@ as_well_id.WellIdentifier <- function(x, ...)
 #' @param row,col Character vector of plate row names or numeric vector of
 #' plate row indices and numeric vector of plate column indices, both of the
 #' same length or of length 1.
+#' @param name Character vector of well name, where each entry is of the form
+#' A1, A2, etc. 
 #' 
 #' @rdname list_plate_well
 #' @export
 #' 
-well_pos <- function(row, col) {
+well_pos <- function(row = NULL, col = NULL, name = NULL) {
+
+  if (is.null(row) || is.null(col)) {
+    assert_that(is.null(row) && is.null(col),
+                is.character(name))
+    row <- substr(name, 1L, 1L)
+    col <- as.integer(substring(name, 2L))
+  } else
+    assert_that(is.null(name))
 
   if (is.character(row))
     row <- match(toupper(row), LETTERS)
