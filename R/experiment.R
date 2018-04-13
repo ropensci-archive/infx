@@ -38,11 +38,19 @@
 #'   proj <- list_projects(tok)
 #' 
 #'   # list all experiments corresponding to the project with index 1
-#'   exps <- list_experiments(tok, proj[[1]])
+#'   exps <- list_experiments(tok, proj[[1L]])
 #' 
 #'   # convert experiment to experiment ids and back
 #'   exp_ids <- exp_to_expid(exps)
 #'   identical(exps, list_experiments(tok, exp_ids))
+#' 
+#'   # experiments can also be searched for
+#'   exp <- search_openbis(tok,
+#'                         search_criteria(
+#'                           attribute_clause(exps[[1L]][["identifier"]])
+#'                         ),
+#'                         target_object = "experiment")
+#'   identical(exps[1L], exp)
 #' }
 #' 
 #' @export
