@@ -204,7 +204,7 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
                         target_object = "experiment")
 
   # list all wells for the current material within the selected experiment
-  wells <- list_plate_well_ref(tok, a_22, experiment = exp)
+  wells <- list_wells(tok, a_22, experiment = exp)
   # this yields 3 plates, one of which is KB2-03-1I
   sapply(lapply(wells, `[[`, "experimentPlateIdentifier"), `[[`,
          "plateCode")

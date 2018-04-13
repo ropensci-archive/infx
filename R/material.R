@@ -123,7 +123,7 @@
 #'                         target_object = "experiment")
 #' 
 #'   # list all wells for the current material within the selected experiment
-#'   wells <- list_plate_well_ref(tok, a_22, experiment = exp)
+#'   wells <- list_wells(tok, a_22, experiment = exp)
 #'   # this yields 3 plates, one of which is KB2-03-1I
 #'   sapply(lapply(wells, `[[`, "experimentPlateIdentifier"), `[[`,
 #'          "plateCode")
@@ -186,7 +186,7 @@ list_material.Plate <- list_plate_mat_map
 #' @export
 #' 
 list_material.Sample <- function(token, x, material_type = NULL, ...)
-  list_plate_mat_map(token, as_plateid(x), material_type, ...)
+  list_plate_mat_map(token, as_plate_id(x), material_type, ...)
 
 #' @rdname list_material
 #' @export
@@ -295,7 +295,7 @@ as_screening_mat_id.MaterialIdentifierGeneric <- function(x, ...)
 #' @export
 #' 
 as_screening_mat_id.MaterialIdentifierScreening <- function(x, ...)
-  x
+  as_json_vec(x)
 
 #' @rdname list_material
 #' @export
@@ -313,7 +313,7 @@ as_generic_mat_id.MaterialGeneric <- function(x, ...)
 #' @export
 #' 
 as_generic_mat_id.MaterialIdentifierGeneric <- function(x, ...)
-  x
+  as_json_vec(x)
 
 #' @rdname list_material
 #' @export

@@ -244,7 +244,7 @@ list_references.Plate <- list_img_ds
 #' @export
 #' 
 list_references.Sample <- function(token, x, ...)
-  list_img_ds(token, as_plateid(x), ...)
+  list_img_ds(token, as_plate_id(x), ...)
 
 #' @rdname list_datasets
 #' @export
@@ -252,8 +252,8 @@ list_references.Sample <- function(token, x, ...)
 list_references.PlateMetadata <- list_img_ds
 
 list_ref_for_material <- function(token, x, experiment = NULL, ...)
-  list_plate_well_ref(token, as_screening_mat_id(x), experiment,
-                      include_datasets = TRUE, ...)
+  list_wells(token, as_screening_mat_id(x), experiment,
+             include_datasets = TRUE, ...)
 
 #' @rdname list_datasets
 #' 

@@ -5,18 +5,30 @@
 \alias{list_plates.NULL}
 \alias{list_plates.ExperimentIdentifier}
 \alias{list_plates.Experiment}
-\alias{as_plateid}
-\alias{as_plateid.Plate}
-\alias{as_plateid.Sample}
-\alias{list_wells}
-\alias{list_wells.PlateIdentifier}
-\alias{list_wells.Plate}
-\alias{list_plate_well_ref}
 \alias{list_plate_metadata}
 \alias{list_plate_metadata.PlateIdentifier}
 \alias{list_plate_metadata.Plate}
+\alias{list_plate_metadata.Sample}
+\alias{plate_id}
+\alias{as_plate_id}
+\alias{as_plate_id.Plate}
+\alias{as_plate_id.Sample}
+\alias{as_plate_id.PlateMetadata}
+\alias{as_plate_id.PlateIdentifier}
+\alias{list_wells}
+\alias{list_wells.PlateIdentifier}
+\alias{list_wells.Plate}
+\alias{list_wells.Sample}
+\alias{list_wells.MaterialScreening}
+\alias{list_wells.MaterialIdentifierScreening}
+\alias{list_wells.MaterialGeneric}
+\alias{list_wells.MaterialIdentifierGeneric}
+\alias{well_id}
+\alias{as_well_id}
+\alias{as_well_id.WellMetadata}
+\alias{as_well_id.WellIdentifier}
 \alias{well_pos}
-\title{List wells/plates}
+\title{List plates and wells}
 \usage{
 list_plates(token, x = NULL, ...)
 
@@ -26,11 +38,25 @@ list_plates(token, x = NULL, ...)
 
 \method{list_plates}{Experiment}(token, x, ...)
 
-as_plateid(x, ...)
+list_plate_metadata(token, x, ...)
 
-\method{as_plateid}{Plate}(x, ...)
+\method{list_plate_metadata}{PlateIdentifier}(token, x, ...)
 
-\method{as_plateid}{Sample}(x, ...)
+\method{list_plate_metadata}{Plate}(token, x, ...)
+
+\method{list_plate_metadata}{Sample}(token, x, ...)
+
+plate_id(code, space)
+
+as_plate_id(x, ...)
+
+\method{as_plate_id}{Plate}(x, ...)
+
+\method{as_plate_id}{Sample}(x, ...)
+
+\method{as_plate_id}{PlateMetadata}(x, ...)
+
+\method{as_plate_id}{PlateIdentifier}(x, ...)
 
 list_wells(token, x, ...)
 
@@ -38,14 +64,27 @@ list_wells(token, x, ...)
 
 \method{list_wells}{Plate}(token, x, ...)
 
-list_plate_well_ref(token, material_id, experiment = NULL,
+\method{list_wells}{Sample}(token, x, ...)
+
+\method{list_wells}{MaterialScreening}(token, x, experiment = NULL,
   include_datasets = FALSE, ...)
 
-list_plate_metadata(token, x, ...)
+\method{list_wells}{MaterialIdentifierScreening}(token, x, experiment = NULL,
+  include_datasets = FALSE, ...)
 
-\method{list_plate_metadata}{PlateIdentifier}(token, x, ...)
+\method{list_wells}{MaterialGeneric}(token, x, experiment = NULL,
+  include_datasets = FALSE, ...)
 
-\method{list_plate_metadata}{Plate}(token, x, ...)
+\method{list_wells}{MaterialIdentifierGeneric}(token, x, experiment = NULL,
+  include_datasets = FALSE, ...)
+
+well_id(perm_id, plate, well_pos, row = NULL, col = NULL)
+
+as_well_id(x, ...)
+
+\method{as_well_id}{WellMetadata}(x, ...)
+
+\method{as_well_id}{WellIdentifier}(x, ...)
 
 well_pos(row, col)
 }
@@ -56,8 +95,8 @@ well_pos(row, col)
 
 \item{...}{Generic compatibility}
 
-\item{material_id}{Material id(s) corresponding to which wells are searched
-for a collection of \code{MaterialIdentifierScreening} is expected.}
+\item{code, space}{Character vectors that together can be used to create
+\code{PlateIdentifier} objects.}
 
 \item{experiment}{Additionally, the search can be limited to a single
 experiment, specified either as \code{Experiment} or \code{ExperimentIdentifier}.}
@@ -65,46 +104,67 @@ experiment, specified either as \code{Experiment} or \code{ExperimentIdentifier}
 \item{include_datasets}{Logical switch indicating whether to also return
 the connected image and image analysis data sets.}
 
-\item{row}{Character vector plate row names or numeric vector of plate row
-indices.}
+\item{perm_id, plate, well_pos}{Character vector, set of plate objects and
+set of well position objects, all of the same length or length 1, that
+together can be used to create \code{WellIdentifier} objects.}
 
-\item{col}{Numeric vector of plate row indices.}
+\item{row, col}{Character vector of plate row names or numeric vector of
+plate row indices and numeric vector of plate column indices, both of the
+same length or of length 1.}
 }
 \description{
-Using \code{list_plates()}, all plates available to the user (corresponding to
-the given login token) on the queried openBIS instance are listed for one
-or more experiment(s). If multiple experiments are used for limiting the
-search (e.g. a \code{json_vec} of experiments), an API call for each object has
-to be made. If no experiments are specified, all available plates are
-returned.
+Plates and wells are special cases of \code{Sample} objects and play an
+important organizational role when openBIS is used in HTS experiments. All
+InfectX screens were arrayed onto 384-well plates, arranged into 16 rows
+(A through P) and 24 columns (1 through 24). \code{Plate} and \code{PlateIdentifier}
+objects are used to identify plates while for wells only \code{WellIdentifier}
+objects exists for representing individual wells. Additional objects
+relevant in this context are \code{PlateMetadata}, which for all associated wells
+contain respective \code{WellMetadata} objects and
+\code{PlateWellReferenceWithDatasets} objects, each holding a \code{Plate} object and
+a \code{WellPosition} object, thereby in a sense also identifying individual
+wells.
 }
 \details{
-Wells can be listed with \code{list_wells()}, which given a login token, lists
-all wells available to the corresponding user on the queried openBIS
-instance for one or more plate(s). If multiple plates are searched for
-(e.g. a \code{json_vec} of plates), an API call for each object has to be made.
+\code{Plate} objects are listed using \code{list_plates()}, which can either list all
+available plates (default or dispatch on \code{NULL}) or restrict the listing to
+a set of supplied experiment objects (dispatch on either \code{Experiment} or
+\code{ExperimentIdentifier} objects). If multiple experiments are used for
+limiting the search (i.e. a \code{json_vec} of experiments), a separate API call
+for each object has to be made. \code{PlateMetadata} objects (including all
+corresponding \code{WellMetadata} objects) are retrieved by
+\code{list_plate_metadata()} which can be dispatched on objects that represent
+plates, including \code{Plate}, \code{PlateIdentifier} and \code{Sample} (given that the
+sample is of type \code{PLATE}). Finally, \code{PlateIdentifier} can be created
+either by calling \code{plate_id()} or though coercion of \code{Plate}, \code{Sample}
+(with type \code{PLATE}) or \code{PlateMetadata}  objects using the function
+\code{as_plate_id()}. Neither \code{plate_id()} nor \code{as_plate_id()} incur API calls.
 
-A convenience function that allows for the conversion of plate objects into
-plate id objects is available as \code{as_plateid()}. This function does
-not incur an API call and can act on both a single plate object or a vector
-of plate objects (passed as a \code{json_vec} object) and will return a
-\code{json_vec} object of type \code{PlateIdentifier}.
+Wells can be listed with \code{list_wells()}, which returns \code{WellIdentifier}
+objects if dispatch occurs on objects representing plates, including
+\code{Plate}, \code{PlateIdentifier} and \code{Sample} (with type \code{PLATE}). In this case
+the entire set of well id objects corresponding to the selected plates is
+returned and a separate API call is required per plate.
 
-\code{list_plate_well_ref()} can list well references (as
-\code{PlateWellReferenceWithDatasets} objects) corresponding to materials. This
-can be used to find all wells that contain a certain material (for example
-a gene knockdown or a specific compound used for a knockdown). If multiple
-material ids are searched for (e.g. a \code{json_vec} of
-\code{MaterialIdentifierScreening}), an API call for each object has to be made.
-The search can be limited to a single experiment,  specified either as
-\code{Experiment} or \code{ExperimentIdentifier}. As a further argument, the switch
-\code{include_datasets} specifies whether the connected image and image analysis
-data sets should be returned as well.
+Whenever \code{list_wells()} is dispatched on material objects (any of
+\code{MaterialScreening}, \code{MaterialIdentifierScreening}, \code{MaterialGeneric} or
+\code{MaterialIdentifierGeneric}), \code{PlateWellReferenceWithDatasets} objects are
+returned, representing wells associated with the given material. If multiple
+material ids are passed, an API call for each object is issued. The well
+search can be limited to an experiment by passing a single \code{Experiment} or
+\code{ExperimentIdentifier} object as \code{experiment} argument and image dataset
+references as well as feature vector dataset references can be retrieved
+as part of the \code{PlateWellReferenceWithDatasets} objects if the logical
+switch \code{include_datasets} is set to \code{TRUE}. A separate API call per passed
+material object is required.
 
-All metadata corresponding to a plate (specified as a set of \code{Plate} or
-\code{PlateIdentifier} objects) can be fetched using \code{list_plate_metadata()}.
-The returned \code{PlateMetadata} objects also contain a list of corresponding
-\code{WellMetadata} objects.
+Instantiation of \code{WellIdentifier} objects can be done either using the
+constructor \code{well_id()} or via coercion of \code{WellMetadata} objects by
+calling \code{as_well_id()}. Well samples cannot be coerced to well id objects
+as they do not contain all fields that are required. A further object type
+relevant to this context is that of \code{WellPosition}, encoding the position
+of a well within a plate. Such objects can be created using the constructor
+\code{well_pos()}.
 }
 \section{openBIS}{
 

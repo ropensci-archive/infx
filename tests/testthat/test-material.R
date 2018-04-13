@@ -125,7 +125,7 @@ test_that("materials can be listed", {
   expect_length(mat_1, 1L)
   expect_true(has_subclass(mat_1[[1L]], "MaterialGeneric"))
 
-  plate_ids <- as_plateid(plates[1:2])
+  plate_ids <- as_plate_id(plates[1:2])
 
   mat_1 <- list_material(tok, plates[[2]])
   expect_is(mat_1, "PlateWellMaterialMapping")

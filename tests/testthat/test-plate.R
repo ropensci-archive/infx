@@ -52,7 +52,7 @@ test_that("well/plate refs can be listed", {
 
   mat <- material_id(c(2475L, 3832L), mode = "screening")
 
-  ref_1 <- list_plate_well_ref(tok, mat[[1]])
+  ref_1 <- list_wells(tok, mat[[1]])
   expect_is(ref_1, "PlateWellReferenceWithDatasets")
   expect_is(ref_1, "json_vec")
   expect_identical(get_subclass(ref_1),
@@ -61,7 +61,7 @@ test_that("well/plate refs can be listed", {
                          "PlateWellReferenceWithDatasets")))
   expect_gte(length(ref_1), 1L)
 
-  ref_2 <- list_plate_well_ref(tok, mat)
+  ref_2 <- list_wells(tok, mat)
   expect_is(ref_2, "PlateWellReferenceWithDatasets")
   expect_is(ref_2, "json_vec")
   expect_identical(get_subclass(ref_2),
@@ -70,7 +70,7 @@ test_that("well/plate refs can be listed", {
                          "PlateWellReferenceWithDatasets")))
   expect_gte(length(ref_2), length(ref_1))
 
-  ref_1_exp <- list_plate_well_ref(tok, mat[[1]], exp_ids[[1]])
+  ref_1_exp <- list_wells(tok, mat[[1]], exp_ids[[1]])
   expect_is(ref_1_exp, "PlateWellReferenceWithDatasets")
   expect_is(ref_1_exp, "json_vec")
   expect_identical(get_subclass(ref_1_exp),
@@ -78,9 +78,9 @@ test_that("well/plate refs can be listed", {
   expect_true(all(sapply(ref_1_exp, has_subclass,
                          "PlateWellReferenceWithDatasets")))
   expect_lte(length(ref_1_exp), length(ref_1))
-  expect_identical(ref_1_exp, list_plate_well_ref(tok, mat[[1]], exp_ids[1]))
+  expect_identical(ref_1_exp, list_wells(tok, mat[[1]], exp_ids[1]))
 
-  ref_2_exp <- list_plate_well_ref(tok, mat, exp_ids[[1]])
+  ref_2_exp <- list_wells(tok, mat, exp_ids[[1]])
   expect_is(ref_2_exp, "PlateWellReferenceWithDatasets")
   expect_is(ref_2_exp, "json_vec")
   expect_identical(get_subclass(ref_2_exp),
@@ -90,14 +90,14 @@ test_that("well/plate refs can be listed", {
   expect_lte(length(ref_2_exp), length(ref_2))
 
   expect_identical(ref_2_exp,
-                   list_plate_well_ref(tok, mat[[1]], experiments[1]))
+                   list_wells(tok, mat[[1]], experiments[1]))
 })
 
 test_that("plate metadata be listed", {
 
   check_skip()
 
-  plate_ids <- as_plateid(plates)
+  plate_ids <- as_plate_id(plates)
 
   meta_1 <- list_plate_metadata(tok, plate_ids[[1]])
   expect_is(meta_1, "PlateMetadata")
@@ -119,7 +119,7 @@ test_that("plate metadata be listed", {
 
 test_that("plates/samples can be converted to plate ids", {
 
-  plate_id <- as_plateid(plates[[1]])
+  plate_id <- as_plate_id(plates[[1]])
   expect_is(plate_id, "PlateIdentifier")
   expect_is(plate_id, "json_vec")
   expect_identical(get_subclass(plate_id), "PlateIdentifier")
@@ -128,7 +128,7 @@ test_that("plates/samples can be converted to plate ids", {
                          c("plateCode", "spaceCodeOrNull"))))
   expect_equal(length(plate_id), 1L)
 
-  plate_ids <- as_plateid(plates[1:2])
+  plate_ids <- as_plate_id(plates[1:2])
   expect_is(plate_ids, "PlateIdentifier")
   expect_is(plate_ids, "json_vec")
   expect_identical(get_subclass(plate_ids), "PlateIdentifier")
@@ -137,7 +137,7 @@ test_that("plates/samples can be converted to plate ids", {
                          c("plateCode", "spaceCodeOrNull"))))
   expect_equal(length(plate_ids), 2L)
 
-  plate_id <- as_plateid(samples[[1]])
+  plate_id <- as_plate_id(samples[[1]])
   expect_is(plate_id, "PlateIdentifier")
   expect_is(plate_id, "json_vec")
   expect_identical(get_subclass(plate_id), "PlateIdentifier")
@@ -146,7 +146,7 @@ test_that("plates/samples can be converted to plate ids", {
                          c("plateCode", "spaceCodeOrNull"))))
   expect_equal(length(plate_id), 1L)
 
-  plate_ids <- as_plateid(samples[1:2])
+  plate_ids <- as_plate_id(samples[1:2])
   expect_is(plate_ids, "PlateIdentifier")
   expect_is(plate_ids, "json_vec")
   expect_identical(get_subclass(plate_ids), "PlateIdentifier")

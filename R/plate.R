@@ -1,49 +1,61 @@
 
-#' List wells/plates
-#'
-#' Using `list_plates()`, all plates available to the user (corresponding to
-#' the given login token) on the queried openBIS instance are listed for one
-#' or more experiment(s). If multiple experiments are used for limiting the
-#' search (e.g. a `json_vec` of experiments), an API call for each object has
-#' to be made. If no experiments are specified, all available plates are
-#' returned.
+#' List plates and wells
 #' 
-#' Wells can be listed with `list_wells()`, which given a login token, lists
-#' all wells available to the corresponding user on the queried openBIS
-#' instance for one or more plate(s). If multiple plates are searched for
-#' (e.g. a `json_vec` of plates), an API call for each object has to be made.
+#' Plates and wells are special cases of `Sample` objects and play an
+#' important organizational role when openBIS is used in HTS experiments. All
+#' InfectX screens were arrayed onto 384-well plates, arranged into 16 rows
+#' (A through P) and 24 columns (1 through 24). `Plate` and `PlateIdentifier`
+#' objects are used to identify plates while for wells only `WellIdentifier`
+#' objects exists for representing individual wells. Additional objects
+#' relevant in this context are `PlateMetadata`, which for all associated wells
+#' contain respective `WellMetadata` objects and
+#' `PlateWellReferenceWithDatasets` objects, each holding a `Plate` object and
+#' a `WellPosition` object, thereby in a sense also identifying individual
+#' wells.
 #' 
-#' A convenience function that allows for the conversion of plate objects into
-#' plate id objects is available as `as_plateid()`. This function does
-#' not incur an API call and can act on both a single plate object or a vector
-#' of plate objects (passed as a `json_vec` object) and will return a
-#' `json_vec` object of type `PlateIdentifier`.
+#' `Plate` objects are listed using `list_plates()`, which can either list all
+#' available plates (default or dispatch on `NULL`) or restrict the listing to
+#' a set of supplied experiment objects (dispatch on either `Experiment` or
+#' `ExperimentIdentifier` objects). If multiple experiments are used for
+#' limiting the search (i.e. a `json_vec` of experiments), a separate API call
+#' for each object has to be made. `PlateMetadata` objects (including all
+#' corresponding `WellMetadata` objects) are retrieved by
+#' `list_plate_metadata()` which can be dispatched on objects that represent
+#' plates, including `Plate`, `PlateIdentifier` and `Sample` (given that the
+#' sample is of type `PLATE`). Finally, `PlateIdentifier` can be created
+#' either by calling `plate_id()` or though coercion of `Plate`, `Sample`
+#' (with type `PLATE`) or `PlateMetadata`  objects using the function
+#' `as_plate_id()`. Neither `plate_id()` nor `as_plate_id()` incur API calls.
 #' 
-#' `list_plate_well_ref()` can list well references (as
-#' `PlateWellReferenceWithDatasets` objects) corresponding to materials. This
-#' can be used to find all wells that contain a certain material (for example
-#' a gene knockdown or a specific compound used for a knockdown). If multiple
-#' material ids are searched for (e.g. a `json_vec` of
-#' `MaterialIdentifierScreening`), an API call for each object has to be made.
-#' The search can be limited to a single experiment,  specified either as
-#' `Experiment` or `ExperimentIdentifier`. As a further argument, the switch
-#' `include_datasets` specifies whether the connected image and image analysis
-#' data sets should be returned as well.
+#' Wells can be listed with `list_wells()`, which returns `WellIdentifier`
+#' objects if dispatch occurs on objects representing plates, including
+#' `Plate`, `PlateIdentifier` and `Sample` (with type `PLATE`). In this case
+#' the entire set of well id objects corresponding to the selected plates is
+#' returned and a separate API call is required per plate.
 #' 
-#' All metadata corresponding to a plate (specified as a set of `Plate` or
-#' `PlateIdentifier` objects) can be fetched using `list_plate_metadata()`.
-#' The returned `PlateMetadata` objects also contain a list of corresponding
-#' `WellMetadata` objects.
+#' Whenever `list_wells()` is dispatched on material objects (any of
+#' `MaterialScreening`, `MaterialIdentifierScreening`, `MaterialGeneric` or
+#' `MaterialIdentifierGeneric`), `PlateWellReferenceWithDatasets` objects are
+#' returned, representing wells associated with the given material. If multiple
+#' material ids are passed, an API call for each object is issued. The well
+#' search can be limited to an experiment by passing a single `Experiment` or
+#' `ExperimentIdentifier` object as `experiment` argument and image dataset
+#' references as well as feature vector dataset references can be retrieved
+#' as part of the `PlateWellReferenceWithDatasets` objects if the logical
+#' switch `include_datasets` is set to `TRUE`. A separate API call per passed
+#' material object is required.
+#' 
+#' Instantiation of `WellIdentifier` objects can be done either using the
+#' constructor `well_id()` or via coercion of `WellMetadata` objects by
+#' calling `as_well_id()`. Well samples cannot be coerced to well id objects
+#' as they do not contain all fields that are required. A further object type
+#' relevant to this context is that of `WellPosition`, encoding the position
+#' of a well within a plate. Such objects can be created using the constructor
+#' `well_pos()`.
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned wells or plates.
 #' @param ... Generic compatibility
-#' @param material_id Material id(s) corresponding to which wells are searched
-#' for a collection of `MaterialIdentifierScreening` is expected.
-#' @param experiment Additionally, the search can be limited to a single
-#' experiment, specified either as `Experiment` or `ExperimentIdentifier`.
-#' @param include_datasets Logical switch indicating whether to also return
-#' the connected image and image analysis data sets.
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("sas", "listPlates")}
@@ -85,116 +97,6 @@ list_plates.Experiment <- function(token, x, ...) {
 #' @rdname list_plate_well
 #' @export
 #' 
-as_plateid <- function(x, ...)
-  UseMethod("as_plateid", x)
-
-#' @rdname list_plate_well
-#' @export
-#' 
-as_plateid.Plate <- function(x, ...) {
-
-  convert <- function(x)
-    json_class(plateCode = x[["plateCode"]],
-               spaceCodeOrNull = x[["spaceCodeOrNull"]],
-               class = "PlateIdentifier")
-
-  fields <- c("plateCode", "spaceCodeOrNull")
-
-  assert_that(has_fields(x, fields))
-
-  if (is_json_class(x))
-    res <- convert(x)
-  else
-    res <- lapply(x, convert)
-
-  as_json_vec(res)
-}
-
-#' @rdname list_plate_well
-#' @export
-#' 
-as_plateid.Sample <- function(x, ...) {
-
-  convert <- function(x)
-    json_class(plateCode = x[["code"]],
-               spaceCodeOrNull = x[["spaceCode"]],
-               class = "PlateIdentifier")
-
-  fields <- c("code", "spaceCode")
-
-  x <- as_json_vec(x)
-
-  assert_that(all(sapply(x, `[[`, "sampleTypeCode") == "PLATE"),
-              has_fields(x, fields))
-
-  as_json_vec(lapply(x, convert))
-}
-
-#' @rdname list_plate_well
-#' @export
-#' 
-list_wells <- function(token, x, ...)
-  UseMethod("list_wells", x)
-
-#' @rdname list_plate_well
-#' @export
-#' 
-list_wells.PlateIdentifier <- function(token, x, ...) {
-
-  params <- lapply(as_json_vec(x), function(plate) list(token, plate))
-
-  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
-
-  as_json_vec(do.call(c, res))
-}
-
-#' @rdname list_plate_well
-#' @export
-#' 
-list_wells.Plate <- function(token, x, ...)
-  list_wells(token, as_plateid(x), ...)
-
-#' @rdname list_plate_well
-#' @export
-#' 
-list_plate_well_ref <- function(token,
-                                material_id,
-                                experiment = NULL,
-                                include_datasets = FALSE,
-                                ...) {
-
-  material_id <- as_json_vec(material_id)
-
-  assert_that(all(sapply(material_id, has_subclass,
-                         "MaterialIdentifierScreening")))
-
-  if (is.null(experiment)) {
-
-    params <- lapply(material_id,
-                     function(mat) list(token, mat, include_datasets))
-  } else {
-
-    if (get_subclass(experiment) == "Experiment")
-      experiment <- exp_to_expid(experiment)
-
-    if (is_json_vec(experiment))
-      experiment <- as_json_class(experiment)
-
-    assert_that(has_subclass(experiment, "ExperimentIdentifier"))
-
-    params <- lapply(material_id,
-                     function(mat) list(token, experiment, mat,
-                                        include_datasets))
-  }
-
-  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
-
-  as_json_vec(do.call(c, res))
-}
-
-#' @rdname list_plate_well
-#' @export
-#' 
 list_plate_metadata <- function(token, x, ...)
   UseMethod("list_plate_metadata", x)
 
@@ -210,26 +112,248 @@ list_plate_metadata.PlateIdentifier <- function(token, x, ...)
 #' 
 list_plate_metadata.Plate <- function(token, x, ...)
   make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, as_plateid(x)), ...)
+               list(token, as_plate_id(x)), ...)
 
-#' @param row Character vector plate row names or numeric vector of plate row
-#' indices.
-#' @param col Numeric vector of plate row indices.
+#' @rdname list_plate_well
+#' @export
+#' 
+list_plate_metadata.Sample <- function(token, x, ...)
+  make_request(api_url("sas"), "getPlateMetadataList",
+               list(token, as_plate_id(x)), ...)
+
+#' @param code,space Character vectors that together can be used to create
+#' `PlateIdentifier` objects.
+#' 
+#' @rdname list_plate_well
+#' @export
+#' 
+plate_id <- function(code, space) {
+
+  max_len <- max(length(code), length(space))
+
+  if (max_len > 1L) {
+    if (length(code) == 1L)
+      rep(code, max_len)
+    if (length(space) == 1L)
+      rep(space, max_len)
+  }
+
+  assert_that(is.character(code), is.character(space),
+              length(code) == length(space))
+
+   as_json_vec(
+    Map(json_class,
+        plateCode = code,
+        spaceCodeOrNull = space,
+        MoreArgs = list(class = "PlateIdentifier"))
+  )
+}
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plate_id <- function(x, ...)
+  UseMethod("as_plate_id", x)
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plate_id.Plate <- function(x, ...)
+  plate_id(get_field(x, "plateCode"), get_field(x, "spaceCodeOrNull"))
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plate_id.Sample <- function(x, ...) {
+
+  assert_that(all(get_field(x, "sampleTypeCode") == "PLATE"))
+
+  plate_id(get_field(x, "code"), get_field(x, "spaceCode"))
+}
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plate_id.PlateMetadata <- function(x, ...)
+  plate_id(get_field(x, "plateCode"), get_field(x, "spaceCodeOrNull"))
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_plate_id.PlateIdentifier <- function(x, ...)
+  as_json_vec(x)
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells <- function(token, x, ...)
+  UseMethod("list_wells", x)
+
+list_wells_for_plate <- function(token, x, ...) {
+
+  params <- lapply(as_plate_id(x), function(plate) list(token, plate))
+
+  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.PlateIdentifier <- list_wells_for_plate
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.Plate <- list_wells_for_plate
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.Sample <- list_wells_for_plate
+
+list_wells_for_mat <- function(token,
+                               x,
+                               experiment = NULL,
+                               include_datasets = FALSE,
+                               ...) {
+
+  x <- as_screening_mat_id(x)
+
+  if (is.null(experiment)) {
+
+    params <- lapply(x, function(y) list(token, y, include_datasets))
+
+  } else {
+
+    if (get_subclass(experiment) == "Experiment")
+      experiment <- exp_to_expid(experiment)
+
+    if (is_json_vec(experiment))
+      experiment <- as_json_class(experiment)
+
+    assert_that(has_subclass(experiment, "ExperimentIdentifier"))
+
+    params <- lapply(x, function(y) list(token, experiment, y,
+                                         include_datasets))
+  }
+
+  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
+
+  as_json_vec(do.call(c, res))
+}
+
+#' @param experiment Additionally, the search can be limited to a single
+#' experiment, specified either as `Experiment` or `ExperimentIdentifier`.
+#' @param include_datasets Logical switch indicating whether to also return
+#' the connected image and image analysis data sets.
+#' 
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.MaterialScreening <- list_wells_for_mat
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.MaterialIdentifierScreening <- list_wells_for_mat
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.MaterialGeneric <- list_wells_for_mat
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_wells.MaterialIdentifierGeneric <- list_wells_for_mat
+
+#' @param perm_id,plate,well_pos Character vector, set of plate objects and
+#' set of well position objects, all of the same length or length 1, that
+#' together can be used to create `WellIdentifier` objects.
+#' 
+#' @rdname list_plate_well
+#' @export
+#' 
+well_id <- function(perm_id, plate, well_pos, row = NULL, col = NULL) {
+
+  if (!is.null(row) || !is.null(col)) {
+    assert_that(is.null(well_pos) && !is.null(row) && !is.null(col))
+    well_pos <- well_pos(row, col)
+  }
+
+  plate <- as_plate_id(plate)
+  well_pos <- as_json_vec(well_pos)
+
+  max_len <- max(length(perm_id), length(plate), length(well_pos))
+
+  if (max_len > 1L) {
+    if (length(perm_id) == 1L)
+      rep(perm_id, max_len)
+    if (length(plate) == 1L)
+      rep(plate, max_len)
+    if (length(well_pos) == 1L)
+      rep(well_pos, max_len)
+  }
+
+  assert_that(is.character(perm_id),
+              length(perm_id) == max_len,
+              has_subclass(plate, "PlateIdentifier"),
+              length(plate) == max_len,
+              has_subclass(well_pos, "WellPosition"),
+              length(well_pos) == max_len)
+
+   as_json_vec(
+    Map(json_class,
+        permId = perm_id,
+        plateIdentifier = plate,
+        wellPosition = well_pos,
+        MoreArgs = list(class = "WellIdentifier"))
+  )
+}
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_well_id <- function(x, ...)
+  UseMethod("as_well_id", x)
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_well_id.WellMetadata <- function(x, ...) {
+
+  x <- as_json_vec(x)
+
+  assert_that(has_fields(x, c("plateIdentifier", "wellPosition")))
+
+  well_id(get_field(x, "permId"),
+          as_json_vec(lapply(x, `[[`, "plateIdentifier")),
+          as_json_vec(lapply(x, `[[`, "wellPosition")))
+}
+
+#' @rdname list_plate_well
+#' @export
+#' 
+as_well_id.WellIdentifier <- function(x, ...)
+  as_json_vec(x)
+
+#' @param row,col Character vector of plate row names or numeric vector of
+#' plate row indices and numeric vector of plate column indices, both of the
+#' same length or of length 1.
 #' 
 #' @rdname list_plate_well
 #' @export
 #' 
 well_pos <- function(row, col) {
 
-  if (is.character(row)) {
-    row <- toupper(row)
-    row <- sapply(row, match, LETTERS)
-  }
+  if (is.character(row))
+    row <- match(toupper(row), LETTERS)
 
-  assert_that(isTRUE(all.equal(row, suppressWarnings(as.integer(row)),
-                               check.attributes = FALSE)),
-              isTRUE(all.equal(col, suppressWarnings(as.integer(col)),
-                               check.attributes = FALSE)))
+  assert_that(is.numeric(row), is.numeric(col),
+              identical(row, as.integer(row)),
+              identical(col, as.integer(col)))
 
   max_len <- max(length(row), length(col))
 
@@ -242,8 +366,10 @@ well_pos <- function(row, col) {
 
   assert_that(length(row) == length(col))
 
-  new_json_vec(
-    Map(json_class, wellRow = row, wellColumn = col,
+  as_json_vec(
+    Map(json_class,
+        wellRow = row,
+        wellColumn = col,
         MoreArgs = list(class = "WellPosition"))
   )
 }

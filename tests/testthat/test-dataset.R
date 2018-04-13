@@ -144,7 +144,7 @@ test_that("dataset references can be listed", {
   expect_true(all(sapply(ds_2, has_subclass, "ImageDatasetReference")))
   expect_equal(length(ds_2), 2L)
 
-  plate_ids <- as_plateid(plates)
+  plate_ids <- as_plate_id(plates)
 
   expect_identical(list_references(tok, plate_ids[[1]]), ds_1)
   expect_identical(list_references(tok, plate_ids[1:2]), ds_2)
