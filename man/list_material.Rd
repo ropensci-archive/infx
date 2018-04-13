@@ -12,10 +12,12 @@
 \alias{list_material_types}
 \alias{as_screening_mat_id}
 \alias{as_screening_mat_id.MaterialGeneric}
+\alias{as_screening_mat_id.MaterialScreening}
 \alias{as_screening_mat_id.MaterialIdentifierGeneric}
 \alias{as_screening_mat_id.MaterialIdentifierScreening}
 \alias{as_generic_mat_id}
 \alias{as_generic_mat_id.MaterialGeneric}
+\alias{as_generic_mat_id.MaterialScreening}
 \alias{as_generic_mat_id.MaterialIdentifierGeneric}
 \alias{as_generic_mat_id.MaterialIdentifierScreening}
 \alias{extract_well_material}
@@ -43,6 +45,8 @@ as_screening_mat_id(x, ...)
 
 \method{as_screening_mat_id}{MaterialGeneric}(x, ...)
 
+\method{as_screening_mat_id}{MaterialScreening}(x, ...)
+
 \method{as_screening_mat_id}{MaterialIdentifierGeneric}(x, ...)
 
 \method{as_screening_mat_id}{MaterialIdentifierScreening}(x, ...)
@@ -50,6 +54,8 @@ as_screening_mat_id(x, ...)
 as_generic_mat_id(x, ...)
 
 \method{as_generic_mat_id}{MaterialGeneric}(x, ...)
+
+\method{as_generic_mat_id}{MaterialScreening}(x, ...)
 
 \method{as_generic_mat_id}{MaterialIdentifierGeneric}(x, ...)
 

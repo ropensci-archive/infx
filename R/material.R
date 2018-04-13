@@ -273,6 +273,12 @@ as_mat_id <- function(x, mode) {
   as_json_vec(do.call(c, res))
 }
 
+as_screening <- function(x, ...)
+  as_mat_id(x, "screening")
+
+as_generic <- function(x, ...)
+  as_mat_id(x, "generic")
+
 #' @rdname list_material
 #' @export
 #' 
@@ -282,14 +288,17 @@ as_screening_mat_id <- function(x, ...)
 #' @rdname list_material
 #' @export
 #' 
-as_screening_mat_id.MaterialGeneric <- function(x, ...)
-  as_mat_id(x, "screening")
+as_screening_mat_id.MaterialGeneric <- as_screening
 
 #' @rdname list_material
 #' @export
 #' 
-as_screening_mat_id.MaterialIdentifierGeneric <- function(x, ...)
-  as_mat_id(x, "screening")
+as_screening_mat_id.MaterialScreening <- as_screening
+
+#' @rdname list_material
+#' @export
+#' 
+as_screening_mat_id.MaterialIdentifierGeneric <- as_screening
 
 #' @rdname list_material
 #' @export
@@ -306,8 +315,12 @@ as_generic_mat_id <- function(x, ...)
 #' @rdname list_material
 #' @export
 #' 
-as_generic_mat_id.MaterialGeneric <- function(x, ...)
-  as_mat_id(x, "generic")
+as_generic_mat_id.MaterialGeneric <- as_generic
+
+#' @rdname list_material
+#' @export
+#' 
+as_generic_mat_id.MaterialScreening <- as_generic
 
 #' @rdname list_material
 #' @export
@@ -318,8 +331,7 @@ as_generic_mat_id.MaterialIdentifierGeneric <- function(x, ...)
 #' @rdname list_material
 #' @export
 #' 
-as_generic_mat_id.MaterialIdentifierScreening <- function(x, ...)
-  as_mat_id(x, "generic")
+as_generic_mat_id.MaterialIdentifierScreening <- as_generic
 
 #' @param row Either a single integer or a single character specifying a
 #' plate row.
