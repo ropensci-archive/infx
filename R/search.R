@@ -1,5 +1,13 @@
 
-#' Search for objects
+#' Assemble and execute openBIS search queries
+#' 
+#' Searching in openBIS presents a powerful alternative to iterative listing
+#' and selecting of objects. As an example, in order to find image data sets
+#' associated with an experiment, instead of first listing all experiments,
+#' selecting the one of interest, then listing all plates of that experiment,
+#' followed by listing image data sets for each of the plates, the requested
+#' data sets can be directly retrieved by constructing a search query with
+#' `search_criteria()` and executing the search by calling `search_openbis()`.
 #'
 #' Searching openBis can be done by creating a `SearchCriteria` object and
 #' passing that to `search_openbis()`, alongside specifying what type of
@@ -18,13 +26,12 @@
 #'   * `properties`: Samples contain basic attributes and all properties.
 #' 
 #' A `SearchCriteria` object can be instantiated using the constructor
-#' `search_criteria`, which takes one or several match clause objects, see
-#' [match_clause()], a search operator specifying whether to match `all` or
-#' `any` clauses, and optionally one or several `SearchSubCriteria` objects.
-#' `SearchSubCriteria` objects in turn can be created with
-#' `search_sub_criteria()`, which takes a single `SearchCriteria` object
-#' alongside a string specifying the entities, the sub criterion is applied
-#' to. Possibilities are
+#' `search_criteria()`, which takes one or several match clause objects, a
+#' search operator specifying whether to match `all` or `any` clauses, and
+#' optionally one or several `SearchSubCriteria` objects. `SearchSubCriteria`
+#' objects in turn can be created with `search_sub_criteria()`, which takes a
+#' single `SearchCriteria` object alongside a string specifying the entities,
+#' the sub criterion is applied to. Possibilities are
 #'   * `data_set_container`
 #'   * `data_set_parent`
 #'   * `data_set_child`
@@ -34,18 +41,60 @@
 #'   * `sample_child`
 #'   * `sample_parent`
 #' 
+#' `SearchCriteria` objects, used for searching openBis, consist of one or
+#' several match clauses. A match clause, broadly speaking, consist of a
+#' desired value, a field to which this value is compared to and a comparison
+#' operator (e.g. equality). Match clauses can be constructed using any of
+#' `attribute_clause()`, `time_attribute_clause()`, `property_clause()`,
+#' `any_property_clause()`, and `any_field_clause()`. Attribute match clauses
+#' have a fixed set of attributes against which the match is performed:
+#'   * time attribute match clauses
+#'     - `registration_date`
+#'     - `modification_date`
+#'   * attribute match clauses
+#'     - `code`
+#'     - `type`
+#'     - `perm_id`
+#'     - `space`
+#'     - `project`
+#'     - `project_perm_id`
+#'     - `metaproject`
+#'     - `registrator_user_id`
+#'     - `registrator_first_name`
+#'     - `registrator_last_name`
+#'     - `registrator_email`
+#'     - `modifier_user_id`
+#'     - `modifier_first_name`
+#'     - `modifier_last_name`
+#'     - `modifier_email`
+#' 
+#' In order to determine the possible values that can be supplied to
+#' `property_clause()` as `property_code`s, `list_property_types()` can be
+#' called. This function returns all property types available throughout the
+#' queried openBis instance. As objects of several types
+#' (`ControlledVocabularyPropertyType` and `PropertyType`) are returned as
+#' property types by the API, the resulting object is a list with each entry
+#' corresponding to a type and holding a set of object of the respective type.
+#' 
+#' The comparison operator (default is equality) can be any of the following
+#'   * `equals`
+#'   * `less_than_or_equal`, with alias `lte`
+#'   * `greater_than_or_equal`, with alias `gte`
+#' 
+#' All of the option matching is not case-sensitive and is performed with
+#' [base::match.arg()] and therefore options may be abbreviated (e.g. `eq`
+#' instead of `equals`).
+#' 
 #' @inheritParams logout_openbis
 #' @param criteria A single `SearchCriteria` object.
 #' @param target_object The object type the search is targeted at, i.e.
 #' `DataSet`s, `Experiment`s, etc.
 #' @param fetch_options If samples are searched for, additional fetch options
 #' can be specified.
-#' @param ... One or more search clauses.
-#' @param operator How to combine search clauses, either `all` or `any` have
-#' to be fulfilled.
-#' @param sub_criteria Optionally, one or several `SearchSubCriteria` objects
-#' can be used to create a `SearchCriteria` object.
-#' @param type The entity type, a `SearchSubCriteria` is applied to.
+#' @param ... For `search_openbis()` passed to [make_request()], for
+#' `search_criteria()` a set of match clause objects, and for match clause
+#' constructors, the comparison mode can be passed as `mode` argument, which
+#' may be `eq` (==), `lte` (<=) or `gte` (>=).
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "searchForDataSets")}
@@ -90,6 +139,11 @@ search_openbis <- function(token,
   make_request(api_url("gis"), fun, params, ...)
 }
 
+#' @param operator How to combine search clauses, either `all` or `any` have
+#' to be fulfilled.
+#' @param sub_criteria Optionally, one or several `SearchSubCriteria` objects
+#' can be used to create a `SearchCriteria` object.
+#' 
 #' @rdname search_openbis
 #' @export
 #' 
@@ -98,8 +152,7 @@ search_criteria <- function(...,
                             sub_criteria = NULL) {
 
   is_clause <- function(x)
-    is_json_class(x) && all(get_subclass(x) %in% c("MatchClause",
-                                                   "PropertyMatchClause",
+    is_json_class(x) && all(get_subclass(x) %in% c("PropertyMatchClause",
                                                    "AnyPropertyMatchClause",
                                                    "AnyFieldMatchClause",
                                                    "AttributeMatchClause",
@@ -131,6 +184,8 @@ search_criteria <- function(...,
   }
 }
 
+#' @param type The entity type, a `SearchSubCriteria` is applied to.
+#' 
 #' @rdname search_openbis
 #' @export
 #' 
@@ -149,56 +204,23 @@ search_sub_criteria <- function(criteria,
              class = "SearchSubCriteria")
 }
 
-#' Create a match clause
-#' 
-#' `SearchCriteria` objects, used for searching openBis, consist of one or
-#' several match clauses. For more information on how to execute a search,
-#' see [search_openbis()]. A match clause, broadly speaking, consist of a
-#' given value, a field to which this value is compared to and a comparison
-#' operator (e.g. equality).
-#' 
-#' In order to determine the possible values that can be supplied to
-#' `property_clause()` as `property_code`s, `list_property_types()` can be
-#' used. This function returns all property types available throughout the
-#' queried openBis instance. As objects of several types
-#' (`ControlledVocabularyPropertyType` and `PropertyType`) are returned as
-#' property types by the API, the resulting object is a list with each entry
-#' corresponding to a type and holding a set of object of the respective type.
-#'
-#' @param desired_value The value used in the comparison.
-#' @param clause_type The type of match clause.
-#' @param field_type The type of filed used in the comparison.
-#' @param mode The comparison mode, can be `eq` (==), `lte` (<=) or `gte`
-#' (>=).  
-#' @param ... Further arguments for creating the match clause.
-#' 
-#' @export
-#' 
-match_clause <- function(desired_value,
-                         clause_type = c("MatchClause",
-                                         "PropertyMatchClause",
+match_clause <- function(value,
+                         clause_type = c("PropertyMatchClause",
                                          "AnyPropertyMatchClause",
                                          "AnyFieldMatchClause",
                                          "AttributeMatchClause",
                                          "TimeAttributeMatchClause"),
-                         field_type = NULL,
                          mode = "eq",
                          ...) {
 
   clause_type <- match.arg(clause_type)
 
-  if (is.null(field_type))
-    field_type <- switch(clause_type,
-                         PropertyMatchClause = "property",
-                         AnyPropertyMatchClause = "any_property",
-                         AnyFieldMatchClause = "any_field",
-                         AttributeMatchClause = "attribute",
-                         TimeAttributeMatchClause = "attribute",
-                         stop("Specify field_type for MatchClause clauses."))
-
-  field_type <- match.arg(toupper(field_type),
-                          c("PROPERTY", "ATTRIBUTE", "ANY_FIELD",
-                            "ANY_PROPERTY"))
+  field_type <- switch(clause_type,
+                       PropertyMatchClause = "PROPERTY",
+                       AnyPropertyMatchClause = "ANY_PROPERTY",
+                       AnyFieldMatchClause = "ANY_FIELD",
+                       AttributeMatchClause = "ATTRIBUTE",
+                       TimeAttributeMatchClause = "ATTRIBUTE")
 
   mode <- switch(mode,
                  lte = "less_than_or_equal",
@@ -208,44 +230,45 @@ match_clause <- function(desired_value,
   mode <- match.arg(toupper(mode),
                     c("EQUALS", "LESS_THAN_OR_EQUAL", "GREATER_THAN_OR_EQUAL"))
 
-  assert_that(length(desired_value) == 1L)
+  assert_that(length(value) == 1L)
 
-  json_class(fieldType = field_type, desiredValue = desired_value,
+  json_class(fieldType = field_type, desiredValue = value,
              compareMode = mode, ..., class = clause_type)
 }
 
 #' @param property_code Code identifying a property to be used for the
 #' comparison.
+#' @param value The value used in the comparison.
 #' 
-#' @rdname match_clause
+#' @rdname search_openbis
 #' @export
 #' 
-property_clause <- function(desired_value, property_code) {
+property_clause <- function(property_code, value, ...) {
 
   assert_that(is.character(property_code), length(property_code) == 1L)
 
-  match_clause(desired_value, "PropertyMatchClause",
-               propertyCode = property_code)
+  match_clause(value, "PropertyMatchClause", ...,
+               propertyCode = toupper(property_code))
 }
 
-#' @rdname match_clause
+#' @rdname search_openbis
 #' @export
 #' 
-any_property_clause <- function(desired_value)
-  match_clause(desired_value, "AnyPropertyMatchClause")
+any_property_clause <- function(value, ...)
+  match_clause(value, "AnyPropertyMatchClause", ...)
 
-#' @rdname match_clause
+#' @rdname search_openbis
 #' @export
 #' 
-any_field_clause <- function(desired_value)
-  match_clause(desired_value, "AnyFieldMatchClause")
+any_field_clause <- function(value, ...)
+  match_clause(value, "AnyFieldMatchClause", ...)
 
 #' @param attribute Name of the attribute to be used for the comparison.
 #' 
-#' @rdname match_clause
+#' @rdname search_openbis
 #' @export
 #' 
-attribute_clause <- function(desired_value, attribute = "code") {
+attribute_clause <- function(attribute = "code", value, ...) {
 
   attribute <- match.arg(toupper(attribute),
                          c("CODE", "TYPE", "PERM_ID", "SPACE", "PROJECT",
@@ -255,36 +278,35 @@ attribute_clause <- function(desired_value, attribute = "code") {
                            "MODIFIER_USER_ID", "MODIFIER_FIRST_NAME",
                            "MODIFIER_LAST_NAME", "MODIFIER_EMAIL"))
 
-  match_clause(desired_value, "AttributeMatchClause", attribute = attribute)
+  match_clause(value, "AttributeMatchClause", ...,
+               attribute = attribute)
 }
 
-#' @param desired_date A date used for the comparison.
 #' @param timezone A string identifying the timezone of the specified date,
 #' examples include "+1", "-5", "0", etc.
 #' 
-#' @rdname match_clause
+#' @rdname search_openbis
 #' @export
 #' 
-time_attribute_clause <- function(desired_date = Sys.Date(),
-                                  attribute = "registration",
+time_attribute_clause <- function(attribute = "registration",
+                                  value = Sys.Date(),
                                   timezone = 0L,
-                                  mode = "eq") {
+                                  ...) {
 
   attribute <- match.arg(toupper(attribute),
                          c("REGISTRATION_DATE", "MODIFICATION_DATE"))
 
   assert_that(is.integer(timezone), timezone <= 12L, timezone >= -12L,
-              inherits(desired_date, "Date"))
+              inherits(value, "Date"))
 
-  match_clause(format(desired_date, "%Y-%m-%d"), "TimeAttributeMatchClause",
-               mode = mode, timeZone = timezone, attribute = attribute)
+  match_clause(format(value, "%Y-%m-%d"), "TimeAttributeMatchClause",
+               ..., timeZone = timezone, attribute = attribute)
 }
 
-#' @inheritParams logout_openbis
 #' @param with_relations Logical switch indicating whether relations should
 #' be returned as well.
 #' 
-#' @rdname match_clause
+#' @rdname search_openbis
 #' @export
 #' 
 list_property_types <- function(token, with_relations = FALSE, ...) {

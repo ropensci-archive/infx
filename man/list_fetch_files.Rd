@@ -219,9 +219,10 @@ of a plate.
 
   # search for a cell profiler feature data set from plate KB2-03-1I
   search <- search_criteria(
-    attribute_clause("HCS_ANALYSIS_CELL_FEATURES_CC_MAT", "type"),
+    attribute_clause("type", "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"),
     sub_criteria = search_sub_criteria(
-      search_criteria(attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")),
+      search_criteria(attribute_clause("code",
+                                       "/INFECTX_PUBLISHED/KB2-03-1I")),
       type = "sample"
     )
   )

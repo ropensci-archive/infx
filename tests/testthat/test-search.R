@@ -4,8 +4,8 @@ test_that("search for datasets", {
 
   check_skip()
 
-  sc <- search_criteria(attribute_clause("20111223114629018-318033",
-                                         "perm_id"))
+  sc <- search_criteria(attribute_clause("perm_id",
+                                         "20111223114629018-318033"))
 
   ds_1 <- search_openbis(tok, sc)
 
@@ -15,7 +15,7 @@ test_that("search for datasets", {
   expect_equal(length(ds_1), 1L)
   expect_true(has_subclass(ds_1[[1]], "DataSet"))
 
-  sc <- search_criteria(time_attribute_clause(as.Date("2011-12-23")))
+  sc <- search_criteria(time_attribute_clause(value = as.Date("2011-12-23")))
 
   ds_n <- search_openbis(tok, sc)
 
@@ -25,7 +25,7 @@ test_that("search for datasets", {
   expect_true(all(sapply(ds_n, has_subclass, "DataSet")))
   expect_gte(length(ds_n), 1L)
 
-  sc <- search_criteria(property_clause("20715", "IBRAIN2.DATASET.ID"))
+  sc <- search_criteria(property_clause("IBRAIN2.DATASET.ID", "20715"))
 
   ds_1 <- search_openbis(tok, sc)
 
@@ -60,8 +60,8 @@ test_that("search for samples", {
 
   check_skip()
 
-  sc <- search_criteria(attribute_clause("20121012090101856-1360590",
-                                         "perm_id"))
+  sc <- search_criteria(attribute_clause("perm_id",
+                                         "20121012090101856-1360590"))
 
   ds_1 <- search_openbis(tok, sc, "sample")
   expect_is(ds_1, "Sample")
@@ -83,11 +83,11 @@ test_that("search with sub-criteria", {
   check_skip()
 
   exp <- search_sub_criteria(
-    search_criteria(attribute_clause("ADENO-AU-K1", "code")),
+    search_criteria(attribute_clause("code", "ADENO-AU-K1")),
     "experiment"
   )
 
-  sc <- search_criteria(attribute_clause("PLATE", "type"),
+  sc <- search_criteria(attribute_clause("type", "PLATE"),
                         sub_criteria = exp)
 
   ds_n <- search_openbis(tok, sc, "sample")
@@ -107,7 +107,7 @@ test_that("search for material", {
   check_skip()
 
   mat_1 <- search_openbis(tok,
-    search_criteria(property_clause("MTOR", "GENE_SYMBOL")), "material")
+    search_criteria(property_clause("GENE_SYMBOL", "MTOR")), "material")
   expect_is(mat_1, "MaterialGeneric")
   expect_is(mat_1, "json_vec")
   expect_equal(length(mat_1), 1L)
@@ -115,10 +115,12 @@ test_that("search for material", {
   expect_is(mat_1[[1]], "json_class")
 
   expect_identical(
-    search_openbis(tok, search_criteria(attribute_clause("2475")), "material"),
+    search_openbis(tok, search_criteria(attribute_clause(value = "2475")),
+                                        "material"),
     mat_1)
   expect_identical(
-    search_openbis(tok, search_criteria(attribute_clause(2475)), "material"),
+    search_openbis(tok, search_criteria(attribute_clause(value = 2475)),
+                                        "material"),
     mat_1)
 })
 

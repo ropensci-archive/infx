@@ -77,10 +77,10 @@ of objects is passed to \code{list_samples()}.
   # search for an experiment, e.g. ADENO-AU-K1
   exp <- search_openbis(tok,
                         search_criteria(
-                          property_clause("Adenovirus", "PATHOGEN"),
-                          property_clause("Ambion", "LIBRARY"),
-                          property_clause("Kinome", "GENESET"),
-                          property_clause(1L, "REPLICATE")
+                          property_clause("pathogen", "Adenovirus"),
+                          property_clause("library", "Ambion"),
+                          property_clause("geneset", "Kinome"),
+                          property_clause("replicate", 1L)
                         ),
                         target_object = "experiment")
 
@@ -111,7 +111,7 @@ of objects is passed to \code{list_samples()}.
   # with a bit of manual work however it is possible to create well id
   # objects from well samples
   wells <- well_id(get_field(well_samp, "permId"), plates[[1L]],
-                   row = "A", col = 1:5)
+                   well_code = get_field(well_samp, "code"))
   identical(wells, well_ids)
 }
 

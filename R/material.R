@@ -82,7 +82,8 @@
 #'   # search for a sample object corresponding to plate KB2-03-1I
 #'   samp <- search_openbis(tok,
 #'                          search_criteria(
-#'                            attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")
+#'                            attribute_clause("code",
+#'                                             "/INFECTX_PUBLISHED/KB2-03-1I")
 #'                          ),
 #'                          target_object = "sample")
 #' 
@@ -103,7 +104,7 @@
 #' 
 #'   # search for a material with material code 3480
 #'   igf1r <- search_openbis(tok,
-#'                           search_criteria(attribute_clause(3480)),
+#'                           search_criteria(attribute_clause("code", 3480)),
 #'                           target_object = "material")
 #' 
 #'   identical(as_screening_mat_id(igf1r), a_22)
@@ -111,15 +112,18 @@
 #'   identical(igf1r, 
 #'             search_openbis(tok,
 #'                            search_criteria(
-#'                              property_clause("IGF1R", "GENE_SYMBOL")
+#'                              property_clause("gene_symbol", "IGF1R")
 #'                            ),
 #'                            target_object = "material"))
 #' 
 #'   # search for an experiment object corresponding to plate KB2-03-1I
 #'   exp <- search_openbis(tok,
-#'                         search_criteria(attribute_clause(
-#'                           samp[[1]][["experimentIdentifierOrNull"]]
-#'                         )),
+#'                         search_criteria(
+#'                           attribute_clause(
+#'                             "code",
+#'                             samp[[1]][["experimentIdentifierOrNull"]]
+#'                           )
+#'                         ),
 #'                         target_object = "experiment")
 #' 
 #'   # list all wells for the current material within the selected experiment

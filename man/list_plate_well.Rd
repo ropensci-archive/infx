@@ -188,10 +188,10 @@ of a well within a plate. Such objects can be created using the constructor
   # search for an experiment, e.g. ADENO-AU-K1
   exp <- search_openbis(tok,
                         search_criteria(
-                          property_clause("Adenovirus", "PATHOGEN"),
-                          property_clause("Ambion", "LIBRARY"),
-                          property_clause("Kinome", "GENESET"),
-                          property_clause(1L, "REPLICATE")
+                          property_clause("pathogen", "Adenovirus"),
+                          property_clause("library", "Ambion"),
+                          property_clause("geneset", "Kinome"),
+                          property_clause("replicate", 1L)
                         ),
                         target_object = "experiment")
 
@@ -208,7 +208,8 @@ of a well within a plate. Such objects can be created using the constructor
   # search for a sample object corresponding to plate BB01-1I
   samp <- search_openbis(tok,
                          search_criteria(
-                           attribute_clause("/INFECTX_PUBLISHED/BB01-1I")
+                           attribute_clause("code",
+                                            "/INFECTX_PUBLISHED/BB01-1I")
                          ),
                          target_object = "sample")
 
@@ -220,7 +221,7 @@ of a well within a plate. Such objects can be created using the constructor
   # search for the material corresponding to MTOR
   mat <- search_openbis(tok,
                         search_criteria(
-                          property_clause("MTOR", "GENE_SYMBOL")
+                          property_clause("gene_symbol", "MTOR")
                         ),
                         target_object = "material")
   # search for associated wells, limited to ADENO-AU-K1

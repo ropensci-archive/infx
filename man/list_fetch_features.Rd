@@ -132,7 +132,8 @@ behaves this way is currently unclear.
   # search for a sample object corresponding to plate KB2-03-1I
   samp <- search_openbis(tok,
                          search_criteria(
-                           attribute_clause("/INFECTX_PUBLISHED/KB2-03-1I")
+                           attribute_clause("code",
+                                            "/INFECTX_PUBLISHED/KB2-03-1I")
                          ),
                          target_object = "sample")
   # for the plate sample object, list all feature data sets

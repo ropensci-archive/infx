@@ -129,8 +129,8 @@ Five different types of match clauses can be constructed:
 For every match clause, a desired value has to be supplied, as well as a comparison mode which can either be `eq` (equal to), `lte` (less than or equal to) or `gte` (greater than or equal to). Additionally, for a `PropertyMatchClause`, a property code has to be specified (possibilities can be enumerated with `list_property_types()`), for an `AttributeMatchClause`, an attribute^[possible values are `code`, `type`, `perm_id`, `space`, `project`, `project_perm_id`, `metaproject`, `registrator_user_id`, `registrator_first_name`, `registrator_last_name`, `registrator_email`, `modifier_user_id`, `modifier_first_name`, `modifier_last_name` or `modifier_email`] and for a `TimeAttributeMatchClause`, a time attribute (either `registration_date` or `modification_date`).
 
 ```{r simple-search}
-amb_kin <- search_criteria(property_clause("Ambion", "LIBRARY"),
-                           property_clause("Kinome", "GENESET"),
+amb_kin <- search_criteria(property_clause("library", "Ambion"),
+                           property_clause("geneset", "Kinome"),
                            operator = "all")
 
 ak_exps <- search_openbis(token, amb_kin,
@@ -144,7 +144,7 @@ For a small example, openBIS is queried for all experiments that involve kinome-
 ```{r material-search}
 mtor_mat <- search_openbis(
   token,
-  search_criteria(property_clause("MTOR", "GENE_SYMBOL")),
+  search_criteria(property_clause("gene_symbol", "MTOR")),
   "material"
 )
 
@@ -167,16 +167,16 @@ The following example demonstrates how InfectX single cell feature data, calcula
 ```{r fetch-counts}
 adeno_au_sub <- search_sub_criteria(
   search_criteria(
-    property_clause("Adenovirus", "PATHOGEN"),
-    property_clause("Ambion", "LIBRARY"),
-    property_clause("Kinome", "GENESET"),
-    property_clause(1L, "REPLICATE")
+    property_clause("pathogen", "Adenovirus"),
+    property_clause("library", "Ambion"),
+    property_clause("geneset", "Kinome"),
+    property_clause("replicate", 1L)
   ),
   type = "experiment"
 )
 
 adeno_au_mat <- search_criteria(
-  attribute_clause("HCS_ANALYSIS_CELL_FEATURES_CC_MAT", "type"),
+  attribute_clause("type", "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"),
   sub_criteria = adeno_au_sub
 )
 
@@ -238,7 +238,7 @@ To narrow down the requested set of images, `list_references()` is called again,
 
 ```{r fetch-images, fig.align = "center"}
 adeno_au_samp <- search_criteria(
-  attribute_clause("PLATE", "type"),
+  attribute_clause("type", "PLATE"),
   sub_criteria = adeno_au_sub
 )
 

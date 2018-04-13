@@ -39,10 +39,10 @@
 #'   # search for an experiment, e.g. ADENO-AU-K1
 #'   exp <- search_openbis(tok,
 #'                         search_criteria(
-#'                           property_clause("Adenovirus", "PATHOGEN"),
-#'                           property_clause("Ambion", "LIBRARY"),
-#'                           property_clause("Kinome", "GENESET"),
-#'                           property_clause(1L, "REPLICATE")
+#'                           property_clause("pathogen", "Adenovirus"),
+#'                           property_clause("library", "Ambion"),
+#'                           property_clause("geneset", "Kinome"),
+#'                           property_clause("replicate", 1L)
 #'                         ),
 #'                         target_object = "experiment")
 #' 
