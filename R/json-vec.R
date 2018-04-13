@@ -77,15 +77,15 @@
 #' 
 #' @export
 #' 
-json_vec <- function(...) {
+json_vec <- function(...)
   new_json_vec(list(...))
-}
 
 new_json_vec <- function(x) {
 
   assert_that(has_common_subclass(x))
 
-  res <- structure(x, class = c(get_subclass(x), "json_vec"))
+  res <- structure(stats::setNames(x, NULL),
+                   class = c(get_subclass(x), "json_vec"))
 
   assert_that(is_json_vec(res))
 
@@ -95,9 +95,8 @@ new_json_vec <- function(x) {
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec <- function(x, ...) {
+as_json_vec <- function(x, ...)
   UseMethod("as_json_vec")
-}
 
 #' @rdname json_vec
 #' @export
@@ -107,16 +106,14 @@ as.json_vec <- as_json_vec
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.json_vec <- function(x, ...) {
-  x
-}
+as_json_vec.json_vec <- function(x, ...)
+  stats::setNames(x, NULL)
 
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.json_class <- function(x, ...) {
+as_json_vec.json_class <- function(x, ...)
   new_json_vec(list(x))
-}
 
 #' @rdname json_vec
 #' @export
