@@ -25,6 +25,7 @@
 \alias{fetch_files.PlateImageReference}
 \alias{fetch_files.DataSetFileDTO}
 \alias{fetch_files.FileInfoDssDTO}
+\alias{read_mat_files}
 \title{List and download files}
 \usage{
 list_files(token, x, ...)
@@ -83,6 +84,8 @@ fetch_files(token, x, ...)
 \method{fetch_files}{DataSetFileDTO}(token, x, ...)
 
 \method{fetch_files}{FileInfoDssDTO}(token, x, data_sets = NULL, ...)
+
+read_mat_files(data)
 }
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
@@ -111,6 +114,8 @@ finally argument to \code{\link[=do_requests_serial]{do_requests_serial()}}/\cod
 \code{dataset_code()} method) or a set of objects of the same length as \code{x}. If
 \code{NULL} (default), each \code{FileInfoDssDTO} object passed as \code{x} is expected
 to contain a \code{data_set} attribute.}
+
+\item{data}{The data to be read.}
 }
 \description{
 A dataset in openBIS represents a collection of files. The function
@@ -182,6 +187,24 @@ In case a download fails, it is retried again up to the number of times
 specified as \code{n_try}. Finally, a function with a single argument can be
 passed as the argument \code{done}, which takes the downloaded data as input and
 does some processing.
+
+A function for reading the binary data retrieved from openBIS can be
+supplied to \code{fetch_files()} as \code{reader} argument. Single cell feature files
+as produced by CellProfiler, are stored as Matlab v5.0 \code{.mat} files and
+the function \code{read_mat_files()} reads such files using \code{\link[R.matlab:readMat]{R.matlab::readMat()}}
+and checks for certain expected attributes and simplifies the read
+structure.
+
+The list returned by \code{read_mat_files()} is arranged such that each node
+corresponds to a single image and contains a list which is either holding a
+single value or a vector of values. For a plate with 16 rows, 24 columns
+and 3 x 3 imaging sites this will yield a list of length 3456. Index
+linearization is in row-major fashion for both wells and sites.
+Furthermore, imaging sites come first such that in this example, the first
+three list entries correspond to image row 1 (left to right) of well A1,
+the next three entries correspond to row 2 of well A1, images 10 through 12
+correspond to row 1 of well A2, etc. Well A2 is located in row 1, column 2
+of a plate.
 }
 \section{openBIS}{
 

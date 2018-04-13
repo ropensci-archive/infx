@@ -70,6 +70,24 @@
 #' passed as the argument `done`, which takes the downloaded data as input and
 #' does some processing.
 #' 
+#' A function for reading the binary data retrieved from openBIS can be
+#' supplied to `fetch_files()` as `reader` argument. Single cell feature files
+#' as produced by CellProfiler, are stored as Matlab v5.0 `.mat` files and
+#' the function `read_mat_files()` reads such files using [R.matlab::readMat()]
+#' and checks for certain expected attributes and simplifies the read
+#' structure.
+#' 
+#' The list returned by `read_mat_files()` is arranged such that each node
+#' corresponds to a single image and contains a list which is either holding a
+#' single value or a vector of values. For a plate with 16 rows, 24 columns
+#' and 3 x 3 imaging sites this will yield a list of length 3456. Index
+#' linearization is in row-major fashion for both wells and sites.
+#' Furthermore, imaging sites come first such that in this example, the first
+#' three list entries correspond to image row 1 (left to right) of well A1,
+#' the next three entries correspond to row 2 of well A1, images 10 through 12
+#' correspond to row 1 of well A2, etc. Well A2 is located in row 1, column 2
+#' of a plate.
+#' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
 #' @param ... Generic compatibility. Extra arguments will be passed to
@@ -500,4 +518,44 @@ check_file_result <- function(resp, size) {
 
     resp$content
   }
+}
+
+#' @param data The data to be read.
+#' 
+#' @rdname list_fetch_files
+#' @export
+#' 
+read_mat_files <- function(data) {
+
+  reduce_nesting <- function(x) {
+    if (is.list(x) && length(x) == 1L)
+      x <- x[[1]]
+    if (is.list(x))
+      lapply(x, reduce_nesting)
+    else
+      drop(x)
+  }
+
+  extract_data <- function(x, y = character()) {
+    if (is.list(x) && length(x) == 1L &&
+        has_attr(x, "dim") && has_attr(x, "dimnames"))
+      extract_data(x[[1]], c(y, unlist(attr(x, "dimnames"))))
+    else {
+      x <- reduce_nesting(x)
+      info <- setdiff(y, "Measurements")
+      assert_that(length(info) == 2L)
+      attr(x, "object") <- info[1]
+      attr(x, "feature") <- info[2]
+      x
+    }
+  }
+
+  tryCatch({
+    dat <- R.matlab::readMat(data, fixNames = FALSE, drop = "singletonLists")
+    extract_data(dat[["handles"]])
+  },
+  error = function(e) {
+    warning("a read error occurred:\n  ", e)
+    data
+  })
 }
