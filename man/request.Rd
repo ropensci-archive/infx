@@ -7,7 +7,7 @@
 \alias{do_requests_parallel}
 \alias{process_json}
 \alias{resolve_references}
-\title{Make a JSON-RPC request}
+\title{Construct and issue JSON-RPC requests}
 \usage{
 make_requests(urls, methods, params, ids = NULL, version = "2.0",
   n_con = 5L, finally = process_json, ...)
@@ -67,17 +67,24 @@ which case the request is retried or a list with an entry named \code{result}.}
 are turned into class attributes and \code{@id} fields are recursively removed.}
 }
 \description{
-The functions powering all HTTP requests to OpenBIS are
+The functions powering all HTTP requests to openBIS are
 \code{do_requests_serial()} for sequential calls and \code{do_requests_parallel()}
-for asynchronous calls. Both take one or several urls, either as character
-vector or list of unevaluated function calls which will be evaluated using
-\code{\link[base:eval]{base::eval()}} shortly before being used (this is used for urls that are
-only valid for a limited amount of time). The behavior of \code{do_requests_*()}
-can be customized with the three functions passed as arguments
-\code{create_handle}, \code{check} and \code{finally} together with the vector (of the
-same length as \code{urls}) passed as argument \code{bodies}.
+for asynchronous calls. Constructing requests for the JSON-RPC API of
+openBIS is done with the helper function \code{make_requests()} and a wrapper
+for single requests is available as \code{make_request()}. This convenience
+function calls \code{make_requests()} and returns the first element of the
+resulting list of length 1.
 }
 \details{
+Both \code{do_requests_serial()} and \code{do_requests_parallel()} take as \code{urls}
+argument a set of urls, either as character vector or list of unevaluated
+function calls which will be evaluated using \code{\link[base:eval]{base::eval()}} shortly before
+being used (this is used for urls that are only valid for a limited amount
+of time). The behavior of \code{do_requests_*()} can be customized with the
+three functions passed as arguments \code{create_handle}, \code{check} and \code{finally}
+together with the vector (of the same length as \code{urls}) passed as argument
+\code{bodies}.
+
 The function passed as \code{create_handle} receives one entry at the time of
 the \code{bodies} object and is expected to return a curl handle created by
 \code{\link[curl:new_handle]{curl::new_handle()}}. The \code{check} function receives as first argument
@@ -120,8 +127,68 @@ self-contained.
 \examples{
 \donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
+
+  # the function list_projects() is implemented as follows
   projects <- make_request(api_url("gis"), "listProjects", list(token))
   print(projects[[1]])
+  # or using make_request(), the params argument has to be a list per
+  # request and the first entry of the returned list has to be selected
+  proj <- make_requests(api_url("gis"), "listProjects", list(list(token)))
+  identical(proj[[1L]][[1L]],
+            projects[[1]])
+
+  # without using make_request(), one can achieve the same result by
+  # calling do_requests_serial() directly
+  proj <- do_requests_serial(api_url("gis"),
+                             list(
+                               list(
+                                 id = "foobar",
+                                 jsonrpc = "2.0",
+                                 method = "listProjects",
+                                 params = list(token)
+                               )
+                             ),
+                             create_handle = infx:::create_request_handle,
+                             check = infx:::check_request_result,
+                             finally = process_json)
+  identical(proj[[1L]][[1L]],
+            projects[[1]])
+
+  # the do_requests_*() functions can be used for any HTTP request
+  req <- do_requests_serial("https://httpbin.org/headers")
+  is.raw(req[[1L]])
+
+  # in order to read the returned binary data, a function can be supplied
+  # to do_requests_*() as finally argument
+
+  process_json <- function(x) 
+    jsonlite::prettify(rawToChar(x))
+
+  req <- do_requests_serial("https://httpbin.org/headers",
+                            finally = process_json)
+  req[[1L]]
+
+  # to customize the curl handle, a function can be supplied to
+  # do_requests_*() as create_handle argument
+
+  post_handle <- function(x)
+    curl::handle_setheaders(
+      curl::new_handle(postfields = charToRaw(jsonlite::toJSON(x))),
+      "Content-Type" = "application/json"
+    )
+  process_json <- function(x) 
+    jsonlite::fromJSON(rawToChar(x), simplifyDataFrame = FALSE)$json
+
+  data <- list(a = "foo",
+               b = "bar")
+
+  req <- do_requests_serial("https://httpbin.org/post",
+                            list(data),
+                            create_handle = post_handle,
+                            finally = process_json)
+
+  # httbin returns POST data, therefore
+  identical(data, req[[1L]])
 }
 
 }
