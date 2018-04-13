@@ -12,11 +12,12 @@ list_projects(token, ...)
 \item{...}{Further arguments will be passed to \code{\link[=make_requests]{make_requests()}}.}
 }
 \description{
-List all projects available on the queried openBIS instance. A project forms
-one of the most basic entities in the organizational hierarchy of openBIS.
-One or more projects are contained in each space (the topmost
-organizational entity) and each project consists of one or several
-experiments.
+A project forms one of the most basic entities in the organizational
+hierarchy of openBIS. Each project consists of one or several experiments
+and one or more projects are contained in each space, which is the topmost
+structure used for grouping experiments. For InfectX, each project
+corresponds to a separate pathogen. All registered projects visible to
+the current user can be listed by calling the function \code{list_projects()}.
 }
 \section{openBIS}{
 
@@ -25,3 +26,12 @@ experiments.
 }
 }
 
+\examples{
+\dontrun{
+  tok <- login_openbis("rdgr2014", "IXPubReview")
+  proj <- list_projects(tok)
+  length(proj)
+  get_field(proj, "code")
+}
+
+}
