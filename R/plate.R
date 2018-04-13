@@ -64,6 +64,55 @@
 #' 
 #' @rdname list_plate_well
 #' 
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#' 
+#'   # search for an experiment, e.g. ADENO-AU-K1
+#'   exp <- search_openbis(tok,
+#'                         search_criteria(
+#'                           property_clause("Adenovirus", "PATHOGEN"),
+#'                           property_clause("Ambion", "LIBRARY"),
+#'                           property_clause("Kinome", "GENESET"),
+#'                           property_clause(1L, "REPLICATE")
+#'                         ),
+#'                         target_object = "experiment")
+#' 
+#'   # list all plates associated with this experiment
+#'   plates <- list_plates(tok, exp)
+#'   length(plates)
+#'   as_plate_id(plates)
+#' 
+#'   # for a plate, fetch meta data objects
+#'   meta <- list_plate_metadata(tok, plates[[1L]])
+#'   print(meta[[1L]], depth = 2L, length = 15L)
+#'   print(meta[[1L]][["wells"]][[1L]], depth = 2L)
+#' 
+#'   # search for a sample object corresponding to plate BB01-1I
+#'   samp <- search_openbis(tok,
+#'                          search_criteria(
+#'                            attribute_clause("/INFECTX_PUBLISHED/BB01-1I")
+#'                          ),
+#'                          target_object = "sample")
+#' 
+#'   # list all wells for this sample
+#'   wells <- list_wells(tok, samp)
+#'   identical(as_well_id(meta[[1L]][["wells"]][[1L]]),
+#'             wells[1L])
+#' 
+#'   # search for the material corresponding to MTOR
+#'   mat <- search_openbis(tok,
+#'                         search_criteria(
+#'                           property_clause("MTOR", "GENE_SYMBOL")
+#'                         ),
+#'                         target_object = "material")
+#'   # search for associated wells, limited to ADENO-AU-K1
+#'   mtor <- list_wells(tok, mat, exp)
+#'   plates <- as_json_vec(lapply(mtor, `[[`, "experimentPlateIdentifier"))
+#'   as_plate_id(plates)
+#'   unique(lapply(mtor, `[[`, "wellPosition"))
+#' }
+#' 
 #' @export
 #' 
 list_plates <- function(token, x = NULL, ...)
@@ -181,7 +230,7 @@ as_plate_id.PlateMetadata <- function(x, ...)
 #' @export
 #' 
 as_plate_id.PlateIdentifier <- function(x, ...)
-  as_json_vec(x)
+  plate_id(get_field(x, "plateCode"), get_field(x, "spaceCodeOrNull"))
 
 #' @rdname list_plate_well
 #' @export
@@ -195,7 +244,7 @@ list_wells_for_plate <- function(token, x, ...) {
 
   res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
 
-  as_json_vec(do.call(c, res))
+  remove_null(as_json_vec(do.call(c, res)))
 }
 
 #' @rdname list_plate_well
