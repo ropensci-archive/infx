@@ -46,15 +46,15 @@ list_dataset_ids(token, x, ...)
 
 list_references(token, x, ...)
 
-\method{list_references}{PlateIdentifier}(token, x, type = c(NA, "raw",
+\method{list_references}{PlateIdentifier}(token, x, type = c("raw",
   "segmentation", "feature"), ...)
 
-\method{list_references}{Plate}(token, x, type = c(NA, "raw", "segmentation",
+\method{list_references}{Plate}(token, x, type = c("raw", "segmentation",
   "feature"), ...)
 
 \method{list_references}{Sample}(token, x, ...)
 
-\method{list_references}{PlateMetadata}(token, x, type = c(NA, "raw",
+\method{list_references}{PlateMetadata}(token, x, type = c("raw",
   "segmentation", "feature"), ...)
 
 \method{list_references}{MaterialGeneric}(token, x, experiment = NULL, ...)
@@ -198,7 +198,6 @@ option is not exposed to the user.
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("sas", "listImageDatasets")}
 \item \Sexpr{infx::docs_link("sas", "listRawImageDatasets")}
 \item \Sexpr{infx::docs_link("sas", "listSegmentationImageDatasets")}
 \item \Sexpr{infx::docs_link("sas", "listFeatureVectorDatasets")}

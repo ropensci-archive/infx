@@ -202,7 +202,6 @@ list_dataset_ids.DataSet <- function(token, x, ...)
 
 #' @rdname list_datasets
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("sas", "listImageDatasets")}
 #' * \Sexpr{infx::docs_link("sas", "listRawImageDatasets")}
 #' * \Sexpr{infx::docs_link("sas", "listSegmentationImageDatasets")}
 #' * \Sexpr{infx::docs_link("sas", "listFeatureVectorDatasets")}
@@ -213,13 +212,12 @@ list_references <- function(token, x, ...)
 
 list_img_ds <- function(token,
                         x,
-                        type = c(NA, "raw", "segmentation", "feature"),
+                        type = c("raw", "segmentation", "feature"),
                         ...) {
 
   type <- match.arg(type)
 
   fun <- switch(match.arg(type),
-                `NA` = "listImageDatasets",
                 raw = "listRawImageDatasets",
                 segmentation = "listSegmentationImageDatasets",
                 feature = "listFeatureVectorDatasets")
