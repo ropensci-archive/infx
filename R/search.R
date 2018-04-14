@@ -102,6 +102,70 @@
 #' * \Sexpr{infx::docs_link("gis", "searchForMaterials")}
 #' * \Sexpr{infx::docs_link("gis", "searchForSamples")}
 #' 
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#'   
+#'   # search for an experiment, e.g. ADENO-AU-K1
+#'   exp <- search_openbis(tok,
+#'                         search_criteria(
+#'                           property_clause("pathogen", "Adenovirus"),
+#'                           property_clause("library", "Ambion"),
+#'                           property_clause("geneset", "Kinome"),
+#'                           property_clause("replicate", 1L)
+#'                         ),
+#'                         target_object = "experiment")
+#' 
+#'   # the same can be achieved using the code attribute
+#'   identical(exp,
+#'             search_openbis(tok,
+#'                            search_criteria(
+#'                              attribute_clause(value = "ADENO-AU-K1")
+#'                            ),
+#'                            target_object = "experiment"))
+#' 
+#'   # of using the perm_id attribute
+#'   identical(exp,
+#'             search_openbis(tok,
+#'                            search_criteria(
+#'                              attribute_clause("perm_id",
+#'                                               "20111223100933426-318017")
+#'                            ),
+#'                            target_object = "experiment"))
+#' 
+#'   # a search with no matches returns an empty list
+#'   search_openbis(tok,
+#'                  search_criteria(attribute_clause(value = "foo_bar")),
+#'                  target_object = "experiment")
+#' 
+#'   # search using sub-criteria: all plate samples of experiment ADENO-DU-K1
+#'   sub <- search_sub_criteria(search_criteria(
+#'                                attribute_clause(value = "ADENO-DU-K1")
+#'                              ),
+#'                              type = "experiment")
+#'   all <- search_openbis(
+#'     tok,
+#'     search_criteria(
+#'       attribute_clause("type", "PLATE"),
+#'       sub_criteria = sub
+#'     ),
+#'     target_object = "sample"
+#'   )
+#'   length(all)
+#' 
+#'   # now only include ADENO-DU-K1 plate samples registered after Feb 1st 2013
+#'   some <- search_openbis(
+#'     tok,
+#'     search_criteria(
+#'       attribute_clause("type", "PLATE"),
+#'       time_attribute_clause(value = as.Date("2013-02-01"), mode = "gte"),
+#'       sub_criteria = sub
+#'     ),
+#'     target_object = "sample"
+#'   )
+#'   length(some)
+#' }
+#' 
 #' @export
 #' 
 search_openbis <- function(token,
