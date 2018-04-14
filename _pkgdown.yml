@@ -8,7 +8,7 @@ template:
     bootswatch: flatly
 reference:
   - title: List openBIS objects
-    desc: Query openBIS for objects used to organize datasets
+    desc: Enumerate openBIS for objects used to organize datasets
     contents: 
       - list_datasets
       - list_experiments
@@ -16,22 +16,28 @@ reference:
       - list_plates
       - list_projects
       - list_samples
+  - title: Search for openBIS objects
+    desc: Query openBIS for data set, experiment, material and sample objects
+    contents: 
       - search_openbis
-      - match_clause
   - title: List/download openBIS resources
     desc: List and fetch files, images and feature data
     contents:
       - list_features
       - list_files
-      - list_image_metadata
       - fetch_images
       - list_datastores
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
     contents: 
-      - matches("json_vec")
       - matches("json_class")
+      - matches("json_vec")
       - has_fields
+      - print.json_class
+      - print.json_vec
+      - c.json_class
+      - c.json_vec
+      - matches("rep")
   - title: Utility functions
     desc: >
       Assemble JSON-RPC request and issue a POST request to openBIS; parse
@@ -39,5 +45,4 @@ reference:
     contents: 
       - make_requests
       - login_openbis
-      - starts_with("read_")
       - api_url
