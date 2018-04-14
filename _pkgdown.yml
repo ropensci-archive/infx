@@ -26,18 +26,14 @@ reference:
       - list_features
       - list_files
       - fetch_images
-      - list_datastores
+      - list_download_urls
   - title: JSON objects in R
     desc: Create, display and modify JSON objects returned by openBIS
     contents: 
       - matches("json_class")
       - matches("json_vec")
       - has_fields
-      - print.json_class
-      - print.json_vec
-      - c.json_class
-      - c.json_vec
-      - matches("rep")
+      - print
   - title: Utility functions
     desc: >
       Assemble JSON-RPC request and issue a POST request to openBIS; parse
