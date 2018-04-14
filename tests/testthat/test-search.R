@@ -4,78 +4,101 @@ test_that("search for datasets", {
 
   check_skip()
 
-  sc <- search_criteria(attribute_clause("perm_id",
-                                         "20111223114629018-318033"))
+  perm_id <- "20111223114629018-318033"
+  sc <- search_criteria(attribute_clause("perm_id", perm_id))
 
   ds_1 <- search_openbis(tok, sc)
 
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "DataSet")
-  expect_equal(length(ds_1), 1L)
-  expect_true(has_subclass(ds_1[[1]], "DataSet"))
+  expect_length(ds_1, 1L)
+  expect_is(ds_1[[1]], "DataSet")
+  expect_is(ds_1[[1]], "json_class")
+  expect_identical(get_field(ds_1[[1]], "code"), perm_id)
 
-  sc <- search_criteria(time_attribute_clause(value = as.Date("2011-12-23")))
+  date <- as.Date("2011-11-15")
+  sc <- search_criteria(time_attribute_clause(value = date))
 
   ds_n <- search_openbis(tok, sc)
 
   expect_is(ds_n, "DataSet")
   expect_is(ds_n, "json_vec")
-  expect_identical(get_subclass(ds_n), "DataSet")
-  expect_true(all(sapply(ds_n, has_subclass, "DataSet")))
   expect_gte(length(ds_n), 1L)
+  for (i in seq_along(ds_n)) {
+    expect_is(ds_n[[i]], "DataSet")
+    expect_is(ds_n[[i]], "json_class")
+    expect_identical(
+      as.Date(
+        as.POSIXct(
+          ds_n[[i]][["registrationDetails"]][["registrationDate"]] / 1000,
+          origin = "1970-01-01"
+        )
+      ),
+      date
+    )
+  }
 
-  sc <- search_criteria(property_clause("IBRAIN2.DATASET.ID", "20715"))
+  ds_id <- "20715"
+  sc <- search_criteria(property_clause("IBRAIN2.DATASET.ID", ds_id))
 
   ds_1 <- search_openbis(tok, sc)
 
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "DataSet")
-  expect_equal(length(ds_1), 1L)
-  expect_true(has_subclass(ds_1[[1]], "DataSet"))
+  expect_length(ds_1, 1L)
+  expect_is(ds_1[[1]], "DataSet")
+  expect_is(ds_1[[1]], "json_class")
+  expect_identical(ds_1[[1]][["properties"]][["IBRAIN2.DATASET.ID"]], ds_id)
 
-  sc <- search_criteria(any_property_clause("20715"))
+  sc <- search_criteria(any_property_clause(ds_id))
 
   ds_n <- search_openbis(tok, sc)
 
   expect_is(ds_n, "DataSet")
   expect_is(ds_n, "json_vec")
-  expect_identical(get_subclass(ds_n), "DataSet")
-  expect_true(all(sapply(ds_n, has_subclass, "DataSet")))
   expect_gte(length(ds_n), 1L)
+  for (i in seq_along(ds_n)) {
+    expect_is(ds_n[[i]], "DataSet")
+    expect_is(ds_n[[i]], "json_class")
+    expect_true(ds_id %in% ds_n[[i]][["properties"]])
+  }
 
-  sc <- search_criteria(any_field_clause("20111223114629018-318033"))
+  sc <- search_criteria(any_field_clause(perm_id))
 
   ds_1 <- search_openbis(tok, sc)
 
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "DataSet")
-  expect_equal(length(ds_1), 1L)
-  expect_true(has_subclass(ds_1[[1]], "DataSet"))
+  expect_length(ds_1, 1L)
+  expect_is(ds_1[[1]], "DataSet")
+  expect_is(ds_1[[1]], "json_class")
+  expect_identical(get_field(ds_1[[1]], "code"), perm_id)
 })
 
 test_that("search for samples", {
 
   check_skip()
 
-  sc <- search_criteria(attribute_clause("perm_id",
-                                         "20121012090101856-1360590"))
+  perm_id <- "20121012090101856-1360590"
+  sc <- search_criteria(attribute_clause("perm_id", perm_id))
 
-  ds_1 <- search_openbis(tok, sc, "sample")
-  expect_is(ds_1, "Sample")
-  expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "Sample")
-  expect_equal(length(ds_1), 1L)
-  expect_true(has_subclass(ds_1[[1]], "Sample"))
+  samp_1 <- search_openbis(tok, sc, "sample")
+  expect_is(samp_1, "Sample")
+  expect_is(samp_1, "json_vec")
+  expect_length(samp_1, 1L)
+  expect_is(samp_1[[1]], "Sample")
+  expect_is(samp_1[[1]], "json_class")
+  expect_identical(get_field(samp_1[[1]], "permId"), perm_id)
+  expect_false("PARENTS" %in% samp_1[[1]][["retrievedFetchOptions"]])
 
-  ds_1 <- search_openbis(tok, sc, "sample", "properties")
-  expect_is(ds_1, "Sample")
-  expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "Sample")
-  expect_equal(length(ds_1), 1L)
-  expect_true(has_subclass(ds_1[[1]], "Sample"))
+  samp_1 <- search_openbis(tok, sc, "sample", "parents")
+  expect_is(samp_1, "Sample")
+  expect_is(samp_1, "json_vec")
+  expect_length(samp_1, 1L)
+  expect_is(samp_1[[1]], "Sample")
+  expect_is(samp_1[[1]], "json_class")
+  expect_identical(get_field(samp_1[[1]], "permId"), perm_id)
+  expect_true("PARENTS" %in% samp_1[[1]][["retrievedFetchOptions"]])
 })
 
 test_that("search with sub-criteria", {
@@ -98,7 +121,8 @@ test_that("search with sub-criteria", {
   for (i in seq_along(ds_n)) {
     expect_is(ds_n[[i]], "Sample")
     expect_is(ds_n[[i]], "json_class")
-    expect_match(ds_n[[i]][["experimentIdentifierOrNull"]], "ADENO-AU-K1")
+    expect_match(get_field(ds_n[[i]], "experimentIdentifierOrNull"),
+                 "ADENO-AU-K1")
   }
 })
 
@@ -113,6 +137,7 @@ test_that("search for material", {
   expect_equal(length(mat_1), 1L)
   expect_is(mat_1[[1]], "MaterialGeneric")
   expect_is(mat_1[[1]], "json_class")
+  expect_identical(mat_1[[1]][["properties"]][["GENE_SYMBOL"]], "MTOR")
 
   expect_identical(
     search_openbis(tok, search_criteria(attribute_clause(value = "2475")),
@@ -127,8 +152,14 @@ test_that("search for material", {
 test_that("property types can be listed", {
   pt <- list_property_types(tok)
   expect_is(pt, "list")
-  expect_equal(length(pt), 2L)
-  expect_true(all(sapply(pt, is_json_vec)))
-  expect_true(all(sapply(pt, get_subclass) %in%
-                c("ControlledVocabularyPropertyType", "PropertyType")))
+  expect_length(pt, 2L)
+  for (i in seq_along(pt))
+    expect_is(pt[[i]], "json_vec")
+    for (j in seq_along(pt[[i]]))
+      expect_is(pt[[i]][[j]], "json_class")
+
+  for (i in seq_along(pt[[1]]))
+    expect_is(pt[[1]][[i]], "ControlledVocabularyPropertyType")
+  for (i in seq_along(pt[[2]]))
+    expect_is(pt[[2]][[i]], "PropertyType")
 })
