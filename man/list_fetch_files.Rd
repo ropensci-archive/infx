@@ -234,7 +234,7 @@ of a plate.
 
   # select some of the files, e.g. all count features per image
   some_files <- all_files[grepl("Image\\\\.Count_",
-                                sapply(all_files, `[[`, "pathInDataSet"))]
+                                get_field(files, "pathInDataSet"))]
   length(some_files)
 
   # download the selected files

@@ -36,3 +36,21 @@ are abbreviated as
 \item \code{dsrs}: \Sexpr{infx::docs_link("dsrs")}
 }
 }
+\examples{
+# default endpoint is the GeneralInformationService interface
+api_url()
+# base url can be customized
+api_url(host = "https:://foobar.com")
+# ScreeningApiServer interface endpoint
+api_url("sas")
+
+# link to GeneralInformationService interface docs
+docs_link()
+# add a method name (only to the link text)
+docs_link(method_name = "foo_bar")
+# link to ScreeningApiServer interface docs
+docs_link("sas")
+# link to most recent version of docs
+docs_link("sas", version = "16.05.6")
+
+}

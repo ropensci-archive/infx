@@ -1,83 +1,95 @@
 
-#' List data store servers
-#'
-#' `list_datastores()` lists all data store servers registered this openBIS
-#' server instance and `list_datastore_urls()` returns the base urls of the
-#' data store servers that host the supplied datasets (or that of the default
-#' data store server in case no data set is supplied). Download urls of files
-#' can be listed using the function `list_download_urls()`.
+#' List data store servers and urls
 #' 
+#' In order to download files from openBIS, download urls have to be generated
+#' first, which can be done by calling `list_download_urls()`. This function
+#' is used in [fetch_files()], which iterates over the selected files, creating
+#' download links and executing the downloads. All data store servers
+#' registered to an openBIS instance are listed by `list_datastores()` and data
+#' store server urls per data set can be queried by calling
+#' `list_datastore_urls()`.
+#' 
+#' To specify files for which links are requested by `list_download_urls()`,
+#' both a data set code and a file path are required. Objects, apart from
+#' character vectors of data set codes, that may be passed to identify the
+#' data set therefore include `DataSet`, `DatasetIdentifier`,
+#' `DatasetReference`, `FeatureVectorDatasetReference`,
+#' `FeatureVectorDatasetWellReference`, `ImageDatasetReference`,
+#' `MicroscopyImageReference` and `PlateImageReference`. Additionally, dispatch
+#' of `list_download_urls()` is possible on `DataSetFileDTO` objects which
+#' contain both information on data set and file path of a file. A `timeout`
+#' argument may be specified, determining how long (in seconds) the generated
+#' url is valid for. If no specific timeout value is passed the url is valid
+#' for what the openBIS documentation calls "a short time".
+#' 
+#' `list_datastore_urls()` as `list_download_urls()` ultimately requires a
+#' character vector of data set codes to make the API call and therefore
+#' dispatch is possible on, in addition to character vector, `DataSet`,
+#' `DatasetIdentifier`, `DatasetReference`, `FeatureVectorDatasetReference`,
+#' `FeatureVectorDatasetWellReference`, `ImageDatasetReference`,
+#' `MicroscopyImageReference` and `PlateImageReference` objects. Dispatch on
+#' `NULL` requests the default data store server url. Data store sever url
+#' related functionality is uninteresting for the InfectX set-up, as only a
+#' single data store server exists, the url of which can be retrieved by a call
+#' to `list_datastores()`.
+#'
 #' @inheritParams logout_openbis
-#' @param data_set Set of datasets (specified as dataset codes, `DataSet` or
-#' `DatasetIdentifier` objects) or NULL.
-#' @param timeout Time-span (in seconds) for which the file download link
-#' should be valid.
 #' @param x Object representing a (set of) dataset(s), e.g. a vector of dataset
 #' codes, or a set of `DataSet`s or `DatasetIdentifier`s.
 #' @param path A character vector of file paths within datasets.
+#' @param timeout Time-span (in seconds) for which the file download link
+#' should be valid.
 #' @param ... Generic compatibility.
 #' 
 #' @rdname list_urls
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listDataStores")}
-#' * \Sexpr{infx::docs_link("gis", "getDefaultPutDataStoreBaseURL")}
-#' * \Sexpr{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
-#' * \Sexpr{infx::docs_link("gis", "getDataStoreBaseURLs")}
 #' * \Sexpr{infx::docs_link("dsrg", "getDownloadUrlForFileForDataSet")}
 #' * \Sexpr{infx::docs_link("dsrg",
 #'                          "getDownloadUrlForFileForDataSetWithTimeout")}
 #' 
-#' @export
+#' @examples
+#' \dontrun{
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#'   
+#'   # data store server information
+#'   list_datastores(tok)
 #' 
-list_datastores <- function(token, ...)
-  make_request(api_url("gis"), "listDataStores", list(token), ...)
-
-#' @rdname list_urls
-#' @export
+#'   # search for a cell profiler feature data set from plate KB2-03-1I
+#'   search <- search_criteria(
+#'     attribute_clause("type", "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"),
+#'     sub_criteria = search_sub_criteria(
+#'       search_criteria(attribute_clause("code",
+#'                                        "/INFECTX_PUBLISHED/KB2-03-1I")),
+#'       type = "sample"
+#'     )
+#'   )
+#'   ds <- search_openbis(tok, search)
 #' 
-list_datastore_urls <- function(token, data_set = NULL, ...) {
-
-  if (is.null(data_set)) {
-
-    make_request(api_url("gis"), "getDefaultPutDataStoreBaseURL", list(token),
-                 ...)
-
-  } else {
-
-    if (is_json_class(data_set))
-      data_set <- as_json_vec(data_set)
-
-    if (!is.character(data_set))
-      data_set <- sapply(data_set, function(x) dataset_code(x))
-
-    assert_that(is.character(data_set))
-
-    if (length(data_set) == 1L) {
-
-      urls <- make_request(api_url("gis"), "tryGetDataStoreBaseURL",
-                           list(token, data_set), ...)
-      assert_that(!is.null(urls))
-      stats::setNames(urls, data_set)
-
-    } else {
-
-      urls <- make_request(api_url("gis"), "getDataStoreBaseURLs",
-                           list(token, as.list(data_set)), ...)
-      res <- unlist(lapply(urls, function(url) {
-        assert_that(has_subclass(url, "DataStoreURLForDataSets"),
-                    has_fields(url, c("dataStoreURL", "dataSetCodes")))
-        codes <- as.character(url[["dataSetCodes"]])
-        stats::setNames(rep(url[["dataStoreURL"]], length(codes)), codes)
-      }))
-
-      assert_that(setequal(names(res), data_set))
-      res[data_set]
-    }
-  }
-}
-
-#' @rdname list_urls
+#'   # list all files of this data set
+#'   files <- list_files(tok, ds)
+#'   # extract file paths
+#'   file_paths <- get_field(files, "pathInDataSet")
+#'   # select a file
+#'   file_path <- file_paths[grepl("Count_Cells", file_paths)]
+#' 
+#'   # generate url
+#'   list_download_urls(tok, ds, file_path)
+#' 
+#'   # generate url and download file
+#'   dat <- read_mat_files(url(list_download_urls(tok, ds, file_path)))
+#'   attributes(dat)
+#'   str(as.integer(dat))
+#' 
+#'   # set timeout to 2 sec
+#'   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
+#'   tmp <- read_mat_files(url(file_url))
+#' 
+#'   # let timeout expire
+#'   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
+#'   Sys.sleep(3L)
+#'   tmp <- read_mat_files(url(file_url))
+#' }
 #' @export
 #' 
 list_download_urls <- function(token, x, ...)
@@ -124,29 +136,48 @@ list_download_urls.character <- function(token,
   unlist(make_requests(api_url("dsrg"), fun, params), ...)
 }
 
-#' @rdname list_urls
-#' @export
-#' 
-list_download_urls.DataSet <- function(token,
-                                       x,
-                                       path,
-                                       timeout = NA,
-                                       ...) {
-
+list_dl_url <- function(token, x, path, timeout = NA, ...)
   list_download_urls(token, dataset_code(x), path, timeout, ...)
-}
 
 #' @rdname list_urls
 #' @export
 #' 
-list_download_urls.DatasetIdentifier <- function(token,
-                                                 x,
-                                                 path,
-                                                 timeout = NA,
-                                                 ...) {
+list_download_urls.DataSet <- list_dl_url
 
-  list_download_urls(token, dataset_code(x), path, timeout, ...)
-}
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.DatasetIdentifier <- list_dl_url
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.DatasetReference <- list_dl_url
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.FeatureVectorDatasetReference <- list_dl_url
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.FeatureVectorDatasetWellReference <- list_dl_url
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.ImageDatasetReference <- list_dl_url
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.MicroscopyImageReference <- list_dl_url
+
+#' @rdname list_urls
+#' @export
+#' 
+list_download_urls.PlateImageReference <- list_dl_url
 
 #' @rdname list_urls
 #' @export
@@ -169,6 +200,104 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
   unlist(make_requests(api_url("dsrg"), fun, params), ...)
 }
 
+#' @rdname list_urls
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "listDataStores")}
+#' @export
+#' 
+list_datastores <- function(token, ...)
+  make_request(api_url("gis"), "listDataStores", list(token), ...)
+
+#' @rdname list_urls
+#' @section openBIS:
+#' * \Sexpr{infx::docs_link("gis", "getDefaultPutDataStoreBaseURL")}
+#' * \Sexpr{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
+#' * \Sexpr{infx::docs_link("gis", "getDataStoreBaseURLs")}
+#' @export
+#' 
+list_datastore_urls <- function(token, x = NULL, ...)
+  UseMethod("list_datastore_urls", x)
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.NULL <- function(token, x, ...)
+  make_request(api_url("gis"), "getDefaultPutDataStoreBaseURL", list(token),
+               ...)
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.character <- function(token, x, ...) {
+
+    if (length(x) == 1L) {
+
+      urls <- make_request(api_url("gis"), "tryGetDataStoreBaseURL",
+                           list(token, x), ...)
+
+      assert_that(!is.null(urls))
+      stats::setNames(urls, x)
+
+    } else {
+
+      urls <- make_request(api_url("gis"), "getDataStoreBaseURLs",
+                           list(token, as.list(x)), ...)
+
+      res <- unlist(lapply(urls, function(url) {
+        codes <- as.character(get_field(url, "dataSetCodes"))
+        stats::setNames(rep(get_field(url, "dataStoreURL"), length(codes)),
+                        codes)
+      }))
+
+      assert_that(setequal(names(res), x))
+      res[x]
+    }
+}
+
+list_ds_urls <- function(token, x, ...)
+  list_datastore_urls(token, dataset_code(x), ...)
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.DataSet <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.DatasetIdentifier <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.DatasetReference <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.FeatureVectorDatasetReference <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.FeatureVectorDatasetWellReference <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.ImageDatasetReference <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.MicroscopyImageReference <- list_ds_urls
+
+#' @rdname list_urls
+#' @export
+#' 
+list_datastore_urls.PlateImageReference <- list_ds_urls
+
+
 #' OpenBIS urls
 #' 
 #' The helper function `api_url()` is used to create urls to InfectX
@@ -188,6 +317,24 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
 #' @param host Host url.
 #' 
 #' @rdname openbis_urls
+#' 
+#' @examples
+#' # default endpoint is the GeneralInformationService interface
+#' api_url()
+#' # base url can be customized
+#' api_url(host = "https:://foobar.com")
+#' # ScreeningApiServer interface endpoint
+#' api_url("sas")
+#' 
+#' # link to GeneralInformationService interface docs
+#' docs_link()
+#' # add a method name (only to the link text)
+#' docs_link(method_name = "foo_bar")
+#' # link to ScreeningApiServer interface docs
+#' docs_link("sas")
+#' # link to most recent version of docs
+#' docs_link("sas", version = "16.05.6")
+#' 
 #' @export
 #' 
 api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
