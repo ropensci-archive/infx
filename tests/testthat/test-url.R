@@ -8,8 +8,8 @@ test_that("data store servers can be listed", {
   expect_is(dss, "DataStore")
   expect_is(dss, "json_vec")
   expect_identical(get_subclass(dss), "DataStore")
-  expect_true(all(sapply(dss, has_subclass, "DataStore")))
-  expect_gte(length(dss), 1L)
+  expect_length(dss, 1L)
+  expect_true(has_subclass(dss, "DataStore"))
 })
 
 test_that("data store urls can be listed", {
@@ -18,34 +18,34 @@ test_that("data store urls can be listed", {
 
   url <- list_datastore_urls(tok)
   expect_is(url, "character")
-  expect_equal(length(url), 1L)
+  expect_length(url, 1L)
 
   url_1 <- list_datastore_urls(tok, datasets[[1]])
   expect_is(url_1, "character")
-  expect_equal(length(url_1), 1L)
+  expect_length(url_1, 1L)
 
   url_2 <- list_datastore_urls(tok, datasets[1:2])
   expect_is(url_2, "character")
-  expect_equal(length(url_2), 2L)
+  expect_length(url_2, 2L)
 
   codes <- dataset_code(datasets)
 
   url_1 <- list_datastore_urls(tok, codes[1])
   expect_is(url_1, "character")
-  expect_equal(length(url_1), 1L)
+  expect_length(url_1, 1L)
 
   url_2 <- list_datastore_urls(tok, codes[1:2])
   expect_is(url_2, "character")
-  expect_equal(length(url_2), 2L)
+  expect_length(url_2, 2L)
 
   dsids <- list_dataset_ids(tok, codes[1:2])
   url_1 <- list_datastore_urls(tok, dsids[[1]])
   expect_is(url_1, "character")
-  expect_equal(length(url_1), 1L)
+  expect_length(url_1, 1L)
 
   url_2 <- list_datastore_urls(tok, dsids[1:2])
   expect_is(url_2, "character")
-  expect_equal(length(url_2), 2L)
+  expect_length(url_2, 2L)
 })
 
 test_that("dataset download urls can be generated", {
