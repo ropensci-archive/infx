@@ -18,9 +18,9 @@ test_that("material ids can be created", {
   expect_is(materials, "json_vec")
   expect_length(materials, 3L)
   for (i in seq_along(materials)) {
-    expect_is(material[[i]], "MaterialIdentifierScreening")
-    expect_is(material[[i]], "json_class")
-    expect_is(material[[i]][["materialTypeIdentifier"]],
+    expect_is(materials[[i]], "MaterialIdentifierScreening")
+    expect_is(materials[[i]], "json_class")
+    expect_is(materials[[i]][["materialTypeIdentifier"]],
               "MaterialTypeIdentifierScreening")
   }
 
