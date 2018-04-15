@@ -24,14 +24,14 @@ test_that("json objects can be rep'd", {
   expect_is(cls_2, "foo")
   expect_is(cls_2, "json_vec")
   expect_identical(cls_2[[1]], cls_2[[2]])
-  expect_equal(length(cls_2), 2L)
+  expect_length(cls_2, 2L)
 
   cls_4 <- rep(cls, 2, each = 2)
 
   expect_is(cls_4, "foo")
   expect_is(cls_4, "json_vec")
   expect_identical(cls_4[[1]], cls_4[[2]])
-  expect_equal(length(cls_4), 4L)
+  expect_length(cls_4, 4L)
 })
 
 test_that("base generics work for json vecs", {
@@ -41,12 +41,12 @@ test_that("base generics work for json vecs", {
   cls_be <- c(cls_b, cls_e)
   expect_is(cls_be, "foo")
   expect_is(cls_be, "json_vec")
-  expect_equal(length(cls_be), 2L)
+  expect_length(cls_be, 2L)
 
   cls_be[[2]] <- cls_b
   expect_is(cls_be, "foo")
   expect_is(cls_be, "json_vec")
-  expect_equal(length(cls_be), 2L)
+  expect_length(cls_be, 2L)
   expect_identical(cls_be[[1]], cls_be[[2]])
 
   cls_2 <- rep(c(cls_b, cls_e), 2)
@@ -55,7 +55,7 @@ test_that("base generics work for json vecs", {
   expect_is(cls_2, "json_vec")
   expect_identical(cls_2[[1]], cls_2[[3]])
   expect_identical(cls_2[[2]], cls_2[[4]])
-  expect_equal(length(cls_2), 4L)
+  expect_length(cls_2, 4L)
 
   cls_4 <- rep(c(cls_b, cls_e), 2, each = 2)
 
@@ -64,7 +64,7 @@ test_that("base generics work for json vecs", {
   expect_identical(cls_4[[1]], cls_4[[2]])
   expect_identical(cls_4[[1]], cls_4[[5]])
   expect_identical(cls_4[1:2], cls_4[5:6])
-  expect_equal(length(cls_4), 8L)
+  expect_length(cls_4, 8L)
 })
 
 test_that("json objects can be printed", {
