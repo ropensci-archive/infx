@@ -51,3 +51,92 @@ vector data sets. This is mostly tabular data with a single value
 corresponding to an imaging site. This is typically used for image
 acquisition meta data, summarized image analysis or quality control results.
 }
+\section{JSON object handling}{
+
+Object structures as returned by openBIS can be instantiated using the
+creator \code{\link[=json_class]{json_class()}}. This function takes an arbitrary set of key-value
+pairs, followed by a class name and returns a list-based \code{json_class}
+object. Existing list-based objects may be coerced to \code{json_class} using
+\code{\link[=as_json_class]{as_json_class()}} where \code{@type} list entries are taken to be class types.
+The inverse is achieved by calling \code{\link[=rm_json_class]{rm_json_class()}} on a \code{json_class}
+object or by calling \code{\link[=as_list]{as_list()}} and passing the \code{keep_asis} argument as
+\code{FALSE}. \code{json_class} objects can be validated with \code{\link[=is_json_class]{is_json_class()}} which
+is recursively called on any object inheriting from \code{json_class} in
+\code{\link[=check_json_class]{check_json_class()}}.
+
+Similarly to \code{json_class} objects, a constructor for \code{json_vec} objects is
+provided in the form if \code{\link[=json_vec]{json_vec()}} and existing structures can be coerced
+to \code{json_vec} by \code{\link[=as_json_vec]{as_json_vec()}}. The validator function \code{\link[=is_json_vec]{is_json_vec()}}
+tests whether an object is a properly formed \code{json_vec} object and the
+utility function \code{\link[=has_common_subclass]{has_common_subclass()}} tests whether the passed list
+structure consists of \code{json_class} objects of the same sub-type. The inverse
+of applying \code{\link[=as_json_vec]{as_json_vec()}} to a list structure is achieved by passing a
+\code{json_vec} object to \code{\link[=as_list]{as_list()}}.
+
+Several utility functions are provided that facilitate handling of
+\code{json_class} and \code{json_vec} objects. \code{\link[=has_fields]{has_fields()}} tests whether certain
+named entries are present in a \code{json_class} object or in each member of a
+\code{json_vec}. In order to extract the content of a field, \code{\link[=get_field]{get_field()}} can be
+applied to \code{json_class} and \code{json_vec} objects. Analogously,
+\code{\link[=has_subclass]{has_subclass()}} and \code{\link[=get_subclass]{get_subclass()}} test for and extract the original JSON
+object type from \code{json_class} and \code{json_vec} objects. Finally,
+\code{\link[=remove_null]{remove_null()}} recursively removes empty fields (fields containing \code{NULL})
+from \code{json_class} and \code{json_vec} objects.
+
+In addition to the mentioned utility functions, several base R generic
+functions have \code{json_class} and \code{json_vec} specific methods implemented.
+Combining several \code{json_class} objects using \code{\link[base:c]{base::c()}} yields a \code{json_vec}
+object, as does repeating objects using \code{\link[base:rep]{base::rep()}}. The same functions
+can be applied to \code{json_vec} objects but this only checks for agreement in
+sub-type. Custom sum-setting is provided as well, in order to retain class
+attributes and replacement functions acting on \code{json_vec} objects make sure
+that sub-types remain compatible. Recursive printing of both \code{json_class}
+and \code{json_vec} objects is possible by calling \code{\link[base:print]{base::print()}}. Recursion
+depth, as well as printing length and width can be controlled via arguments,
+as can fancy printing (colors and UTF box characters for visualizing tree
+structures) be disabled.
+}
+
+\section{Listing and searching for objects}{
+
+OpenBIS projects can be listed by calling \code{\link[=list_projects]{list_projects()}} and experiments
+are enumerated with \code{\link[=list_experiments]{list_experiments()}}. Two objects types are used to
+represent experiments: \code{Experiment} and \code{ExperimentIdentifier}.
+\code{\link[=exp_to_expid]{exp_to_expid()}} converts a set of \code{Experiment} objects to
+\code{ExperimentIdentifier} and the inverse is possible by passing a set of
+\code{ExperimentIdentifier} objects to \code{\link[=list_experiments]{list_experiments()}}. All available
+experiments can be listed as \code{ExperimentIdentifier} objects using
+\code{\link[=list_experiment_ids]{list_experiment_ids()}} and all experiments for a set of projects are
+enumerated by passing \code{Project} objects to \code{\link[=list_experiments]{list_experiments()}}. Experiments
+have a type and all realized types can be listed with
+\code{\link[=list_experiment_types]{list_experiment_types()}}.
+
+Experiments consist of samples which are listed by passing a set of
+\code{Experiment} or \code{ExperimentIdentifier} objects to \code{\link[=list_samples]{list_samples()}}. Samples
+too have a type and all types are retrieved with \code{\link[=list_sample_types]{list_sample_types()}}.
+Additional object types that are used to represent samples are plate and
+well objects, including \code{Plate}, \code{PlateIdentifier}, \code{PlateMetadata},
+\code{WellIdentifier} and \code{WellMetadata}, all of which can be converted to
+\code{Sample} objects by calling \code{\link[=list_samples]{list_samples()}}. Plate objects can be listed
+using \code{\link[=list_plates]{list_plates()}}, which can either return all available plate objects
+or plates for a given set of experiments (passed as \code{Experiment} or
+\code{ExperimentIdentifier} objects). Plate meta data, which also contains
+associated well meta data is retrieved by \code{\link[=list_plate_metadata]{list_plate_metadata()}} which can
+act on plate objects (\code{Plate}, \code{PlateIdentifier} or \code{Sample}). Wells of a
+plate are listed with \code{\link[=list_wells]{list_wells()}} which too may be dispatched on plate
+objects. Wells associated with a material object can be enumerated by
+passing a set of \code{MaterialScreening}, \code{MaterialIdentifierScreening},
+\code{MaterialGeneric} or \code{MaterialIdentifierGeneric} to \code{\link[=list_wells]{list_wells()}}.
+
+Data set objects represent the most diverse group of data-organizational
+structures. Possibly types include \code{DataSet}, \code{DatasetIdentifier},
+\code{DatasetReference}, \code{ImageDatasetReference}, \code{MicroscopyImageReference},
+\code{PlateImageReference}, \code{FeatureVectorDatasetReference} and
+\code{FeatureVectorDatasetWellReference}.
+}
+
+\section{Downloading data}{
+
+The foo functions ...
+}
+
