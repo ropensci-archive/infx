@@ -4,86 +4,106 @@ test_that("datasets can be listed", {
   ds_1 <- datasets
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "DataSet")
-  expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
   expect_gte(length(ds_1), 1L)
-  expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"),
-                         identical, list())))
+  for (i in seq_along(ds_1)) {
+    expect_is(ds_1[[i]], "DataSet")
+    expect_is(ds_1[[i]], "json_class")
+    expect_true(has_fields(ds_1[[i]], "retrievedConnections"))
+    expect_identical(ds_1[[i]][["retrievedConnections"]], list())
+  }
 
   check_skip()
 
   ds_2 <- list_datasets(tok, samples[c(1, 2)])
   expect_is(ds_2, "DataSet")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "DataSet")
-  expect_true(all(sapply(ds_2, has_subclass, "DataSet")))
   expect_gte(length(ds_2), length(ds_1))
-  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"),
-                         identical, list())))
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "DataSet")
+    expect_is(ds_2[[i]], "json_class")
+    expect_true(has_fields(ds_2[[i]], "retrievedConnections"))
+    expect_identical(ds_2[[i]][["retrievedConnections"]], list())
+  }
 
   ds_3 <- list_datasets(tok, samples[[1]], "all")
   expect_is(ds_3, "DataSet")
   expect_is(ds_3, "json_vec")
-  expect_identical(get_subclass(ds_3), "DataSet")
-  expect_true(all(sapply(ds_3, has_subclass, "DataSet")))
   expect_gte(length(ds_3), length(ds_1))
-  expect_true(all(sapply(lapply(ds_3, `[[`, "retrievedConnections"),
-                         identical, list("PARENTS", "CHILDREN"))))
+  for (i in seq_along(ds_3)) {
+    expect_is(ds_3[[i]], "DataSet")
+    expect_is(ds_3[[i]], "json_class")
+    expect_true(has_fields(ds_3[[i]], "retrievedConnections"))
+    expect_identical(ds_3[[i]][["retrievedConnections"]],
+                     list("PARENTS", "CHILDREN"))
+  }
 
   ds_1 <- list_datasets(tok, experiments[[1]])
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "DataSet")
-  expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
   expect_gte(length(ds_1), 1L)
-  expect_true(all(sapply(lapply(ds_1, `[[`, "retrievedConnections"),
-                         identical, list())))
+  for (i in seq_along(ds_1)) {
+    expect_is(ds_1[[i]], "DataSet")
+    expect_is(ds_1[[i]], "json_class")
+    expect_true(has_fields(ds_1[[i]], "retrievedConnections"))
+    expect_identical(ds_1[[i]][["retrievedConnections"]], list())
+  }
 
   ds_2 <- list_datasets(tok, experiments[c(1, 2)])
   expect_is(ds_2, "DataSet")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "DataSet")
-  expect_true(all(sapply(ds_2, has_subclass, "DataSet")))
   expect_gte(length(ds_2), length(ds_1))
-  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"),
-                         identical, list())))
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "DataSet")
+    expect_is(ds_2[[i]], "json_class")
+    expect_true(has_fields(ds_2[[i]], "retrievedConnections"))
+    expect_identical(ds_2[[i]][["retrievedConnections"]], list())
+  }
 
   ds_3 <- list_datasets(tok, experiments[[1]], "all")
   expect_is(ds_3, "DataSet")
   expect_is(ds_3, "json_vec")
-  expect_identical(get_subclass(ds_3), "DataSet")
-  expect_true(all(sapply(ds_3, has_subclass, "DataSet")))
   expect_gte(length(ds_3), length(ds_1))
-  expect_true(all(sapply(lapply(ds_3, `[[`, "retrievedConnections"),
-                         identical, list("PARENTS", "CHILDREN"))))
+  for (i in seq_along(ds_3)) {
+    expect_is(ds_3[[i]], "DataSet")
+    expect_is(ds_3[[i]], "json_class")
+    expect_true(has_fields(ds_3[[i]], "retrievedConnections"))
+    expect_identical(ds_3[[i]][["retrievedConnections"]],
+                     list("PARENTS", "CHILDREN"))
+  }
 
   codes <- sapply(ds_3, `[[`, "code")
 
   ds_1 <- list_datasets(tok, codes[1])
   expect_is(ds_1, "DataSet")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "DataSet")
-  expect_true(all(sapply(ds_1, has_subclass, "DataSet")))
-  expect_equal(length(ds_1), 1L)
-  expect_equal(ds_1[[1]][["retrievedConnections"]], list())
+  expect_length(ds_1, 1L)
+  expect_is(ds_1[[1L]], "DataSet")
+  expect_is(ds_1[[1L]], "json_class")
+  expect_true(has_fields(ds_1[[1L]], "retrievedConnections"))
+  expect_identical(ds_1[[1L]][["retrievedConnections"]], list())
 
   ds_2 <- list_datasets(tok, codes[c(1, 2)])
   expect_is(ds_2, "DataSet")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "DataSet")
-  expect_true(all(sapply(ds_2, has_subclass, "DataSet")))
-  expect_equal(length(ds_2), 2L)
-  expect_true(all(sapply(lapply(ds_2, `[[`, "retrievedConnections"),
-                         identical, list())))
+  expect_length(ds_2, 2L)
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "DataSet")
+    expect_is(ds_2[[i]], "json_class")
+    expect_true(has_fields(ds_2[[i]], "retrievedConnections"))
+    expect_identical(ds_2[[i]][["retrievedConnections"]], list())
+  }
 
   ds_3 <- list_datasets(tok, codes[1], "all")
   expect_is(ds_3, "DataSet")
   expect_is(ds_3, "json_vec")
-  expect_identical(get_subclass(ds_3), "DataSet")
-  expect_true(all(sapply(ds_3, has_subclass, "DataSet")))
-  expect_equal(length(ds_3), 1L)
-  expect_identical(ds_3[[1]][["retrievedConnections"]],
-                   list("PARENTS", "CHILDREN"))
+  expect_length(ds_3, 1L)
+  for (i in seq_along(ds_3)) {
+    expect_is(ds_3[[i]], "DataSet")
+    expect_is(ds_3[[i]], "json_class")
+    expect_true(has_fields(ds_3[[i]], "retrievedConnections"))
+    expect_identical(ds_3[[i]][["retrievedConnections"]],
+                     list("PARENTS", "CHILDREN"))
+  }
 })
 
 test_that("dataset references can be listed", {
@@ -98,51 +118,64 @@ test_that("dataset references can be listed", {
   ds_1 <- list_references(tok, mat[[2]], exp_ids[[1]])
   expect_is(ds_1, "PlateWellReferenceWithDatasets")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1),
-                   "PlateWellReferenceWithDatasets")
-  expect_true(all(sapply(ds_1, has_subclass,
-                         "PlateWellReferenceWithDatasets")))
   expect_gte(length(ds_1), 1L)
-  img_ref <- ds_1[[1]][["imageDatasetReferences"]][[1]]
-  expect_is(img_ref, "ImageDatasetReference")
-  expect_is(img_ref, "json_class")
+  for (i in seq_along(ds_1)) {
+    expect_is(ds_1[[i]], "PlateWellReferenceWithDatasets")
+    expect_is(ds_1[[i]], "json_class")
+    expect_true(has_fields(ds_1[[i]], "imageDatasetReferences"))
+    for (j in seq_along(ds_1[[i]][["imageDatasetReferences"]])) {
+      expect_is(ds_1[[i]][["imageDatasetReferences"]][[j]],
+                "ImageDatasetReference")
+      expect_is(ds_1[[i]][["imageDatasetReferences"]][[j]], "json_class")
+    }
+  }
 
   ds_2 <- list_references(tok, mat[1:2], exp_ids[[1]])
   expect_is(ds_2, "PlateWellReferenceWithDatasets")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2),
-                   "PlateWellReferenceWithDatasets")
-  expect_true(all(sapply(ds_2, has_subclass,
-                         "PlateWellReferenceWithDatasets")))
   expect_gte(length(ds_2), length(ds_1))
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "PlateWellReferenceWithDatasets")
+    expect_is(ds_2[[i]], "json_class")
+    expect_true(has_fields(ds_2[[i]], "imageDatasetReferences"))
+    for (j in seq_along(ds_2[[i]][["imageDatasetReferences"]])) {
+      expect_is(ds_2[[i]][["imageDatasetReferences"]][[j]],
+                "ImageDatasetReference")
+      expect_is(ds_2[[i]][["imageDatasetReferences"]][[j]], "json_class")
+    }
+  }
 
   ds_1 <- list_references(tok, samples[[1]])
   expect_is(ds_1, "ImageDatasetReference")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "ImageDatasetReference")
-  expect_true(all(sapply(ds_1, has_subclass, "ImageDatasetReference")))
-  expect_equal(length(ds_1), 1L)
+  expect_length(ds_1, 1L)
+  expect_is(ds_1[[1L]], "ImageDatasetReference")
+  expect_is(ds_1[[1L]], "json_class")
 
   ds_2 <- list_references(tok, samples[1:2])
   expect_is(ds_2, "ImageDatasetReference")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "ImageDatasetReference")
-  expect_true(all(sapply(ds_2, has_subclass, "ImageDatasetReference")))
-  expect_equal(length(ds_2), 2L)
+  expect_length(ds_2, 2L)
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "ImageDatasetReference")
+    expect_is(ds_2[[i]], "json_class")
+  }
 
   ds_1 <- list_references(tok, plates[[1]])
   expect_is(ds_1, "ImageDatasetReference")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "ImageDatasetReference")
-  expect_true(all(sapply(ds_1, has_subclass, "ImageDatasetReference")))
-  expect_equal(length(ds_1), 1L)
+  expect_length(ds_1, 1L)
+  expect_is(ds_1[[1L]], "ImageDatasetReference")
+  expect_is(ds_1[[1L]], "json_class")
 
   ds_2 <- list_references(tok, plates[1:2])
   expect_is(ds_2, "ImageDatasetReference")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "ImageDatasetReference")
-  expect_true(all(sapply(ds_2, has_subclass, "ImageDatasetReference")))
-  expect_equal(length(ds_2), 2L)
+  expect_length(ds_2, 2L)
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "ImageDatasetReference")
+    expect_is(ds_2[[i]], "json_class")
+  }
 
   plate_ids <- as_plate_id(plates)
 
@@ -155,32 +188,40 @@ test_that("dataset references can be listed", {
   ds_1 <- list_references(tok, plates[[1]], type = "feature")
   expect_is(ds_1, "FeatureVectorDatasetReference")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "FeatureVectorDatasetReference")
-  expect_true(all(sapply(ds_1, has_subclass, "FeatureVectorDatasetReference")))
   expect_gte(length(ds_1), 1L)
+  for (i in seq_along(ds_1)) {
+    expect_is(ds_1[[i]], "FeatureVectorDatasetReference")
+    expect_is(ds_1[[i]], "json_class")
+  }
 
   dsids <- list_dataset_ids(tok, sapply(ds_2, `[[`, "datasetCode"))
 
   ds_1 <- list_references(tok, dsids[[1]], channels = "DAPI")
   expect_is(ds_1, "MicroscopyImageReference")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "MicroscopyImageReference")
-  expect_true(all(sapply(ds_1, has_subclass, "MicroscopyImageReference")))
-  expect_equal(length(ds_1), 9L)
+  expect_length(ds_1, 9L)
+  for (i in seq_along(ds_1)) {
+    expect_is(ds_1[[i]], "MicroscopyImageReference")
+    expect_is(ds_1[[i]], "json_class")
+  }
 
   ds_2 <- list_references(tok, dsids[1:2], channels = "DAPI")
   expect_is(ds_2, "MicroscopyImageReference")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "MicroscopyImageReference")
-  expect_true(all(sapply(ds_2, has_subclass, "MicroscopyImageReference")))
-  expect_equal(length(ds_2), 18L)
+  expect_length(ds_2, 18L)
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "MicroscopyImageReference")
+    expect_is(ds_2[[i]], "json_class")
+  }
 
   ds_3 <- list_references(tok, dsids[[1]], channels = c("DAPI", "GFP"))
   expect_is(ds_3, "MicroscopyImageReference")
   expect_is(ds_3, "json_vec")
-  expect_identical(get_subclass(ds_3), "MicroscopyImageReference")
-  expect_true(all(sapply(ds_3, has_subclass, "MicroscopyImageReference")))
-  expect_equal(length(ds_3), 18L)
+  expect_length(ds_3, 18L)
+  for (i in seq_along(ds_3)) {
+    expect_is(ds_3[[i]], "MicroscopyImageReference")
+    expect_is(ds_3[[i]], "json_class")
+  }
 
   # check Dataset
   expect_identical(list_references(tok,
@@ -198,24 +239,30 @@ test_that("dataset references can be listed", {
                           channels = "DAPI")
   expect_is(ds_1, "PlateImageReference")
   expect_is(ds_1, "json_vec")
-  expect_identical(get_subclass(ds_1), "PlateImageReference")
-  expect_true(all(sapply(ds_1, has_subclass, "PlateImageReference")))
-  expect_equal(length(ds_1), 9L)
+  expect_length(ds_1, 9L)
+  for (i in seq_along(ds_1)) {
+    expect_is(ds_1[[i]], "PlateImageReference")
+    expect_is(ds_1[[i]], "json_class")
+  }
 
   ds_2 <- list_references(tok, dsids[[1]], wells = well_pos, channels = "DAPI")
   expect_is(ds_2, "PlateImageReference")
   expect_is(ds_2, "json_vec")
-  expect_identical(get_subclass(ds_2), "PlateImageReference")
-  expect_true(all(sapply(ds_2, has_subclass, "PlateImageReference")))
-  expect_equal(length(ds_2), 18L)
+  expect_length(ds_2, 18L)
+  for (i in seq_along(ds_2)) {
+    expect_is(ds_2[[i]], "PlateImageReference")
+    expect_is(ds_2[[i]], "json_class")
+  }
 
   ds_3 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
                           channels = c("DAPI", "GFP"))
   expect_is(ds_3, "PlateImageReference")
   expect_is(ds_3, "json_vec")
-  expect_identical(get_subclass(ds_3), "PlateImageReference")
-  expect_true(all(sapply(ds_3, has_subclass, "PlateImageReference")))
-  expect_equal(length(ds_3), 18L)
+  expect_length(ds_3, 18L)
+  for (i in seq_along(ds_3)) {
+    expect_is(ds_3[[i]], "PlateImageReference")
+    expect_is(ds_3[[i]], "json_class")
+  }
 })
 
 test_that("dataset types can be listed", {
@@ -225,9 +272,11 @@ test_that("dataset types can be listed", {
   ds_types <- list_dataset_types(tok)
   expect_is(ds_types, "DataSetType")
   expect_is(ds_types, "json_vec")
-  expect_identical(get_subclass(ds_types), "DataSetType")
-  expect_true(all(sapply(ds_types, has_subclass, "DataSetType")))
   expect_gte(length(ds_types), 1L)
+  for (i in seq_along(ds_types)) {
+    expect_is(ds_types[[i]], "DataSetType")
+    expect_is(ds_types[[i]], "json_class")
+  }
 })
 
 test_that("dataset ids can be listed", {
@@ -239,16 +288,18 @@ test_that("dataset ids can be listed", {
   dsid_1 <- list_dataset_ids(tok, codes[[1]])
   expect_is(dsid_1, "DatasetIdentifier")
   expect_is(dsid_1, "json_vec")
-  expect_identical(get_subclass(dsid_1), "DatasetIdentifier")
-  expect_true(all(sapply(dsid_1, has_subclass, "DatasetIdentifier")))
-  expect_gte(length(dsid_1), 1L)
+  expect_length(dsid_1, 1L)
+  expect_is(dsid_1[[1L]], "DatasetIdentifier")
+  expect_is(dsid_1[[1L]], "json_class")
 
   dsid_2 <- list_dataset_ids(tok, codes[1:2])
   expect_is(dsid_2, "DatasetIdentifier")
   expect_is(dsid_2, "json_vec")
-  expect_identical(get_subclass(dsid_2), "DatasetIdentifier")
-  expect_true(all(sapply(dsid_2, has_subclass, "DatasetIdentifier")))
-  expect_gte(length(dsid_2), 1L)
+  expect_length(dsid_2, 2L)
+  for (i in seq_along(dsid_2)) {
+    expect_is(dsid_2[[i]], "DatasetIdentifier")
+    expect_is(dsid_2[[i]], "json_class")
+  }
 
   expect_identical(list_dataset_ids(tok, datasets[[1]]), dsid_1)
   expect_identical(list_dataset_ids(tok, datasets[1:2]), dsid_2)
