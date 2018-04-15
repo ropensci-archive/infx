@@ -187,19 +187,19 @@ test_that("materials can be converted", {
   gen_mat <- material_id(c(2475L, 3832L), mode = "generic")
 
   scr_mat_1 <- as_screening_mat_id(gen_mat[[1]])
-  expect_is(scr_mat_1, "MaterialIdentifierScreening")
-  expect_is(scr_mat_1, "json_vec")
+  expect_s3_class(scr_mat_1, "MaterialIdentifierScreening")
+  expect_s3_class(scr_mat_1, "json_vec")
   expect_length(scr_mat_1, 1L)
-  expect_is(scr_mat_1[[1L]], "MaterialIdentifierScreening")
-  expect_is(scr_mat_1[[1L]], "json_class")
+  expect_s3_class(scr_mat_1[[1L]], "MaterialIdentifierScreening")
+  expect_s3_class(scr_mat_1[[1L]], "json_class")
 
   scr_mat_2 <- as_screening_mat_id(gen_mat)
-  expect_is(scr_mat_2, "MaterialIdentifierScreening")
-  expect_is(scr_mat_2, "json_vec")
+  expect_s3_class(scr_mat_2, "MaterialIdentifierScreening")
+  expect_s3_class(scr_mat_2, "json_vec")
   expect_length(scr_mat_2, 2L)
   for (i in seq_along(scr_mat_2)) {
-    expect_is(scr_mat_2[[i]], "MaterialIdentifierScreening")
-    expect_is(scr_mat_2[[i]], "json_class")
+    expect_s3_class(scr_mat_2[[i]], "MaterialIdentifierScreening")
+    expect_s3_class(scr_mat_2[[i]], "json_class")
   }
 
   expect_identical(scr_mat_1, as_screening_mat_id(scr_mat_1))
@@ -208,19 +208,19 @@ test_that("materials can be converted", {
   scr_mat <- material_id(c(2475L, 3832L), mode = "screening")
 
   gen_mat_1 <- as_generic_mat_id(scr_mat[[1]])
-  expect_is(gen_mat_1, "MaterialIdentifierGeneric")
-  expect_is(gen_mat_1, "json_vec")
+  expect_s3_class(gen_mat_1, "MaterialIdentifierGeneric")
+  expect_s3_class(gen_mat_1, "json_vec")
   expect_length(gen_mat_1, 1L)
-  expect_is(gen_mat_1[[1L]], "MaterialIdentifierGeneric")
-  expect_is(gen_mat_1[[1L]], "json_class")
+  expect_s3_class(gen_mat_1[[1L]], "MaterialIdentifierGeneric")
+  expect_s3_class(gen_mat_1[[1L]], "json_class")
 
   gen_mat_2 <- as_generic_mat_id(scr_mat)
-  expect_is(gen_mat_2, "MaterialIdentifierGeneric")
-  expect_is(gen_mat_2, "json_vec")
+  expect_s3_class(gen_mat_2, "MaterialIdentifierGeneric")
+  expect_s3_class(gen_mat_2, "json_vec")
   expect_length(gen_mat_2, 2L)
   for (i in seq_along(gen_mat_2)) {
-    expect_is(gen_mat_2[[i]], "MaterialIdentifierGeneric")
-    expect_is(gen_mat_2[[i]], "json_class")
+    expect_s3_class(gen_mat_2[[i]], "MaterialIdentifierGeneric")
+    expect_s3_class(gen_mat_2[[i]], "json_class")
   }
 
   expect_identical(gen_mat_1, as_generic_mat_id(gen_mat_1))

@@ -5,21 +5,21 @@ test_that("experiment metadata can be listed", {
   check_skip()
 
   meta_1 <- list_image_metadata(tok, exp_ids[[1]])
-  expect_is(meta_1, "ExperimentImageMetadata")
-  expect_is(meta_1, "json_vec")
+  expect_s3_class(meta_1, "ExperimentImageMetadata")
+  expect_s3_class(meta_1, "json_vec")
   expect_gte(length(meta_1), 1L)
   for (i in seq_along(meta_1)) {
-    expect_is(meta_1[[i]], "ExperimentImageMetadata")
-    expect_is(meta_1[[i]], "json_class")
+    expect_s3_class(meta_1[[i]], "ExperimentImageMetadata")
+    expect_s3_class(meta_1[[i]], "json_class")
   }
 
   meta_2 <- list_image_metadata(tok, exp_ids[1:2])
-  expect_is(meta_2, "ExperimentImageMetadata")
-  expect_is(meta_2, "json_vec")
+  expect_s3_class(meta_2, "ExperimentImageMetadata")
+  expect_s3_class(meta_2, "json_vec")
   expect_gte(length(meta_2), length(meta_1))
   for (i in seq_along(meta_2)) {
-    expect_is(meta_2[[i]], "ExperimentImageMetadata")
-    expect_is(meta_2[[i]], "json_class")
+    expect_s3_class(meta_2[[i]], "ExperimentImageMetadata")
+    expect_s3_class(meta_2[[i]], "json_class")
   }
 
   expect_identical(list_image_metadata(tok, experiments[[1]]), meta_1)
@@ -28,35 +28,35 @@ test_that("experiment metadata can be listed", {
   img_ds <- list_references(tok, plates[1:2])
 
   meta_1 <- list_image_metadata(tok, img_ds[[1]])
-  expect_is(meta_1, "ImageDatasetMetadata")
-  expect_is(meta_1, "json_vec")
+  expect_s3_class(meta_1, "ImageDatasetMetadata")
+  expect_s3_class(meta_1, "json_vec")
   expect_length(meta_1, 1L)
-  expect_is(meta_1[[1L]], "ImageDatasetMetadata")
-  expect_is(meta_1[[1L]], "json_class")
+  expect_s3_class(meta_1[[1L]], "ImageDatasetMetadata")
+  expect_s3_class(meta_1[[1L]], "json_class")
 
   meta_2 <- list_image_metadata(tok, img_ds[1:2])
-  expect_is(meta_2, "ImageDatasetMetadata")
-  expect_is(meta_2, "json_vec")
+  expect_s3_class(meta_2, "ImageDatasetMetadata")
+  expect_s3_class(meta_2, "json_vec")
   expect_length(meta_2, 2L)
   for (i in seq_along(meta_2)) {
-    expect_is(meta_2[[i]], "ImageDatasetMetadata")
-    expect_is(meta_2[[i]], "json_class")
+    expect_s3_class(meta_2[[i]], "ImageDatasetMetadata")
+    expect_s3_class(meta_2[[i]], "json_class")
   }
 
   meta_1 <- list_image_metadata(tok, img_ds[[1]], "format")
-  expect_is(meta_1, "DatasetImageRepresentationFormats")
-  expect_is(meta_1, "json_vec")
+  expect_s3_class(meta_1, "DatasetImageRepresentationFormats")
+  expect_s3_class(meta_1, "json_vec")
   expect_length(meta_1, 1L)
-  expect_is(meta_1[[1L]], "DatasetImageRepresentationFormats")
-  expect_is(meta_1[[1L]], "json_class")
+  expect_s3_class(meta_1[[1L]], "DatasetImageRepresentationFormats")
+  expect_s3_class(meta_1[[1L]], "json_class")
 
   meta_2 <- list_image_metadata(tok, img_ds[1:2], "format")
-  expect_is(meta_2, "DatasetImageRepresentationFormats")
-  expect_is(meta_2, "json_vec")
+  expect_s3_class(meta_2, "DatasetImageRepresentationFormats")
+  expect_s3_class(meta_2, "json_vec")
   expect_length(meta_2, 2L)
   for (i in seq_along(meta_2)) {
-    expect_is(meta_2[[i]], "DatasetImageRepresentationFormats")
-    expect_is(meta_2[[i]], "json_class")
+    expect_s3_class(meta_2[[i]], "DatasetImageRepresentationFormats")
+    expect_s3_class(meta_2[[i]], "json_class")
   }
 })
 

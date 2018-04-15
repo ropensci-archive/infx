@@ -5,8 +5,8 @@ test_that("data store servers can be listed", {
   check_skip()
 
   dss <- list_datastores(tok)
-  expect_is(dss, "DataStore")
-  expect_is(dss, "json_vec")
+  expect_s3_class(dss, "DataStore")
+  expect_s3_class(dss, "json_vec")
   expect_identical(get_subclass(dss), "DataStore")
   expect_length(dss, 1L)
   expect_true(has_subclass(dss, "DataStore"))
