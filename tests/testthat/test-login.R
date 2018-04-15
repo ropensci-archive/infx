@@ -7,9 +7,9 @@ test_that("openbis login is possible", {
   expect_error(login_openbis(cred$username, cred$password, url = "foo"))
   expect_error(login_openbis("foo", "bar", url = "google.ch"))
   expect_error(login_openbis("foo", "bar", foo = "google.ch"))
-  expect_type(token <- login_openbis(cred$username, cred$password,
+  expect_is(token <- login_openbis(cred$username, cred$password,
                                      auto_disconnect = FALSE), "character")
-  expect_true(grepl(paste0("^", cred$username), token))
+  expect_match(token, paste0("^", cred$username))
   expect_true(is_token_valid(token))
   expect_null(logout_openbis(token))
   expect_false(is_token_valid(token))
