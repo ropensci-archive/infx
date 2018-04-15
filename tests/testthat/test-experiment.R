@@ -70,7 +70,7 @@ test_that("experiment ids can be listed", {
   expect_s3_class(exp_ids, "ExperimentIdentifier")
   expect_s3_class(exp_ids, "json_vec")
   expect_gte(length(exp_ids), 1L)
-  for (i in seq_along(exp_type)) {
+  for (i in seq_along(exp_ids)) {
     expect_s3_class(exp_ids[[i]], "ExperimentIdentifier")
     expect_s3_class(exp_ids[[i]], "json_class")
   }
