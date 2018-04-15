@@ -7,6 +7,9 @@ template:
   params:
     bootswatch: flatly
 reference:
+  - title: Package documentation
+    contents: 
+      - infx
   - title: List openBIS objects
     desc: Enumerate openBIS for objects used to organize datasets
     contents: 
@@ -33,7 +36,7 @@ reference:
       - matches("json_class")
       - matches("json_vec")
       - has_fields
-      - print
+      - matches("print")
   - title: Utility functions
     desc: >
       Assemble JSON-RPC request and issue a POST request to openBIS; parse
