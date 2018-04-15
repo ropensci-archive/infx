@@ -7,18 +7,22 @@ test_that("files can be listed", {
   codes <- dataset_code(datasets)
 
   files_1 <- list_files(tok, codes[2])
-  expect_is(files_1, "FileInfoDssDTO")
-  expect_is(files_1, "json_vec")
-  expect_identical(get_subclass(files_1), "FileInfoDssDTO")
-  expect_true(all(sapply(files_1, has_subclass, "FileInfoDssDTO")))
+  expect_s3_class(files_1, "FileInfoDssDTO")
+  expect_s3_class(files_1, "json_vec")
   expect_gte(length(files_1), 1L)
+  for (i in seq_along(files_1)) {
+    expect_s3_class(files_1[[i]], "FileInfoDssDTO")
+    expect_s3_class(files_1[[i]], "json_class")
+  }
 
   files_2 <- list_files(tok, codes[2:3])
-  expect_is(files_2, "FileInfoDssDTO")
-  expect_is(files_2, "json_vec")
-  expect_identical(get_subclass(files_2), "FileInfoDssDTO")
-  expect_true(all(sapply(files_2, has_subclass, "FileInfoDssDTO")))
+  expect_s3_class(files_2, "FileInfoDssDTO")
+  expect_s3_class(files_2, "json_vec")
   expect_gte(length(files_2), length(files_1))
+  for (i in seq_along(files_2)) {
+    expect_s3_class(files_2[[i]], "FileInfoDssDTO")
+    expect_s3_class(files_2[[i]], "json_class")
+  }
 
   expect_identical(list_files(tok, datasets[[2]]), files_1)
   expect_identical(list_files(tok, datasets[2:3]), files_2)
