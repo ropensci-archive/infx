@@ -223,7 +223,7 @@ list_img_ds <- function(token,
                 segmentation = "listSegmentationImageDatasets",
                 feature = "listFeatureVectorDatasets")
 
-  make_request(api_url("sas"), fun, list(token, as_json_vec(x)), ...)
+  make_request(api_url("sas"), fun, list(token, as_plate_id(x)), ...)
 }
 
 #' @rdname list_datasets
@@ -244,13 +244,12 @@ list_references.Plate <- list_img_ds
 #' @rdname list_datasets
 #' @export
 #' 
-list_references.Sample <- function(token, x, ...)
-  list_img_ds(token, as_plate_id(x), ...)
+list_references.PlateMetadata <- list_img_ds
 
 #' @rdname list_datasets
 #' @export
 #' 
-list_references.PlateMetadata <- list_img_ds
+list_references.Sample <- list_img_ds
 
 list_ref_for_material <- function(token, x, experiment = NULL, ...)
   list_wells(token, as_screening_mat_id(x), experiment,
@@ -264,6 +263,11 @@ list_ref_for_material <- function(token, x, experiment = NULL, ...)
 #' @export
 #' 
 list_references.MaterialGeneric <- list_ref_for_material
+
+#' @rdname list_datasets
+#' @export
+#' 
+list_references.MaterialScreening <- list_ref_for_material
 
 #' @rdname list_datasets
 #' @export

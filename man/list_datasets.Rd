@@ -11,9 +11,10 @@
 \alias{list_references}
 \alias{list_references.PlateIdentifier}
 \alias{list_references.Plate}
-\alias{list_references.Sample}
 \alias{list_references.PlateMetadata}
+\alias{list_references.Sample}
 \alias{list_references.MaterialGeneric}
+\alias{list_references.MaterialScreening}
 \alias{list_references.MaterialIdentifierGeneric}
 \alias{list_references.MaterialIdentifierScreening}
 \alias{list_references.DatasetIdentifier}
@@ -52,12 +53,15 @@ list_references(token, x, ...)
 \method{list_references}{Plate}(token, x, type = c("raw", "segmentation",
   "feature"), ...)
 
-\method{list_references}{Sample}(token, x, ...)
-
 \method{list_references}{PlateMetadata}(token, x, type = c("raw",
   "segmentation", "feature"), ...)
 
+\method{list_references}{Sample}(token, x, type = c("raw", "segmentation",
+  "feature"), ...)
+
 \method{list_references}{MaterialGeneric}(token, x, experiment = NULL, ...)
+
+\method{list_references}{MaterialScreening}(token, x, experiment = NULL, ...)
 
 \method{list_references}{MaterialIdentifierGeneric}(token, x,
   experiment = NULL, ...)
