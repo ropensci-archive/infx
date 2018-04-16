@@ -155,6 +155,97 @@
 #' respective `ImageDatasetReference` and `FeatureVectorDatasetReference`
 #' objects.
 #' 
+#' Instead of enumerating objects using the various `list_*()` functions,
+#' search queries can be constructed and run against openBIS. A search query
+#' consists of a possibly nested `SearchCriteria` object as instantiated by
+#' [search_criteria()] and is executed by calling [search_openbis()].
+#' `SearchCriteria` objects are composed of a set of match clauses (see
+#' [property_clause()], [any_property_clause()], [any_field_clause()],
+#' [attribute_clause()] and [time_attribute_clause()]) which are combined by
+#' an operator (either `any` or `all`). Additionally, a single
+#' `SearchSubCriteria` may be attached to every `SearchCriteria` object which
+#' in turn consists of a `SearchCriteria` and an object type to which this
+#' search criteria object is applied to. In the call to [search_openbis()]
+#' a target type has to be specified as `target_object` argument (default is
+#' `data_set` and possible alternatives are `experiment`, `material` as well as
+#' `sample`) to indicate what object type the search is targeted at.
+#' 
+#' @section Downloading data:
+#' As mentioned earlier, there are three types of data resources that can be
+#' downloaded: files, images and feature vector data. File access is the most
+#' basic method and any type of data (including images and feature data) is
+#' available via this route. Accessing images and feature data using
+#' specialized interfaces however simplifies and makes possibly more specific
+#' data access.
+#' 
+#' Files can be listed for any object representing a data set and for a
+#' character vector of data set codes using [list_files()]. An object type,
+#' specialized for referencing files in a data set is available as
+#' `DataSetFileDTO` can also be passed to [list_files()]. This is useful
+#' whenever only a subset of files within a data set, contained in a folder,
+#' are of interest. In any case, [list_files()] returns a set of
+#' `FileInfoDssDTO` objects. As no data set information is encoded in
+#' `FileInfoDssDTO` objects, [list_files()] saves data set codes as `data_set`
+#' attributes with each object. Download of files is done using
+#' [fetch_files()], which needs for every requested file, the data set code
+#' and file path. This information can be passed as separate character vectors,
+#' `DataSetFileDTO` objects, `FileInfoDssDTO` objects with data set information
+#' passed separately as character vector or as `data_set` attribute with each
+#' object. Furthermore data set membership information can be passed as any
+#' type of data set object and if no file paths are specified, all available
+#' files for the given data sets are retrieved.
+#' 
+#' [fetch_files()] internally creates download urls by calling
+#' [list_download_urls()] and uses [do_requests_serial()] or
+#' [do_requests_parallel()] to execute the downloads. Whether downloads are
+#' performed in serial or parallel fashion can be controlled using the `n_con`
+#' argument, which also specifies the degree of parallelism. Additionally a
+#' function may be passed to [fetch_files()] as `reader` argument which
+#' will be called on each downloaded file.
+#' 
+#' Images are retrieved using [fetch_images()]. If dispatch occurs on general
+#' purpose data set objects, including `DatasetIdentifier`, `DatasetReference`
+#' or `ImageDatasetReference`, further arguments for identifying images are
+#' passed as `channels` and `well_positions`. As `MicroscopyImageReference`
+#' objects already contain channel information, only well positions are needed
+#' in order to specify images. Somewhat surprisingly, image tile information
+#' which is also part of `MicroscopyImageReference` objects is disregarded and
+#' images are fetched for entire wells. Data sets that are connected to wells
+#' and not plates can be passed to [fetch_images()] without additionally
+#' specifying well locations. Images can be scaled down to smaller sizes either
+#' by setting the `thumbnails` argument to `TRUE` (only possible for data sets
+#' connected to wells instead of plates, as the corresponding API call does
+#' not support selecting wells) or by passing an `ImageSize` object as
+#' `image_size` argument, in which case returned images will be scaled to fit
+#' within the box specified by the `ImageSize` object, while retaining the
+#' original aspect ratio.
+#' 
+#' `PlateImageReference` objects most precisely reference images, as they
+#' contain data set, well location, site location and channel information. If
+#' a set of `PlateImageReference` objects is passed to [fetch_images()], image
+#' size can be set using the `thumbnails` or `image_size` arguments and image
+#' file type can be forced to png using the `force_png` switch. Most
+#' fine-grained control over the returned images is achieved by using
+#' `ImageRepresentationFormat` objects. Pre-defined format objects can be
+#' retrieved per data set by calling [list_image_metadata()] with `type` set to
+#' `format`. General image meta data, such as tile layout and channel
+#' information is returned by [list_image_metadata()] if the `type` argument
+#' is left at default value `metadata`.
+#' 
+#' Two types of objects are central to specifying feature data sets:
+#' `FeatureVectorDatasetReference` and `FeatureVectorDatasetWellReference`
+#' where the former object type references feature data for an entire plate and
+#' the latter for individual wells on a plate. Both objects may be passed to
+#' [fetch_features()] which returns objects of type `FeatureVectorDataset`
+#' whenever a full plate is requested and `FeatureVectorWithDescription` for
+#' individual wells. Features are selected by passing a character vector of
+#' feature codes as `feature_codes` argument, the possible values of which
+#' can be enumerated for a feature vector data set by calling
+#' [list_feature_codes()] or extracting the `code` entries from
+#' `FeatureInformation` objects as retrieved by [list_features()]. In case the
+#' `feature_codes` argument is left at default value (`NA`), all available
+#' features are returned.
+#'
 #' @docType package
 #' @name infx
 #' 
