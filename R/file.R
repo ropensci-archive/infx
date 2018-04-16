@@ -396,7 +396,7 @@ fetch_ds_files.character <- function(token,
               length(data_sets) == length(x))
 
   url_calls <- Map(function(ds, path)
-                     as.call(list("list_download_urls", token, ds, path, ...)),
+                     as.call(list(list_download_urls, token, ds, path, ...)),
                    data_sets, x)
 
   file_sizes <- as.list(rep(NA, length(url_calls)))
@@ -429,7 +429,7 @@ fetch_ds_files.DataSetFileDTO <- function(token,
   x <- as_json_vec(x)
 
   url_calls <- lapply(x, function(y)
-                           as.call(list("list_download_urls", token, y, ...)))
+                           as.call(list(list_download_urls, token, y, ...)))
 
   file_sizes <- as.list(rep(NA, length(url_calls)))
 
@@ -478,7 +478,7 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
   }
 
   url_calls <- Map(function(a, b)
-                     as.call(list("list_download_urls", token, a, b, ...)),
+                     as.call(list(list_download_urls, token, a, b, ...)),
                    data_sets, sapply(x, `[[`, "pathInDataSet"))
 
   file_sizes <- lapply(x, `[[`, "fileSize")

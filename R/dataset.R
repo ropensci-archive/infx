@@ -307,7 +307,7 @@ list_references.DatasetIdentifier <- list_img_ref_wrapper
 #' @export
 #' 
 list_references.DataSet <- function(token, x, wells = NULL, channels, ...)
-  list_references(token, list_dataset_ids(token, x), wells, channels, ...)
+  list_references(token, list_dataset_ids(token, x, ...), wells, channels, ...)
 
 #' @rdname list_datasets
 #' @export

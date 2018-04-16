@@ -157,6 +157,9 @@ test_that("openbis api urls and docs links can be generated", {
 })
 
 test_that("non-infectx openbis instances can be accessed", {
+
+  check_skip()
+
   token <- login_openbis("test_observer", "test_observer",
                          auto_disconnect = FALSE,
                          host_url = "https://openbis.elnlims.ch")
@@ -175,6 +178,29 @@ test_that("non-infectx openbis instances can be accessed", {
   for (i in seq_along(proj)) {
     expect_s3_class(proj[[i]], "Project")
     expect_s3_class(proj[[i]], "json_class")
+  }
+
+  flow <- search_openbis(
+    token,
+    search_criteria(
+      property_clause("name", "Flow citometry files"),
+      sub_criteria = search_sub_criteria(
+        search_criteria(attribute_clause(value = "INDUCTION_OF_TF")),
+        type = "experiment"
+      )
+    ),
+    host_url = "https://openbis.elnlims.ch"
+  )
+
+  files <- fetch_files(token, flow,
+                       file_regex = "11\\.fcs$",
+                       host_url = "https://openbis.elnlims.ch")
+
+  expect_gte(length(files), 1L)
+  for (i in seq_along(files)) {
+    expect_s3_class(attr(files[[i]], "file"), "FileInfoDssDTO")
+    expect_s3_class(attr(files[[i]], "file"), "json_class")
+    expect_is(files[[i]], "raw")
   }
 
   expect_null(logout_openbis(token, host_url = "https://openbis.elnlims.ch"))
