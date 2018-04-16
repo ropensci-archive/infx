@@ -68,6 +68,20 @@ logout_openbis(tok)
 is_token_valid(tok)
 ```
 
+While this client has been thoroughly tested with the openBIS instance hosted
+by InfectX and certain aspects are geared towards high content screening application of openBIS, it is in no way limited to usage with InfectX data. Any method that issues an API call should be able to accept the `host_url` argument and use it for constructing the API endpoint url. As a small example, available projects are listed for the demo openBIS instance offered by the development team. 
+
+```{r other-openbis}
+tok <- login_openbis("test_observer", "test_observer",
+                     auto_disconnect = FALSE,
+                     host_url = "https://openbis.elnlims.ch")
+
+projects <- list_projects(token, host_url = "https://openbis.elnlims.ch")
+projects[[1]]
+
+logout_openbis(token, host_url = "https://openbis.elnlims.ch")
+```
+
 ## Acknowledgments
 
 This work is partially funded by [SystemsX.ch](http://www.systemsx.ch), the Swiss Initiative for Systems Biology via grants 51RT-0_126008 and 51RTP0_151029 for the Research and Technology Development (RTD) projects [InfectX](https://infectx.ch) and [TargetInfectX](https://www.targetinfectx.ch) respectively. Further funding is provided by the [Seminar for Statistics](https://www.math.ethz.ch/sfs) at ETH Zurich.

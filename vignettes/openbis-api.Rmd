@@ -148,9 +148,9 @@ Building on functionality offered by the `do_requests_*()` functions, `make_requ
 * `params`: A Structured value that holds the parameter values to be used during the invocation of the method.
 * `id`: An identifier established by the Client.
 
-In order to create a list of such request objects, the arguments `methods`, `params`, `ids` and `version`, which map to `method`, `params`, `id` and `jsonrpc`, respectively, are combined and converted to JSON. OpenBIS API endpoint urls can be constructed with the helper function `api_url()` and the argument `n_con` specifies the maximal number of simultaneous connections made to the server.
+In order to create a list of such request objects, the arguments `methods`, `params`, `ids` and `version`, which map to `method`, `params`, `id` and `jsonrpc`, respectively, are combined and converted to JSON. OpenBIS API endpoint urls are constructed with the helper function `api_url()` which can receive arguments `api_endpoint` and `host_url`, forwarded by `make_requests()`. The argument `n_con` is used to specify the maximal number of simultaneous connections made to the server.
 
-As `make_requests()` is designed to construct several requests at the time, the arguments `urls`, `methods` and `params` are vectorized. If any of the passed objects if of length 1, it is `base::rep()`eated to the required length such that all three objects are of the same length. Care has to be taken with the list passed as `params` such that its length corresponds to the number of requests. This means that if only a single set of parameters is passed, this list has to be wrapped by another list.
+As `make_requests()` is designed to construct several requests at the time, the arguments `methods` and `params` are vectorized. If any of the passed objects if of length 1, it is `base::rep()`eated to the required length such that all three objects are of the same length. Care has to be taken with the list passed as `params` such that its length corresponds to the number of requests. This means that if only a single set of parameters is passed, this list has to be wrapped by another list.
 
 As a last argument, a `finally` function can be passed, which defaults to `process_json()`. This function first converts all typed JSON objects to `json_class` objects using `as_json_class()`, resolves object references using `resolve_references()` in order to make all `json_class` objects self-contained and then creates a `json_vec` object using `as_json_vec()`, therefore allowing S3 method dispatch on lists of `json_class` objects. For more information on the specifics of this, please refer to the vignette ["JSON object handling"](https://nbenn.github.io/infx/articles/json-class.html).
 
@@ -159,9 +159,9 @@ For single requests, a wrapper around `make_requests()` is available as `make_re
 ```{r simple-rpc}
 token <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
 
-projects <- make_request(url = api_url("gis"),
-                         method = "listProjects",
-                         params = list(token))
+projects <- make_request(method = "listProjects",
+                         params = list(token),
+                         api_endpoint = "gis")
 print(projects[[1]])
 ```
 
@@ -175,9 +175,9 @@ params <- lapply(dataset_codes, function(x) list(token, x, file_path))
 
 str(params)
 
-donwload_urls <- make_requests(urls = api_url("dsrg"),
-                               method = "getDownloadUrlForFileForDataSet",
-                               params = params)
+donwload_urls <- make_requests(method = "getDownloadUrlForFileForDataSet",
+                               params = params,
+                               api_endpoint = "dsrg")
 str(donwload_urls)
 
 logout_openbis(token)

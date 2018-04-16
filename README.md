@@ -63,6 +63,27 @@ is_token_valid(tok)
 #> [1] FALSE
 ```
 
+While this client has been thoroughly tested with the openBIS instance hosted by InfectX and certain aspects are geared towards high content screening application of openBIS, it is in no way limited to usage with InfectX data. Any method that issues an API call should be able to accept the `host_url` argument and use it for constructing the API endpoint url. As a small example, available projects are listed for the demo openBIS instance offered by the development team.
+
+``` r
+tok <- login_openbis("test_observer", "test_observer",
+                     auto_disconnect = FALSE,
+                     host_url = "https://openbis.elnlims.ch")
+
+projects <- list_projects(token, host_url = "https://openbis.elnlims.ch")
+projects[[1]]
+#> █─Project 
+#> ├─permId = 20150126115738287-33 
+#> ├─spaceCode = MATERIALS 
+#> ├─code = BACTERIA 
+#> ├─description =  
+#> ├─registrationDetails = █─EntityRegistrationDetails 
+#> │                       └─... 
+#> └─id = 3
+
+logout_openbis(token, host_url = "https://openbis.elnlims.ch")
+```
+
 Acknowledgments
 ---------------
 
