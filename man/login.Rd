@@ -6,11 +6,11 @@
 \alias{is_token_valid}
 \title{Create and destroy a login token}
 \usage{
-login_openbis(user, pwd, auto_disconnect = TRUE)
+login_openbis(user, pwd, auto_disconnect = TRUE, ...)
 
-logout_openbis(token)
+logout_openbis(token, ...)
 
-is_token_valid(token)
+is_token_valid(token, ...)
 }
 \arguments{
 \item{user, pwd}{Login credentials for an openBis instance.}

@@ -133,7 +133,7 @@ list_download_urls.character <- function(token,
                      SIMPLIFY = FALSE)
   }
 
-  unlist(make_requests(api_url("dsrg"), fun, params), ...)
+  unlist(make_requests(fun, params, api_endpoint = "dsrg", ...))
 }
 
 list_dl_url <- function(token, x, path, timeout = NA, ...)
@@ -197,7 +197,7 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
     params <- lapply(as_json_vec(x), function(y) list(token, y, timeout))
   }
   
-  unlist(make_requests(api_url("dsrg"), fun, params), ...)
+  unlist(make_requests(fun, params, api_endpoint = "dsrg", ...))
 }
 
 #' @rdname list_urls
@@ -206,7 +206,7 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
 #' @export
 #' 
 list_datastores <- function(token, ...)
-  make_request(api_url("gis"), "listDataStores", list(token), ...)
+  make_request("listDataStores", list(token), api_endpoint = "gis", ...)
 
 #' @rdname list_urls
 #' @section openBIS:
@@ -222,8 +222,8 @@ list_datastore_urls <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_datastore_urls.NULL <- function(token, x, ...)
-  make_request(api_url("gis"), "getDefaultPutDataStoreBaseURL", list(token),
-               ...)
+  make_request("getDefaultPutDataStoreBaseURL", list(token),
+               api_endpoint = "gis", ...)
 
 #' @rdname list_urls
 #' @export
@@ -232,16 +232,16 @@ list_datastore_urls.character <- function(token, x, ...) {
 
     if (length(x) == 1L) {
 
-      urls <- make_request(api_url("gis"), "tryGetDataStoreBaseURL",
-                           list(token, x), ...)
+      urls <- make_request("tryGetDataStoreBaseURL", list(token, x),
+                           api_endpoint = "gis", ...)
 
       assert_that(!is.null(urls))
       stats::setNames(urls, x)
 
     } else {
 
-      urls <- make_request(api_url("gis"), "getDataStoreBaseURLs",
-                           list(token, as.list(x)), ...)
+      urls <- make_request("getDataStoreBaseURLs", list(token, as.list(x)),
+                           api_endpoint = "gis", ...)
 
       res <- unlist(lapply(urls, function(url) {
         codes <- as.character(get_field(url, "dataSetCodes"))
@@ -312,9 +312,10 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #'   * `sas`: \Sexpr{infx::docs_link("sas")}
 #'   * `dsrs`: \Sexpr{infx::docs_link("dsrs")}
 #' 
-#' @param api Abreviated name of the API section (e.g. `gis` for
+#' @param api_endpoint Abreviated name of the API section (e.g. `gis` for
 #' IGeneralInformationService).
-#' @param host Host url.
+#' @param host_url Host url.
+#' @param ... Further arguments are ignored.
 #' 
 #' @rdname openbis_urls
 #' 
@@ -322,7 +323,7 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' # default endpoint is the GeneralInformationService interface
 #' api_url()
 #' # base url can be customized
-#' api_url(host = "https:://foobar.com")
+#' api_url(host_url = "https://foobar.com")
 #' # ScreeningApiServer interface endpoint
 #' api_url("sas")
 #' 
@@ -337,11 +338,12 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' 
 #' @export
 #' 
-api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
-                            "dsrs"),
-                    host = "https://infectx.biozentrum.unibas.ch") {
+api_url <- function(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg",
+                                     "sas", "dsrs"),
+                    host_url = "https://infectx.biozentrum.unibas.ch",
+                    ...) {
 
-  url <- switch(match.arg(api),
+  url <- switch(match.arg(api_endpoint),
                 gis = "openbis/openbis/rmi-general-information-v1.json",
                 gics = paste0("openbis/openbis/",
                               "rmi-general-information-changing-v1.json"),
@@ -351,7 +353,7 @@ api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
                 sas = "openbis/openbis/rmi-screening-api-v1.json",
                 dsrs = "rmi-datastore-server-screening-api-v1.json")
 
-  paste(host, url, sep = "/")
+  paste(host_url, url, sep = "/")
 }
 
 #' @param method_name Name of the method for which the link is created.
@@ -360,14 +362,14 @@ api_url <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
 #' @rdname openbis_urls
 #' @export
 #' 
-docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
-                              "dsrs"),
+docs_link <- function(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg",
+                                       "sas", "dsrs"),
                       method_name = NULL,
                       version = "13.04.0") {
 
-  api <- match.arg(api)
+  api_endpoint <- match.arg(api_endpoint)
 
-  url <- switch(api,
+  url <- switch(api_endpoint,
                 gis = paste0("generic/shared/api/v1/",
                              "IGeneralInformationService.html"),
                 gics = paste0("generic/shared/api/v1/",
@@ -384,7 +386,7 @@ docs_link <- function(api = c("gis", "gics", "qas", "wis", "dsrg", "sas",
   url <- paste("https://svnsis.ethz.ch/doc/openbis", version,
                "ch/systemsx/cisd/openbis", url, sep = "/")
 
-  txt <- switch(api,
+  txt <- switch(api_endpoint,
                 gis = "IGeneralInformationService",
                 gics = "IGeneralInformationChangingService",
                 qas = "IQueryApiServer",

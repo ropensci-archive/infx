@@ -1,5 +1,4 @@
 
-
 #' List experiments
 #'
 #' Experiments can be represented by two object classes: `Experiment` and
@@ -66,8 +65,8 @@ list_experiments <- function(token, x, ...)
 #' @export
 #' 
 list_experiments.ExperimentIdentifier <- function(token, x, ...)
-  make_request(api_url("gis"), "listExperiments", list(token, exp_id_str(x)),
-               ...)
+  make_request("listExperiments", list(token, exp_id_str(x)),
+               api_endpoint = "gis", ...)
 
 #' @rdname list_experiments
 #' 
@@ -108,7 +107,7 @@ list_experiments.Project <- function(token,
 
   params <- lapply(types, function(type) list(token, x, as.character(type)))
 
-  res <- make_requests(api_url("gis"), fun, params, ...)
+  res <- make_requests(fun, params, api_endpoint = "gis", ...)
   as_json_vec(do.call(c, res))
 }
 
@@ -118,7 +117,7 @@ list_experiments.Project <- function(token,
 #' @export
 #' 
 list_experiment_ids <- function(token, ...)
-  make_request(api_url("sas"), "listExperiments", list(token), ...)
+  make_request("listExperiments", list(token), api_endpoint = "sas", ...)
 
 #' @rdname list_experiments
 #' @section openBIS:
@@ -126,7 +125,7 @@ list_experiment_ids <- function(token, ...)
 #' @export
 #' 
 list_experiment_types <- function(token, ...)
-  make_request(api_url("gis"), "listExperimentTypes", list(token), ...)
+  make_request("listExperimentTypes", list(token), api_endpoint = "gis", ...)
 
 #' @rdname list_experiments
 #' @export

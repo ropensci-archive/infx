@@ -123,7 +123,7 @@ list_plates <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_plates.NULL <- function(token, x, ...)
-  make_request(api_url("sas"), "listPlates", list(token), ...)
+  make_request("listPlates", list(token), api_endpoint = "sas", ...)
 
 #' @rdname list_plate_well
 #' @export
@@ -132,7 +132,7 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x), function(exp) list(token, exp))
 
-  res <- make_requests(api_url("sas"), "listPlates", params, ...)
+  res <- make_requests("listPlates", params, api_endpoint = "sas", ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -150,26 +150,24 @@ list_plates.Experiment <- function(token, x, ...) {
 list_plate_metadata <- function(token, x, ...)
   UseMethod("list_plate_metadata", x)
 
-#' @rdname list_plate_well
-#' @export
-#' 
-list_plate_metadata.PlateIdentifier <- function(token, x, ...)
-  make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, as_json_vec(x)), ...)
+list_plate_meta <- function(token, x, ...)
+  make_request("getPlateMetadataList", list(token, as_plate_id(x)),
+               api_endpoint = "sas", ...)
 
 #' @rdname list_plate_well
 #' @export
 #' 
-list_plate_metadata.Plate <- function(token, x, ...)
-  make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, as_plate_id(x)), ...)
+list_plate_metadata.PlateIdentifier <- list_plate_meta
 
 #' @rdname list_plate_well
 #' @export
 #' 
-list_plate_metadata.Sample <- function(token, x, ...)
-  make_request(api_url("sas"), "getPlateMetadataList",
-               list(token, as_plate_id(x)), ...)
+list_plate_metadata.Plate <- list_plate_meta
+
+#' @rdname list_plate_well
+#' @export
+#' 
+list_plate_metadata.Sample <- list_plate_meta
 
 #' @param code,space Character vectors that together can be used to create
 #' `PlateIdentifier` objects.
@@ -243,7 +241,7 @@ list_wells_for_plate <- function(token, x, ...) {
 
   params <- lapply(as_plate_id(x), function(plate) list(token, plate))
 
-  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
+  res <- make_requests("listPlateWells", params, api_endpoint = "sas", ...)
 
   remove_null(as_json_vec(do.call(c, res)))
 }
@@ -289,7 +287,7 @@ list_wells_for_mat <- function(token,
                                          include_datasets))
   }
 
-  res <- make_requests(api_url("sas"), "listPlateWells", params, ...)
+  res <- make_requests("listPlateWells", params, api_endpoint = "sas", ...)
 
   as_json_vec(do.call(c, res))
 }

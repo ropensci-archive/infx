@@ -144,8 +144,10 @@ list_material <- function(token, x, ...)
 #' @export
 #' 
 list_material.MaterialIdentifierGeneric <- function(token, x, ...)
-  make_request(api_url("gis"), "getMaterialByCodes",
-               list(token, as_json_vec(x)), ...)
+  make_request("getMaterialByCodes",
+               list(token, as_json_vec(x)),
+               api_endpoint = "gis",
+               ...)
 
 #' @rdname list_material
 #' @export
@@ -165,8 +167,8 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
 
   params <- lapply(material_type, function(y) list(token, as_json_vec(x), y))
 
-  res <- make_requests(api_url("sas"), "listPlateMaterialMapping", params,
-                       ...)
+  res <- make_requests("listPlateMaterialMapping", params,
+                       api_endpoint = "sas", ...)
 
   as_json_vec(do.call(c, res))
 }

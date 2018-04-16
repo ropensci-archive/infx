@@ -34,7 +34,8 @@
 #' 
 login_openbis <- function(user,
                           pwd,
-                          auto_disconnect = TRUE) {
+                          auto_disconnect = TRUE,
+                          ...) {
 
   disco <- function(tok) {
 
@@ -50,9 +51,10 @@ login_openbis <- function(user,
     environment()
   }
 
-  token <- unlist(make_request(api_url("gis"),
-                               "tryToAuthenticateForAllServices",
-                               list(user, pwd)))
+  token <- unlist(make_request("tryToAuthenticateForAllServices",
+                               list(user, pwd),
+                               api_endpoint = "gis",
+                               ...))
 
   assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
@@ -68,14 +70,19 @@ login_openbis <- function(user,
 #' * \Sexpr{infx::docs_link("gis", "logout")}
 #' @export
 #' 
-logout_openbis <- function(token)
-  invisible(unlist(make_request(api_url("gis"), "logout", list(token),
-                                finally = function(x) x$result)))
+logout_openbis <- function(token, ...)
+  invisible(unlist(make_request("logout", list(token),
+                                finally = function(x) x$result,
+                                api_endpoint = "gis",
+                                ...)))
 
 #' @rdname login
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "isSessionActive")}
 #' @export
 #' 
-is_token_valid <- function(token)
-  unlist(make_request(api_url("gis"), "isSessionActive", list(token)))
+is_token_valid <- function(token, ...)
+  unlist(make_request("isSessionActive",
+                      list(token),
+                      api_endpoint = "gis",
+                      ...))

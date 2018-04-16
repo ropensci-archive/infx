@@ -169,7 +169,8 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
   params <- mapply(function(a, b, c) list(token, a, b, c), x, path, recursive,
                    SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params, ...)
+  res <- make_requests("listFilesForDataSet", params, api_endpoint = "dsrg",
+                       ...)
 
   res <- Map(function(dat, code) {
     attr(dat, "data_set") <- code
@@ -231,7 +232,8 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
   params <- lapply(x, function(y) list(token, y))
 
-  res <- make_requests(api_url("dsrg"), "listFilesForDataSet", params, ...)
+  res <- make_requests("listFilesForDataSet", params, api_endpoint = "dsrg",
+                       ...)
 
   res <- Map(function(dat, code) {
     attr(dat, "data_set") <- code
@@ -393,9 +395,9 @@ fetch_ds_files.character <- function(token,
   assert_that(is.character(data_sets),
               length(data_sets) == length(x))
 
-  url_calls <- Map(function(ds, path) {
-    call("list_download_urls", token, ds, path)
-  }, data_sets, x)
+  url_calls <- Map(function(ds, path)
+                     as.call(list("list_download_urls", token, ds, path, ...)),
+                   data_sets, x)
 
   file_sizes <- as.list(rep(NA, length(url_calls)))
 
@@ -426,7 +428,8 @@ fetch_ds_files.DataSetFileDTO <- function(token,
 
   x <- as_json_vec(x)
 
-  url_calls <- lapply(x, function(y) call("list_download_urls", token, y))
+  url_calls <- lapply(x, function(y)
+                           as.call(list("list_download_urls", token, y, ...)))
 
   file_sizes <- as.list(rep(NA, length(url_calls)))
 
@@ -474,7 +477,8 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
     data_sets <- data_sets[!dirs]
   }
 
-  url_calls <- Map(function(a, b) call("list_download_urls", token, a, b),
+  url_calls <- Map(function(a, b)
+                     as.call(list("list_download_urls", token, a, b, ...)),
                    data_sets, sapply(x, `[[`, "pathInDataSet"))
 
   file_sizes <- lapply(x, `[[`, "fileSize")

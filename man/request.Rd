@@ -9,10 +9,10 @@
 \alias{resolve_references}
 \title{Construct and issue JSON-RPC requests}
 \usage{
-make_requests(urls, methods, params, ids = NULL, version = "2.0",
-  n_con = 5L, finally = process_json, ...)
+make_requests(methods, params, ids = NULL, version = "2.0", n_con = 5L,
+  finally = process_json, ...)
 
-make_request(url, method, params, ...)
+make_request(method, params, ...)
 
 do_requests_serial(urls, bodies = vector("list", length(urls)), n_try = 2L,
   create_handle = create_default_handle, check = check_default_result,
@@ -45,9 +45,9 @@ successful JSON RPC request.}
 \item{...}{Further arguments to \code{make_request()} are passed to
 \code{make_requests()} and from \code{make_requests()} to \code{do_requests_*()}.}
 
-\item{url, urls, }{Destination url(s), the request is sent to.}
-
 \item{method, methods}{The API method name(s).}
+
+\item{urls}{Destination url(s), the request is sent to.}
 
 \item{bodies}{Request bodies: a list where each entry is a list with slots
 \code{id}, \code{jsonrpc}, \code{method} and \code{params}.}

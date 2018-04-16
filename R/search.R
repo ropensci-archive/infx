@@ -200,7 +200,7 @@ search_openbis <- function(token,
     params <- list(token, criteria)
   }
 
-  make_request(api_url("gis"), fun, params, ...)
+  make_request(fun, params, api_endpoint = "gis", ...)
 }
 
 #' @param operator How to combine search clauses, either `all` or `any` have
@@ -377,8 +377,8 @@ list_property_types <- function(token, with_relations = FALSE, ...) {
 
   assert_that(is.logical(with_relations), length(with_relations) == 1L)
 
-  res <- make_request(api_url("gis"), "listPropertyTypes",
-                      list(token, with_relations), ...)
+  res <- make_request("listPropertyTypes", list(token, with_relations),
+                      api_endpoint = "gis", ...)
 
   classes <- sapply(res, get_subclass)
 

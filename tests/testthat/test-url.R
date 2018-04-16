@@ -156,3 +156,27 @@ test_that("openbis api urls and docs links can be generated", {
   expect_identical(link, docs_link("gis", method_name = "foo"))
 })
 
+test_that("non-infectx openbis instances can be accessed", {
+  token <- login_openbis("test_observer", "test_observer",
+                         auto_disconnect = FALSE,
+                         host_url = "https://openbis.elnlims.ch")
+
+  expect_is(token, "character")
+  expect_length(token, 1L)
+  expect_match(token, "^test_observer-")
+
+  expect_true(is_token_valid(token, host_url = "https://openbis.elnlims.ch"))
+
+  proj <- list_projects(token, host_url = "https://openbis.elnlims.ch")
+
+  expect_s3_class(proj, "Project")
+  expect_s3_class(proj, "json_vec")
+  expect_gte(length(proj), 1L)
+  for (i in seq_along(proj)) {
+    expect_s3_class(proj[[i]], "Project")
+    expect_s3_class(proj[[i]], "json_class")
+  }
+
+  expect_null(logout_openbis(token, host_url = "https://openbis.elnlims.ch"))
+  expect_false(is_token_valid(token, host_url = "https://openbis.elnlims.ch"))
+})

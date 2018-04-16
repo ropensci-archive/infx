@@ -5,17 +5,19 @@
 \alias{docs_link}
 \title{OpenBIS urls}
 \usage{
-api_url(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  host = "https://infectx.biozentrum.unibas.ch")
+api_url(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
+  host_url = "https://infectx.biozentrum.unibas.ch", ...)
 
-docs_link(api = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  method_name = NULL, version = "13.04.0")
+docs_link(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas",
+  "dsrs"), method_name = NULL, version = "13.04.0")
 }
 \arguments{
-\item{api}{Abreviated name of the API section (e.g. \code{gis} for
+\item{api_endpoint}{Abreviated name of the API section (e.g. \code{gis} for
 IGeneralInformationService).}
 
-\item{host}{Host url.}
+\item{host_url}{Host url.}
+
+\item{...}{Further arguments are ignored.}
 
 \item{method_name}{Name of the method for which the link is created.}
 
@@ -40,7 +42,7 @@ are abbreviated as
 # default endpoint is the GeneralInformationService interface
 api_url()
 # base url can be customized
-api_url(host = "https:://foobar.com")
+api_url(host_url = "https://foobar.com")
 # ScreeningApiServer interface endpoint
 api_url("sas")
 
