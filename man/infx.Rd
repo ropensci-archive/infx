@@ -51,6 +51,41 @@ vector data sets. This is mostly tabular data with a single value
 corresponding to an imaging site. This is typically used for image
 acquisition meta data, summarized image analysis or quality control results.
 }
+\section{General comments}{
+
+A login token is required for any type of API call. Passing valid login
+credentials to \code{\link[=login_openbis]{login_openbis()}} will return a string that can subsequently
+be used for making API requests. Login tokens are invalidated by calling
+\code{\link[=logout_openbis]{logout_openbis()}} which is performed automatically upon garbage collection
+of login tokens returned by \code{\link[=login_openbis]{login_openbis()}} with the \code{auto_disconnect}
+switch set to \code{TRUE} (default). Validity of a login token can be checked
+with \code{\link[=is_token_valid]{is_token_valid()}}.
+
+All API requests are constructed by \code{\link[=make_requests]{make_requests()}} (or for single
+requests by the wrapper function \code{\link[=make_request]{make_request()}}), which helps with putting
+together JSON-RPC requests and parses the returned JSON objects by calling
+\code{\link[=process_json]{process_json()}}. Processing of JSON involves generation of \code{json_class}
+and \code{json_vec} objects using \code{@type} information, as well as resolution of
+\code{@id} references. While obviously a feature for reducing data transfer
+overhead, this type of data deduplication has the down-side of yielding
+objects that are no longer self-contained. If for example plate wells are
+listed and each well contains an object referencing the associated plate,
+only a single instance of this plate object will be retrieved as part of the
+first well object and all subsequent well objects only contain a reference
+to this plate object. Sub-setting this list of wells however might yield
+well objects with broken references. To circumvent such issues, all
+references are resolved by a call to \code{\link[=resolve_references]{resolve_references()}}, initiated by
+\code{\link[=process_json]{process_json()}}.
+
+Requests are executed by \code{\link[=do_requests_serial]{do_requests_serial()}} or possibly by
+\code{\link[=do_requests_parallel]{do_requests_parallel()}} whenever several API calls are constructed at the
+same time. The argument \code{n_con} controls the degree of parallelism and if
+set to \code{1}, forces serial execution even in cases where several requests
+are being issued. Failed requests can be automatically repeated to provide
+additional stability by setting the \code{n_try} argument to a value larger than
+\code{1} (default is \code{2}).
+}
+
 \section{JSON object handling}{
 
 Object structures as returned by openBIS can be instantiated using the
@@ -210,9 +245,8 @@ files for the given data sets are retrieved.
 \code{\link[=list_download_urls]{list_download_urls()}} and uses \code{\link[=do_requests_serial]{do_requests_serial()}} or
 \code{\link[=do_requests_parallel]{do_requests_parallel()}} to execute the downloads. Whether downloads are
 performed in serial or parallel fashion can be controlled using the \code{n_con}
-argument, which also specifies the degree of parallelism. Additionally a
-function may be passed to \code{\link[=fetch_files]{fetch_files()}} as \code{reader} argument which
-will be called on each downloaded file.
+argument. Additionally a function may be passed to \code{\link[=fetch_files]{fetch_files()}} as
+\code{reader} argument which will be called on each downloaded file.
 
 Images are retrieved using \code{\link[=fetch_images]{fetch_images()}}. If dispatch occurs on general
 purpose data set objects, including \code{DatasetIdentifier}, \code{DatasetReference}

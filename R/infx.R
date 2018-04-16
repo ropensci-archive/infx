@@ -45,6 +45,39 @@
 #' corresponding to an imaging site. This is typically used for image
 #' acquisition meta data, summarized image analysis or quality control results.
 #' 
+#' @section General comments:
+#' A login token is required for any type of API call. Passing valid login
+#' credentials to [login_openbis()] will return a string that can subsequently
+#' be used for making API requests. Login tokens are invalidated by calling
+#' [logout_openbis()] which is performed automatically upon garbage collection
+#' of login tokens returned by [login_openbis()] with the `auto_disconnect`
+#' switch set to `TRUE` (default). Validity of a login token can be checked
+#' with [is_token_valid()].
+#' 
+#' All API requests are constructed by [make_requests()] (or for single
+#' requests by the wrapper function [make_request()]), which helps with putting
+#' together JSON-RPC requests and parses the returned JSON objects by calling
+#' [process_json()]. Processing of JSON involves generation of `json_class`
+#' and `json_vec` objects using `@type` information, as well as resolution of
+#' `@id` references. While obviously a feature for reducing data transfer
+#' overhead, this type of data deduplication has the down-side of yielding
+#' objects that are no longer self-contained. If for example plate wells are
+#' listed and each well contains an object referencing the associated plate,
+#' only a single instance of this plate object will be retrieved as part of the
+#' first well object and all subsequent well objects only contain a reference
+#' to this plate object. Sub-setting this list of wells however might yield
+#' well objects with broken references. To circumvent such issues, all
+#' references are resolved by a call to [resolve_references()], initiated by
+#' [process_json()].
+#' 
+#' Requests are executed by [do_requests_serial()] or possibly by
+#' [do_requests_parallel()] whenever several API calls are constructed at the
+#' same time. The argument `n_con` controls the degree of parallelism and if
+#' set to `1`, forces serial execution even in cases where several requests
+#' are being issued. Failed requests can be automatically repeated to provide
+#' additional stability by setting the `n_try` argument to a value larger than
+#' `1` (default is `2`).
+#' 
 #' @section JSON object handling:
 #' Object structures as returned by openBIS can be instantiated using the
 #' creator [json_class()]. This function takes an arbitrary set of key-value
@@ -199,9 +232,8 @@
 #' [list_download_urls()] and uses [do_requests_serial()] or
 #' [do_requests_parallel()] to execute the downloads. Whether downloads are
 #' performed in serial or parallel fashion can be controlled using the `n_con`
-#' argument, which also specifies the degree of parallelism. Additionally a
-#' function may be passed to [fetch_files()] as `reader` argument which
-#' will be called on each downloaded file.
+#' argument. Additionally a function may be passed to [fetch_files()] as
+#' `reader` argument which will be called on each downloaded file.
 #' 
 #' Images are retrieved using [fetch_images()]. If dispatch occurs on general
 #' purpose data set objects, including `DatasetIdentifier`, `DatasetReference`
