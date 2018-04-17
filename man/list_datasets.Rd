@@ -237,17 +237,17 @@ option is not exposed to the user.
   # select a feature dataset, note how the fields "parentCodes" and
   # "childrenCodes" both are not set
   feat_ds <- ds[[grep("FEATURES_CC_MAT",
-                      sapply(ds, `[[`, "dataSetTypeCode"))]]
+                      get_field(ds, "dataSetTypeCode"))]]
 
   # fetch parent and child datasets and now both the "parentCodes" and
   # "childrenCodes" fields are populated with the corresponding codes
-  feat_ds <- list_datasets(tok, feat_ds[["code"]], include = "all")
+  feat_ds <- list_datasets(tok, get_field(feat_ds, "code"), include = "all")
 
   # re-using the plate sample from above, an ImageDatasetReference object
   # corresponding to the associated raw imaging dataset is listed
   raw_ref <- list_references(tok, samp)
   # available imaging channels are
-  raw_ref[[1]][["properties"]][["IMAGE.CHANNEL.LIST"]]
+  get_field(raw_ref[[1]], "properties")[["IMAGE.CHANNEL.LIST"]]
 
   # a more specific image reference object can be retrieved by passing a
   # well specification to list_references()

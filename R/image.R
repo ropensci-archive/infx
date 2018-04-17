@@ -114,29 +114,29 @@
 #' 
 #'   # the returned image dataset reference can be used to list image meta data
 #'   img_meta <- list_image_metadata(tok, ds_ref)
-#'   channels <- img_meta[[1]][["channelCodes"]]
+#'   channels <- img_meta[[1L]][["channelCodes"]]
 #' 
 #'   imgs <- fetch_images(tok, ds_ref,
-#'                        channels = channels[[1]],
+#'                        channels = channels[[1L]],
 #'                        well_positions = well_pos(1, 1),
 #'                        image_size = json_class(width = 300, height = 300,
 #'                                                class = "ImageSize"))
 #'   # this yields 9 images, one per tile
-#'   length(imgs[[1]]) == img_meta[[1]][["numberOfTiles"]]
+#'   length(imgs[[1L]]) == img_meta[[1L]][["numberOfTiles"]]
 #'   # and each image is scaled to fit within 300 x 300 pixels
-#'   magick::image_info(imgs[[1]][[1]])
+#'   magick::image_info(imgs[[1L]][[1L]])
 #' 
 #'   # if not the entire well is of interest, but only certain tiles
 #'   img_ref <- list_references(tok, ds_ref,
 #'                              wells = well_pos(1, 1),
-#'                              channels = channels[[1]])
+#'                              channels = channels[[1L]])
 #'   # this yields 9 objects, one reference per tile
 #'   length(img_ref)
 #'   # select a tile, for example the center one
-#'   img <- fetch_images(tok, img_ref[[5]],
+#'   img <- fetch_images(tok, img_ref[[5L]],
 #'                       image_size = json_class(width = 300, height = 300,
 #'                                               class = "ImageSize"))
-#'   identical(as.raster(img[[1]]), as.raster(imgs[[1]][[5]]))
+#'   identical(as.raster(img[[1L]]), as.raster(imgs[[1L]][[5L]]))
 #' }
 #' 
 #' @export

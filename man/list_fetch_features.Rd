@@ -140,7 +140,7 @@ behaves this way is currently unclear.
   feat_ref <- list_references(tok, samp, type = "feature")
 
   # several data set types can act as feature data sets
-  sapply(feat_ref, `[[`, "dataSetType")
+  get_field(feat_ref, "dataSetType")
   feat_ref <- feat_ref[[7L]]
 
   # for a feature data set, list all features
@@ -150,16 +150,15 @@ behaves this way is currently unclear.
   # for a feature data set, a set of feature codes and a set of wells,
   # retrieve the corresponding feature data
   feats <- fetch_features(tok, feat_ref,
-                          feature_codes = sapply(feat_info, `[[`, "code"),
-                          wells = well_pos(1:2, 2:3))
+                          feature_codes = get_field(feat_info, "code"),
+                          wells = well_pos(1:6, 3:8))
 
-  extract_feats <- function(x) {
-    c(well_row = x[["wellPosition"]][["wellRow"]],
-      well_col = x[["wellPosition"]][["wellColumn"]],
-      setNames(as.numeric(x[["values"]]), tolower(x[["featureNames"]])))
-  }
-
-  do.call(rbind, lapply(feats, extract_feats))
+  tibble::tibble(
+    well_row = get_field(get_field(feats, "wellPosition"), "wellRow"),
+    well_col = get_field(get_field(feats, "wellPosition"), "wellColumn"),
+    cell_count = as.integer(get_field(feats, "values")[1L, ]),
+    cell_area = as.numeric(get_field(feats, "values")[2L, ])
+  )
 }
 
 }

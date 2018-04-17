@@ -109,9 +109,9 @@
 #'                         target_object = "material")
 #'   # search for associated wells, limited to ADENO-AU-K1
 #'   mtor <- list_wells(tok, mat, exp)
-#'   plates <- as_json_vec(lapply(mtor, `[[`, "experimentPlateIdentifier"))
+#'   plates <- get_field(mtor, "experimentPlateIdentifier")
 #'   as_plate_id(plates)
-#'   unique(lapply(mtor, `[[`, "wellPosition"))
+#'   unique(get_field(mtor, "wellPosition"))
 #' }
 #' 
 #' @export

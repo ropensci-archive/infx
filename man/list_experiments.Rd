@@ -103,7 +103,8 @@ the search for experiments.
   exp <- search_openbis(tok,
                         search_criteria(
                           attribute_clause("code",
-                                           exps[[1L]][["identifier"]])
+                                           get_field(exps[[1L]],
+                                                     "identifier"))
                         ),
                         target_object = "experiment")
   identical(exps[1L], exp)
