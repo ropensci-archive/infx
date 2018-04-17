@@ -41,20 +41,31 @@
 #'
 #' The function `make_requests()` is used to construct JSON-RPC requests. The
 #' arguments `methods`, `params`, `ids` and `version` are combined into one
-#' or several request objects according to the JSON-RPC specification and
-#' together with the `urls` argument are passed to `do_requests_*()`. The
-#' objects passed as `urls`, `methods` and `params` should all be of the same
-#' length but in case any are of length 1, they will be [base::rep()]'ed to
-#' the required length. Care has to be taken that the list passed as `params`
-#' has the correct degree of nesting. As `make_requests()` iterates over the
-#' topmost list level, a single request should be wrapped in a list such that
-#' the topmost list level is on length 1. The function `make_request()` is a
-#' wrapper around `make_requests()` that does exactly this.
+#' or several request objects according to the JSON-RPC specification which in
+#' turn are passed to `do_requests_*()`. The objects passed as `methods` and
+#' `params` should all be of the same length but in case any are of length 1,
+#' they will be [base::rep()]'ed to the required length. Care has to be taken
+#' that the list passed as `params` has the correct degree of nesting. As
+#' `make_requests()` iterates over the topmost list level, a single request
+#' should be wrapped in a list such that the topmost list level is on length
+#' 1. The function `make_request()` is a wrapper around `make_requests()` that
+#' does exactly this.
 #' 
-#' As part of the `process_json()` function, `@type` fields are converted
+#' Target urls are created by forwarding `...` arguments of `make_requests()`
+#' to [api_url()] which accepts a string for each `api_endpoint` and
+#' `host_url`. By default the API endpoint url corresponding to the
+#' `GeneralInformationService` interface on the InfectX openBIS instance is
+#' returned. As a safety hatch, [api_url()] also accepts and simply returns a
+#' string passed as `full_url` and therefore bypasses automatic API endpoint
+#' construction. This enables any function issuing an API call via
+#' `make_requests()` to contact an arbitrary openBIS host and to reach API
+#' endpoints which are not among the hard-coded selection.
+#' 
+#' As part of the `process_json()` function, which is the default value passed
+#' as `finally` argument in `make_requests()`, `@type` fields are converted
 #' to`json_class` attributes, using [as_json_class()]. Additionally, `@id`
 #' fields, which may be referenced if an objects is used multiple times, are
-#' recursively resolved using [rm_json_class()] such that each object is
+#' recursively resolved using [resolve_references()] such that each object is
 #' self-contained.
 #' 
 #' @param method,methods The API method name(s).

@@ -77,6 +77,19 @@ well objects with broken references. To circumvent such issues, all
 references are resolved by a call to \code{\link[=resolve_references]{resolve_references()}}, initiated by
 \code{\link[=process_json]{process_json()}}.
 
+As a side note: while created for and mainly tested with
+\href{https://infectx.biozentrum.unibas.ch/openbis}{InfectX} data which is
+queried by default using the host url
+\code{https://infectx.biozentrum.unibas.ch}, all API methods can be used for
+accessing other openBIS instances as well. Functions that issue API calls
+can all accept \code{host_url} arguments which are forwarded to \code{\link[=api_url]{api_url()}} in
+\code{\link[=make_requests]{make_requests()}} in order to create API endpoint urls. Another publicly
+available openBIS instance is the
+\href{https://openbis.elnlims.ch/openbis}{demo} offered by the developers. It can
+be accessed with both user name and password \code{test_observer} both via a
+browser or by passing \code{https://openbis.elnlims.ch} as \code{host_url} to methods
+which construct API calls.
+
 Requests are executed by \code{\link[=do_requests_serial]{do_requests_serial()}} or possibly by
 \code{\link[=do_requests_parallel]{do_requests_parallel()}} whenever several API calls are constructed at the
 same time. The argument \code{n_con} controls the degree of parallelism and if

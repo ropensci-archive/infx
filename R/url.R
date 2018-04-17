@@ -312,9 +312,15 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #'   * `sas`: \Sexpr{infx::docs_link("sas")}
 #'   * `dsrs`: \Sexpr{infx::docs_link("dsrs")}
 #' 
+#' If for some reason an url is desired from `api_url()` that cannot be
+#' constructed by pasting `host_url` and one of the hard-coded API endpoints
+#' together, this can be passed as `full_url`, which will simply be returned.
+#' 
 #' @param api_endpoint Abreviated name of the API section (e.g. `gis` for
 #' IGeneralInformationService).
 #' @param host_url Host url.
+#' @param full_url Instead of constructing the API endpoint url, a string can
+#' be passed which will be returned again.
 #' @param ... Further arguments are ignored.
 #' 
 #' @rdname openbis_urls
@@ -323,9 +329,11 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' # default endpoint is the GeneralInformationService interface
 #' api_url()
 #' # base url can be customized
-#' api_url(host_url = "https://foobar.com")
+#' api_url(host_url = "https://foobar.xyz")
 #' # ScreeningApiServer interface endpoint
 #' api_url("sas")
+#' # manual url
+#' api_url(full_url = "https://foobar.xyz/openbis/new-api-section-v1.json")
 #' 
 #' # link to GeneralInformationService interface docs
 #' docs_link()
@@ -341,7 +349,15 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 api_url <- function(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg",
                                      "sas", "dsrs"),
                     host_url = "https://infectx.biozentrum.unibas.ch",
+                    full_url = NULL,
                     ...) {
+
+  if (!is.null(full_url)) {
+    assert_that(is.string(full_url))
+    return(full_url)
+  }
+
+  assert_that(is.string(host_url))
 
   url <- switch(match.arg(api_endpoint),
                 gis = "openbis/openbis/rmi-general-information-v1.json",

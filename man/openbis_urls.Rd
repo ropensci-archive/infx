@@ -6,7 +6,7 @@
 \title{OpenBIS urls}
 \usage{
 api_url(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  host_url = "https://infectx.biozentrum.unibas.ch", ...)
+  host_url = "https://infectx.biozentrum.unibas.ch", full_url = NULL, ...)
 
 docs_link(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas",
   "dsrs"), method_name = NULL, version = "13.04.0")
@@ -16,6 +16,9 @@ docs_link(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas",
 IGeneralInformationService).}
 
 \item{host_url}{Host url.}
+
+\item{full_url}{Instead of constructing the API endpoint url, a string can
+be passed which will be returned again.}
 
 \item{...}{Further arguments are ignored.}
 
@@ -38,13 +41,20 @@ are abbreviated as
 \item \code{dsrs}: \Sexpr{infx::docs_link("dsrs")}
 }
 }
+\details{
+If for some reason an url is desired from \code{api_url()} that cannot be
+constructed by pasting \code{host_url} and one of the hard-coded API endpoints
+together, this can be passed as \code{full_url}, which will simply be returned.
+}
 \examples{
 # default endpoint is the GeneralInformationService interface
 api_url()
 # base url can be customized
-api_url(host_url = "https://foobar.com")
+api_url(host_url = "https://foobar.xyz")
 # ScreeningApiServer interface endpoint
 api_url("sas")
+# manual url
+api_url(full_url = "https://foobar.xyz/openbis/new-api-section-v1.json")
 
 # link to GeneralInformationService interface docs
 docs_link()

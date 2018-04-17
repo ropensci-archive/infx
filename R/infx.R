@@ -70,6 +70,19 @@
 #' references are resolved by a call to [resolve_references()], initiated by
 #' [process_json()].
 #' 
+#' As a side note: while created for and mainly tested with
+#' [InfectX](https://infectx.biozentrum.unibas.ch/openbis) data which is
+#' queried by default using the host url
+#' `https://infectx.biozentrum.unibas.ch`, all API methods can be used for
+#' accessing other openBIS instances as well. Functions that issue API calls
+#' can all accept `host_url` arguments which are forwarded to [api_url()] in
+#' [make_requests()] in order to create API endpoint urls. Another publicly
+#' available openBIS instance is the
+#' [demo](https://openbis.elnlims.ch/openbis) offered by the developers. It can
+#' be accessed with both user name and password `test_observer` both via a
+#' browser or by passing `https://openbis.elnlims.ch` as `host_url` to methods
+#' which construct API calls.
+#' 
 #' Requests are executed by [do_requests_serial()] or possibly by
 #' [do_requests_parallel()] whenever several API calls are constructed at the
 #' same time. The argument `n_con` controls the degree of parallelism and if

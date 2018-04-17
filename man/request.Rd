@@ -109,20 +109,33 @@ implementation helps with urls that have a limited lifetime.
 
 The function \code{make_requests()} is used to construct JSON-RPC requests. The
 arguments \code{methods}, \code{params}, \code{ids} and \code{version} are combined into one
-or several request objects according to the JSON-RPC specification and
-together with the \code{urls} argument are passed to \code{do_requests_*()}. The
-objects passed as \code{urls}, \code{methods} and \code{params} should all be of the same
-length but in case any are of length 1, they will be \code{\link[base:rep]{base::rep()}}'ed to
-the required length. Care has to be taken that the list passed as \code{params}
-has the correct degree of nesting. As \code{make_requests()} iterates over the
-topmost list level, a single request should be wrapped in a list such that
-the topmost list level is on length 1. The function \code{make_request()} is a
-wrapper around \code{make_requests()} that does exactly this.
+or several request objects according to the JSON-RPC specification which in
+turn are passed to \code{do_requests_*()}. The objects passed as \code{methods} and
+\code{params} should all be of the same length but in case any are of length 1,
+they will be \code{\link[base:rep]{base::rep()}}'ed to the required length. Care has to be taken
+that the list passed as \code{params} has the correct degree of nesting. As
+\code{make_requests()} iterates over the topmost list level, a single request
+should be wrapped in a list such that the topmost list level is on length
+\enumerate{
+\item The function \code{make_request()} is a wrapper around \code{make_requests()} that
+does exactly this.
+}
 
-As part of the \code{process_json()} function, \code{@type} fields are converted
+Target urls are created by forwarding \code{...} arguments of \code{make_requests()}
+to \code{\link[=api_url]{api_url()}} which accepts a string for each \code{api_endpoint} and
+\code{host_url}. By default the API endpoint url corresponding to the
+\code{GeneralInformationService} interface on the InfectX openBIS instance is
+returned. As a safety hatch, \code{\link[=api_url]{api_url()}} also accepts and simply returns a
+string passed as \code{full_url} and therefore bypasses automatic API endpoint
+construction. This enables any function issuing an API call via
+\code{make_requests()} to contact an arbitrary openBIS host and to reach API
+endpoints which are not among the hard-coded selection.
+
+As part of the \code{process_json()} function, which is the default value passed
+as \code{finally} argument in \code{make_requests()}, \code{@type} fields are converted
 to\code{json_class} attributes, using \code{\link[=as_json_class]{as_json_class()}}. Additionally, \code{@id}
 fields, which may be referenced if an objects is used multiple times, are
-recursively resolved using \code{\link[=rm_json_class]{rm_json_class()}} such that each object is
+recursively resolved using \code{\link[=resolve_references]{resolve_references()}} such that each object is
 self-contained.
 }
 \examples{
