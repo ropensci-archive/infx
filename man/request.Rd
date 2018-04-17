@@ -143,11 +143,13 @@ self-contained.
   tok <- login_openbis("rdgr2014", "IXPubReview")
 
   # the function list_projects() is implemented as follows
-  projects <- make_request(api_url("gis"), "listProjects", list(token))
+  projects <- make_request("listProjects", list(tok),
+                           api_endpoint = "gis")
   print(projects[[1]])
   # or using make_request(), the params argument has to be a list per
   # request and the first entry of the returned list has to be selected
-  proj <- make_requests(api_url("gis"), "listProjects", list(list(token)))
+  proj <- make_requests("listProjects", list(list(tok)),
+                        api_endpoint = "gis")
   identical(proj[[1L]][[1L]],
             projects[[1]])
 
@@ -159,7 +161,7 @@ self-contained.
                                  id = "foobar",
                                  jsonrpc = "2.0",
                                  method = "listProjects",
-                                 params = list(token)
+                                 params = list(tok)
                                )
                              ),
                              create_handle = infx:::create_request_handle,

@@ -411,7 +411,7 @@ well_pos <- function(row = NULL, col = NULL, name = NULL) {
   if (is.null(row) || is.null(col)) {
     assert_that(is.null(row), is.null(col), is.character(name))
     row <- substr(name, 1L, 1L)
-    col <- substring(name, 2L)
+    col <- as.integer(substring(name, 2L))
   } else
     assert_that(is.null(name))
 
@@ -419,8 +419,8 @@ well_pos <- function(row = NULL, col = NULL, name = NULL) {
     row <- match(toupper(row), LETTERS)
 
   assert_that(is.numeric(row), is.numeric(col),
-              identical(row, as.integer(row)),
-              identical(col, as.integer(col)))
+              all.equal(row, as.integer(row)),
+              all.equal(col, as.integer(col)))
 
   max_len <- max(length(row), length(col))
 
