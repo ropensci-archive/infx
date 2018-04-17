@@ -43,7 +43,8 @@ requests are issued per HTTP request.}
 successful JSON RPC request.}
 
 \item{...}{Further arguments to \code{make_request()} are passed to
-\code{make_requests()} and from \code{make_requests()} to \code{do_requests_*()}.}
+\code{make_requests()} and from \code{make_requests()} to \code{do_requests_*()} and
+\code{\link[=api_url]{api_url()}}.}
 
 \item{method, methods}{The API method name(s).}
 

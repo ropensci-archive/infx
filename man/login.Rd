@@ -18,6 +18,8 @@ is_token_valid(token, ...)
 \item{auto_disconnect}{Logical switch for automatically closing the
 connection upon garbage collection of the token.}
 
+\item{...}{Further arguments are forwarded to \code{\link[=make_request]{make_request()}}.}
+
 \item{token}{Login token as created by \code{login_openbis()}.}
 }
 \description{

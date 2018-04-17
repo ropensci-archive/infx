@@ -198,7 +198,8 @@ make_requests <- function(methods,
 }
 
 #' @param ... Further arguments to `make_request()` are passed to
-#' `make_requests()` and from `make_requests()` to `do_requests_*()`.
+#' `make_requests()` and from `make_requests()` to `do_requests_*()` and
+#' [api_url()].
 #' 
 #' @rdname request
 #' @export

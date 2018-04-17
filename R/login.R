@@ -11,6 +11,7 @@
 #' @param auto_disconnect Logical switch for automatically closing the
 #' connection upon garbage collection of the token.
 #' @param token Login token as created by `login_openbis()`.
+#' @param ... Further arguments are forwarded to [make_request()].
 #' 
 #' @rdname login
 #' 
