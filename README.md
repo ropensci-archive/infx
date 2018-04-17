@@ -15,7 +15,7 @@ You can install [infx](https://nbenn.github.io/infx) from Github with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("nbenn/infx")
+devtools::install_github("nbenn/infx", build_vignettes = TRUE)
 ```
 
 InfectX
