@@ -338,3 +338,7 @@ ggplot(data = heatmap) +
 ```
 
 For the above example, a feature data set of type `HCS_ANALYSIS_WELL_RESULTS_SUMMARIES` was chosen. Such data sets contain per-well aggregated results from CellProfiler analysis, including object counts, mean area measurements and mean intensity measurements. Other feature data sets hold summarized information on infection scoring, quality metrics such as focus scores, underexposure/overexposure indicators, dynamic range analysis or image acquisition meta data.
+
+```{r logout, echo = FALSE}
+logout_openbis(token)
+```

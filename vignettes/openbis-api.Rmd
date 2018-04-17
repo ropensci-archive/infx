@@ -157,7 +157,7 @@ As a last argument, a `finally` function can be passed, which defaults to `proce
 For single requests, a wrapper around `make_requests()` is available as `make_request()`. This function wraps the `params` argument in a list such that a list of length 1 is passed to `make_requests()` and returns the first entry of the list resulting from calling `make_requests()`. The following example shows how `make_request()` is used to implement the API method [`listProjects`](https://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/generic/shared/api/v1/IGeneralInformationService.html#listProjects%28java.lang.String%29), which takes an access token passed as a list as its only argument.
 
 ```{r simple-rpc}
-token <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
+token <- login_openbis("rdgr2014", "IXPubReview")
 
 projects <- make_request(method = "listProjects",
                          params = list(token),
@@ -189,7 +189,6 @@ Any arguments passed as `...` to `make_requests()` will be forwarded to `api_url
 
 ```{r third-party, fig.align = "center"}
 token <- login_openbis("test_observer", "test_observer",
-                       auto_disconnect = FALSE,
                        host_url = "https://openbis.elnlims.ch")
 
 gel_data <- search_openbis(

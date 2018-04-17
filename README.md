@@ -34,8 +34,8 @@ For every API call, a valid login token is required. Tokens can be created using
 
 ``` r
 tok <- login_openbis(user = "rdgr2014",
-                     pwd = "IXPubReview",
-                     auto_disconnect = FALSE)
+                     pwd = "IXPubReview")
+
 is_token_valid(tok)
 #> [1] TRUE
 ```
@@ -67,7 +67,6 @@ While this client has been thoroughly tested with the openBIS instance hosted by
 
 ``` r
 tok <- login_openbis("test_observer", "test_observer",
-                     auto_disconnect = FALSE,
                      host_url = "https://openbis.elnlims.ch")
 
 projects <- list_projects(tok, host_url = "https://openbis.elnlims.ch")

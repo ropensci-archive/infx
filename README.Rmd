@@ -49,8 +49,8 @@ For every API call, a valid login token is required. Tokens can be created using
 
 ```{r login}
 tok <- login_openbis(user = "rdgr2014",
-                     pwd = "IXPubReview",
-                     auto_disconnect = FALSE)
+                     pwd = "IXPubReview")
+
 is_token_valid(tok)
 ```
 
@@ -73,7 +73,6 @@ by InfectX and certain aspects are geared towards high content screening applica
 
 ```{r other-openbis}
 tok <- login_openbis("test_observer", "test_observer",
-                     auto_disconnect = FALSE,
                      host_url = "https://openbis.elnlims.ch")
 
 projects <- list_projects(tok, host_url = "https://openbis.elnlims.ch")
