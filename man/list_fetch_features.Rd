@@ -153,11 +153,13 @@ behaves this way is currently unclear.
                           feature_codes = get_field(feat_info, "code"),
                           wells = well_pos(1:6, 3:8))
 
+  well_pos <- get_field(feats, "wellPosition")
+  values <- get_field(feats, "values")
   tibble::tibble(
-    well_row = get_field(get_field(feats, "wellPosition"), "wellRow"),
-    well_col = get_field(get_field(feats, "wellPosition"), "wellColumn"),
-    cell_count = as.integer(get_field(feats, "values")[1L, ]),
-    cell_area = as.numeric(get_field(feats, "values")[2L, ])
+    well_row = get_field(well_pos, "wellRow"),
+    well_col = get_field(well_pos, "wellColumn"),
+    cell_count = as.integer(values[1L, ]),
+    cell_area = as.numeric(values[2L, ])
   )
 }
 
