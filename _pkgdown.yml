@@ -6,6 +6,9 @@ navbar:
 template:
   params:
     bootswatch: flatly
+    docsearch:
+      api_key: 8f9990194a308dca43109e01826929af
+      index_name: infx
 reference:
   - title: Package documentation
     contents: 
