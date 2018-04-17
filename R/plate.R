@@ -384,11 +384,9 @@ as_well_id.WellMetadata <- function(x, ...) {
 
   x <- as_json_vec(x)
 
-  assert_that(has_fields(x, c("plateIdentifier", "wellPosition")))
-
   well_id(get_field(x, "permId"),
-          as_json_vec(lapply(x, `[[`, "plateIdentifier")),
-          as_json_vec(lapply(x, `[[`, "wellPosition")))
+          get_field(x, "plateIdentifier"),
+          get_field(x, "wellPosition"))
 }
 
 #' @rdname list_plate_well

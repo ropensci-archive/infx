@@ -132,24 +132,16 @@ list_experiment_types <- function(token, ...)
 #' 
 exp_to_expid <- function(x) {
 
-  convert <- function(x) {
-    id <- unlist(strsplit(sub("^/", "", x[["identifier"]]), "/"))
-    assert_that(length(id) == 3L)
-    json_class(permId = x[["permId"]], spaceCode = id[1], projectCode = id[2],
-               experimentCode = id[3], class = "ExperimentIdentifier")
-  }
+  codes <- strsplit(sub("^/", "", get_field(x, "identifier")), "/")
 
-  fields <- c("permId", "identifier")
-
-  assert_that(inherits(x, "Experiment"),
-              has_fields(x, fields))
-
-  if (is_json_class(x))
-    res <- convert(x)
-  else
-    res <- lapply(x, convert)
-
-  as_json_vec(res)
+  as_json_vec(
+    Map(json_class,
+        permId = get_field(x, "permId"),
+        spaceCode = sapply(codes, `[`, 1L),
+        projectCode = sapply(codes, `[`, 2L),
+        experimentCode = sapply(codes, `[`, 3L),
+        MoreArgs = list(class = "ExperimentIdentifier"))
+  )
 }
 
 #' Extract experiment string
@@ -186,9 +178,5 @@ exp_id_str.ExperimentIdentifier <- function(x, ...) {
 #' @keywords internal
 #' @export
 #' 
-exp_id_str.Experiment <- function(x, ...) {
-
-  assert_that(has_fields(x, "identifier"))
-
-  lapply(as_json_vec(x), `[[`, "identifier")
-}
+exp_id_str.Experiment <- function(x, ...)
+  get_field(x, "identifier")

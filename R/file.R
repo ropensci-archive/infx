@@ -375,11 +375,11 @@ fetch_ds_files.NULL <- function(token,
                                 ...) {
 
   files <- list_files(token, data_sets, ...)
-  files <- files[!sapply(files, `[[`, "isDirectory")]
+  files <- files[!get_field(files, "isDirectory")]
 
   if (!is.null(file_regex)) {
     assert_that(is.string(file_regex))
-    files <- files[grepl(file_regex, sapply(files, `[[`, "pathInDataSet"))]
+    files <- files[grepl(file_regex, get_field(files, "pathInDataSet"))]
   }
 
   fetch_files(token, sapply(files, attr, "data_set"), files, ...)
@@ -469,19 +469,19 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
   assert_that(is.character(data_sets),
               length(data_sets) == length(x))
 
-  dirs <- sapply(x, `[[`, "isDirectory")
+  dirs <- get_field(x, "isDirectory")
   if (any(dirs)) {
     warning("cannot fetch directories, dropping paths\n  ",
-            paste(sapply(x[dirs], `[[`, "pathInDataSet"), collapse = "\n  "))
+            paste(get_field(x[dirs], "pathInDataSet"), collapse = "\n  "))
     x <- x[!dirs]
     data_sets <- data_sets[!dirs]
   }
 
   url_calls <- Map(function(a, b)
                      as.call(list(list_download_urls, token, a, b, ...)),
-                   data_sets, sapply(x, `[[`, "pathInDataSet"))
+                   data_sets, get_field(x, "pathInDataSet"))
 
-  file_sizes <- lapply(x, `[[`, "fileSize")
+  file_sizes <- get_field(x, "fileSize")
 
   res <- if (length(url_calls) > 1L && n_con > 1L)
     do_requests_parallel(url_calls, file_sizes, n_con, 
@@ -534,7 +534,7 @@ read_mat_files <- function(data) {
 
   reduce_nesting <- function(x) {
     if (is.list(x) && length(x) == 1L)
-      x <- x[[1]]
+      x <- x[[1L]]
     if (is.list(x))
       lapply(x, reduce_nesting)
     else
@@ -544,13 +544,13 @@ read_mat_files <- function(data) {
   extract_data <- function(x, y = character()) {
     if (is.list(x) && length(x) == 1L &&
         has_attr(x, "dim") && has_attr(x, "dimnames"))
-      extract_data(x[[1]], c(y, unlist(attr(x, "dimnames"))))
+      extract_data(x[[1L]], c(y, unlist(attr(x, "dimnames"))))
     else {
       x <- reduce_nesting(x)
       info <- setdiff(y, "Measurements")
       assert_that(length(info) == 2L)
-      attr(x, "object") <- info[1]
-      attr(x, "feature") <- info[2]
+      attr(x, "object") <- info[1L]
+      attr(x, "feature") <- info[2L]
       x
     }
   }

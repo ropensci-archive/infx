@@ -252,7 +252,7 @@ fetch_images.MicroscopyImageReference <- function(token,
                                                       "channel")))))
   x <- x[!drop]
 
-  channels <- sapply(x, `[[`, "channel")
+  channels <- get_field(x, "channel")
 
   fetch_img_for_ds(token, x, channels, well_positions, image_size,
                    thumbnails, ...)

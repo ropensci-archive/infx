@@ -183,8 +183,13 @@ has_fields.json_vec <- function(x, fields, ...)
 #' @rdname json_utils
 #' @export
 #' 
-get_field.json_vec <- function(x, field, ...)
-  sapply(x, `[[`, field)
+get_field.json_vec <- function(x, field, ...) {
+  res <- lapply(x, `[[`, field)
+  if (all(sapply(res, is_json_class)))
+    as_json_vec(res)
+  else
+    simplify2array(res, higher = FALSE)
+}
 
 #' @rdname json_utils
 #' @export

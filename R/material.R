@@ -272,7 +272,8 @@ as_mat_id <- function(x, mode) {
   res <- lapply(as_json_vec(x), function(y)
     material_id(
       code = get_field(y, "materialCode"),
-      type = get_field(y[["materialTypeIdentifier"]], "materialTypeCode"),
+      type = get_field(get_field(y, "materialTypeIdentifier"),
+                       "materialTypeCode"),
       mode = mode
     ))
 
@@ -355,12 +356,12 @@ extract_well_material <- function(x, row, col) {
 
   assert_that(has_subclass(x, "PlateWellMaterialMapping"),
               is.count(row), is.count(col),
-              row <= x[["plateGeometry"]][["height"]],
-              col <= x[["plateGeometry"]][["width"]])
+              row <= get_field(get_field(x, "plateGeometry"), "height"),
+              col <= get_field(get_field(x, "plateGeometry"), "width"))
 
-  ind <- (row - 1L) * x[["plateGeometry"]][["width"]] + col
+  ind <- (row - 1L) * get_field(get_field(x, "plateGeometry"), "width") + col
 
-  res <- x[["mapping"]][[ind]]
+  res <- get_field(x, "mapping")[[ind]]
 
   if (length(res) > 0L)
     as_json_vec(res[[1L]])
