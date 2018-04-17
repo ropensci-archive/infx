@@ -6,34 +6,57 @@
 \alias{infx-package}
 \title{API access to the InfectX data repository}
 \description{
-The JSON-RPC based openBIS API can be conveniently accesses form R using
-functionality provided with this package. The intended application is data
-retrieval from the openBIS instance hosted by the InfectX high throughput
-screening project. Therefore some aspects of the API geared more towards
-data curation are currently not supported. However the basic infrastructure
-for creating and issuing a request, as well as processing the response,
-is exposed and missing functionality therefore could easily be added.
+The JSON-RPC based \href{https://openbis.elnlims.ch}{openBIS} API can be
+conveniently queried form R using functionality provided with this package.
+While focused on retrieval of data from the
+\href{http://www.infectx.ch}{InfectX} and
+\href{https://www.targetinfectx.ch}{TargetInfectX} high throughput screening
+projects, any openBIS instance that supports v1 of the JSON-RPC API can be
+accessed. Some parts of the API, geared more towards data curation are
+currently not supported. For more infomartion on what API functions are
+available, have a look at the
+\href{../doc/openbis-api.html}{openBIS API vignette}. The basic infrastructure
+for creating and executing a request, as well as processing the response, is
+exposed and missing functionality can easily be added.
 }
 \details{
 Type information of JSON objects returned from the API is preserved as S3
 class attribute and all JSON list structures additionally inherit from the
-S3 class \code{json_class}. As such, a data set object retrieved form openBIS,
-for example, will have two class attributes: \code{DataSet} and \code{json_class}.
-Sets of \code{json_class} objects that are of the same sub-type can be
-represented as \code{json_vec} objects of that sub-type. Several data set
-objects therefore are assembled as list structure with S3 classes \code{DataSet}
-and \code{json_vec}, where every entry in turn is an S3 object with types
-\code{DataSet} and \code{json_class}. This approach was chosen in order to not only
-have available generic function dispatch on individual \code{json_class}
-objects, but also on sets (or \emph{vectors}) of \code{json_class} objects.
+S3 class \code{json_class}. As such, a \code{foobar} object retrieved form openBIS,
+will have two class attributes: \code{foobar} and \code{json_class}. Sets of
+\code{json_class} objects that are of the same sub-type can be represented as
+\code{json_vec} objects of that sub-type. Several data set objects therefore are
+assembled as list structure with S3 classes \code{foobar} and \code{json_vec}, where
+every entry in turn is an S3 object with types \code{foobar} and \code{json_class}.\preformatted{examp <- json_vec(
+  json_class(a = "foo", class = "foobar"),
+  json_class(a = "bar", class = "foobar")
+)
+str(examp)
+
+#> List of 2
+#>  $ :List of 1
+#>   ..$ a: chr "foo"
+#>   ..- attr(*, "class")= chr [1:2] "foobar" "json_class"
+#>  $ :List of 1
+#>   ..$ a: chr "bar"
+#>   ..- attr(*, "class")= chr [1:2] "foobar" "json_class"
+#>  - attr(*, "class")= chr [1:2] "foobar" "json_vec"
+}
+
+Such an approach was chosen in order to not only have available generic
+function dispatch on individual \code{json_class} objects, but also on sets (or
+\emph{vectors}) of \code{json_class} objects. For more information on working with
+\code{json_class} and \code{json_vec} objects refer to the
+\href{#json-object-handling}{section on JSON objects} and
+\href{../doc/json-class.html}{JSON object vignette}.
 
 This documentation makes a distinction between objects in openBIS that exist
-mainly for the purpose of organizing and grouping data and objects that
+mainly for the purpose of organizing/grouping data and objects that
 represent actual data resources. The most basic object in the organizational
 hierarchy is that of a \code{Project}. Several \code{Experiment} objects may be
 associated with a \code{Project} and \code{Sample} objects live in experiments. Given
 the HTS-based context of InfectX data, samples typically represent
-microtiter plates and individual plate wells. \code{Material} objects describe
+microtiter plates or individual plate wells. \code{Material} objects describe
 agents applied to samples. Many of the InfectX screens are RNA interference-
 based and therefore materials may be for example siRNA oligos or targeted
 genes. Finally, samples are associated with \code{DataSet} objects that stand for
@@ -78,25 +101,27 @@ references are resolved by a call to \code{\link[=resolve_references]{resolve_re
 \code{\link[=process_json]{process_json()}}.
 
 As a side note: while created for and mainly tested with
-\href{https://infectx.biozentrum.unibas.ch/openbis}{InfectX} data which is
-queried by default using the host url
-\code{https://infectx.biozentrum.unibas.ch}, all API methods can be used for
-accessing other openBIS instances as well. Functions that issue API calls
-can all accept \code{host_url} arguments which are forwarded to \code{\link[=api_url]{api_url()}} in
-\code{\link[=make_requests]{make_requests()}} in order to create API endpoint urls. Another publicly
-available openBIS instance is the
-\href{https://openbis.elnlims.ch/openbis}{demo} offered by the developers. It can
-be accessed with both user name and password \code{test_observer} both via a
-browser or by passing \code{https://openbis.elnlims.ch} as \code{host_url} to methods
-which construct API calls.
+\href{https://infectx.biozentrum.unibas.ch/openbis}{InfectX} data, all API
+methods can be used for accessing other openBIS instances as well.
+Functions that issue API calls can all accept a \code{host_url} argument which
+is forwarded to \code{\link[=api_url]{api_url()}} in \code{\link[=make_requests]{make_requests()}} in order to create API
+endpoint urls. Another publicly available openBIS instance is the
+\href{https://openbis.elnlims.ch/openbis}{demo} offered by the openBIS
+development team. It can be accessed with both user name and password
+\code{test_observer} both via a browser or by passing
+\code{https://openbis.elnlims.ch} as \code{host_url} to methods which initiate API
+calls.
 
-Requests are executed by \code{\link[=do_requests_serial]{do_requests_serial()}} or possibly by
-\code{\link[=do_requests_parallel]{do_requests_parallel()}} whenever several API calls are constructed at the
-same time. The argument \code{n_con} controls the degree of parallelism and if
-set to \code{1}, forces serial execution even in cases where several requests
-are being issued. Failed requests can be automatically repeated to provide
-additional stability by setting the \code{n_try} argument to a value larger than
-\code{1} (default is \code{2}).
+After being assembled by \code{\link[=make_requests]{make_requests()}}, requests are executed by
+\code{\link[=do_requests_serial]{do_requests_serial()}} or \code{\link[=do_requests_parallel]{do_requests_parallel()}}, depending on whether
+several API calls are constructed at the same time. The argument \code{n_con}
+controls the degree of parallelism and if set to \code{1}, forces serial
+execution even in cases where several requests are being issued. Failed
+requests can be automatically repeated to provide additional stability by
+setting the \code{n_try} argument to a value larger than \code{1} (default is \code{2}).
+For more information on how to add further functionality using
+\code{\link[=make_requests]{make_requests()}} and \code{\link[=do_requests_serial]{do_requests_serial()}}/\code{\link[=do_requests_parallel]{do_requests_parallel()}},
+refer to the \href{../doc/openbis-api.html}{openBIS API vignette}.
 }
 
 \section{JSON object handling}{
@@ -113,7 +138,7 @@ is recursively called on any object inheriting from \code{json_class} in
 \code{\link[=check_json_class]{check_json_class()}}.
 
 Similarly to \code{json_class} objects, a constructor for \code{json_vec} objects is
-provided in the form if \code{\link[=json_vec]{json_vec()}} and existing structures can be coerced
+provided in the form of \code{\link[=json_vec]{json_vec()}} and existing structures can be coerced
 to \code{json_vec} by \code{\link[=as_json_vec]{as_json_vec()}}. The validator function \code{\link[=is_json_vec]{is_json_vec()}}
 tests whether an object is a properly formed \code{json_vec} object and the
 utility function \code{\link[=has_common_subclass]{has_common_subclass()}} tests whether the passed list
@@ -142,39 +167,40 @@ that sub-types remain compatible. Recursive printing of both \code{json_class}
 and \code{json_vec} objects is possible by calling \code{\link[base:print]{base::print()}}. Recursion
 depth, as well as printing length and width can be controlled via arguments,
 as can fancy printing (colors and UTF box characters for visualizing tree
-structures) be disabled.
+structures).
 }
 
 \section{Listing and searching for objects}{
 
 OpenBIS projects can be listed by calling \code{\link[=list_projects]{list_projects()}} and experiments
-are enumerated with \code{\link[=list_experiments]{list_experiments()}}. Two objects types are used to
-represent experiments: \code{Experiment} and \code{ExperimentIdentifier}.
+are enumerated with \code{\link[=list_experiments]{list_experiments()}}. Two objects types are used for
+representing experiments: \code{Experiment} and \code{ExperimentIdentifier}.
 \code{\link[=exp_to_expid]{exp_to_expid()}} converts a set of \code{Experiment} objects to
-\code{ExperimentIdentifier} and the inverse is possible by passing a set of
-\code{ExperimentIdentifier} objects to \code{\link[=list_experiments]{list_experiments()}}. All available
-experiments can be listed as \code{ExperimentIdentifier} objects using
-\code{\link[=list_experiment_ids]{list_experiment_ids()}} and all experiments for a set of projects are
-enumerated by passing \code{Project} objects to \code{\link[=list_experiments]{list_experiments()}}. Experiments
-have a type and all realized types can be listed with
-\code{\link[=list_experiment_types]{list_experiment_types()}}.
+\code{ExperimentIdentifier} (requires no API call) and the inverse is possible
+by passing a set of \code{ExperimentIdentifier} objects to \code{\link[=list_experiments]{list_experiments()}}
+(does require an API call). All available experiments can be listed as
+\code{ExperimentIdentifier} objects using \code{\link[=list_experiment_ids]{list_experiment_ids()}} and all
+experiments for a set of projects are enumerated by passing \code{Project}
+objects to \code{\link[=list_experiments]{list_experiments()}}. Experiments have a type and all realized
+types can be listed with \code{\link[=list_experiment_types]{list_experiment_types()}}.
 
-Experiments consist of samples which are listed by passing a set of
+Experiments consist of samples which can be listed by passing a set of
 \code{Experiment} or \code{ExperimentIdentifier} objects to \code{\link[=list_samples]{list_samples()}}. Samples
-too have a type and all types are retrieved with \code{\link[=list_sample_types]{list_sample_types()}}.
-Additional object types that are used to represent samples are plate and
-well objects, including \code{Plate}, \code{PlateIdentifier}, \code{PlateMetadata},
-\code{WellIdentifier} and \code{WellMetadata}, all of which can be converted to
-\code{Sample} objects by calling \code{\link[=list_samples]{list_samples()}}. Plate objects can be listed
-using \code{\link[=list_plates]{list_plates()}}, which can either return all available plate objects
-or plates for a given set of experiments (passed as \code{Experiment} or
-\code{ExperimentIdentifier} objects). Plate meta data, which also contains
-associated well meta data is retrieved by \code{\link[=list_plate_metadata]{list_plate_metadata()}} which can
-act on plate objects (\code{Plate}, \code{PlateIdentifier} or \code{Sample}). Wells of a
-plate are listed with \code{\link[=list_wells]{list_wells()}} which too may be dispatched on plate
-objects. Wells associated with a material object can be enumerated by
-passing a set of \code{MaterialScreening}, \code{MaterialIdentifierScreening},
-\code{MaterialGeneric} or \code{MaterialIdentifierGeneric} to \code{\link[=list_wells]{list_wells()}}.
+too have a type and all types are retrieved by calling
+\code{\link[=list_sample_types]{list_sample_types()}}. Additional object types that are used to represent
+samples are plate and well objects, including \code{Plate}, \code{PlateIdentifier},
+\code{PlateMetadata}, \code{WellIdentifier} and \code{WellMetadata}, all of which can be
+converted to \code{Sample} objects by calling \code{\link[=list_samples]{list_samples()}}. Plate objects
+can be listed using \code{\link[=list_plates]{list_plates()}}, which can either return all available
+plate objects or plates for a given set of experiments (passed as
+\code{Experiment} or \code{ExperimentIdentifier} objects). Plate meta data, which
+also contains associated well meta data is retrieved by
+\code{\link[=list_plate_metadata]{list_plate_metadata()}} which can act on plate objects (\code{Plate},
+\code{PlateIdentifier} or \code{Sample}). Wells of a plate are listed with
+\code{\link[=list_wells]{list_wells()}} which too may be dispatched on plate objects. Wells
+associated with a material object can be enumerated by passing a set of
+\code{MaterialScreening}, \code{MaterialIdentifierScreening}, \code{MaterialGeneric} or
+\code{MaterialIdentifierGeneric} to \code{\link[=list_wells]{list_wells()}}.
 
 Data set objects represent the most diverse group of data-organizational
 structures. Possible types include \code{DataSet}, \code{DatasetIdentifier},
@@ -185,24 +211,28 @@ structures. Possible types include \code{DataSet}, \code{DatasetIdentifier},
 set codes (passed as character vector). \code{\link[=list_dataset_ids]{list_dataset_ids()}} gives back
 \code{DatasetIdentifier} objects, either for a set of \code{DataSet} objects or data
 set codes (again passed as character vector). The remaining data set types
-are generated by \code{\link[=list_references]{list_references()}}, depending on input arguments.
+are generated by \code{\link[=list_references]{list_references()}}, and return type depends on input
+arguments.
 
 Whenever \code{\link[=list_references]{list_references()}} is dispatched on objects identifying a plate
 sample (\code{Plate}, \code{PlateIdentifier}, \code{PlateMetadata} or \code{Sample}), a \code{type}
 argument is available, which can be any of \code{raw}, \code{segmentation} or
 \code{feature}. Depending on \code{type}, \code{ImageDatasetReference} or
-\code{FeatureVectorDatasetReference} objects are returned. Such objects represent
-plate-wise image data sets (either for raw images or segmentation masks) or
-feature vector data sets. Dispatch of \code{\link[=list_references]{list_references()}} is also possible
-on objects identifying data sets and again the return type depends on
-further arguments. If imaging channels are specified as \code{channels} argument,
-but not specific wells are selected, \code{MicroscopyImageReference} objects
-are retrieved, representing a plate-wide raw imaging data set per imaging
-site and imaging channel. If in addition to imaging channels, wells are
-specified (\code{WellPosition} objects, e.g. created by \code{\link[=well_pos]{well_pos()}}, passed as
-\code{wells} argument), the return type changes to \code{PlateImageReference}. Such
-objects precisely reference an image, by encoding imaging channel, imaging
-site, well position and pate-wise imaging data set.
+\code{FeatureVectorDatasetReference} objects are returned. The former type of
+objects represent plate-wise image data sets (either for raw images or
+segmentation masks) while the latter type references feature vector data
+sets.
+
+Dispatch of \code{\link[=list_references]{list_references()}} is also possible on objects identifying
+data sets and again the return type depends on further arguments. If
+imaging channels are specified as \code{channels} argument, but not specific
+wells are selected, \code{MicroscopyImageReference} objects are retrieved,
+representing a plate-wide raw imaging data set per imaging site and imaging
+channel. If in addition to imaging channels, wells are specified
+(\code{WellPosition} objects, e.g. created by \code{\link[=well_pos]{well_pos()}}, passed as \code{wells}
+argument), the return type changes to \code{PlateImageReference}. Such objects
+precisely reference an image, by encoding imaging channel, imaging site,
+well position and pate-wise imaging data set.
 
 Finally, \code{\link[=list_references]{list_references()}} can be dispatched on material objects,
 including \code{MaterialGeneric}, \code{MaterialScreening},
@@ -211,6 +241,9 @@ including \code{MaterialGeneric}, \code{MaterialScreening},
 not representing data sets, \code{PlateWellReferenceWithDatasets} contain all
 respective \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference}
 objects.
+}
+
+\section{Search for objects}{
 
 Instead of enumerating objects using the various \code{list_*()} functions,
 search queries can be constructed and run against openBIS. A search query
@@ -219,13 +252,15 @@ consists of a possibly nested \code{SearchCriteria} object as instantiated by
 \code{SearchCriteria} objects are composed of a set of match clauses (see
 \code{\link[=property_clause]{property_clause()}}, \code{\link[=any_property_clause]{any_property_clause()}}, \code{\link[=any_field_clause]{any_field_clause()}},
 \code{\link[=attribute_clause]{attribute_clause()}} and \code{\link[=time_attribute_clause]{time_attribute_clause()}}) which are combined by
-an operator (either \code{any} or \code{all}). Additionally, a single
-\code{SearchSubCriteria} may be attached to every \code{SearchCriteria} object which
-in turn consists of a \code{SearchCriteria} and an object type to which this
-search criteria object is applied to. In the call to \code{\link[=search_openbis]{search_openbis()}}
-a target type has to be specified as \code{target_object} argument (default is
-\code{data_set} and possible alternatives are \code{experiment}, \code{material} as well as
-\code{sample}) to indicate what object type the search is targeted at.
+an operator (either \code{any} or \code{all}).
+
+Additionally, a single \code{SearchSubCriteria} may be attached to every
+\code{SearchCriteria} object which in turn consists of a \code{SearchCriteria} and an
+object type to which this search criteria object is applied to. In the call
+to \code{\link[=search_openbis]{search_openbis()}} a target type has to be specified as \code{target_object}
+argument (default is \code{data_set} and possible alternatives are \code{experiment},
+\code{material} as well as \code{sample}) to indicate what object type the search is
+targeted at.
 }
 
 \section{Downloading data}{
@@ -237,7 +272,7 @@ available via this route. Accessing images and feature data using
 specialized interfaces however simplifies and makes possibly more specific
 data access.
 
-Files can be listed for any object representing a data set and for a
+Files can be listed for any object representing a data set as well as for a
 character vector of data set codes using \code{\link[=list_files]{list_files()}}. An object type,
 specialized for referencing files in a data set is available as
 \code{DataSetFileDTO} can also be passed to \code{\link[=list_files]{list_files()}}. This is useful
@@ -246,13 +281,13 @@ are of interest. In any case, \code{\link[=list_files]{list_files()}} returns a 
 \code{FileInfoDssDTO} objects. As no data set information is encoded in
 \code{FileInfoDssDTO} objects, \code{\link[=list_files]{list_files()}} saves data set codes as \code{data_set}
 attributes with each object. Download of files is done using
-\code{\link[=fetch_files]{fetch_files()}}, which needs for every requested file, the data set code
+\code{\link[=fetch_files]{fetch_files()}}, which requires for every requested file, the data set code
 and file path. This information can be passed as separate character vectors,
-\code{DataSetFileDTO} objects, \code{FileInfoDssDTO} objects with data set information
-passed separately as character vector or as \code{data_set} attribute with each
-object. Furthermore data set membership information can be passed as any
-type of data set object and if no file paths are specified, all available
-files for the given data sets are retrieved.
+\code{DataSetFileDTO} objects or \code{FileInfoDssDTO} objects with data set
+information passed separately as character vector or as \code{data_set}
+attribute with each object. Furthermore data set membership information can
+be passed as any type of data set object and if no file paths are
+specified, all available files for the given data sets are retrieved.
 
 \code{\link[=fetch_files]{fetch_files()}} internally creates download urls by calling
 \code{\link[=list_download_urls]{list_download_urls()}} and uses \code{\link[=do_requests_serial]{do_requests_serial()}} or
@@ -293,15 +328,15 @@ is left at default value \code{metadata}.
 Two types of objects are central to specifying feature data sets:
 \code{FeatureVectorDatasetReference} and \code{FeatureVectorDatasetWellReference}
 where the former object type references feature data for an entire plate and
-the latter for individual wells on a plate. Both objects may be passed to
-\code{\link[=fetch_features]{fetch_features()}} which returns objects of type \code{FeatureVectorDataset}
+the latter for individual wells on a plate. Both object types may be passed
+to \code{\link[=fetch_features]{fetch_features()}} which returns objects of type \code{FeatureVectorDataset}
 whenever a full plate is requested and \code{FeatureVectorWithDescription} for
 individual wells. Features are selected by passing a character vector of
 feature codes as \code{feature_codes} argument, the possible values of which
 can be enumerated for a feature vector data set by calling
-\code{\link[=list_feature_codes]{list_feature_codes()}} or extracting the \code{code} entries from
+\code{\link[=list_feature_codes]{list_feature_codes()}} or by extracting the \code{code} entries from
 \code{FeatureInformation} objects as retrieved by \code{\link[=list_features]{list_features()}}. In case the
 \code{feature_codes} argument is left at default value (\code{NA}), all available
-features are returned.
+features are returned by \code{\link[=fetch_features]{fetch_features()}}.
 }
 
