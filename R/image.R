@@ -99,7 +99,7 @@
 #' @rdname list_fetch_images
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #' 
 #'   # search for a sample object corresponding to plate KB2-03-1I
@@ -137,6 +137,8 @@
 #'                       image_size = json_class(width = 300, height = 300,
 #'                                               class = "ImageSize"))
 #'   identical(as.raster(img[[1L]]), as.raster(imgs[[1L]][[5L]]))
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

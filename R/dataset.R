@@ -61,7 +61,7 @@
 #' option is not exposed to the user.
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #' 
 #'   # search for a sample object corresponding to plate KB2-03-1I
@@ -100,6 +100,8 @@
 #'   # a reference to 9 images is returned, as there are 3 x 3 imaging tiles
 #'   # per well
 #'   length(well_ref)
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

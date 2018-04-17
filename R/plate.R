@@ -65,7 +65,7 @@
 #' @rdname list_plate_well
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #' 
 #'   # search for an experiment, e.g. ADENO-AU-K1
@@ -112,6 +112,8 @@
 #'   plates <- get_field(mtor, "experimentPlateIdentifier")
 #'   as_plate_id(plates)
 #'   unique(get_field(mtor, "wellPosition"))
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

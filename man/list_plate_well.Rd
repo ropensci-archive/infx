@@ -182,7 +182,7 @@ of a well within a plate. Such objects can be created using the constructor
 }
 
 \examples{
-\dontrun{
+\donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
 
   # search for an experiment, e.g. ADENO-AU-K1
@@ -229,6 +229,8 @@ of a well within a plate. Such objects can be created using the constructor
   plates <- get_field(mtor, "experimentPlateIdentifier")
   as_plate_id(plates)
   unique(get_field(mtor, "wellPosition"))
+
+  logout_openbis(tok)
 }
 
 }

@@ -147,6 +147,8 @@
 #' 
 #'   # httbin returns POST data, therefore
 #'   identical(data, req[[1L]])
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

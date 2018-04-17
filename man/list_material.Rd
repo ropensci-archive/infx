@@ -163,7 +163,7 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
 }
 
 \examples{
-\dontrun{
+\donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
 
   # search for a sample object corresponding to plate KB2-03-1I
@@ -219,6 +219,8 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
   get_field(get_field(wells, "experimentPlateIdentifier"), "plateCode")
   # and the material of interest is in well A22 in each one
   unique(get_field(wells, "wellPosition"))
+
+  logout_openbis(tok)
 }
 
 }

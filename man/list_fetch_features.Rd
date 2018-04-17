@@ -126,7 +126,7 @@ behaves this way is currently unclear.
 }
 
 \examples{
-\dontrun{
+\donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
 
   # search for a sample object corresponding to plate KB2-03-1I
@@ -161,6 +161,8 @@ behaves this way is currently unclear.
     cell_count = as.integer(values[1L, ]),
     cell_area = as.numeric(values[2L, ])
   )
+
+  logout_openbis(tok)
 }
 
 }

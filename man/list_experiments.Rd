@@ -86,7 +86,7 @@ the search for experiments.
 }
 
 \examples{
-\dontrun{
+\donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
 
   # list all available projects to limit the search for experiments
@@ -108,6 +108,8 @@ the search for experiments.
                         ),
                         target_object = "experiment")
   identical(exps[1L], exp)
+
+  logout_openbis(tok)
 }
 
 }

@@ -49,7 +49,7 @@
 #'                          "getDownloadUrlForFileForDataSetWithTimeout")}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #'   
 #'   # data store server information
@@ -89,6 +89,8 @@
 #'   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
 #'   Sys.sleep(3L)
 #'   tmp <- read_mat_files(url(file_url))
+#' 
+#'   logout_openbis(tok)
 #' }
 #' @export
 #' 

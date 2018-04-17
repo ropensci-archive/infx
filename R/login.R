@@ -19,9 +19,9 @@
 #' * \Sexpr{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   # create a login token
-#'   tok <- login_openbis("rdgr2014", "IXPubReview", auto_disconnect = FALSE)
+#'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #'   # check token
 #'   is_token_valid(tok)
 #' 

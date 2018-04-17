@@ -103,7 +103,7 @@
 #' * \Sexpr{infx::docs_link("gis", "searchForSamples")}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #'   
 #'   # search for an experiment, e.g. ADENO-AU-K1
@@ -164,6 +164,8 @@
 #'     target_object = "sample"
 #'   )
 #'   length(some)
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

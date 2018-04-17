@@ -33,7 +33,7 @@
 #' * \Sexpr{infx::docs_link("gis", "listSampleTypes")}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #' 
 #'   # search for an experiment, e.g. ADENO-AU-K1
@@ -75,6 +75,8 @@
 #'   wells <- well_id(get_field(well_samp, "permId"), plates[[1L]],
 #'                    well_code = get_field(well_samp, "code"))
 #'   identical(wells, well_ids)
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

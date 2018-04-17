@@ -15,11 +15,14 @@
 #' * \Sexpr{infx::docs_link("gis", "listProjects")}
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#' 
 #'   proj <- list_projects(tok)
 #'   length(proj)
 #'   get_field(proj, "code")
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

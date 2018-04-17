@@ -96,7 +96,7 @@
 #' @rdname list_fetch_files
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #'   tok <- login_openbis("rdgr2014", "IXPubReview")
 #' 
 #'   # search for a cell profiler feature data set from plate KB2-03-1I
@@ -131,6 +131,8 @@
 #'   sapply(data, class)
 #'   data <- fetch_files(tok, some_files, reader = read_mat_files)
 #'   sapply(data, class)
+#' 
+#'   logout_openbis(tok)
 #' }
 #' 
 #' @export

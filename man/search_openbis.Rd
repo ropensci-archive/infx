@@ -178,7 +178,7 @@ instead of \code{equals}).
 }
 
 \examples{
-\dontrun{
+\donttest{
   tok <- login_openbis("rdgr2014", "IXPubReview")
   
   # search for an experiment, e.g. ADENO-AU-K1
@@ -239,6 +239,8 @@ instead of \code{equals}).
     target_object = "sample"
   )
   length(some)
+
+  logout_openbis(tok)
 }
 
 }
