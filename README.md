@@ -70,7 +70,7 @@ tok <- login_openbis("test_observer", "test_observer",
                      auto_disconnect = FALSE,
                      host_url = "https://openbis.elnlims.ch")
 
-projects <- list_projects(token, host_url = "https://openbis.elnlims.ch")
+projects <- list_projects(tok, host_url = "https://openbis.elnlims.ch")
 projects[[1]]
 #> █─Project 
 #> ├─permId = 20150126115738287-33 
@@ -81,7 +81,7 @@ projects[[1]]
 #> │                       └─... 
 #> └─id = 3
 
-logout_openbis(token, host_url = "https://openbis.elnlims.ch")
+logout_openbis(tok, host_url = "https://openbis.elnlims.ch")
 ```
 
 Acknowledgments
