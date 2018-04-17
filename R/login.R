@@ -43,8 +43,11 @@ login_openbis <- function(user,
     reg.finalizer(
       environment(),
       function(...) {
-        message("please call \"logout_openbis\" when no longer using a token.")
-        logout_openbis(tok)
+        if (is_token_valid(tok)) {
+          message("please call logout_openbis() when no longer using a token.")
+          logout_openbis(tok)
+        }
+        invisible(NULL)
       },
       onexit = TRUE
     )
