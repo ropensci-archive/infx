@@ -185,6 +185,40 @@ logout_openbis(token)
 
 In addition to the JSON-RPC calls enabled by `make_request()`/`make_requests()`, the `do_requests_*()` functions are also used for (asynchronous) file downloads in `fetch_files()`. Slightly different functions are used as `create_handle` and `check` arguments but apart from that the logic remains largely the same.
 
+Any arguments passed as `...` to `make_requests()` will be forwarded to `api_url()` which creates an api endpoint url and passes this on to the `do_requests_*()` functions. As all functions that issue API calls use `make_requests()`, this makes possible to not only target the InfectX openBIS instance, but arbitrary openBIS servers that support the v1 JSON-RPC API. The following example serves to illustrate how this mechanism can be used to access the openBIS demo.
+
+```{r third-party, fig.align = "center"}
+token <- login_openbis("test_observer", "test_observer",
+                       auto_disconnect = FALSE,
+                       host_url = "https://openbis.elnlims.ch")
+
+gel_data <- search_openbis(
+  token,
+  search_criteria(
+    attribute_clause("type", "ELN_PREVIEW"),
+    sub_criteria = search_sub_criteria(
+      search_criteria(
+        attribute_clause(value = "/DIANA_OTTOZ/WB_LEXA-ER-B112")
+      ),
+      type = "sample"
+    )
+  ),
+  host_url = "https://openbis.elnlims.ch"
+)
+
+gel_img <- fetch_files(token, gel_data,
+                       reader = magick::image_read,
+                       host_url = "https://openbis.elnlims.ch")
+
+attributes(gel_img[[1]])
+print(gel_img[[1]])
+
+logout_openbis(token)
+```
+
+`api_url()` can accept arguments `api_endpoint`, `host_url` and `full_url` and ignores any further arguments. The first argument offers a selection of hard-coded API endpoints and in combination with the second argument is used to access one of them on the specified openBIS host. In case an url that is not supported by the `api_endpoint` selector is desired, the complete url can
+be passed as `full_url` which will simply be returned by `api_url()`. 
+
 ## Summary of API methods
 
 Currently no methods from the API sections
