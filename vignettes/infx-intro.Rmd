@@ -42,12 +42,12 @@ projects <- list_projects(token)
 print(projects, length = 10L)
 length(projects)
 
-adeno_exps <- list_experiments(token, projects[[1]])
+adeno_exps <- list_experiments(token, projects[[1L]])
 
 print(adeno_exps, length = 15L)
 length(adeno_exps)
 
-str(adeno_exps[[1]]$properties)
+str(adeno_exps[[1L]]$properties)
 ```
 
 In order to access the API, a login token has to be created. Using this token, all available projects are listed using `list_projects()` and all experiments
@@ -57,14 +57,14 @@ Experiments in high-throughput screening are typically carried out on microtiter
 
 
 ```{r plate-well}
-plates <- list_plates(token, adeno_exps[[1]])
+plates <- list_plates(token, adeno_exps[[1L]])
 
 print(plates, length = 15L)
 length(plates)
 
 wells <- list_wells(token, plates[[2]])
 
-print(wells, length = 15, depth = 2)
+print(wells, length = 15L, depth = 2L)
 length(wells)
 ```
 
@@ -75,12 +75,12 @@ In terms of openBIS entities, both a plate and a well are considered **samples**
 The function `list_samples()` retrieves `Sample` objects, which generalize `PlateIdentifier` and `WellIdentifier` objects. As with many other `infx` functions, `list_samples()` is an S3 generic function. If dispatch occurs on an `Experiment` object, the set of plate samples belonging to an experiment is fetched, as with `list_plates()`. Well samples per plate cannot be directly listed as was the case with `list_wells()`. However `list_samples()` dispatched on a set of `WellIdentifier` objects will return the corresponding well samples.
 
 ```{r sample}
-plate_samp <- list_samples(token, adeno_exps[[1]])
+plate_samp <- list_samples(token, adeno_exps[[1L]])
 
 print(plate_samp, length = 20L)
 length(plate_samp)
 
-wells_samp <- list_samples(token, wells[1:2])
+wells_samp <- list_samples(token, wells[1L:2L])
 
 print(wells_samp, length = 20L)
 ```
@@ -94,14 +94,14 @@ A further important organizational concept of openBIS is that of a **data set**.
 Essentially, a data set represents a collection of files associated with a sample. Furthermore data sets may have (multiple) parent/child relationships among each other, to indicate one data set being derived of another. Retrieving all data sets belonging to a plate can be achieved with calling `list_datasets()` on plate sample objects.
 
 ```{r data-set}
-data_sets <- list_datasets(token, plate_samp[[2]])
+data_sets <- list_datasets(token, plate_samp[[2L]])
 
 print(data_sets, length = 30L)
 length(data_sets)
 
-unique(sapply(data_sets, `[[`, "dataSetTypeCode"))
+unique(get_field(data_sets, "dataSetTypeCode"))
 
-list_datasets(token, wells_samp[[1]])
+list_datasets(token, wells_samp[[1L]])
 ```
 
 Several different types of data sets (possibly in multiple versions) are typically associated with a plate. Some of the more interesting data set types are
@@ -137,7 +137,7 @@ ak_exps <- search_openbis(token, amb_kin,
                           target_object = "experiment")
 
 print(ak_exps, length = 15L)
-sapply(ak_exps, `[[`, "code")
+get_field(ak_exps, "code")
 ```
 For a small example, openBIS is queried for all experiments that involve kinome-wide screens with Ambion libraries. First, a `SearchCriteria` object is created containing two property match clauses that both have to be met simultaneously. This `SearchCriteria` object is then passed to `search_openbis()` along with the specification of a target type which can be either `data_set`, `experiment`, `material` or `sample`.
 
@@ -150,7 +150,7 @@ mtor_mat <- search_openbis(
 
 print(mtor_mat, depth = 2L)
 
-well_refs <- list_references(token, mtor_mat, ak_exps[[1]])
+well_refs <- list_references(token, mtor_mat, ak_exps[[1L]])
 print(well_refs, length = 15L)
 ```
 
@@ -186,7 +186,7 @@ cell_ds <- search_openbis(token, adeno_au_mat,
 print(cell_ds, length = 30L)
 length(cell_ds)
 
-dat <- fetch_files(token, cell_ds[[1]],
+dat <- fetch_files(token, cell_ds[[1L]],
                    file_regex = "Image\\.Count_",
                    reader = read_mat_files)
 
@@ -201,15 +201,15 @@ For each file, `read_mat_files()` will return a list with one entry per imaging 
 As a second example, area features are requested. For the given screen, area measurements are available for the three object types `PeriNuclei`, `Nuclei` and `Cells`. Unlike in the previous example, where a scalar corresponds to each well, here the variables are vector-valued per well. Therefore we need to create a column `Well`, indicating which rows correspond to which wells. Well indices are linearized in row-major fashion with respect to the plate layout.
 
 ```{r fetch-areas}
-dat <- fetch_files(token, cell_ds[[1]],
+dat <- fetch_files(token, cell_ds[[1L]],
                    file_regex = "AreaShape_Area",
                    reader = read_mat_files)
 
-attributes(dat[[1]])
+attributes(dat[[1L]])
 
 names(dat) <- paste0("Area_", sapply(dat, attr, "object"))
-well_names <- paste0(rep(LETTERS[1:16], each = 24L), rep(1:24, 16L))
-well_names <- rep(rep(well_names, each = 9L), sapply(dat[[1]], length))
+well_names <- paste0(rep(LETTERS[1L:16L], each = 24L), rep(1L:24L, 16L))
+well_names <- rep(rep(well_names, each = 9L), sapply(dat[[1L]], length))
 
 dat <- lapply(dat, unlist)
 
@@ -245,31 +245,33 @@ adeno_au_samp <- search_criteria(
 samples <- search_openbis(token, adeno_au_samp,
                           target_object = "sample")
 
-raw_ref <- list_references(token, samples[[2]])
+raw_ref <- list_references(token, samples[[2L]])
 
-list_image_metadata(token, raw_ref)
+img_meta <- list_image_metadata(token, raw_ref)
+print(img_meta[[1L]])
 
 well_raw <- list_references(token, raw_ref,
                             wells = json_class(wellRow = 1L,
                                                wellColumn = 2L,
                                                class = "WellPosition"),
-                            channel = "CY5")
+                            channel = get_field(img_meta,
+                                                "channelCodes")[[1L]])
 
 print(well_raw, depth = 2L, length = 15L)
 
-raw_img <- fetch_images(token, well_raw[[2]],
+raw_img <- fetch_images(token, well_raw[[2L]],
                         image_size = json_class(width = 600L,
                                                 height = 600L,
                                                 class = "ImageSize"))
 
-attributes(raw_img[[1]])
-print(raw_img[[1]])
+attributes(raw_img[[1L]])
+print(raw_img[[1L]])
 ```
 
 As further illustration of the capabilities of the openBIS API, the following example combines the previously fetched image with a segmentation mask for cells. The same sample of object from above is again passed to `list_references()` but this time an `ImageDatasetReference` object corresponding to an image segmentation dataset is retrieved. Again using `list_image_metadata()`, the available channels are listed and using this information, a request for the image segmentation masks for the desired well and image tile is issued.
 
 ```{r fetch-mask, fig.align = "center"}
-segm_ref <- list_references(token, samples[[2]],
+segm_ref <- list_references(token, samples[[2L]],
                             type = "segmentation")
 
 list_image_metadata(token, segm_ref)
@@ -280,12 +282,12 @@ well_segm <- list_references(token, segm_ref,
                                                 class = "WellPosition"),
                              channel = "CELLS__CY5_")
 
-segm_img <- fetch_images(token, well_segm[[2]],
+segm_img <- fetch_images(token, well_segm[[2L]],
                          image_size = json_class(width = 600L,
                                                  height = 600L,
                                                  class = "ImageSize"))
 
-cells <- c(raw_img[[1]], magick::image_transparent(segm_img[[1]], "black"))
+cells <- c(raw_img[[1L]], magick::image_transparent(segm_img[[1L]], "black"))
 print(magick::image_mosaic(cells))
 ```
 
@@ -296,16 +298,16 @@ Note that in order to create a usable segmentation mask, the black background of
 The third type of openBIS data resources are files treated as feature data sets. As such, these can be queried similarly to images. Again using the plate sample object from the previous search query, `list_references()` with type specification set to `feature` will return `FeatureVectorDatasetReference` objects. Several types of feature data sets are available, each of which may contain several features. In order to list all features contained in a feature data set, the function `list_features()` may be used. Finally, `fetch_features()` will return the requested feature data for the specified plates or wells as `FeatureVectorDataset` object. This in turn contains a list of `FeatureVector` objects, each of which holds feature information for a single well.
 
 ```{r feat-data}
-feat_ref <- list_references(token, samples[[2]],
+feat_ref <- list_references(token, samples[[2L]],
                             type = "feature")
-unique(sapply(feat_ref, `[[`, "dataSetType"))
+unique(get_field(feat_ref, "dataSetType"))
 
-print(list_features(token, feat_ref[[1]]), length = 10L)
+print(list_features(token, feat_ref[[1L]]), length = 10L)
 
-cell_count <- fetch_features(token, feat_ref[[1]], "COUNT_CELLS")
+cell_count <- fetch_features(token, feat_ref[[1L]], "COUNT_CELLS")
 
-print(cell_count[[1]])
-print(cell_count[[1]]$featureVectors[[1]], depth = 2L)
+print(cell_count[[1L]])
+print(cell_count[[1L]][["featureVectors"]][[1L]], depth = 2L)
 ```
 
 Whenever feature data for an entire plate is fetched it might be more efficient to simply download the associated data set file, especially if several of the contained features are of interest. Such files are `.csv` formatted tables with columns corresponding to features and rows to wells. A convenient aspect of feature data is however that it can be queried per well. Passing the `FeatureVectorDatasetReference` object to `list_references()` alongside a set of `WellPosition` objects will return `FeatureVectorDatasetWellReference` objects which can be used to retrieve subsetted feature information using `fetch_features()`.
@@ -313,12 +315,12 @@ Whenever feature data for an entire plate is fetched it might be more efficient 
 For illustration purposes, a heatmap of per-well cell counts, drawn with `ggplot::ggplot()`, is shown below. This is akin to the plate heatmaps that are shown in the openBIS web GUI.
 
 ```{r heatmap, echo = FALSE, fig.align = "center"}
-wells <- lapply(cell_count[[1]]$featureVectors, `[[`, "wellPosition")
+wells <- get_field(cell_count[[1L]][["featureVectors"]], "wellPosition")
 heatmap <- tibble(
-  WellRow = as.factor(LETTERS[sapply(wells, `[[`, "wellRow")]),
-  WellCol = as.factor(as.integer(sapply(wells, `[[`, "wellColumn"))),
-  CellCount = as.integer(sapply(cell_count[[1]]$featureVectors, `[[`,
-                                "values"))
+  WellRow = as.factor(LETTERS[get_field(wells, "wellRow")]),
+  WellCol = as.factor(as.integer(get_field(wells, "wellColumn"))),
+  CellCount = as.integer(get_field(cell_count[[1L]][["featureVectors"]],
+                                   "values")
 )
 
 ggplot(data = heatmap) +
