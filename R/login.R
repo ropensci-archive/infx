@@ -38,14 +38,14 @@ login_openbis <- function(user,
                           auto_disconnect = TRUE,
                           ...) {
 
-  disco <- function(tok) {
+  disco <- function(tok, ...) {
 
     reg.finalizer(
       environment(),
       function(...) {
-        if (is_token_valid(tok)) {
+        if (do.call(is_token_valid, c(tok, dots))) {
           message("please call logout_openbis() when no longer using a token.")
-          logout_openbis(tok)
+          do.call(logout_openbis, c(tok, dots))
         }
         invisible(NULL)
       },
@@ -55,6 +55,8 @@ login_openbis <- function(user,
     environment()
   }
 
+  dots <- list(...)
+
   token <- unlist(make_request("tryToAuthenticateForAllServices",
                                list(user, pwd),
                                api_endpoint = "gis",
@@ -63,7 +65,7 @@ login_openbis <- function(user,
   assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
 
   if (auto_disconnect)  {
-    attr(token, "finaliser") <- disco(token)
+    attr(token, "finaliser") <- disco(token, ...)
   }
 
   token
