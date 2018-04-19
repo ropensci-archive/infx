@@ -159,10 +159,10 @@ For single requests, a wrapper around `make_requests()` is available as `make_re
 ```{r simple-rpc}
 token <- login_openbis("rdgr2014", "IXPubReview")
 
-projects <- make_request(method = "listProjects",
-                         params = list(token),
-                         api_endpoint = "gis")
-print(projects[[1]])
+projects <- make_request(api_url(api_endpoint = "gis"),
+                         method = "listProjects",
+                         params = list(token))
+print(projects, length = 10L)
 ```
 
 To illustrate the used of `make_requests()`, the API method [`getDownloadUrlForFileForDataSet`](https://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/generic/shared/api/v1/IDssServiceRpcGeneric.html#getDownloadUrlForFileForDataSet%28java.lang.String,%20java.lang.String,%20java.lang.String%29) is implemented. This function generates a download url for a file in a data set and requires a separate API call for each combination of data set and file path. In order to carry out several of these requests asynchronously, a list has to be passed as `params` argument such that each entry contains a list holding a login token, a dataset code and a file path.
@@ -175,9 +175,9 @@ params <- lapply(dataset_codes, function(x) list(token, x, file_path))
 
 str(params)
 
-donwload_urls <- make_requests(method = "getDownloadUrlForFileForDataSet",
-                               params = params,
-                               api_endpoint = "dsrg")
+donwload_urls <- make_requests(api_url(api_endpoint = "dsrg"),
+                               method = "getDownloadUrlForFileForDataSet",
+                               params = params)
 str(donwload_urls)
 
 logout_openbis(token)
