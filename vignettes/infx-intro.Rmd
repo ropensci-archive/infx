@@ -320,7 +320,7 @@ heatmap <- tibble(
   WellRow = as.factor(LETTERS[get_field(wells, "wellRow")]),
   WellCol = as.factor(as.integer(get_field(wells, "wellColumn"))),
   CellCount = as.integer(get_field(cell_count[[1L]][["featureVectors"]],
-                                   "values")
+                                   "values"))
 )
 
 ggplot(data = heatmap) +
