@@ -91,17 +91,9 @@ list_experiments.Project <- function(token,
                                      require = c(NA, "DataSets", "Samples"),
                                      ...) {
 
-  check_and_extract <- function(obj, fields) {
-    assert_that(has_fields(obj, fields))
-    if (!is_json_vec(obj))
-      obj <- as_json_vec(obj)
-    lapply(obj, `[`, fields)
-  }
-
   require <- match.arg(require)
-
-  x <- check_and_extract(x, c("spaceCode", "code"))
-  types <- check_and_extract(types, "code")
+  types <- get_field(types, "code")
+  x <- as_json_vec(remove_null(x))
 
   if (is.na(require))
     fun <- "listExperiments"
