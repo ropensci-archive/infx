@@ -44,15 +44,17 @@ Using the valid login token, openBIS can now be queried, for example for a list 
 
 ``` r
 projects <- list_projects(tok)
-projects[[1]]
-#> █─Project 
-#> ├─permId = 20130710131815818-2788266 
-#> ├─spaceCode = INFECTX_PUBLISHED 
-#> ├─code = ADENO_TEAM 
-#> ├─description =  
-#> ├─registrationDetails = █─EntityRegistrationDetails 
-#> │                       └─... 
-#> └─id = 39
+print(projects, length = 10L)
+#> ┌─█─Project 
+#> │ ├─permId = 20130710131815818-2788266 
+#> │ ├─spaceCode = INFECTX_PUBLISHED 
+#> │ ├─code = ADENO_TEAM 
+#> │ ├─description =  
+#> │ ├─registrationDetails = █─EntityRegistrationDetails 
+#> │ │                       └─... 
+#> │ └─id = 39 
+#> ├─█─Project 
+#> ...
 ```
 
 Finally, the login token should be destroyed, using [`logout_openbis()`](https://nbenn.github.io/infx/reference/login.html).
@@ -70,15 +72,17 @@ tok <- login_openbis("test_observer", "test_observer",
                      host_url = "https://openbis.elnlims.ch")
 
 projects <- list_projects(tok)
-projects[[1]]
-#> █─Project 
-#> ├─permId = 20150126115738287-33 
-#> ├─spaceCode = MATERIALS 
-#> ├─code = BACTERIA 
-#> ├─description =  
-#> ├─registrationDetails = █─EntityRegistrationDetails 
-#> │                       └─... 
-#> └─id = 3
+print(projects, length = 10L)
+#> ┌─█─Project 
+#> │ ├─permId = 20150126115738287-33 
+#> │ ├─spaceCode = MATERIALS 
+#> │ ├─code = BACTERIA 
+#> │ ├─description =  
+#> │ ├─registrationDetails = █─EntityRegistrationDetails 
+#> │ │                       └─... 
+#> │ └─id = 3 
+#> ├─█─Project 
+#> ...
 
 logout_openbis(tok)
 ```

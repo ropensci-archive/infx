@@ -58,7 +58,7 @@ Using the valid login token, openBIS can now be queried, for example for a list 
 
 ```{r projects}
 projects <- list_projects(tok)
-projects[[1]]
+print(projects, length = 10L)
 ```
 
 Finally, the login token should be destroyed, using [`logout_openbis()`](https://nbenn.github.io/infx/reference/login.html).
@@ -76,7 +76,7 @@ tok <- login_openbis("test_observer", "test_observer",
                      host_url = "https://openbis.elnlims.ch")
 
 projects <- list_projects(tok)
-projects[[1]]
+print(projects, length = 10L)
 
 logout_openbis(tok)
 ```
