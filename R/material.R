@@ -158,7 +158,7 @@ list_material.MaterialIdentifierScreening <- function(token, x, ...)
 
 list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
 
-  x <- as_json_vec(x)
+  x <- as_plate_id(x)
 
   if (!is.null(material_type)) {
     material_type <- as_json_vec(material_type)
@@ -166,7 +166,7 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
   } else
     material_type <- list(NULL)
 
-  params <- lapply(material_type, function(y) list(token, as_json_vec(x), y))
+  params <- lapply(material_type, function(y) list(token, x, y))
 
   res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
                        "listPlateMaterialMapping",
