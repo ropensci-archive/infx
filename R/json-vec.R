@@ -34,8 +34,6 @@
 #' 
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
-#' @param force Suppress error when casting an object to `json_vec` that
-#' cannot be converted.
 #' 
 #' @rdname json_vec
 #' 
@@ -115,17 +113,45 @@ as_json_vec.json_vec <- function(x, ...)
 as_json_vec.json_class <- function(x, ...)
   new_json_vec(list(x))
 
+#' @param recursive Recursively apply the function.
+#' @param force Suppress error when casting an object to `json_vec` that
+#' cannot be converted.
+#' 
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.list <- function(x, force = FALSE, ...) {
+as_json_vec.list <- function(x, recursive = FALSE, force = FALSE, ...) {
 
-  if (force && !has_common_subclass(x))
-    x
-  else if (length(x) == 0L)
-    x
+  list_to_json_vec <- function(y, recursive, force) {
+    if (is.list(y)) {
+      if (recursive) {
+        restore_class <- is_json_class(y)
+        if (restore_class)
+          class_info <- class(y)
+        y <- lapply(y, list_to_json_vec, recursive, force)
+        if (restore_class)
+          class(y) <- class_info
+      }
+      if (force && !has_common_subclass(y))
+        y
+      else if (length(y) == 0L)
+        y
+      else if (!is_json_class(y) && has_common_subclass(y))
+        new_json_vec(y)
+      else
+        y
+    } else
+      y
+  }
+
+  res <- list_to_json_vec(x, recursive, force)
+
+  if (force && !has_common_subclass(res))
+    res
+  else if (length(res) == 0L)
+    res
   else
-    new_json_vec(x)
+    new_json_vec(res)
 }
 
 #' @rdname json_vec

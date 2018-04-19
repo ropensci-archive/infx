@@ -307,7 +307,7 @@ print(list_features(token, feat_ref[[1L]]), length = 10L)
 cell_count <- fetch_features(token, feat_ref[[1L]], "COUNT_CELLS")
 
 print(cell_count[[1L]])
-print(cell_count[[1L]][["featureVectors"]][[1L]], depth = 2L)
+print(cell_count[[1L]][["featureVectors"]], depth = 2L, length = 10L)
 ```
 
 Whenever feature data for an entire plate is fetched it might be more efficient to simply download the associated data set file, especially if several of the contained features are of interest. Such files are `.csv` formatted tables with columns corresponding to features and rows to wells. A convenient aspect of feature data is however that it can be queried per well. Passing the `FeatureVectorDatasetReference` object to `list_references()` alongside a set of `WellPosition` objects will return `FeatureVectorDatasetWellReference` objects which can be used to retrieve subsetted feature information using `fetch_features()`.

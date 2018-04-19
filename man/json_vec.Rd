@@ -24,7 +24,7 @@ as.json_vec(x, ...)
 
 \method{as_json_vec}{json_class}(x, ...)
 
-\method{as_json_vec}{list}(x, force = FALSE, ...)
+\method{as_json_vec}{list}(x, recursive = FALSE, force = FALSE, ...)
 
 \method{as_json_vec}{default}(x, force = FALSE, ...)
 
@@ -40,6 +40,8 @@ has_common_subclass(x)
 \item{...}{Individual \code{json_class} objects, or generic compatibility}
 
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
+
+\item{recursive}{Recursively apply the function.}
 
 \item{force}{Suppress error when casting an object to \code{json_vec} that
 cannot be converted.}
