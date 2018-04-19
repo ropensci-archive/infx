@@ -171,7 +171,9 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
   params <- mapply(function(a, b, c) list(token, a, b, c), x, path, recursive,
                    SIMPLIFY = FALSE, USE.NAMES = FALSE)
 
-  res <- make_requests("listFilesForDataSet", params, api_endpoint = "dsrg",
+  res <- make_requests(api_url("dsrg", attr(token, "host_url"), ...),
+                       "listFilesForDataSet",
+                       params,
                        ...)
 
   res <- Map(function(dat, code) {
@@ -234,7 +236,9 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
   params <- lapply(x, function(y) list(token, y))
 
-  res <- make_requests("listFilesForDataSet", params, api_endpoint = "dsrg",
+  res <- make_requests(api_url("dsrg", attr(token, "host_url"), ...),
+                       "listFilesForDataSet",
+                       params,
                        ...)
 
   res <- Map(function(dat, code) {

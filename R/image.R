@@ -202,8 +202,11 @@ fetch_img_for_ds <- function(token,
            x, channels, SIMPLIFY = FALSE)
   }
 
-  res <- make_requests(fun, params, finally = process_imgs,
-                       api_endpoint = "dsrs", ...)
+  res <- make_requests(api_url("dsrs", attr(token, "host_url"), ...),
+                       fun,
+                       params,
+                       finally = process_imgs,
+                       ...)
 
   mapply(function(dat, param) {
 
@@ -343,8 +346,11 @@ fetch_images.PlateImageReference <- function(token,
     agruments <- list(sessionToken = token, imageReferences = x)
   }
 
-  res <- make_request(fun, agruments, finally = process_imgs,
-                      api_endpoint = "dsrs", ...)
+  res <- make_request(api_url("dsrs", attr(token, "host_url"), ...),
+                      fun,
+                      agruments,
+                      finally = process_imgs,
+                      ...)
 
   if (length(res) == 0L)
     res <- rep(list(NULL), length(x))
@@ -389,8 +395,11 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x), function(y) list(token, y))
 
-  res <- make_requests("getExperimentImageMetadata", params,
-                       api_endpoint = "sas", ...)
+  res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
+                       "getExperimentImageMetadata",
+                       params,
+                       ...)
+
   as_json_vec(do.call(c, res))
 }
 
@@ -406,7 +415,10 @@ fetch_img_meta <- function(token, x, type = c("metadata", "format"), ...) {
                 metadata = "listImageMetadata",
                 format = "listAvailableImageRepresentationFormats")
 
-  make_request(fun, list(token, as_json_vec(x)), api_endpoint = "dsrs", ...)
+  make_request(api_url("dsrs", attr(token, "host_url"), ...),
+               fun,
+               list(token, as_json_vec(x)),
+               ...)
 }
 
 #' @rdname list_fetch_images

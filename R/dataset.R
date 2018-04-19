@@ -134,13 +134,20 @@ list_datasets.Sample <- function(token,
   if (length(include) == 0L) {
 
     if (length(x) == 1L)
-      make_request("listDataSetsForSample", list(token, x[[1]], TRUE),
-                   api_endpoint = "gis", ...)
+      make_request(api_url("gis", attr(token, "host_url"), ...),
+                   "listDataSetsForSample",
+                   list(token, x[[1]], TRUE),
+                   ...)
     else
-      make_request("listDataSets", list(token, x), api_endpoint = "gis", ...)
+      make_request(api_url("gis", attr(token, "host_url"), ...),
+                   "listDataSets",
+                   list(token, x),
+                   ...)
 
   } else
-    make_request("listDataSets", list(token, x, include), api_endpoint = "gis",
+    make_request(api_url("gis", attr(token, "host_url"), ...),
+                 "listDataSets",
+                 list(token, x, include),
                  ...)
 }
 
@@ -155,11 +162,11 @@ list_datasets.Experiment <- function(token,
                                                  "all"),
                                      ...) {
 
-  make_request("listDataSetsForExperiments",
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listDataSetsForExperiments",
                list(token,
                     as_json_vec(remove_null(x)),
                     resolve_fetch_opts(include)),
-               api_endpoint = "gis",
                ...)
 }
 
@@ -177,14 +184,14 @@ list_datasets.character <- function(token,
   include <- resolve_fetch_opts(include)
 
   if (length(include) == 2L)
-    make_request("getDataSetMetaData",
+    make_request(api_url("gis", attr(token, "host_url"), ...),
+                 "getDataSetMetaData",
                  list(token, as.list(x)),
-                 api_endpoint = "gis",
                  ...)
   else
-    make_request("getDataSetMetaData",
+    make_request(api_url("gis", attr(token, "host_url"), ...),
+                 "getDataSetMetaData",
                  list(token, as.list(x), include),
-                 api_endpoint = "gis",
                  ...)
 }
 
@@ -200,8 +207,10 @@ list_dataset_ids <- function(token, x, ...)
 #' @export
 #' 
 list_dataset_ids.character <- function(token, x, ...)
-  make_request("getDatasetIdentifiers", list(token, as.list(x)),
-               api_endpoint = "sas", ...)
+  make_request(api_url("sas", attr(token, "host_url"), ...),
+               "getDatasetIdentifiers",
+               list(token, as.list(x)),
+               ...)
 
 #' @rdname list_datasets
 #' @export
@@ -231,7 +240,10 @@ list_img_ds <- function(token,
                 segmentation = "listSegmentationImageDatasets",
                 feature = "listFeatureVectorDatasets")
 
-  make_request(fun, list(token, as_plate_id(x)), api_endpoint = "sas", ...)
+  make_request(api_url("sas", attr(token, "host_url"), ...),
+               fun,
+               list(token, as_plate_id(x)),
+               ...)
 }
 
 #' @rdname list_datasets
@@ -369,8 +381,11 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
 
   params <- lapply(x, function(z) list(token, z, channels))
 
-  res <- make_requests("listImageReferences", params, api_endpoint = "dsrs",
+  res <- make_requests(api_url("dsrs", attr(token, "host_url"), ...),
+                       "listImageReferences",
+                       params,
                        ...)
+
   as_json_vec(do.call(c, res))
 }
 
@@ -388,8 +403,11 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 
   params <- lapply(x, function(z) list(token, z, wells, channels))
 
-  res <- make_requests("listPlateImageReferences", params,
-                       api_endpoint = "dsrs", ...)
+  res <- make_requests(api_url("dsrs", attr(token, "host_url"), ...),
+                       "listPlateImageReferences",
+                       params,
+                       ...)
+
   as_json_vec(do.call(c, res))
 }
 
@@ -399,7 +417,10 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
 #' @export
 #' 
 list_dataset_types <- function(token, ...)
-  make_request("listDataSetTypes", list(token), api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listDataSetTypes",
+               list(token),
+               ...)
 
 #' Extract dataset code
 #' 

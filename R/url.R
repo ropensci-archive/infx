@@ -135,7 +135,10 @@ list_download_urls.character <- function(token,
                      SIMPLIFY = FALSE)
   }
 
-  unlist(make_requests(fun, params, api_endpoint = "dsrg", ...))
+  unlist(make_requests(api_url("dsrg", attr(token, "host_url"), ...),
+                       fun,
+                       params,
+                       ...))
 }
 
 list_dl_url <- function(token, x, path, timeout = NA, ...)
@@ -199,7 +202,10 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
     params <- lapply(as_json_vec(x), function(y) list(token, y, timeout))
   }
   
-  unlist(make_requests(fun, params, api_endpoint = "dsrg", ...))
+  unlist(make_requests(api_url("dsrg", attr(token, "host_url"), ...),
+                       fun,
+                       params,
+                       ...))
 }
 
 #' @rdname list_urls
@@ -208,7 +214,10 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
 #' @export
 #' 
 list_datastores <- function(token, ...)
-  make_request("listDataStores", list(token), api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listDataStores",
+               list(token),
+               ...)
 
 #' @rdname list_urls
 #' @section openBIS:
@@ -224,8 +233,10 @@ list_datastore_urls <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_datastore_urls.NULL <- function(token, x, ...)
-  make_request("getDefaultPutDataStoreBaseURL", list(token),
-               api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "getDefaultPutDataStoreBaseURL",
+               list(token),
+               ...)
 
 #' @rdname list_urls
 #' @export
@@ -234,16 +245,20 @@ list_datastore_urls.character <- function(token, x, ...) {
 
     if (length(x) == 1L) {
 
-      urls <- make_request("tryGetDataStoreBaseURL", list(token, x),
-                           api_endpoint = "gis", ...)
+      urls <- make_request(api_url("gis", attr(token, "host_url"), ...),
+                           "tryGetDataStoreBaseURL",
+                           list(token, x),
+                           ...)
 
       assert_that(!is.null(urls))
       stats::setNames(urls, x)
 
     } else {
 
-      urls <- make_request("getDataStoreBaseURLs", list(token, as.list(x)),
-                           api_endpoint = "gis", ...)
+      urls <- make_request(api_url("gis", attr(token, "host_url"), ...),
+                           "getDataStoreBaseURLs",
+                           list(token, as.list(x)),
+                           ...)
 
       res <- unlist(lapply(urls, function(url) {
         codes <- as.character(get_field(url, "dataSetCodes"))

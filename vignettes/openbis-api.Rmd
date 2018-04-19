@@ -201,13 +201,11 @@ gel_data <- search_openbis(
       ),
       type = "sample"
     )
-  ),
-  host_url = "https://openbis.elnlims.ch"
+  )
 )
 
 gel_img <- fetch_files(token, gel_data,
-                       reader = magick::image_read,
-                       host_url = "https://openbis.elnlims.ch")
+                       reader = magick::image_read)
 
 attributes(gel_img[[1]])
 print(gel_img[[1]])

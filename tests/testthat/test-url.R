@@ -163,14 +163,7 @@ test_that("non-infectx openbis instances can be accessed", {
   token <- login_openbis("test_observer", "test_observer",
                          auto_disconnect = FALSE,
                          host_url = "https://openbis.elnlims.ch")
-
-  expect_is(token, "character")
-  expect_length(token, 1L)
-  expect_match(token, "^test_observer-")
-
-  expect_true(is_token_valid(token, host_url = "https://openbis.elnlims.ch"))
-
-  proj <- list_projects(token, host_url = "https://openbis.elnlims.ch")
+  proj <- list_projects(token)
 
   expect_s3_class(proj, "Project")
   expect_s3_class(proj, "json_vec")
@@ -188,13 +181,11 @@ test_that("non-infectx openbis instances can be accessed", {
         search_criteria(attribute_clause(value = "INDUCTION_OF_TF")),
         type = "experiment"
       )
-    ),
-    host_url = "https://openbis.elnlims.ch"
+    )
   )
 
   files <- fetch_files(token, flow,
-                       file_regex = "11\\.fcs$",
-                       host_url = "https://openbis.elnlims.ch")
+                       file_regex = "11\\.fcs$")
 
   expect_gte(length(files), 1L)
   for (i in seq_along(files)) {
@@ -203,6 +194,6 @@ test_that("non-infectx openbis instances can be accessed", {
     expect_is(files[[i]], "raw")
   }
 
-  expect_null(logout_openbis(token, host_url = "https://openbis.elnlims.ch"))
-  expect_false(is_token_valid(token, host_url = "https://openbis.elnlims.ch"))
+  expect_null(logout_openbis(token))
+  expect_false(is_token_valid(token))
 })

@@ -125,7 +125,10 @@ list_plates <- function(token, x = NULL, ...)
 #' @export
 #' 
 list_plates.NULL <- function(token, x, ...)
-  make_request("listPlates", list(token), api_endpoint = "sas", ...)
+  make_request(api_url("sas", attr(token, "host_url"), ...),
+               "listPlates",
+               list(token),
+               ...)
 
 #' @rdname list_plate_well
 #' @export
@@ -134,7 +137,10 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
 
   params <- lapply(as_json_vec(x), function(exp) list(token, exp))
 
-  res <- make_requests("listPlates", params, api_endpoint = "sas", ...)
+  res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
+                       "listPlates",
+                       params,
+                       ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -153,8 +159,10 @@ list_plate_metadata <- function(token, x, ...)
   UseMethod("list_plate_metadata", x)
 
 list_plate_meta <- function(token, x, ...)
-  make_request("getPlateMetadataList", list(token, as_plate_id(x)),
-               api_endpoint = "sas", ...)
+  make_request(api_url("sas", attr(token, "host_url"), ...),
+               "getPlateMetadataList",
+               list(token, as_plate_id(x)),
+               ...)
 
 #' @rdname list_plate_well
 #' @export
@@ -243,7 +251,10 @@ list_wells_for_plate <- function(token, x, ...) {
 
   params <- lapply(as_plate_id(x), function(plate) list(token, plate))
 
-  res <- make_requests("listPlateWells", params, api_endpoint = "sas", ...)
+  res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
+                       "listPlateWells",
+                       params,
+                       ...)
 
   remove_null(as_json_vec(do.call(c, res)))
 }
@@ -289,7 +300,10 @@ list_wells_for_mat <- function(token,
                                          include_datasets))
   }
 
-  res <- make_requests("listPlateWells", params, api_endpoint = "sas", ...)
+  res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
+                       "listPlateWells",
+                       params,
+                       ...)
 
   as_json_vec(do.call(c, res))
 }

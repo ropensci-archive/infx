@@ -6,7 +6,8 @@
 \alias{is_token_valid}
 \title{Create and destroy a login token}
 \usage{
-login_openbis(user, pwd, auto_disconnect = TRUE, ...)
+login_openbis(user, pwd, host_url = "https://infectx.biozentrum.unibas.ch",
+  auto_disconnect = TRUE, ...)
 
 logout_openbis(token, ...)
 
@@ -14,6 +15,8 @@ is_token_valid(token, ...)
 }
 \arguments{
 \item{user, pwd}{Login credentials for an openBis instance.}
+
+\item{host_url}{Host url.}
 
 \item{auto_disconnect}{Logical switch for automatically closing the
 connection upon garbage collection of the token.}

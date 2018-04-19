@@ -88,8 +88,10 @@ list_samples_for_exp <- function(token, x, ...) {
 
   params <- lapply(exp_id_str(x), function(exp) list(token, exp))
 
-  res <- make_requests("listSamplesForExperiment", params,
-                       api_endpoint = "gis", ...)
+  res <- make_requests(api_url("gis", attr(token, "host_url"), ...),
+                       "listSamplesForExperiment",
+                       params,
+                       ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -108,7 +110,10 @@ list_samples_for_plate <- function(token, x, ...) {
 
   params <- lapply(as_plate_id(x), function(plate) list(token, plate))
 
-  res <- make_requests("getPlateSample", params, api_endpoint = "sas", ...)
+  res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
+                       "getPlateSample",
+                       params,
+                       ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -133,7 +138,10 @@ list_samples_for_well <- function(token, x, ...) {
   params <- lapply(as_well_id(x),
                    function(well) list(token, remove_null(well)))
 
-  res <- make_requests("getWellSample", params, api_endpoint = "sas", ...)
+  res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
+                       "getWellSample",
+                       params,
+                       ...)
 
   as_json_vec(do.call(c, res))
 }
@@ -152,4 +160,7 @@ list_samples.WellMetadata <- list_samples_for_well
 #' @export
 #' 
 list_sample_types <- function(token, ...)
-  make_request("listSampleTypes", list(token), api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listSampleTypes",
+               list(token),
+               ...)

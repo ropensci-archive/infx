@@ -68,8 +68,10 @@ list_experiments <- function(token, x, ...)
 #' @export
 #' 
 list_experiments.ExperimentIdentifier <- function(token, x, ...)
-  make_request("listExperiments", list(token, exp_id_str(x)),
-               api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listExperiments",
+               list(token, exp_id_str(x)),
+               ...)
 
 #' @rdname list_experiments
 #' 
@@ -110,7 +112,11 @@ list_experiments.Project <- function(token,
 
   params <- lapply(types, function(type) list(token, x, as.character(type)))
 
-  res <- make_requests(fun, params, api_endpoint = "gis", ...)
+  res <- make_requests(api_url("gis", attr(token, "host_url"), ...),
+                       fun,
+                       params,
+                       ...)
+
   as_json_vec(do.call(c, res))
 }
 
@@ -120,7 +126,10 @@ list_experiments.Project <- function(token,
 #' @export
 #' 
 list_experiment_ids <- function(token, ...)
-  make_request("listExperiments", list(token), api_endpoint = "sas", ...)
+  make_request(api_url("sas", attr(token, "host_url"), ...),
+               "listExperiments",
+               list(token),
+               ...)
 
 #' @rdname list_experiments
 #' @section openBIS:
@@ -128,7 +137,10 @@ list_experiment_ids <- function(token, ...)
 #' @export
 #' 
 list_experiment_types <- function(token, ...)
-  make_request("listExperimentTypes", list(token), api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listExperimentTypes",
+               list(token),
+               ...)
 
 #' @rdname list_experiments
 #' @export

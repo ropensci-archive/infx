@@ -51,16 +51,6 @@
 #' 1. The function `make_request()` is a wrapper around `make_requests()` that
 #' does exactly this.
 #' 
-#' Target urls are created by forwarding `...` arguments of `make_requests()`
-#' to [api_url()] which accepts a string for each `api_endpoint` and
-#' `host_url`. By default the API endpoint url corresponding to the
-#' `GeneralInformationService` interface on the InfectX openBIS instance is
-#' returned. As a safety hatch, [api_url()] also accepts and simply returns a
-#' string passed as `full_url` and therefore bypasses automatic API endpoint
-#' construction. This enables any function issuing an API call via
-#' `make_requests()` to contact an arbitrary openBIS host and to reach API
-#' endpoints which are not among the hard-coded selection.
-#' 
 #' As part of the `process_json()` function, which is the default value passed
 #' as `finally` argument in `make_requests()`, `@type` fields are converted
 #' to`json_class` attributes, using [as_json_class()]. Additionally, `@id`
@@ -68,6 +58,7 @@
 #' recursively resolved using [resolve_references()] such that each object is
 #' self-contained.
 #' 
+#' @param url,urls Destination url(s), the request is sent to.
 #' @param method,methods The API method name(s).
 #' @param params A list structure holding the arguments which, converted to
 #' JSON, will be used to call the supplied method. The `@type` entries will be
@@ -155,7 +146,8 @@
 #' 
 #' @export
 #' 
-make_requests <- function(methods,
+make_requests <- function(urls,
+                          methods,
                           params,
                           ids = NULL,
                           version = "2.0",
@@ -171,30 +163,30 @@ make_requests <- function(methods,
   }
 
   assert_that(is.list(params),
-              all(sapply(params, is.list)))
+              all(sapply(params, is.list)),
+              is.character(urls),
+              is.character(methods))
 
-
-  max_len <- max(length(methods), length(params))
+  max_len <- max(length(urls), length(methods), length(params))
 
   if (max_len > 1L) {
+    if (length(urls) == 1L)
+      urls <- rep(urls, max_len)
     if (length(methods) == 1L)
       methods <- rep(methods, max_len)
     if (length(params) == 1L)
       params <- rep(params, max_len)
   }
 
-  assert_that(length(methods) == max_len,
+  assert_that(length(urls) == max_len,
+              length(methods) == max_len,
               length(params) == max_len)
-
-  urls <- rep(api_url(...), max_len)
-
-  assert_that(is.character(urls),
-              length(urls) == max_len)
 
   if (is.null(ids))
     ids <- replicate(max_len, paste(sample(c(letters, LETTERS, 0:9), 7),
                                     collapse = ""))
-  assert_that(length(ids) == max_len)
+  assert_that(is.character(ids),
+              length(unique(ids)) == max_len)
 
   bodies <- mapply(list,
                    id = ids,
@@ -213,23 +205,23 @@ make_requests <- function(methods,
 }
 
 #' @param ... Further arguments to `make_request()` are passed to
-#' `make_requests()` and from `make_requests()` to `do_requests_*()` and
-#' [api_url()].
+#' `make_requests()` and from `make_requests()` to `do_requests_serial()` or
+#' `do_requests_parallel()`.
 #' 
 #' @rdname request
 #' @export
 #' 
-make_request <- function(method,
+make_request <- function(url,
+                         method,
                          params,
                          ...) {
 
-  assert_that(length(method) == 1L)
+  assert_that(is.string(url), is.string(method))
 
-  make_requests(method, list(params), n_con = 1L, ...)[[1L]]
+  make_requests(url, method, list(params), n_con = 1L, ...)[[1L]]
 }
 
 
-#' @param urls Destination url(s), the request is sent to.
 #' @param bodies Request bodies: a list where each entry is a list with slots
 #' `id`, `jsonrpc`, `method` and `params`.
 #' @param n_try Number of tries each request is performed in case of failed

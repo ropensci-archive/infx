@@ -8,9 +8,9 @@
 #' token can be manually destroyed by calling `logout_openbis()` on the token.
 #' 
 #' @param user,pwd Login credentials for an openBis instance.
+#' @param host_url Host url.
 #' @param auto_disconnect Logical switch for automatically closing the
 #' connection upon garbage collection of the token.
-#' @param token Login token as created by `login_openbis()`.
 #' @param ... Further arguments are forwarded to [make_request()].
 #' 
 #' @rdname login
@@ -35,6 +35,7 @@
 #' 
 login_openbis <- function(user,
                           pwd,
+                          host_url = "https://infectx.biozentrum.unibas.ch",
                           auto_disconnect = TRUE,
                           ...) {
 
@@ -43,9 +44,11 @@ login_openbis <- function(user,
     reg.finalizer(
       environment(),
       function(...) {
-        if (do.call(is_token_valid, c(tok, dots))) {
+        args <- c(tok, dots)
+        attr(args[[1L]], "host_url") <- host_url
+        if (do.call(is_token_valid, args)) {
           message("please call logout_openbis() when no longer using a token.")
-          do.call(logout_openbis, c(tok, dots))
+          do.call(logout_openbis, args)
         }
         invisible(NULL)
       },
@@ -57,12 +60,16 @@ login_openbis <- function(user,
 
   dots <- list(...)
 
-  token <- unlist(make_request("tryToAuthenticateForAllServices",
+  token <- unlist(make_request(api_url("gis", host_url, ...),
+                               "tryToAuthenticateForAllServices",
                                list(user, pwd),
-                               api_endpoint = "gis",
+                               finally = function(x) x$result,
                                ...))
 
-  assert_that(is.character(token), length(token) == 1L, msg = "Login failed.")
+  assert_that(is.character(token), length(token) == 1L,
+              msg = "Login failed: credentials not valid.")
+
+  attr(token, "host_url") <- host_url
 
   if (auto_disconnect)  {
     attr(token, "finaliser") <- disco(token, ...)
@@ -71,15 +78,17 @@ login_openbis <- function(user,
   token
 }
 
+#' @param token Login token as created by `login_openbis()`.
 #' @rdname login
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "logout")}
 #' @export
 #' 
 logout_openbis <- function(token, ...)
-  invisible(unlist(make_request("logout", list(token),
+  invisible(unlist(make_request(api_url("gis", attr(token, "host_url"), ...),
+                                "logout",
+                                list(token),
                                 finally = function(x) x$result,
-                                api_endpoint = "gis",
                                 ...)))
 
 #' @rdname login
@@ -88,7 +97,7 @@ logout_openbis <- function(token, ...)
 #' @export
 #' 
 is_token_valid <- function(token, ...)
-  unlist(make_request("isSessionActive",
+  unlist(make_request(api_url("gis", attr(token, "host_url"), ...),
+                      "isSessionActive",
                       list(token),
-                      api_endpoint = "gis",
                       ...))

@@ -28,4 +28,7 @@
 #' @export
 #' 
 list_projects <- function(token, ...)
-  make_request("listProjects", list(token), api_endpoint = "gis", ...)
+  make_request(api_url("gis", attr(token, "host_url"), ...),
+               "listProjects",
+               list(token),
+               ...)

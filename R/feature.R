@@ -99,9 +99,9 @@ list_features <- function(token, x, ...)
     UseMethod("list_features", x)
 
 list_feats <- function(token, x, ...)
-  make_request("listAvailableFeatures",
+  make_request(api_url("dsrs", attr(token, "host_url"), ...),
+               "listAvailableFeatures",
                list(token, as_json_vec(remove_null(x))),
-               api_endpoint = "dsrs",
                ...)
 
 #' @rdname list_fetch_features
@@ -135,9 +135,9 @@ list_feature_codes <- function(token, x, ...)
     UseMethod("list_feature_codes", x)
 
 list_feat_codes <- function(token, x, ...)
-  make_request("listAvailableFeatureCodes",
+  make_request(api_url("dsrs", attr(token, "host_url"), ...),
+               "listAvailableFeatureCodes",
                list(token, as_json_vec(remove_null(x))),
-               api_endpoint = "dsrs",
                ...)
 
 #' @rdname list_fetch_features
@@ -197,9 +197,9 @@ fetch_features.FeatureVectorDatasetReference <- function(token,
       feature_codes <- as.list(feature_codes)
     }
 
-    make_request("loadFeatures",
+    make_request(api_url("dsrs", attr(token, "host_url"), ...),
+                 "loadFeatures",
                  list(token, x, feature_codes),
-                 api_endpoint = "dsrs",
                  ...)
   } else {
     fetch_features(token, feat_ds_well_ref(x, wells), feature_codes, ...)
@@ -235,9 +235,9 @@ fetch_features.FeatureVectorDatasetWellReference <- function(
   x <- lapply(lapply(x, `[`, fields), rm_json_class, recursive = FALSE,
               restore_type = FALSE)
 
-  make_request("loadFeaturesForDatasetWellReferences",
+  make_request(api_url("dsrs", attr(token, "host_url"), ...),
+               "loadFeaturesForDatasetWellReferences",
                list(token, x, feature_codes),
-               api_endpoint = "dsrs",
                ...)
 }
 

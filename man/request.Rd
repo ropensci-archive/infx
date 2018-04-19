@@ -9,10 +9,10 @@
 \alias{resolve_references}
 \title{Construct and issue JSON-RPC requests}
 \usage{
-make_requests(methods, params, ids = NULL, version = "2.0", n_con = 5L,
-  finally = process_json, ...)
+make_requests(urls, methods, params, ids = NULL, version = "2.0",
+  n_con = 5L, finally = process_json, ...)
 
-make_request(method, params, ...)
+make_request(url, method, params, ...)
 
 do_requests_serial(urls, bodies = vector("list", length(urls)), n_try = 2L,
   create_handle = create_default_handle, check = check_default_result,
@@ -43,12 +43,12 @@ requests are issued per HTTP request.}
 successful JSON RPC request.}
 
 \item{...}{Further arguments to \code{make_request()} are passed to
-\code{make_requests()} and from \code{make_requests()} to \code{do_requests_*()} and
-\code{\link[=api_url]{api_url()}}.}
+\code{make_requests()} and from \code{make_requests()} to \code{do_requests_serial()} or
+\code{do_requests_parallel()}.}
+
+\item{url, urls}{Destination url(s), the request is sent to.}
 
 \item{method, methods}{The API method name(s).}
-
-\item{urls}{Destination url(s), the request is sent to.}
 
 \item{bodies}{Request bodies: a list where each entry is a list with slots
 \code{id}, \code{jsonrpc}, \code{method} and \code{params}.}
@@ -120,16 +120,6 @@ should be wrapped in a list such that the topmost list level is on length
 \item The function \code{make_request()} is a wrapper around \code{make_requests()} that
 does exactly this.
 }
-
-Target urls are created by forwarding \code{...} arguments of \code{make_requests()}
-to \code{\link[=api_url]{api_url()}} which accepts a string for each \code{api_endpoint} and
-\code{host_url}. By default the API endpoint url corresponding to the
-\code{GeneralInformationService} interface on the InfectX openBIS instance is
-returned. As a safety hatch, \code{\link[=api_url]{api_url()}} also accepts and simply returns a
-string passed as \code{full_url} and therefore bypasses automatic API endpoint
-construction. This enables any function issuing an API call via
-\code{make_requests()} to contact an arbitrary openBIS host and to reach API
-endpoints which are not among the hard-coded selection.
 
 As part of the \code{process_json()} function, which is the default value passed
 as \code{finally} argument in \code{make_requests()}, \code{@type} fields are converted
