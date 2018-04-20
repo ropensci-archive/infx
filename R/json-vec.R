@@ -120,38 +120,35 @@ as_json_vec.json_class <- function(x, ...)
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.list <- function(x, recursive = FALSE, force = FALSE, ...) {
+as_json_vec.list <- function(x, recursive = TRUE, force = FALSE, ...) {
 
-  list_to_json_vec <- function(y, recursive, force) {
+  list_to_json_vec <- function(y) {
     if (is.list(y)) {
-      if (recursive) {
-        restore_class <- is_json_class(y)
-        if (restore_class)
-          class_info <- class(y)
-        y <- lapply(y, list_to_json_vec, recursive, force)
-        if (restore_class)
-          class(y) <- class_info
-      }
-      if (force && !has_common_subclass(y))
-        y
-      else if (length(y) == 0L)
-        y
-      else if (!is_json_class(y) && has_common_subclass(y))
-        new_json_vec(y)
-      else
+      if (!length(y))
+        return(list())
+      y <- japply(y, list_to_json_vec)
+      if (!is_json_class(y) && has_common_subclass(y)) {
+        exp_lst <- list()
+        lapply(y, function(z) {
+          exp_lst <<- c(exp_lst, if(is_json_vec(z)) as_list(z) else list(z))
+        })
+        new_json_vec(exp_lst)
+      } else
         y
     } else
       y
   }
 
-  res <- list_to_json_vec(x, recursive, force)
+  if (!length(x))
+    return(list())
 
-  if (force && !has_common_subclass(res))
-    res
-  else if (length(res) == 0L)
-    res
+  if (recursive)
+    x <- list_to_json_vec(x)
+
+  if (force && !has_common_subclass(x))
+    x
   else
-    new_json_vec(res)
+    new_json_vec(x)
 }
 
 #' @rdname json_vec
@@ -194,7 +191,7 @@ has_common_subclass <- function(x) {
     TRUE
   else if (!is.list(x))
     FALSE
-  else if (all(sapply(x, is_json_class)))
+  else if (all(sapply(x, is_json_class) | sapply(x, is_json_vec)))
     isTRUE(length(unique(lapply(x, get_subclass))) == 1L)
   else
     FALSE

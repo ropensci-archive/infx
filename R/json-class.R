@@ -139,12 +139,14 @@ as_json_class.json_class <- function(x, ...) {
 #' @rdname json_class
 #' @export
 #' 
-as_json_class.list <- function(x, ...) {
+as_json_class.list <- function(x, recursive = TRUE, ...) {
 
   if (length(x) == 0L)
     return(x)
 
-  x <- lapply(x, as_json_class, force = TRUE)
+  if (recursive)
+    x <- japply(x, as_json_class, force = TRUE)
+
   if ("@type" %in% names(x))
     new_json_class(x)
   else

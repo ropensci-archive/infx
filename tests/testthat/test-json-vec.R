@@ -84,6 +84,38 @@ test_that("json_vec objects can be created", {
   expect_error(as_json_vec(as.list(letters[1:3])))
   expect_identical(as_json_vec(as.list(letters[1:3]), force = TRUE),
                                as.list(letters[1:3]))
+
+  vec_cls <- as_json_vec(list(json_class(a = "b", class = "foo"),
+                              json_class(a = "c", class = "foo"),
+                              json_class(a = "d", class = "foo"),
+                              json_class(a = "e", class = "foo")))
+  expect_s3_class(vec_cls, "json_vec")
+  expect_s3_class(vec_cls, "foo")
+  expect_length(vec_cls, 4)
+
+  vec_vec <- as_json_vec(json_vec(json_class(a = "b", class = "foo"),
+                                  json_class(a = "c", class = "foo"),
+                                  json_class(a = "d", class = "foo"),
+                                  json_class(a = "e", class = "foo")))
+  expect_identical(vec_cls, vec_vec)
+
+  vec_lec <- as_json_vec(list(json_vec(json_class(a = "b", class = "foo"),
+                                       json_class(a = "c", class = "foo"),
+                                       json_class(a = "d", class = "foo"),
+                                       json_class(a = "e", class = "foo"))))
+  expect_identical(vec_cls, vec_lec)
+
+  vec_vcc <- as_json_vec(list(json_vec(json_class(a = "b", class = "foo"),
+                                       json_class(a = "c", class = "foo")),
+                              json_vec(json_class(a = "d", class = "foo"),
+                                       json_class(a = "e", class = "foo"))))
+  expect_identical(vec_cls, vec_vcc)
+
+  vec_vls <- as_json_vec(list(json_class(a = "b", class = "foo"),
+                              json_vec(json_class(a = "c", class = "foo"),
+                                       json_class(a = "d", class = "foo")),
+                              json_class(a = "e", class = "foo")))
+  expect_identical(vec_cls, vec_vls)
 })
 
 test_that("json_vec helpers work", {

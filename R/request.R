@@ -486,7 +486,7 @@ get_object_spec <- function(x) {
 }
 
 assign_reference <- function(obj, spec, objects) {
-  res <- mapply(function(x, y) {
+  res <- Map(function(x, y) {
     if (isTRUE(class(x) == "integer") && "json_class" %in% y) {
       z <- objects[[x]]
       assert_that(x == z[["@id"]],
@@ -494,7 +494,7 @@ assign_reference <- function(obj, spec, objects) {
       z
     } else
       x
-  }, obj, spec[names(obj)], SIMPLIFY = FALSE)
+  }, obj, spec[names(obj)])
 
   new_json_class(res, class = get_subclass(obj))
 }

@@ -336,3 +336,15 @@ style <- function(fancy = TRUE) {
       val = identity)
   }
 }
+
+japply <- function(x, ...) {
+  attribs <- attributes(x)
+  res <- if (is_json_class(x))
+    new_json_class(lapply(x, ...), class = get_subclass(x))
+  else if (is_json_vec(x))
+    new_json_vec(lapply(x, ...))
+  else
+    lapply(x, ...)
+  attributes(res) <- attribs
+  res
+}
