@@ -400,7 +400,7 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_fetch_images

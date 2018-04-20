@@ -125,7 +125,7 @@ as_json_vec.list <- function(x, recursive = TRUE, force = FALSE, ...) {
   list_to_json_vec <- function(y) {
     if (is.list(y)) {
       if (!length(y))
-        return(list())
+        return(y)
       y <- japply(y, list_to_json_vec)
       if (!is_json_class(y) && has_common_subclass(y)) {
         exp_lst <- list()
@@ -139,8 +139,10 @@ as_json_vec.list <- function(x, recursive = TRUE, force = FALSE, ...) {
       y
   }
 
+  x <- x[as.logical(sapply(x, length))]
+
   if (!length(x))
-    return(list())
+    return(x)
 
   if (recursive)
     x <- list_to_json_vec(x)

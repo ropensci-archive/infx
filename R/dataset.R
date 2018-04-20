@@ -126,10 +126,7 @@ list_datasets.Sample <- function(token,
                                  ...) {
 
   include <- resolve_fetch_opts(include)
-  x <- remove_null(x)
-
-  if (!is_json_vec(x))
-    x <- as_json_vec(x)
+  x <- as_json_vec(remove_null(x))
 
   if (length(include) == 0L) {
 
@@ -386,7 +383,7 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_img_ref
@@ -408,7 +405,7 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_datasets

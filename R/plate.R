@@ -142,7 +142,7 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_plate_well
@@ -256,7 +256,7 @@ list_wells_for_plate <- function(token, x, ...) {
                        params,
                        ...)
 
-  remove_null(as_json_vec(do.call(c, res)))
+  as_json_vec(res)
 }
 
 #' @rdname list_plate_well
@@ -305,7 +305,7 @@ list_wells_for_mat <- function(token,
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @param experiment Additionally, the search can be limited to a single

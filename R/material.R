@@ -173,7 +173,7 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_material

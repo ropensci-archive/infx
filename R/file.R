@@ -181,7 +181,7 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
     dat
   }, unlist(res, recursive = FALSE), rep(x, sapply(res, length)))
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
@@ -246,7 +246,7 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
     dat
   }, unlist(res, recursive = FALSE), rep(dataset_code(x), sapply(res, length)))
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_fetch_files

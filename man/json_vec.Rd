@@ -24,7 +24,7 @@ as.json_vec(x, ...)
 
 \method{as_json_vec}{json_class}(x, ...)
 
-\method{as_json_vec}{list}(x, recursive = FALSE, force = FALSE, ...)
+\method{as_json_vec}{list}(x, recursive = TRUE, force = FALSE, ...)
 
 \method{as_json_vec}{default}(x, force = FALSE, ...)
 

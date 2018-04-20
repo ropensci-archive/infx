@@ -93,7 +93,7 @@ list_samples_for_exp <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_samples
@@ -115,7 +115,7 @@ list_samples_for_plate <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_samples
@@ -143,7 +143,7 @@ list_samples_for_well <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_samples

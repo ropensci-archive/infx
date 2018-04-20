@@ -109,7 +109,7 @@ list_experiments.Project <- function(token,
                        params,
                        ...)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(res)
 }
 
 #' @rdname list_experiments

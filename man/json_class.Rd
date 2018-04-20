@@ -23,7 +23,7 @@ as.json_class(x, ...)
 
 \method{as_json_class}{json_class}(x, ...)
 
-\method{as_json_class}{list}(x, ...)
+\method{as_json_class}{list}(x, recursive = TRUE, ...)
 
 \method{as_json_class}{json_vec}(x, ...)
 
@@ -47,10 +47,10 @@ check_json_class(x, recursive = TRUE)
 
 \item{x}{Object to process.}
 
+\item{recursive}{Recursively apply the function.}
+
 \item{force}{Suppress error when casting an object to \code{json_class} that
 cannot be converted.}
-
-\item{recursive}{Recursively apply the function.}
 
 \item{restore_type}{When removing the \code{json_class} information from an
 object, whether to preserve the subclass attribute as \code{@type} filed.}
