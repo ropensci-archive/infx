@@ -68,7 +68,8 @@ is_token_valid(tok)
 While this client has been thoroughly tested with the openBIS instance hosted by InfectX and certain aspects are geared towards high content screening application of openBIS, it is in no way limited to usage with InfectX data. The function [`login_openbis()`](https://nbenn.github.io/infx/reference/login.html) accepts a `host_url` argument which is stored as `host_url` attribute with the created login token. Any method that issues an API call subsequently uses the login token's `host_url` attribute in order to construct the API endpoint url. As a small example for this functionality, the demo openBIS instance, maintained by the openBIS development team, is queried for available projects.
 
 ``` r
-tok <- login_openbis("test_observer", "test_observer",
+tok <- login_openbis(user = "test_observer",
+                     pwd = "test_observer",
                      host_url = "https://openbis.elnlims.ch")
 
 projects <- list_projects(tok)
