@@ -85,7 +85,7 @@
 #'     well_row = get_field(well_pos, "wellRow"),
 #'     well_col = get_field(well_pos, "wellColumn"),
 #'     cell_count = as.integer(values[1L, ]),
-#'     cell_area = as.numeric(values[2L, ])
+#'     cell_area = as.integer(values[2L, ])
 #'   )
 #' 
 #'   logout_openbis(tok)

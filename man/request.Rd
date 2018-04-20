@@ -133,19 +133,21 @@ self-contained.
   tok <- login_openbis("rdgr2014", "IXPubReview")
 
   # the function list_projects() is implemented as follows
-  projects <- make_request("listProjects", list(tok),
-                           api_endpoint = "gis")
+  projects <- make_request(api_url(api_endpoint = "gis"),
+                           "listProjects",
+                           list(tok))
   print(projects[[1]])
   # or using make_request(), the params argument has to be a list per
   # request and the first entry of the returned list has to be selected
-  proj <- make_requests("listProjects", list(list(tok)),
-                        api_endpoint = "gis")
+  proj <- make_requests(api_url(api_endpoint = "gis"),
+                        "listProjects",
+                        list(list(tok)))
   identical(proj[[1L]][[1L]],
             projects[[1]])
 
   # without using make_request(), one can achieve the same result by
   # calling do_requests_serial() directly
-  proj <- do_requests_serial(api_url("gis"),
+  proj <- do_requests_serial(api_url(api_endpoint = "gis"),
                              list(
                                list(
                                  id = "foobar",
