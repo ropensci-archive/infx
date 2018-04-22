@@ -208,7 +208,7 @@ print_json_class <- function(x,
     if (length(x) == 1)
       paste0(first, x)
     else
-      c(paste0(first, x[[1]]), paste0(rest, x[-1L]))
+      c(paste0(first, x[[1L]]), paste0(rest, x[-1L]))
   }
 
   if (!is.list(x)) {
@@ -252,7 +252,7 @@ print_json_class <- function(x,
         rest <- "..."
 
       if (is_json_class(x)) {
-        c(indent(layout$obj(class(x)[1]), paste0(layout$n, layout$h),
+        c(indent(layout$obj(class(x)[1L]), paste0(layout$n, layout$h),
                             paste0(layout$v,  " ")),
           unlist(lapply(rest[-length(rest)], indent,
                         paste0(layout$j, layout$h), paste0(layout$v,  " "))),
@@ -260,13 +260,13 @@ print_json_class <- function(x,
         )
       } else if (cur_depth <= max_depth) {
         if (length(rest) == 1L) {
-          indent(rest[[1]], paste0(if (!unnamed_parent) layout$h, layout$h),
+          indent(rest[[1L]], paste0(if (!unnamed_parent) layout$h, layout$h),
                  "  ")
         } else {
-          c(indent(rest[[1]],
+          c(indent(rest[[1L]],
                    paste0(if (unnamed_parent) layout$c else layout$t,
                           layout$h), paste0(layout$v,  " ")),
-            unlist(lapply(rest[-c(1, length(rest))], indent,
+            unlist(lapply(rest[-c(1L, length(rest))], indent,
                           paste0(layout$j, layout$h), paste0(layout$v,  " "))),
             indent(rest[[length(rest)]], paste0(layout$l, layout$h), "  ")
           )

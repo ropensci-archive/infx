@@ -159,7 +159,7 @@ as_json_class.list <- function(x, recursive = TRUE, ...) {
 as_json_class.json_vec <- function(x, ...) {
   assert_that(is_json_vec(x),
               length(x) == 1L)
-  x[[1]]
+  x[[1L]]
 }
 
 #' @rdname json_class

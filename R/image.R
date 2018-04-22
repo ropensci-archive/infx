@@ -215,12 +215,12 @@ fetch_img_for_ds <- function(token,
       dat <- list()
     }
 
-    attr(dat, "data_set") <- param[[2]]
+    attr(dat, "data_set") <- param[[2L]]
     if (is.null(well_positions))
-      attr(dat, "channel") <- param[[3]]
+      attr(dat, "channel") <- param[[3L]]
     else {
-      attr(dat, "well_positions") <- param[[3]]
-      attr(dat, "channel") <- param[[4]]
+      attr(dat, "well_positions") <- param[[3L]]
+      attr(dat, "channel") <- param[[4L]]
     }
 
     dat

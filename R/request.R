@@ -81,7 +81,7 @@
 #'   projects <- make_request(api_url(api_endpoint = "gis"),
 #'                            "listProjects",
 #'                            list(tok))
-#'   print(projects[[1]])
+#'   print(projects[[1L]])
 #'   # or using make_request(), the params argument has to be a list per
 #'   # request and the first entry of the returned list has to be selected
 #'   proj <- make_requests(api_url(api_endpoint = "gis"),

@@ -88,7 +88,7 @@
 #'   # corresponding to the associated raw imaging dataset is listed
 #'   raw_ref <- list_references(tok, samp)
 #'   # available imaging channels are
-#'   get_field(raw_ref[[1]], "properties")[["IMAGE.CHANNEL.LIST"]]
+#'   get_field(raw_ref[[1L]], "properties")[["IMAGE.CHANNEL.LIST"]]
 #' 
 #'   # a more specific image reference object can be retrieved by passing a
 #'   # well specification to list_references()
@@ -133,7 +133,7 @@ list_datasets.Sample <- function(token,
     if (length(x) == 1L)
       make_request(api_url("gis", attr(token, "host_url"), ...),
                    "listDataSetsForSample",
-                   list(token, x[[1]], TRUE),
+                   list(token, x[[1L]], TRUE),
                    ...)
     else
       make_request(api_url("gis", attr(token, "host_url"), ...),

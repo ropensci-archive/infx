@@ -129,10 +129,10 @@ obj_g <- json_class(a = json_class(b = "g", class = "foo"),
 obj_cg <- c(obj_c, obj_g)
 
 # sub-setting json_vec objects with single brackets yields json_vec objects
-class(obj_cg[1])
+class(obj_cg[1L])
 # and with double brackets, the selected json_class object is extracted
-class(obj_cg[[1]])
-identical(obj_cg[1], json_vec(obj_cg[[1]]))
+class(obj_cg[[1L]])
+identical(obj_cg[1L], json_vec(obj_cg[[1L]]))
 
 # json_vec objects can also be combined using c
 obj_i <- json_class(a = json_class(b = "i", class = "foo"),
@@ -146,8 +146,8 @@ length(obj_cgi)
 length(rep(obj_cgi, 2))
 
 # additionally replacement operators are available
-obj_cg[[2]] <- obj_i
-obj_cgi[1:2] <- obj_cg
+obj_cg[[2L]] <- obj_i
+obj_cgi[1L:2L] <- obj_cg
 identical(obj_cgi, c(obj_c, obj_i, obj_i))
 
 }

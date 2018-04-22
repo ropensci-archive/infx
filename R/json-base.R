@@ -76,10 +76,10 @@
 #' obj_cg <- c(obj_c, obj_g)
 #' 
 #' # sub-setting json_vec objects with single brackets yields json_vec objects
-#' class(obj_cg[1])
+#' class(obj_cg[1L])
 #' # and with double brackets, the selected json_class object is extracted
-#' class(obj_cg[[1]])
-#' identical(obj_cg[1], json_vec(obj_cg[[1]]))
+#' class(obj_cg[[1L]])
+#' identical(obj_cg[1L], json_vec(obj_cg[[1L]]))
 #' 
 #' # json_vec objects can also be combined using c
 #' obj_i <- json_class(a = json_class(b = "i", class = "foo"),
@@ -93,8 +93,8 @@
 #' length(rep(obj_cgi, 2))
 #' 
 #' # additionally replacement operators are available
-#' obj_cg[[2]] <- obj_i
-#' obj_cgi[1:2] <- obj_cg
+#' obj_cg[[2L]] <- obj_i
+#' obj_cgi[1L:2L] <- obj_cg
 #' identical(obj_cgi, c(obj_c, obj_i, obj_i))
 #' 
 #' @export
@@ -166,15 +166,15 @@ print.json_vec <- function(x,
                 layout = form)
 
   if (length(out) == 1L) {
-    out <- c(paste0(form$h, form$h, out[[1]][1]),
-             paste(" ", out[[1]][-1]))
+    out <- c(paste0(form$h, form$h, out[[1L]][1L]),
+             paste(" ", out[[1L]][-1]))
   } else {
-    out <- c(paste0(form$t, form$h, out[[1]][1]),
-             paste(form$v, out[[1]][-1]),
+    out <- c(paste0(form$t, form$h, out[[1L]][1L]),
+             paste(form$v, out[[1L]][-1]),
              unlist(lapply(out[-c(1, length(out))], function(y) {
-               c(paste0(form$j, form$h, y[1]), paste(form$v, y[-1]))
+               c(paste0(form$j, form$h, y[1L]), paste(form$v, y[-1]))
              })),
-             paste0(form$l, form$h, out[[length(out)]][1][1]),
+             paste0(form$l, form$h, out[[length(out)]][1L][1L]),
              paste(" ", out[[length(out)]][-1]))
   }
 

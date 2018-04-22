@@ -208,7 +208,7 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
                         search_criteria(
                           attribute_clause(
                             "code",
-                            samp[[1]][["experimentIdentifierOrNull"]]
+                            samp[[1L]][["experimentIdentifierOrNull"]]
                           )
                         ),
                         target_object = "experiment")

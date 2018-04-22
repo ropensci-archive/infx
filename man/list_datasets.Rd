@@ -247,7 +247,7 @@ option is not exposed to the user.
   # corresponding to the associated raw imaging dataset is listed
   raw_ref <- list_references(tok, samp)
   # available imaging channels are
-  get_field(raw_ref[[1]], "properties")[["IMAGE.CHANNEL.LIST"]]
+  get_field(raw_ref[[1L]], "properties")[["IMAGE.CHANNEL.LIST"]]
 
   # a more specific image reference object can be retrieved by passing a
   # well specification to list_references()
