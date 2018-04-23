@@ -14,17 +14,18 @@
 \alias{has_common_subclass}
 \title{Construct and validate JSON object vectors}
 \usage{
-json_vec(...)
+json_vec(..., .simplify = FALSE)
 
 as_json_vec(x, ...)
 
 as.json_vec(x, ...)
 
-\method{as_json_vec}{json_vec}(x, ...)
+\method{as_json_vec}{json_vec}(x, simplify = FALSE, ...)
 
-\method{as_json_vec}{json_class}(x, ...)
+\method{as_json_vec}{json_class}(x, simplify = FALSE, ...)
 
-\method{as_json_vec}{list}(x, recursive = TRUE, force = FALSE, ...)
+\method{as_json_vec}{list}(x, recursive = TRUE, force = FALSE,
+  simplify = FALSE, ...)
 
 \method{as_json_vec}{default}(x, force = FALSE, ...)
 
@@ -40,6 +41,9 @@ has_common_subclass(x)
 \item{...}{Individual \code{json_class} objects, or generic compatibility}
 
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
+
+\item{simplify, .simplify}{Logical switch indicating whether to simplify
+\code{json_vec} objects of length 1 to \code{json_class} objects.}
 
 \item{recursive}{Recursively apply the function.}
 
@@ -101,6 +105,10 @@ ab_vec <- as_json_vec(ab_class)
 length(ab_vec)
 # this can be reversed using as_json_class()
 identical(ab_class, as_json_class(ab_vec))
+# this might not be desirable in all cases; the argument simplify can be
+# used to only create json_vec objects of length greater than 1
+identical(as_json_vec(list(a), simplify = TRUE),
+          a)
 
 # has_common_subclass() will alway return true for json_class objects
 has_common_subclass(a)

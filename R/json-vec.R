@@ -34,6 +34,8 @@
 #' 
 #' @param ... Individual `json_class` objects, or generic compatibility
 #' @param x A single/list of `json_class` object(s), or other object to coerce
+#' @param simplify,.simplify Logical switch indicating whether to simplify
+#' `json_vec` objects of length 1 to `json_class` objects.
 #' 
 #' @rdname json_vec
 #' 
@@ -57,6 +59,10 @@
 #' length(ab_vec)
 #' # this can be reversed using as_json_class()
 #' identical(ab_class, as_json_class(ab_vec))
+#' # this might not be desirable in all cases; the argument simplify can be
+#' # used to only create json_vec objects of length greater than 1
+#' identical(as_json_vec(list(a), simplify = TRUE),
+#'           a)
 #' 
 #' # has_common_subclass() will alway return true for json_class objects
 #' has_common_subclass(a)
@@ -75,10 +81,10 @@
 #' 
 #' @export
 #' 
-json_vec <- function(...)
+json_vec <- function(..., .simplify = FALSE)
   new_json_vec(list(...))
 
-new_json_vec <- function(x) {
+new_json_vec <- function(x, simplify = FALSE) {
 
   assert_that(has_common_subclass(x))
 
@@ -87,7 +93,10 @@ new_json_vec <- function(x) {
 
   assert_that(is_json_vec(res))
 
-  res
+  if (simplify && length(res) == 1L)
+    as_json_class(res)
+  else
+    res
 }
 
 #' @rdname json_vec
@@ -104,14 +113,26 @@ as.json_vec <- as_json_vec
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.json_vec <- function(x, ...)
-  stats::setNames(x, NULL)
+as_json_vec.json_vec <- function(x, simplify = FALSE, ...) {
+
+  res <- stats::setNames(x, NULL)
+
+  if (simplify && length(res) == 1L)
+    as_json_class(res)
+  else
+    res
+}
 
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.json_class <- function(x, ...)
-  new_json_vec(list(x))
+as_json_vec.json_class <- function(x, simplify = FALSE, ...) {
+
+  if (simplify)
+    x
+  else
+    new_json_vec(list(x))
+}
 
 #' @param recursive Recursively apply the function.
 #' @param force Suppress error when casting an object to `json_vec` that
@@ -120,7 +141,11 @@ as_json_vec.json_class <- function(x, ...)
 #' @rdname json_vec
 #' @export
 #' 
-as_json_vec.list <- function(x, recursive = TRUE, force = FALSE, ...) {
+as_json_vec.list <- function(x,
+                             recursive = TRUE,
+                             force = FALSE,
+                             simplify = FALSE,
+                             ...) {
 
   list_to_json_vec <- function(y) {
     if (is.list(y)) {
@@ -128,11 +153,11 @@ as_json_vec.list <- function(x, recursive = TRUE, force = FALSE, ...) {
         return(y)
       y <- japply(y, list_to_json_vec)
       if (!is_json_class(y) && has_common_subclass(y)) {
-        exp_lst <- list()
-        lapply(y, function(z) {
-          exp_lst <<- c(exp_lst, if(is_json_vec(z)) as_list(z) else list(z))
-        })
-        new_json_vec(exp_lst)
+        new_json_vec(
+          unlist(lapply(y, function(z) if (is_json_class(z)) list(z) else z),
+                 recursive = FALSE),
+          simplify
+        )
       } else
         y
     } else
@@ -150,7 +175,7 @@ as_json_vec.list <- function(x, recursive = TRUE, force = FALSE, ...) {
   if (force && !has_common_subclass(x))
     x
   else
-    new_json_vec(x)
+    new_json_vec(x, simplify)
 }
 
 #' @rdname json_vec
