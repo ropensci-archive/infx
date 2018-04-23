@@ -11,6 +11,9 @@ test_that("experiment metadata can be listed", {
   for (i in seq_along(meta_1)) {
     expect_s3_class(meta_1[[i]], "ExperimentImageMetadata")
     expect_s3_class(meta_1[[i]], "json_class")
+    expect_attr(meta_1[[i]], "exp_id")
+    expect_s3_class(attr(meta_1[[i]], "exp_id"), "ExperimentIdentifier")
+    expect_s3_class(attr(meta_1[[i]], "exp_id"), "json_class")
   }
 
   meta_2 <- list_image_metadata(tok, exp_ids[1:2])
@@ -20,6 +23,9 @@ test_that("experiment metadata can be listed", {
   for (i in seq_along(meta_2)) {
     expect_s3_class(meta_2[[i]], "ExperimentImageMetadata")
     expect_s3_class(meta_2[[i]], "json_class")
+    expect_attr(meta_2[[i]], "exp_id")
+    expect_s3_class(attr(meta_2[[i]], "exp_id"), "ExperimentIdentifier")
+    expect_s3_class(attr(meta_2[[i]], "exp_id"), "json_class")
   }
 
   expect_identical(list_image_metadata(tok, experiments[[1]]), meta_1)

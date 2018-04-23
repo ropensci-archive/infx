@@ -62,53 +62,97 @@ test_that("dataset download urls can be generated", {
   paths <- sapply(files, `[[`, "pathInDataSet")
 
   url_1 <- list_download_urls(tok, codes[2], paths[1])
-  expect_is(url_1, "character")
+  expect_is(url_1, "list")
   expect_length(url_1, 1L)
-  expect_true(grepl("^https://", url_1))
+  expect_is(url_1[[1]], "character")
+  expect_attr(url_1[[1]], "data_set")
+  expect_attr(url_1[[1]], "path")
+  expect_is(attr(url_1[[1]], "data_set"), "character")
+  expect_is(attr(url_1[[1]], "path"), "character")
+  expect_match(url_1[[1]], "^https://")
 
   url_2 <- list_download_urls(tok, codes[2], paths[1:2])
-  expect_is(url_2, "character")
+  expect_is(url_2, "list")
   expect_length(url_2, 2L)
-  for (i in seq_along(url_2))
-    expect_match(url_2[i], "^https://")
+  for (i in seq_along(url_2)) {
+    expect_is(url_2[[1]], "character")
+    expect_attr(url_2[[1]], "data_set")
+    expect_attr(url_2[[1]], "path")
+    expect_is(attr(url_2[[1]], "data_set"), "character")
+    expect_is(attr(url_2[[1]], "path"), "character")
+    expect_match(url_2[[1]], "^https://")
+  }
 
   url_to <- list_download_urls(tok, codes[2], paths[1], 5L)
-  expect_is(url_to, "character")
+  expect_is(url_to, "list")
   expect_length(url_to, 1L)
-  expect_true(grepl("^https://", url_to))
+  expect_is(url_to[[1]], "character")
+  expect_attr(url_to[[1]], "data_set")
+  expect_attr(url_to[[1]], "path")
+  expect_is(attr(url_to[[1]], "data_set"), "character")
+  expect_is(attr(url_to[[1]], "path"), "character")
+  expect_match(url_to[[1]], "^https://")
 
   url_1 <- list_download_urls(tok, datasets[[2]], paths[1])
-  expect_is(url_1, "character")
+  expect_is(url_1, "list")
   expect_length(url_1, 1L)
-  expect_true(grepl("^https://", url_1))
+  expect_is(url_1[[1]], "character")
+  expect_attr(url_1[[1]], "data_set")
+  expect_attr(url_1[[1]], "path")
+  expect_is(attr(url_1[[1]], "data_set"), "character")
+  expect_is(attr(url_1[[1]], "path"), "character")
+  expect_match(url_1[[1]], "^https://")
 
   url_2 <- list_download_urls(tok, datasets[[2]], paths[1:2])
-  expect_is(url_2, "character")
+  expect_is(url_2, "list")
   expect_length(url_2, 2L)
-  for (i in seq_along(url_2))
-    expect_match(url_2[i], "^https://")
+  for (i in seq_along(url_2)) {
+    expect_is(url_2[[1]], "character")
+    expect_attr(url_2[[1]], "data_set")
+    expect_attr(url_2[[1]], "path")
+    expect_is(attr(url_2[[1]], "data_set"), "character")
+    expect_is(attr(url_2[[1]], "path"), "character")
+    expect_match(url_2[[1]], "^https://")
+  }
 
   url_2 <- list_download_urls(tok,
                               c("20150518113941960-3132048",
                                 "20160421133225062-3373964"),
                               "original/data/metadata.properties")
-  expect_is(url_2, "character")
+  expect_is(url_2, "list")
   expect_length(url_2, 2L)
-  for (i in seq_along(url_2))
-    expect_match(url_2[i], "^https://")
+  for (i in seq_along(url_2)) {
+    expect_is(url_2[[1]], "character")
+    expect_attr(url_2[[1]], "data_set")
+    expect_attr(url_2[[1]], "path")
+    expect_is(attr(url_2[[1]], "data_set"), "character")
+    expect_is(attr(url_2[[1]], "path"), "character")
+    expect_match(url_2[[1]], "^https://")
+  }
 
   dsid <- list_dataset_ids(tok, codes[2])
 
   url_1 <- list_download_urls(tok, dsid[[1]], paths[1])
-  expect_is(url_1, "character")
+  expect_is(url_1, "list")
   expect_length(url_1, 1L)
-  expect_true(grepl("^https://", url_1))
+  expect_is(url_1[[1]], "character")
+  expect_attr(url_1[[1]], "data_set")
+  expect_attr(url_1[[1]], "path")
+  expect_is(attr(url_1[[1]], "data_set"), "character")
+  expect_is(attr(url_1[[1]], "path"), "character")
+  expect_match(url_1[[1]], "^https://")
 
   url_2 <- list_download_urls(tok, dsid[[1]], paths[1:2])
-  expect_is(url_2, "character")
+  expect_is(url_2, "list")
   expect_length(url_2, 2L)
-  for (i in seq_along(url_2))
-    expect_match(url_2[i], "^https://")
+  for (i in seq_along(url_2)) {
+    expect_is(url_2[[1]], "character")
+    expect_attr(url_2[[1]], "data_set")
+    expect_attr(url_2[[1]], "path")
+    expect_is(attr(url_2[[1]], "data_set"), "character")
+    expect_is(attr(url_2[[1]], "path"), "character")
+    expect_match(url_2[[1]], "^https://")
+  }
 
   ds_file <- c(json_class(dataSetCode = codes[2],
                           path = paths[1],
@@ -120,20 +164,30 @@ test_that("dataset download urls can be generated", {
                           class = "DataSetFileDTO"))
 
   url_1 <- list_download_urls(tok, ds_file[[1]])
-  expect_is(url_1, "character")
+  expect_is(url_1, "list")
   expect_length(url_1, 1L)
-  expect_true(grepl("^https://", url_1))
+  expect_is(url_1[[1]], "character")
+  expect_attr(url_1[[1]], "ds_file")
+  expect_s3_class(attr(url_1[[1]], "ds_file"), "DataSetFileDTO")
+  expect_match(url_1[[1]], "^https://")
 
   url_2 <- list_download_urls(tok, ds_file[1:2])
-  expect_is(url_2, "character")
+  expect_is(url_2, "list")
   expect_length(url_2, 2L)
-  for (i in seq_along(url_2))
-    expect_match(url_2[i], "^https://")
+  for (i in seq_along(url_2)) {
+    expect_is(url_2[[i]], "character")
+    expect_attr(url_2[[i]], "ds_file")
+    expect_s3_class(attr(url_2[[i]], "ds_file"), "DataSetFileDTO")
+    expect_match(url_2[[i]], "^https://")
+  }
 
   url_to <- list_download_urls(tok, ds_file[[1]], 5L)
-  expect_is(url_to, "character")
+  expect_is(url_to, "list")
   expect_length(url_to, 1L)
-  expect_true(grepl("^https://", url_to))
+  expect_is(url_to[[1]], "character")
+  expect_attr(url_to[[1]], "ds_file")
+  expect_s3_class(attr(url_to[[1]], "ds_file"), "DataSetFileDTO")
+  expect_match(url_to[[1]], "^https://")
 })
 
 test_that("openbis api urls and docs links can be generated", {

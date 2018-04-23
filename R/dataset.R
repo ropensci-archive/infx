@@ -383,7 +383,12 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, lengths(res)),
+        MoreArgs = list(attr_name = "data_set"))
+  )
 }
 
 #' @rdname list_img_ref
@@ -405,7 +410,12 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, lengths(res)),
+        MoreArgs = list(attr_name = "data_set"))
+  )
 }
 
 #' @rdname list_datasets

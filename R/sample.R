@@ -93,7 +93,12 @@ list_samples_for_exp <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(as_experiment_id(x), lengths(res)),
+        MoreArgs = list(attr_name = "exp_id"))
+  )
 }
 
 #' @rdname list_samples
@@ -108,14 +113,21 @@ list_samples.Experiment <- list_samples_for_exp
 
 list_samples_for_plate <- function(token, x, ...) {
 
-  params <- lapply(as_plate_id(x), function(plate) list(token, plate))
+  x <- as_plate_id(x)
+
+  params <- lapply(x, function(plate) list(token, plate))
 
   res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
                        "getPlateSample",
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, lengths(res)),
+        MoreArgs = list(attr_name = "plate_id"))
+  )
 }
 
 #' @rdname list_samples
@@ -135,15 +147,21 @@ list_samples.PlateMetadata <- list_samples_for_plate
 
 list_samples_for_well <- function(token, x, ...) {
 
-  params <- lapply(as_well_id(x),
-                   function(well) list(token, remove_null(well)))
+  x <- as_well_id(x)
+
+  params <- lapply(x, function(well) list(token, remove_null(well)))
 
   res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
                        "getWellSample",
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, lengths(res)),
+        MoreArgs = list(attr_name = "well_id"))
+  )
 }
 
 #' @rdname list_samples

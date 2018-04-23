@@ -146,6 +146,10 @@ test_that("materials can be listed", {
   expect_length(mat_11, 1L)
   expect_is(mat_11[[1L]], "PlateWellMaterialMapping")
   expect_is(mat_11[[1L]], "json_class")
+  expect_attr(mat_11[[1L]], "mat_type")
+  expect_s3_class(attr(mat_11[[1L]], "mat_type"),
+                  "MaterialTypeIdentifierScreening")
+  expect_s3_class(attr(mat_11[[1L]], "mat_type"), "json_class")
 
   mat_12 <- list_material(tok, plates[[2]], types[1:2])
   expect_is(mat_12, "PlateWellMaterialMapping")
@@ -154,6 +158,10 @@ test_that("materials can be listed", {
   for (i in seq_along(mat_12)) {
     expect_is(mat_12[[i]], "PlateWellMaterialMapping")
     expect_is(mat_12[[i]], "json_class")
+    expect_attr(mat_12[[i]], "mat_type")
+    expect_s3_class(attr(mat_12[[i]], "mat_type"),
+                    "MaterialTypeIdentifierScreening")
+    expect_s3_class(attr(mat_12[[i]], "mat_type"), "json_class")
   }
 
   mat_21 <- list_material(tok, plates[1:2], types[[2]])
@@ -163,6 +171,10 @@ test_that("materials can be listed", {
   for (i in seq_along(mat_21)) {
     expect_is(mat_21[[i]], "PlateWellMaterialMapping")
     expect_is(mat_21[[i]], "json_class")
+    expect_attr(mat_21[[i]], "mat_type")
+    expect_s3_class(attr(mat_21[[i]], "mat_type"),
+                    "MaterialTypeIdentifierScreening")
+    expect_s3_class(attr(mat_21[[i]], "mat_type"), "json_class")
   }
 
   mat_22 <- list_material(tok, plates[1:2], types[1:2])
@@ -172,6 +184,10 @@ test_that("materials can be listed", {
   for (i in seq_along(mat_22)) {
     expect_is(mat_22[[i]], "PlateWellMaterialMapping")
     expect_is(mat_22[[i]], "json_class")
+    expect_attr(mat_22[[i]], "mat_type")
+    expect_s3_class(attr(mat_22[[i]], "mat_type"),
+                    "MaterialTypeIdentifierScreening")
+    expect_s3_class(attr(mat_22[[i]], "mat_type"), "json_class")
   }
 
   mat_f_14 <- extract_well_material(mat_11, "F", 14)

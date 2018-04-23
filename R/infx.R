@@ -332,3 +332,9 @@
 #' 
 #' @import assertthat
 NULL
+
+set_attr <- function(object, attribute, attr_name) {
+  assert_that(is.string(attr_name))
+  attr(object, attr_name) <- attribute
+  object
+}

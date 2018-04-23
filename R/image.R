@@ -208,7 +208,7 @@ fetch_img_for_ds <- function(token,
                        finally = process_imgs,
                        ...)
 
-  mapply(function(dat, param) {
+  Map(function(dat, param) {
 
     if (length(dat) == 0) {
       warning("no images found for the given data set.")
@@ -224,7 +224,7 @@ fetch_img_for_ds <- function(token,
     }
 
     dat
-  }, res, params, SIMPLIFY = FALSE)
+  }, res, params)
 }
 
 #' @rdname list_fetch_images
@@ -400,7 +400,12 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, lengths(res)),
+        MoreArgs = list(attr_name = "exp_id"))
+  )
 }
 
 #' @rdname list_fetch_images

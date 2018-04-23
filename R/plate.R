@@ -305,7 +305,12 @@ list_wells_for_mat <- function(token,
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, lengths(res)),
+        MoreArgs = list(attr_name = "mat_type"))
+  )
 }
 
 #' @param experiment Additionally, the search can be limited to a single

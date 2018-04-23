@@ -10,6 +10,9 @@ test_that("samples can be listed", {
     expect_s3_class(samp_1[[i]], "Sample")
     expect_s3_class(samp_1[[i]], "json_class")
     expect_identical(get_field(samp_1[[i]], "sampleTypeCode"), "PLATE")
+    expect_attr(samp_1[[i]], "exp_id")
+    expect_s3_class(attr(samp_1[[i]], "exp_id"), "ExperimentIdentifier")
+    expect_s3_class(attr(samp_1[[i]], "exp_id"), "json_class")
   }
 
   check_skip()
@@ -22,6 +25,9 @@ test_that("samples can be listed", {
     expect_s3_class(samp_2[[i]], "Sample")
     expect_s3_class(samp_2[[i]], "json_class")
     expect_identical(get_field(samp_2[[i]], "sampleTypeCode"), "PLATE")
+    expect_attr(samp_2[[i]], "exp_id")
+    expect_s3_class(attr(samp_2[[i]], "exp_id"), "ExperimentIdentifier")
+    expect_s3_class(attr(samp_2[[i]], "exp_id"), "json_class")
   }
 
   expect_identical(samp_1, list_samples(tok, experiments[[1]]))
@@ -34,6 +40,9 @@ test_that("samples can be listed", {
   expect_s3_class(samp_1[[1]], "Sample")
   expect_s3_class(samp_1[[1]], "json_class")
   expect_identical(get_field(samp_1[[1]], "sampleTypeCode"), "PLATE")
+  expect_attr(samp_1[[1]], "plate_id")
+  expect_s3_class(attr(samp_1[[1]], "plate_id"), "PlateIdentifier")
+  expect_s3_class(attr(samp_1[[1]], "plate_id"), "json_class")
 
   samp_2 <- list_samples(tok, plates[c(1, 2)])
   expect_s3_class(samp_2, "Sample")
@@ -43,6 +52,9 @@ test_that("samples can be listed", {
     expect_s3_class(samp_2[[i]], "Sample")
     expect_s3_class(samp_2[[i]], "json_class")
     expect_identical(get_field(samp_2[[i]], "sampleTypeCode"), "PLATE")
+    expect_attr(samp_2[[i]], "plate_id")
+    expect_s3_class(attr(samp_2[[i]], "plate_id"), "PlateIdentifier")
+    expect_s3_class(attr(samp_2[[i]], "plate_id"), "json_class")
   }
 
   samp_1 <- list_samples(tok, wells[[1]])
@@ -52,6 +64,9 @@ test_that("samples can be listed", {
   expect_s3_class(samp_1[[1]], "Sample")
   expect_s3_class(samp_1[[1]], "json_class")
   expect_false(get_field(samp_1[[1]], "sampleTypeCode") == "PLATE")
+  expect_attr(samp_1[[1]], "well_id")
+  expect_s3_class(attr(samp_1[[1]], "well_id"), "WellIdentifier")
+  expect_s3_class(attr(samp_1[[1]], "well_id"), "json_class")
 
   samp_2 <- list_samples(tok, wells[c(1, 2)])
   expect_s3_class(samp_2, "Sample")
@@ -60,7 +75,10 @@ test_that("samples can be listed", {
   for (i in seq_along(samp_2)) {
     expect_s3_class(samp_2[[i]], "Sample")
     expect_s3_class(samp_2[[i]], "json_class")
-  expect_false(get_field(samp_2[[i]], "sampleTypeCode") == "PLATE")
+    expect_false(get_field(samp_2[[i]], "sampleTypeCode") == "PLATE")
+    expect_attr(samp_2[[i]], "well_id")
+    expect_s3_class(attr(samp_2[[i]], "well_id"), "WellIdentifier")
+    expect_s3_class(attr(samp_2[[i]], "well_id"), "json_class")
   }
 })
 

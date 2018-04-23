@@ -77,18 +77,18 @@
 #'   list_download_urls(tok, ds, file_path)
 #' 
 #'   # generate url and download file
-#'   dat <- read_mat_files(url(list_download_urls(tok, ds, file_path)))
+#'   dat <- read_mat_files(url(list_download_urls(tok, ds, file_path)[[1L]]))
 #'   attributes(dat)
 #'   str(as.integer(dat))
 #' 
 #'   # set timeout to 2 sec
 #'   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
-#'   tmp <- read_mat_files(url(file_url))
+#'   tmp <- read_mat_files(url(file_url[[1L]]))
 #' 
 #'   # let timeout expire
 #'   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
 #'   Sys.sleep(3L)
-#'   tmp <- read_mat_files(url(file_url))
+#'   tmp <- read_mat_files(url(file_url[[1L]]))
 #' 
 #'   logout_openbis(tok)
 #' }
@@ -123,22 +123,24 @@ list_download_urls.character <- function(token,
 
   if (is.na(timeout)) {
     fun <- "getDownloadUrlForFileForDataSet"
-    params <- mapply(function(a, b) list(token, a, b), x, path,
-                     SIMPLIFY = FALSE)
+    params <- Map(function(a, b) list(token, a, b), x, path)
 
   } else {
 
     assert_that(is.numeric(timeout))
 
     fun <- "getDownloadUrlForFileForDataSetWithTimeout"
-    params <- mapply(function(a, b) list(token, a, b, timeout), x, path,
-                     SIMPLIFY = FALSE)
+    params <- Map(function(a, b) list(token, a, b, timeout), x, path)
   }
 
-  unlist(make_requests(api_url("dsrg", attr(token, "host_url"), ...),
+  res <- make_requests(api_url("dsrg", attr(token, "host_url"), ...),
                        fun,
                        params,
-                       ...))
+                       ...)
+
+  Map(function(y, a, b) {
+    set_attr(set_attr(y, a, "data_set"), b, "path")
+  }, res, x, path)
 }
 
 list_dl_url <- function(token, x, path, timeout = NA, ...)
@@ -189,23 +191,27 @@ list_download_urls.PlateImageReference <- list_dl_url
 #' 
 list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
 
+  x <- as_json_vec(x)
+
   if (is.na(timeout)) {
 
     fun <- "getDownloadUrlForFileForDataSet"
-    params <- lapply(as_json_vec(x), function(y) list(token, y))
+    params <- lapply(x, function(y) list(token, y))
 
   } else {
 
     assert_that(is.numeric(timeout))
 
     fun <- "getDownloadUrlForFileForDataSetWithTimeout"
-    params <- lapply(as_json_vec(x), function(y) list(token, y, timeout))
+    params <- lapply(x, function(y) list(token, y, timeout))
   }
   
-  unlist(make_requests(api_url("dsrg", attr(token, "host_url"), ...),
+  res <- make_requests(api_url("dsrg", attr(token, "host_url"), ...),
                        fun,
                        params,
-                       ...))
+                       ...)
+
+  Map(set_attr, res, x, MoreArgs = list(attr_name = "ds_file"))
 }
 
 #' @rdname list_urls

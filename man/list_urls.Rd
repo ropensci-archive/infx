@@ -176,18 +176,18 @@ to \code{list_datastores()}.
   list_download_urls(tok, ds, file_path)
 
   # generate url and download file
-  dat <- read_mat_files(url(list_download_urls(tok, ds, file_path)))
+  dat <- read_mat_files(url(list_download_urls(tok, ds, file_path)[[1L]]))
   attributes(dat)
   str(as.integer(dat))
 
   # set timeout to 2 sec
   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
-  tmp <- read_mat_files(url(file_url))
+  tmp <- read_mat_files(url(file_url[[1L]]))
 
   # let timeout expire
   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
   Sys.sleep(3L)
-  tmp <- read_mat_files(url(file_url))
+  tmp <- read_mat_files(url(file_url[[1L]]))
 
   logout_openbis(tok)
 }

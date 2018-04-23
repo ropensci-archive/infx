@@ -203,6 +203,9 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_1)) {
     expect_s3_class(ds_1[[i]], "MicroscopyImageReference")
     expect_s3_class(ds_1[[i]], "json_class")
+    expect_attr(ds_1[[i]], "data_set")
+    expect_s3_class(attr(ds_1[[i]], "data_set"), "DatasetIdentifier")
+    expect_s3_class(attr(ds_1[[i]], "data_set"), "json_class")
   }
 
   ds_2 <- list_references(tok, dsids[1:2], channels = "DAPI")
@@ -212,6 +215,9 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "MicroscopyImageReference")
     expect_s3_class(ds_2[[i]], "json_class")
+    expect_attr(ds_2[[i]], "data_set")
+    expect_s3_class(attr(ds_2[[i]], "data_set"), "DatasetIdentifier")
+    expect_s3_class(attr(ds_2[[i]], "data_set"), "json_class")
   }
 
   ds_3 <- list_references(tok, dsids[[1]], channels = c("DAPI", "GFP"))
@@ -221,18 +227,21 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_3)) {
     expect_s3_class(ds_3[[i]], "MicroscopyImageReference")
     expect_s3_class(ds_3[[i]], "json_class")
+    expect_attr(ds_3[[i]], "data_set")
+    expect_s3_class(attr(ds_3[[i]], "data_set"), "DatasetIdentifier")
+    expect_s3_class(attr(ds_3[[i]], "data_set"), "json_class")
   }
 
   # check Dataset
-  expect_identical(list_references(tok,
-                                   list_datasets(tok,
-                                                 ds_1[[1]][["datasetCode"]]),
-                                   channels = "DAPI"), ds_1)
+  expect_equivalent(list_references(tok,
+                                    list_datasets(tok,
+                                                  ds_1[[1]][["datasetCode"]]),
+                                    channels = "DAPI"), ds_1)
   # check MicroscopyImageReference
-  expect_identical(list_references(tok, ds_1[[1]], channels = "DAPI"), ds_1)
+  expect_equivalent(list_references(tok, ds_1[[1]], channels = "DAPI"), ds_1)
   # check ImageDatasetReference
-  expect_identical(list_references(tok, list_references(tok, plates[[1]]),
-                                   channels = "DAPI"), ds_1)
+  expect_equivalent(list_references(tok, list_references(tok, plates[[1]]),
+                                    channels = "DAPI"), ds_1)
 
   well_pos <- as_json_vec(lapply(wells[1:2], `[[`, "wellPosition"))
   ds_1 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
@@ -243,6 +252,9 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_1)) {
     expect_s3_class(ds_1[[i]], "PlateImageReference")
     expect_s3_class(ds_1[[i]], "json_class")
+    expect_attr(ds_1[[i]], "data_set")
+    expect_s3_class(attr(ds_1[[i]], "data_set"), "DatasetIdentifier")
+    expect_s3_class(attr(ds_1[[i]], "data_set"), "json_class")
   }
 
   ds_2 <- list_references(tok, dsids[[1]], wells = well_pos, channels = "DAPI")
@@ -252,6 +264,9 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "PlateImageReference")
     expect_s3_class(ds_2[[i]], "json_class")
+    expect_attr(ds_2[[i]], "data_set")
+    expect_s3_class(attr(ds_2[[i]], "data_set"), "DatasetIdentifier")
+    expect_s3_class(attr(ds_2[[i]], "data_set"), "json_class")
   }
 
   ds_3 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
@@ -262,6 +277,9 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_3)) {
     expect_s3_class(ds_3[[i]], "PlateImageReference")
     expect_s3_class(ds_3[[i]], "json_class")
+    expect_attr(ds_3[[i]], "data_set")
+    expect_s3_class(attr(ds_3[[i]], "data_set"), "DatasetIdentifier")
+    expect_s3_class(attr(ds_3[[i]], "data_set"), "json_class")
   }
 })
 

@@ -69,6 +69,10 @@ test_that("well/plate refs can be listed", {
   for (i in seq_along(ref_1)) {
     expect_s3_class(ref_1[[i]], "PlateWellReferenceWithDatasets")
     expect_s3_class(ref_1[[i]], "json_class")
+    expect_attr(ref_1[[i]], "mat_type")
+    expect_s3_class(attr(ref_1[[i]], "mat_type"),
+                    "MaterialIdentifierScreening")
+    expect_s3_class(attr(ref_1[[i]], "mat_type"), "json_class")
   }
 
   ref_2 <- list_wells(tok, mat)
@@ -78,6 +82,10 @@ test_that("well/plate refs can be listed", {
   for (i in seq_along(ref_2)) {
     expect_s3_class(ref_2[[i]], "PlateWellReferenceWithDatasets")
     expect_s3_class(ref_2[[i]], "json_class")
+    expect_attr(ref_2[[i]], "mat_type")
+    expect_s3_class(attr(ref_2[[i]], "mat_type"),
+                    "MaterialIdentifierScreening")
+    expect_s3_class(attr(ref_2[[i]], "mat_type"), "json_class")
   }
 
   ref_1_exp <- list_wells(tok, mat[[1]], exp_ids[[1]])
@@ -87,6 +95,10 @@ test_that("well/plate refs can be listed", {
   for (i in seq_along(ref_1_exp)) {
     expect_s3_class(ref_1_exp[[i]], "PlateWellReferenceWithDatasets")
     expect_s3_class(ref_1_exp[[i]], "json_class")
+    expect_attr(ref_1_exp[[i]], "mat_type")
+    expect_s3_class(attr(ref_1_exp[[i]], "mat_type"),
+                    "MaterialIdentifierScreening")
+    expect_s3_class(attr(ref_1_exp[[i]], "mat_type"), "json_class")
   }
 
   expect_identical(ref_1_exp, list_wells(tok, mat[[1]], exp_ids[1]))
@@ -98,6 +110,10 @@ test_that("well/plate refs can be listed", {
   for (i in seq_along(ref_2_exp)) {
     expect_s3_class(ref_2_exp[[i]], "PlateWellReferenceWithDatasets")
     expect_s3_class(ref_2_exp[[i]], "json_class")
+    expect_attr(ref_2_exp[[i]], "mat_type")
+    expect_s3_class(attr(ref_2_exp[[i]], "mat_type"),
+                    "MaterialIdentifierScreening")
+    expect_s3_class(attr(ref_2_exp[[i]], "mat_type"), "json_class")
   }
 
   expect_identical(ref_2_exp,

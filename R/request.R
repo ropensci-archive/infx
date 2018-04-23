@@ -260,7 +260,7 @@ do_requests_serial <- function(urls,
     }
 
     res <- curl::curl_fetch_memory(
-      eval(urls[[i]]),
+      as.character(eval(urls[[i]])),
       handle = create_handle(bodies[[i]])
     )
 
@@ -323,7 +323,7 @@ do_requests_parallel <- function(urls,
     }
 
     curl::curl_fetch_multi(
-      url = eval(urls[[i]]),
+      url = as.character(eval(urls[[i]])),
       handle = create_handle(bodies[[i]]),
       pool = pool,
       done = function(x) {
