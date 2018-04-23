@@ -149,7 +149,7 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_plates.Experiment <- function(token, x, ...) {
-  list_plates(token, exp_to_expid(x), ...)
+  list_plates(token, as_experiment_id(x), ...)
 }
 
 #' @rdname list_plate_well
@@ -289,7 +289,7 @@ list_wells_for_mat <- function(token,
   } else {
 
     if (get_subclass(experiment) == "Experiment")
-      experiment <- exp_to_expid(experiment)
+      experiment <- as_experiment_id(experiment)
 
     if (is_json_vec(experiment))
       experiment <- as_json_class(experiment)

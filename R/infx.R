@@ -167,7 +167,7 @@
 #' OpenBIS projects can be listed by calling [list_projects()] and experiments
 #' are enumerated with [list_experiments()]. Two objects types are used for
 #' representing experiments: `Experiment` and `ExperimentIdentifier`.
-#' [exp_to_expid()] converts a set of `Experiment` objects to
+#' [as_experiment_id()] converts a set of `Experiment` objects to
 #' `ExperimentIdentifier` (requires no API call) and the inverse is possible
 #' by passing a set of `ExperimentIdentifier` objects to [list_experiments()]
 #' (does require an API call). All available experiments can be listed as

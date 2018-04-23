@@ -407,7 +407,7 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
 #' @export
 #' 
 list_image_metadata.Experiment <- function(token, x, ...)
-  list_image_metadata(token, exp_to_expid(x), ...)
+  list_image_metadata(token, as_experiment_id(x), ...)
 
 fetch_img_meta <- function(token, x, type = c("metadata", "format"), ...) {
 

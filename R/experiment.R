@@ -5,7 +5,7 @@
 #' `ExperimentIdentifier`. The fields that make up an `ExperimentIdentifier`
 #' object are a subset of those required for an `Experiment` object. Therefore
 #' an experiment can be turned into an experiment id object without an API
-#' call, using the function `exp_to_expid()`. The reverse can be achieved by
+#' call, using the function `as_experiment_id()`. The reverse can be achieved by
 #' calling `list_experiments()` on experiment id objects. In general,
 #' experiments and experiment id objects can be listed using
 #' `list_experiments()` and `list_experiment_ids()`.
@@ -41,7 +41,7 @@
 #'   exps <- list_experiments(tok, proj[[1L]])
 #' 
 #'   # convert experiment to experiment ids and back
-#'   exp_ids <- exp_to_expid(exps)
+#'   exp_ids <- as_experiment_id(exps)
 #'   identical(exps, list_experiments(tok, exp_ids))
 #' 
 #'   # experiments can also be searched for
@@ -137,7 +137,13 @@ list_experiment_types <- function(token, ...)
 #' @rdname list_experiments
 #' @export
 #' 
-exp_to_expid <- function(x) {
+as_experiment_id <- function(x, ...)
+  UseMethod("as_experiment_id")
+
+#' @rdname list_experiments
+#' @export
+#' 
+as_experiment_id.Experiment <- function(x, ...) {
 
   codes <- strsplit(sub("^/", "", get_field(x, "identifier")), "/")
 
@@ -150,6 +156,12 @@ exp_to_expid <- function(x) {
         MoreArgs = list(class = "ExperimentIdentifier"))
   )
 }
+
+#' @rdname list_experiments
+#' @export
+#' 
+as_experiment_id.ExperimentIdentifier <- function(x, ...)
+  as_json_vec(x)
 
 #' Extract experiment string
 #' 

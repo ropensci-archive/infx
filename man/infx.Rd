@@ -175,7 +175,7 @@ structures).
 OpenBIS projects can be listed by calling \code{\link[=list_projects]{list_projects()}} and experiments
 are enumerated with \code{\link[=list_experiments]{list_experiments()}}. Two objects types are used for
 representing experiments: \code{Experiment} and \code{ExperimentIdentifier}.
-\code{\link[=exp_to_expid]{exp_to_expid()}} converts a set of \code{Experiment} objects to
+\code{\link[=as_experiment_id]{as_experiment_id()}} converts a set of \code{Experiment} objects to
 \code{ExperimentIdentifier} (requires no API call) and the inverse is possible
 by passing a set of \code{ExperimentIdentifier} objects to \code{\link[=list_experiments]{list_experiments()}}
 (does require an API call). All available experiments can be listed as
