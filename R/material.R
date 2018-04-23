@@ -176,7 +176,7 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(material_type, lengths(res)),
+        rep(material_type, sapply(res, length)),
         MoreArgs = list(attr_name = "mat_type"))
   )
 }
