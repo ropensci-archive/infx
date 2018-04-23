@@ -40,7 +40,7 @@ fetch_features(token, x, feature_codes = NA, ...)
 \item{x}{Object to specify the set of feature vector datasets of interest.}
 
 \item{...}{Generic compatibility. Extra arguments will be passed to
-\code{\link[=make_requests]{make_requests()}}.}
+\code{\link[=make_request]{make_request()}}.}
 
 \item{wells}{Set of \code{WellPosition} objects used to limit the returned
 feature data.}

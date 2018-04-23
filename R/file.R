@@ -176,12 +176,13 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
                        params,
                        ...)
 
-  res <- Map(function(dat, code) {
-    attr(dat, "data_set") <- code
-    dat
-  }, unlist(res, recursive = FALSE), rep(x, sapply(res, length)))
-
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(x, sapply(res, length)),
+        MoreArgs = list(attr_name = "data_set")),
+    simplify = TRUE
+  )
 }
 
 list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
@@ -241,12 +242,13 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
                        params,
                        ...)
 
-  res <- Map(function(dat, code) {
-    attr(dat, "data_set") <- code
-    dat
-  }, unlist(res, recursive = FALSE), rep(dataset_code(x), sapply(res, length)))
-
-  as_json_vec(res)
+  as_json_vec(
+    Map(set_attr,
+        unlist(res, recursive = FALSE),
+        rep(dataset_code(x), sapply(res, length)),
+        MoreArgs = list(attr_name = "data_set")),
+    simplify = TRUE
+  )
 }
 
 #' @rdname list_fetch_files

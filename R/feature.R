@@ -47,7 +47,7 @@
 #' @inheritParams logout_openbis
 #' @param x Object to specify the set of feature vector datasets of interest.
 #' @param ... Generic compatibility. Extra arguments will be passed to
-#' [make_requests()].
+#' [make_request()].
 #' 
 #' @rdname list_fetch_features
 #' 

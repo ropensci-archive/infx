@@ -436,7 +436,7 @@ process_json <- function(x) {
     warning("an api call returned NULL.")
   x <- as_json_class(x, force = TRUE)
   x <- resolve_references(x)
-  as_json_vec(x, recursive = TRUE, force = TRUE)
+  as_json_vec(x, recursive = TRUE, force = TRUE, simplify = TRUE)
 }
 
 #' @rdname request

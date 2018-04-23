@@ -59,7 +59,8 @@
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned images
-#' @param ... Generic compatibility
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' @param channels A character vector of imaging channels
 #' @param well_positions A (list of) `WellPosition` objects. If the object
 #' passed as argument x already contains well position information this can
@@ -404,7 +405,8 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(x, sapply(res, length)),
-        MoreArgs = list(attr_name = "exp_id"))
+        MoreArgs = list(attr_name = "exp_id")),
+    simplify = TRUE
   )
 }
 

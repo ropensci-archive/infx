@@ -82,7 +82,7 @@
 #' @export
 #' 
 json_vec <- function(..., .simplify = FALSE)
-  new_json_vec(list(...))
+  new_json_vec(list(...), simplify = .simplify)
 
 new_json_vec <- function(x, simplify = FALSE) {
 
@@ -131,7 +131,7 @@ as_json_vec.json_class <- function(x, simplify = FALSE, ...) {
   if (simplify)
     x
   else
-    new_json_vec(list(x))
+    new_json_vec(list(x), simplify = FALSE)
 }
 
 #' @param recursive Recursively apply the function.

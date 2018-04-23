@@ -387,7 +387,8 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(x, sapply(res, length)),
-        MoreArgs = list(attr_name = "data_set"))
+        MoreArgs = list(attr_name = "data_set")),
+    simplify = TRUE
   )
 }
 
@@ -414,7 +415,8 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(x, sapply(res, length)),
-        MoreArgs = list(attr_name = "data_set"))
+        MoreArgs = list(attr_name = "data_set")),
+    simplify = TRUE
   )
 }
 

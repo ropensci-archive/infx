@@ -85,7 +85,8 @@ list_datastore_urls(token, x = NULL, ...)
 \item{x}{Object representing a (set of) dataset(s), e.g. a vector of dataset
 codes, or a set of \code{DataSet}s or \code{DatasetIdentifier}s.}
 
-\item{...}{Generic compatibility.}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 
 \item{path}{A character vector of file paths within datasets.}
 

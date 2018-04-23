@@ -69,7 +69,8 @@
 #' @param mode Switch between generic and screening material id objects.
 #' @param material_type A `MaterialTypeIdentifierScreening` object to restrict
 #' the material listing to a certain type of materials.
-#' @param ... Generic compatibility.
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "getMaterialByCodes")}
@@ -177,7 +178,8 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(material_type, sapply(res, length)),
-        MoreArgs = list(attr_name = "mat_type"))
+        MoreArgs = list(attr_name = "mat_type")),
+    simplify = TRUE
   )
 }
 

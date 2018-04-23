@@ -39,7 +39,8 @@
 #' @param path A character vector of file paths within datasets.
 #' @param timeout Time-span (in seconds) for which the file download link
 #' should be valid.
-#' @param ... Generic compatibility.
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @rdname list_urls
 #' 

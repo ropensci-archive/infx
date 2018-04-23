@@ -68,7 +68,8 @@ extract_well_material(x, row, col)
 
 \item{x}{A (vector of) MaterialIdentifier object(s).}
 
-\item{...}{Generic compatibility.}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 
 \item{material_type}{A \code{MaterialTypeIdentifierScreening} object to restrict
 the material listing to a certain type of materials.}

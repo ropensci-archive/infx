@@ -55,7 +55,8 @@
 #' 
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned wells or plates.
-#' @param ... Generic compatibility
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("sas", "listPlates")}
@@ -142,7 +143,7 @@ list_plates.ExperimentIdentifier <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(res, simplify = TRUE)
 }
 
 #' @rdname list_plate_well
@@ -256,7 +257,7 @@ list_wells_for_plate <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(res)
+  as_json_vec(res, simplify = TRUE)
 }
 
 #' @rdname list_plate_well
@@ -309,7 +310,8 @@ list_wells_for_mat <- function(token,
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(x, sapply(res, length)),
-        MoreArgs = list(attr_name = "mat_type"))
+        MoreArgs = list(attr_name = "mat_type")),
+    simplify = TRUE
   )
 }
 

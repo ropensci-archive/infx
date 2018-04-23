@@ -24,7 +24,8 @@
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned samples, e.g. a set of
 #' `ExperimentIdentifier` or `Experiment` objects.
-#' @param ... Generic compatibility
+#' @param ... Generic compatibility. Extra arguments will be passed to
+#' [make_requests()].
 #' 
 #' @section openBIS:
 #' * \Sexpr{infx::docs_link("gis", "listSamplesForExperiment")}
@@ -97,7 +98,8 @@ list_samples_for_exp <- function(token, x, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(as_experiment_id(x), sapply(res, length)),
-        MoreArgs = list(attr_name = "exp_id"))
+        MoreArgs = list(attr_name = "exp_id")),
+    simplify = TRUE
   )
 }
 
@@ -126,7 +128,8 @@ list_samples_for_plate <- function(token, x, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(x, sapply(res, length)),
-        MoreArgs = list(attr_name = "plate_id"))
+        MoreArgs = list(attr_name = "plate_id")),
+    simplify = TRUE
   )
 }
 
@@ -160,7 +163,8 @@ list_samples_for_well <- function(token, x, ...) {
     Map(set_attr,
         unlist(res, recursive = FALSE),
         rep(x, sapply(res, length)),
-        MoreArgs = list(attr_name = "well_id"))
+        MoreArgs = list(attr_name = "well_id")),
+    simplify = TRUE
   )
 }
 

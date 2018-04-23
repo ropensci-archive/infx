@@ -60,7 +60,8 @@ list_image_metadata(token, x, ...)
 
 \item{x}{Object to limit the number of returned images}
 
-\item{...}{Generic compatibility}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 
 \item{channels}{A character vector of imaging channels}
 

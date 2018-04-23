@@ -36,7 +36,8 @@ list_sample_types(token, ...)
 \item{x}{Object to limit the number of returned samples, e.g. a set of
 \code{ExperimentIdentifier} or \code{Experiment} objects.}
 
-\item{...}{Generic compatibility}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 }
 \description{
 In openBIS, samples can be seen as a generalization of plates and wells (

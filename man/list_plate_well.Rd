@@ -93,7 +93,8 @@ well_pos(row = NULL, col = NULL, name = NULL)
 
 \item{x}{Object to limit the number of returned wells or plates.}
 
-\item{...}{Generic compatibility}
+\item{...}{Generic compatibility. Extra arguments will be passed to
+\code{\link[=make_requests]{make_requests()}}.}
 
 \item{code, space}{Character vectors that together can be used to create
 \code{PlateIdentifier} objects.}
