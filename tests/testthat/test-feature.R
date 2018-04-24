@@ -54,58 +54,54 @@ test_that("features can be fetched", {
 
   feat_data_11 <- fetch_features(tok, refs[[1]], codes[1])
   expect_s3_class(feat_data_11, "FeatureVectorDataset")
-  expect_s3_class(feat_data_11, "json_vec")
-  expect_true(has_fields(feat_data_11, "featureVectors"))
-  expect_length(feat_data_11, 1L)
-  expect_s3_class(feat_data_11[[1L]], "FeatureVectorDataset")
-  expect_s3_class(feat_data_11[[1L]], "json_class")
-  expect_length(feat_data_11[[1L]][["featureVectors"]], 384L)
-  for (i in seq_along(feat_data_11[[1L]][["featureVectors"]])) {
-    expect_s3_class(feat_data_11[[1L]][["featureVectors"]][[i]],
-                    "FeatureVector")
-    expect_s3_class(feat_data_11[[1L]][["featureVectors"]][[i]], "json_class")
-    expect_true(has_fields(feat_data_11[[1L]][["featureVectors"]][[i]],
-                           "values"))
-    expect_length(feat_data_11[[1L]][["featureVectors"]][[i]][["values"]], 1L)
+  expect_s3_class(feat_data_11, "json_class")
+  expect_true(has_fields(feat_data_11, "dataset", "featureVectors"))
+  expect_s3_class(feat_data_11[["dataset"]], "FeatureVectorDatasetReference")
+  expect_s3_class(feat_data_11[["dataset"]], "json_class")
+  expect_length(feat_data_11[["featureVectors"]], 384L)
+  expect_s3_class(feat_data_11[["featureVectors"]], "FeatureVector")
+  expect_s3_class(feat_data_11[["featureVectors"]], "json_vec")
+  for (i in seq_along(feat_data_11[["featureVectors"]])) {
+    expect_s3_class(feat_data_11[["featureVectors"]][[i]], "FeatureVector")
+    expect_s3_class(feat_data_11[["featureVectors"]][[i]], "json_class")
+    expect_true(has_fields(feat_data_11[["featureVectors"]][[i]], "values"))
+    expect_length(feat_data_11[["featureVectors"]][[i]][["values"]], 1L)
   }
 
   feat_data_12 <- fetch_features(tok, refs[[1]], codes[1:2])
   expect_s3_class(feat_data_12, "FeatureVectorDataset")
-  expect_s3_class(feat_data_12, "json_vec")
-  expect_true(has_fields(feat_data_12, "featureVectors"))
-  expect_length(feat_data_12, 1L)
-  expect_s3_class(feat_data_12[[1L]], "FeatureVectorDataset")
-  expect_s3_class(feat_data_12[[1L]], "json_class")
-  expect_length(feat_data_12[[1L]][["featureVectors"]], 384L)
-  for (i in seq_along(feat_data_12[[1L]][["featureVectors"]])) {
-    expect_s3_class(feat_data_12[[1L]][["featureVectors"]][[i]],
-                    "FeatureVector")
-    expect_s3_class(feat_data_12[[1L]][["featureVectors"]][[i]], "json_class")
-    expect_true(has_fields(feat_data_12[[1L]][["featureVectors"]][[i]],
-                           "values"))
-    expect_length(feat_data_12[[1L]][["featureVectors"]][[i]][["values"]], 2L)
+  expect_s3_class(feat_data_12, "json_class")
+  expect_true(has_fields(feat_data_12, "dataset", "featureVectors"))
+  expect_s3_class(feat_data_12[["dataset"]], "FeatureVectorDatasetReference")
+  expect_s3_class(feat_data_12[["dataset"]], "json_class")
+  expect_length(feat_data_12[["featureVectors"]], 384L)
+  expect_s3_class(feat_data_12[["featureVectors"]], "FeatureVector")
+  expect_s3_class(feat_data_12[["featureVectors"]], "json_vec")
+  for (i in seq_along(feat_data_12[["featureVectors"]])) {
+    expect_s3_class(feat_data_12[["featureVectors"]][[i]], "FeatureVector")
+    expect_s3_class(feat_data_12[["featureVectors"]][[i]], "json_class")
+    expect_true(has_fields(feat_data_12[["featureVectors"]][[i]], "values"))
+    expect_length(feat_data_12[["featureVectors"]][[i]][["values"]], 2L)
   }
 
   feat_data_1 <- fetch_features(tok, refs[[1]])
   expect_s3_class(feat_data_1, "FeatureVectorDataset")
-  expect_s3_class(feat_data_1, "json_vec")
-  expect_true(has_fields(feat_data_1, "featureVectors"))
-  expect_length(feat_data_1, 1L)
-  expect_s3_class(feat_data_1[[1L]], "FeatureVectorDataset")
-  expect_s3_class(feat_data_1[[1L]], "json_class")
-  expect_length(feat_data_1[[1L]][["featureVectors"]], 384L)
-  for (i in seq_along(feat_data_1[[1L]][["featureVectors"]])) {
-    expect_s3_class(feat_data_1[[1L]][["featureVectors"]][[i]],
-                    "FeatureVector")
-    expect_s3_class(feat_data_1[[1L]][["featureVectors"]][[i]], "json_class")
-    expect_true(has_fields(feat_data_1[[1L]][["featureVectors"]][[i]],
-                           "values"))
-    expect_length(feat_data_1[[1L]][["featureVectors"]][[i]][["values"]],
+  expect_s3_class(feat_data_1, "json_class")
+  expect_true(has_fields(feat_data_1, "dataset", "featureVectors"))
+  expect_s3_class(feat_data_1[["dataset"]], "FeatureVectorDatasetReference")
+  expect_s3_class(feat_data_1[["dataset"]], "json_class")
+  expect_length(feat_data_1[["featureVectors"]], 384L)
+  expect_s3_class(feat_data_1[["featureVectors"]], "FeatureVector")
+  expect_s3_class(feat_data_1[["featureVectors"]], "json_vec")
+  for (i in seq_along(feat_data_1[["featureVectors"]])) {
+    expect_s3_class(feat_data_1[["featureVectors"]][[i]], "FeatureVector")
+    expect_s3_class(feat_data_1[["featureVectors"]][[i]], "json_class")
+    expect_true(has_fields(feat_data_1[["featureVectors"]][[i]], "values"))
+    expect_length(feat_data_1[["featureVectors"]][[i]][["values"]],
                   length(codes))
   }
 
-  well_pos <- lapply(feat_data_11[[1]][["featureVectors"]], `[[`,
-                     "wellPosition")
+  well_pos <- lapply(feat_data_11[["featureVectors"]], `[[`, "wellPosition")
   refs_well <- json_vec(
     json_class(datasetCode = refs[[1]][["datasetCode"]],
                datastoreServerUrl = refs[[1]][["datastoreServerUrl"]],
@@ -128,36 +124,36 @@ test_that("features can be fetched", {
 
   feat_data_11 <- fetch_features(tok, refs_well[[1]], codes[1])
   expect_s3_class(feat_data_11, "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_11, "json_vec")
-  expect_length(feat_data_11, 1L)
-  expect_s3_class(feat_data_11[[1L]], "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_11[[1L]], "json_class")
-  expect_true(has_fields(feat_data_11[[1]], "values"))
-  expect_length(feat_data_11[[1]][["values"]], 1L)
+  expect_s3_class(feat_data_11, "json_class")
+  expect_true(has_fields(feat_data_11, c("values", "datasetWellReference")))
+  expect_s3_class(feat_data_11[["datasetWellReference"]],
+                  "FeatureVectorDatasetWellReference")
+  expect_s3_class(feat_data_11[["datasetWellReference"]], "json_class")
+  expect_length(feat_data_11[["values"]], 1L)
 
   expect_identical(fetch_features(tok, refs[[1]], codes[1], well_pos[[1]]),
                    feat_data_11)
 
   feat_data_12 <- fetch_features(tok, refs_well[[1]], codes[1:2])
   expect_s3_class(feat_data_12, "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_12, "json_vec")
-  expect_length(feat_data_12, 1L)
-  expect_s3_class(feat_data_12[[1L]], "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_12[[1L]], "json_class")
-  expect_true(has_fields(feat_data_12[[1]], "values"))
-  expect_length(feat_data_12[[1]][["values"]], 2L)
+  expect_s3_class(feat_data_12, "json_class")
+  expect_true(has_fields(feat_data_12, c("values", "datasetWellReference")))
+  expect_s3_class(feat_data_12[["datasetWellReference"]],
+                  "FeatureVectorDatasetWellReference")
+  expect_s3_class(feat_data_12[["datasetWellReference"]], "json_class")
+  expect_length(feat_data_12[["values"]], 2L)
 
   expect_identical(fetch_features(tok, refs[[1]], codes[1:2], well_pos[[1]]),
                    feat_data_12)
 
   feat_data_1 <- fetch_features(tok, refs_well[[1]])
   expect_s3_class(feat_data_1, "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_1, "json_vec")
-  expect_length(feat_data_1, 1L)
-  expect_s3_class(feat_data_1[[1L]], "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_1[[1L]], "json_class")
-  expect_true(has_fields(feat_data_1[[1]], "values"))
-  expect_length(feat_data_1[[1]][["values"]], length(codes))
+  expect_s3_class(feat_data_1, "json_class")
+  expect_true(has_fields(feat_data_1, c("values", "datasetWellReference")))
+  expect_s3_class(feat_data_1[["datasetWellReference"]],
+                  "FeatureVectorDatasetWellReference")
+  expect_s3_class(feat_data_1[["datasetWellReference"]], "json_class")
+  expect_length(feat_data_1[["values"]], length(codes))
 
   expect_identical(fetch_features(tok, refs[[1]], wells = well_pos[[1]]),
                    feat_data_1)
@@ -169,7 +165,11 @@ test_that("features can be fetched", {
   for (i in seq_along(feat_data_21)) {
     expect_s3_class(feat_data_21[[i]], "FeatureVectorWithDescription")
     expect_s3_class(feat_data_21[[i]], "json_class")
-    expect_true(has_fields(feat_data_21[[i]], "values"))
+    expect_true(has_fields(feat_data_21[[i]], c("values",
+                                                "datasetWellReference")))
+    expect_s3_class(feat_data_21[[i]][["datasetWellReference"]],
+                    "FeatureVectorDatasetWellReference")
+    expect_s3_class(feat_data_21[[i]][["datasetWellReference"]], "json_class")
     expect_length(feat_data_21[[i]][["values"]], 1L)
   }
 
@@ -184,6 +184,11 @@ test_that("features can be fetched", {
     expect_s3_class(feat_data_22[[i]], "FeatureVectorWithDescription")
     expect_s3_class(feat_data_22[[i]], "json_class")
     expect_true(has_fields(feat_data_22[[i]], "values"))
+    expect_true(has_fields(feat_data_22[[i]], c("values",
+                                                "datasetWellReference")))
+    expect_s3_class(feat_data_22[[i]][["datasetWellReference"]],
+                    "FeatureVectorDatasetWellReference")
+    expect_s3_class(feat_data_22[[i]][["datasetWellReference"]], "json_class")
     expect_length(feat_data_22[[i]][["values"]], 2L)
   }
 
@@ -192,12 +197,12 @@ test_that("features can be fetched", {
 
   feat_data_12 <- fetch_features(tok, refs_well[[1]], codes[1:2])
   expect_s3_class(feat_data_12, "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_12, "json_vec")
-  expect_length(feat_data_12, 1L)
-  expect_s3_class(feat_data_12[[1L]], "FeatureVectorWithDescription")
-  expect_s3_class(feat_data_12[[1L]], "json_class")
-  expect_true(has_fields(feat_data_12[[1]], "values"))
-  expect_length(feat_data_12[[1]][["values"]], 2L)
+  expect_s3_class(feat_data_12, "json_class")
+  expect_true(has_fields(feat_data_12, c("values", "datasetWellReference")))
+  expect_s3_class(feat_data_12[["datasetWellReference"]],
+                  "FeatureVectorDatasetWellReference")
+  expect_s3_class(feat_data_12[["datasetWellReference"]], "json_class")
+  expect_length(feat_data_12[["values"]], 2L)
 
   expect_identical(fetch_features(tok, refs[[1]], codes[1:2], well_pos[[1]]),
                    feat_data_12)
@@ -219,20 +224,17 @@ test_that("feature dataset refs can be converted", {
 
   well_ref_11 <- feat_ds_well_ref(refs[[1]], wells[[1]])
   expect_s3_class(well_ref_11, "FeatureVectorDatasetWellReference")
-  expect_s3_class(well_ref_11, "json_vec")
-  expect_length(well_ref_11, 1L)
-  expect_s3_class(well_ref_11[[1L]], "FeatureVectorDatasetWellReference")
-  expect_s3_class(well_ref_11[[1L]], "json_class")
-  expect_true(has_fields(well_ref_11[[1]], fields))
-  expect_s3_class(well_ref_11[[1]][["plate"]], "PlateIdentifier")
-  expect_s3_class(well_ref_11[[1]][["plate"]], "json_class")
-  expect_s3_class(well_ref_11[[1]][["experimentIdentifier"]],
+  expect_s3_class(well_ref_11, "json_class")
+  expect_true(has_fields(well_ref_11, fields))
+  expect_s3_class(well_ref_11[["plate"]], "PlateIdentifier")
+  expect_s3_class(well_ref_11[["plate"]], "json_class")
+  expect_s3_class(well_ref_11[["experimentIdentifier"]],
                   "ExperimentIdentifier")
-  expect_s3_class(well_ref_11[[1]][["experimentIdentifier"]], "json_class")
-  expect_s3_class(well_ref_11[[1]][["plateGeometry"]], "Geometry")
-  expect_s3_class(well_ref_11[[1]][["plateGeometry"]], "json_class")
-  expect_s3_class(well_ref_11[[1]][["wellPosition"]], "WellPosition")
-  expect_s3_class(well_ref_11[[1]][["wellPosition"]], "json_class")
+  expect_s3_class(well_ref_11[["experimentIdentifier"]], "json_class")
+  expect_s3_class(well_ref_11[["plateGeometry"]], "Geometry")
+  expect_s3_class(well_ref_11[["plateGeometry"]], "json_class")
+  expect_s3_class(well_ref_11[["wellPosition"]], "WellPosition")
+  expect_s3_class(well_ref_11[["wellPosition"]], "json_class")
 
   well_ref_12 <- feat_ds_well_ref(refs[[1]], wells)
   expect_s3_class(well_ref_12, "FeatureVectorDatasetWellReference")

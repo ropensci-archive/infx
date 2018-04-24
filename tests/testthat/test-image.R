@@ -11,9 +11,6 @@ test_that("experiment metadata can be listed", {
   for (i in seq_along(meta_1)) {
     expect_s3_class(meta_1[[i]], "ExperimentImageMetadata")
     expect_s3_class(meta_1[[i]], "json_class")
-    expect_attr(meta_1[[i]], "exp_id")
-    expect_s3_class(attr(meta_1[[i]], "exp_id"), "ExperimentIdentifier")
-    expect_s3_class(attr(meta_1[[i]], "exp_id"), "json_class")
   }
 
   meta_2 <- list_image_metadata(tok, exp_ids[1:2])
@@ -23,9 +20,6 @@ test_that("experiment metadata can be listed", {
   for (i in seq_along(meta_2)) {
     expect_s3_class(meta_2[[i]], "ExperimentImageMetadata")
     expect_s3_class(meta_2[[i]], "json_class")
-    expect_attr(meta_2[[i]], "exp_id")
-    expect_s3_class(attr(meta_2[[i]], "exp_id"), "ExperimentIdentifier")
-    expect_s3_class(attr(meta_2[[i]], "exp_id"), "json_class")
   }
 
   expect_identical(list_image_metadata(tok, experiments[[1]]), meta_1)
@@ -35,10 +29,10 @@ test_that("experiment metadata can be listed", {
 
   meta_1 <- list_image_metadata(tok, img_ds[[1]])
   expect_s3_class(meta_1, "ImageDatasetMetadata")
-  expect_s3_class(meta_1, "json_vec")
-  expect_length(meta_1, 1L)
-  expect_s3_class(meta_1[[1L]], "ImageDatasetMetadata")
-  expect_s3_class(meta_1[[1L]], "json_class")
+  expect_s3_class(meta_1, "json_class")
+  expect_true(has_fields(meta_1, "imageDataset"))
+  expect_s3_class(meta_1[["imageDataset"]], "ImageDatasetReference")
+  expect_s3_class(meta_1[["imageDataset"]], "json_class")
 
   meta_2 <- list_image_metadata(tok, img_ds[1:2])
   expect_s3_class(meta_2, "ImageDatasetMetadata")
@@ -47,14 +41,26 @@ test_that("experiment metadata can be listed", {
   for (i in seq_along(meta_2)) {
     expect_s3_class(meta_2[[i]], "ImageDatasetMetadata")
     expect_s3_class(meta_2[[i]], "json_class")
+    expect_true(has_fields(meta_2[[i]], "imageDataset"))
+    expect_s3_class(meta_2[[i]][["imageDataset"]], "ImageDatasetReference")
+    expect_s3_class(meta_2[[i]][["imageDataset"]], "json_class")
   }
 
   meta_1 <- list_image_metadata(tok, img_ds[[1]], "format")
   expect_s3_class(meta_1, "DatasetImageRepresentationFormats")
-  expect_s3_class(meta_1, "json_vec")
-  expect_length(meta_1, 1L)
-  expect_s3_class(meta_1[[1L]], "DatasetImageRepresentationFormats")
-  expect_s3_class(meta_1[[1L]], "json_class")
+  expect_s3_class(meta_1, "json_class")
+  expect_true(has_fields(meta_1, c("dataset", "imageRepresentationFormats")))
+  expect_s3_class(meta_1[["dataset"]], "ImageDatasetReference")
+  expect_s3_class(meta_1[["dataset"]], "json_class")
+  expect_gte(length(meta_1), 1L)
+  expect_s3_class(meta_1[["imageRepresentationFormats"]],
+                  "ImageRepresentationFormat")
+  expect_s3_class(meta_1[["imageRepresentationFormats"]], "json_vec")
+  for (i in seq_along(meta_1[["imageRepresentationFormats"]])) {
+    expect_s3_class(meta_1[["imageRepresentationFormats"]][[i]],
+                    "ImageRepresentationFormat")
+    expect_s3_class(meta_1[["imageRepresentationFormats"]][[i]], "json_class")
+  }
 
   meta_2 <- list_image_metadata(tok, img_ds[1:2], "format")
   expect_s3_class(meta_2, "DatasetImageRepresentationFormats")
@@ -63,6 +69,20 @@ test_that("experiment metadata can be listed", {
   for (i in seq_along(meta_2)) {
     expect_s3_class(meta_2[[i]], "DatasetImageRepresentationFormats")
     expect_s3_class(meta_2[[i]], "json_class")
+    expect_true(has_fields(meta_2[[i]],
+                c("dataset", "imageRepresentationFormats")))
+    expect_s3_class(meta_2[[i]][["dataset"]], "ImageDatasetReference")
+    expect_s3_class(meta_2[[i]][["dataset"]], "json_class")
+    expect_gte(length(meta_2[[i]]), 1L)
+    expect_s3_class(meta_2[[i]][["imageRepresentationFormats"]],
+                    "ImageRepresentationFormat")
+    expect_s3_class(meta_2[[i]][["imageRepresentationFormats"]], "json_vec")
+    for (j in seq_along(meta_2[[i]][["imageRepresentationFormats"]])) {
+      expect_s3_class(meta_2[[i]][["imageRepresentationFormats"]][[j]],
+                      "ImageRepresentationFormat")
+      expect_s3_class(meta_2[[i]][["imageRepresentationFormats"]][[j]],
+                      "json_class")
+    }
   }
 })
 
@@ -212,7 +232,7 @@ test_that("image data can be fetched", {
   expect_equal(magick::image_info(img_1[[1]])[["format"]], "PNG")
 
   format <- list_image_metadata(tok, img_ds[[1]], "format")
-  img_rep <- format[[1]][["imageRepresentationFormats"]][[2]]
+  img_rep <- format[["imageRepresentationFormats"]][[2]]
 
   img_1 <- fetch_images(tok, pi_ref[[1]], format = img_rep)
   expect_length(img_1, 1L)

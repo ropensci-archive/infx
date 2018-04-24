@@ -3,25 +3,30 @@ context("list materials")
 test_that("material ids can be created", {
 
   material <- material_id(2475L, type = "gene")
-  expect_is(material, "MaterialIdentifierScreening")
-  expect_is(material, "json_vec")
-  expect_length(material, 1L)
-  expect_is(material[[1L]], "MaterialIdentifierScreening")
-  expect_is(material[[1L]], "json_class")
-  expect_is(material[[1L]][["materialTypeIdentifier"]],
-            "MaterialTypeIdentifierScreening")
+  expect_s3_class(material, "MaterialIdentifierScreening")
+  expect_s3_class(material, "json_class")
+  expect_true(has_fields(material,
+                         c("materialTypeIdentifier", "materialCode")))
+  expect_s3_class(material[["materialTypeIdentifier"]],
+                  "MaterialTypeIdentifierScreening")
+  expect_s3_class(material[["materialTypeIdentifier"]], "json_class")
+  expect_is(material[["materialCode"]], "integer")
 
   expect_identical(material, material_id(2475L))
 
   materials <- material_id(1:3, type = "gene")
-  expect_is(materials, "MaterialIdentifierScreening")
-  expect_is(materials, "json_vec")
+  expect_s3_class(materials, "MaterialIdentifierScreening")
+  expect_s3_class(materials, "json_vec")
   expect_length(materials, 3L)
   for (i in seq_along(materials)) {
-    expect_is(materials[[i]], "MaterialIdentifierScreening")
-    expect_is(materials[[i]], "json_class")
-    expect_is(materials[[i]][["materialTypeIdentifier"]],
-              "MaterialTypeIdentifierScreening")
+    expect_s3_class(materials[[i]], "MaterialIdentifierScreening")
+    expect_s3_class(materials[[i]], "json_class")
+    expect_true(has_fields(materials[[i]],
+                           c("materialTypeIdentifier", "materialCode")))
+    expect_s3_class(materials[[i]][["materialTypeIdentifier"]],
+                    "MaterialTypeIdentifierScreening")
+    expect_s3_class(materials[[i]][["materialTypeIdentifier"]], "json_class")
+    expect_is(materials[[i]][["materialCode"]], "integer")
   }
 
   expect_identical(materials,
@@ -32,51 +37,57 @@ test_that("material ids can be created", {
   expect_error(material_id(1:3, type = "gen"))
 
   material <- material_id(2475L, mode = "generic")
-  expect_is(material, "MaterialIdentifierGeneric")
-  expect_is(material, "json_vec")
-  expect_length(material, 1L)
-  expect_is(material[[1L]], "MaterialIdentifierGeneric")
-  expect_is(material[[1L]], "json_class")
-  expect_is(material[[1L]][["materialTypeIdentifier"]],
-            "MaterialTypeIdentifierGeneric")
+  expect_s3_class(material, "MaterialIdentifierGeneric")
+  expect_s3_class(material, "json_class")
+  expect_true(has_fields(material,
+                         c("materialTypeIdentifier", "materialCode")))
+  expect_s3_class(material[["materialTypeIdentifier"]],
+                  "MaterialTypeIdentifierGeneric")
+  expect_s3_class(material[["materialTypeIdentifier"]], "json_class")
+  expect_is(material[["materialCode"]], "integer")
 })
 
 test_that("material types can be listed", {
 
   types_scr <- list_material_types()
-  expect_is(types_scr, "MaterialTypeIdentifierScreening")
-  expect_is(types_scr, "json_vec")
+  expect_s3_class(types_scr, "MaterialTypeIdentifierScreening")
+  expect_s3_class(types_scr, "json_vec")
   expect_gte(length(types_scr), 1L)
   for (i in seq_along(types_scr)) {
-    expect_is(types_scr[[i]], "MaterialTypeIdentifierScreening")
-    expect_is(types_scr[[i]], "json_class")
+    expect_s3_class(types_scr[[i]], "MaterialTypeIdentifierScreening")
+    expect_s3_class(types_scr[[i]], "json_class")
+    expect_true(has_fields(types_scr[[i]], "materialTypeCode"))
+    expect_is(types_scr[[i]][["materialTypeCode"]], "character")
   }
 
   expect_identical(types_scr, list_material_types(mode = "screening"))
 
   types_gen <- list_material_types(mode = "generic")
-  expect_is(types_gen, "MaterialTypeIdentifierGeneric")
-  expect_is(types_gen, "json_vec")
+  expect_s3_class(types_gen, "MaterialTypeIdentifierGeneric")
+  expect_s3_class(types_gen, "json_vec")
   expect_gte(length(types_gen), 1L)
   for (i in seq_along(types_gen)) {
-    expect_is(types_gen[[i]], "MaterialTypeIdentifierGeneric")
-    expect_is(types_gen[[i]], "json_class")
+    expect_s3_class(types_gen[[i]], "MaterialTypeIdentifierGeneric")
+    expect_s3_class(types_gen[[i]], "json_class")
+    expect_true(has_fields(types_gen[[i]], "materialTypeCode"))
+    expect_is(types_gen[[i]][["materialTypeCode"]], "character")
   }
 
   types_comp <- list_material_types(types = "compound")
-  expect_is(types_comp, "MaterialTypeIdentifierScreening")
-  expect_is(types_comp, "json_vec")
-  expect_length(types_comp, 1L)
-  expect_is(types_comp[[1L]], "MaterialTypeIdentifierScreening")
-  expect_is(types_comp[[1L]], "json_class")
+  expect_s3_class(types_comp, "MaterialTypeIdentifierScreening")
+  expect_s3_class(types_comp, "json_class")
+  expect_true(has_fields(types_comp, "materialTypeCode"))
+  expect_is(types_comp[["materialTypeCode"]], "character")
 
   types_cg <- list_material_types(types = c("compound", "gene"))
-  expect_is(types_cg, "MaterialTypeIdentifierScreening")
-  expect_is(types_cg, "json_vec")
+  expect_s3_class(types_cg, "MaterialTypeIdentifierScreening")
+  expect_s3_class(types_cg, "json_vec")
   expect_gte(length(types_cg), 2L)
   for (i in seq_along(types_cg)) {
-    expect_is(types_cg[[i]], "MaterialTypeIdentifierScreening")
-    expect_is(types_cg[[i]], "json_class")
+    expect_s3_class(types_cg[[i]], "MaterialTypeIdentifierScreening")
+    expect_s3_class(types_cg[[i]], "json_class")
+    expect_true(has_fields(types_cg[[i]], "materialTypeCode"))
+    expect_is(types_cg[[i]][["materialTypeCode"]], "character")
   }
 
   expect_error(list_material_types(types = "foo"))
@@ -90,46 +101,50 @@ test_that("materials can be listed", {
   materials <- material_id(c(2475L, 3832L), mode = "generic")
 
   mat_1 <- list_material(tok, materials[[1]])
-  expect_is(mat_1, "MaterialGeneric")
-  expect_is(mat_1, "json_vec")
-  expect_length(mat_1, 1L)
-  expect_is(mat_1[[1L]], "MaterialGeneric")
-  expect_is(mat_1[[1L]], "json_class")
+  expect_s3_class(mat_1, "MaterialGeneric")
+  expect_s3_class(mat_1, "json_class")
+  expect_true(has_fields(mat_1, "materialTypeIdentifier"))
+  expect_identical(mat_1[["materialTypeIdentifier"]],
+                   materials[[1]][["materialTypeIdentifier"]])
 
   mat_2 <- list_material(tok, materials)
-  expect_is(mat_2, "MaterialGeneric")
-  expect_is(mat_2, "json_vec")
+  expect_s3_class(mat_2, "MaterialGeneric")
+  expect_s3_class(mat_2, "json_vec")
   expect_length(mat_2, 2L)
   for (i in seq_along(mat_2)) {
-    expect_is(mat_2[[i]], "MaterialGeneric")
-    expect_is(mat_2[[i]], "json_class")
+    expect_s3_class(mat_2[[i]], "MaterialGeneric")
+    expect_s3_class(mat_2[[i]], "json_class")
+    expect_true(has_fields(mat_2[[i]], "materialTypeIdentifier"))
+    expect_identical(mat_2[[i]][["materialTypeIdentifier"]],
+                     materials[[i]][["materialTypeIdentifier"]])
   }
 
   material <- material_id("AMBION_S602", type = "sirna", mode = "generic")
 
   mat_1 <- list_material(tok, material)
-  expect_is(mat_1, "MaterialGeneric")
-  expect_is(mat_1, "json_vec")
-  expect_length(mat_1, 1L)
-  expect_is(mat_1[[1L]], "MaterialGeneric")
-  expect_is(mat_1[[1L]], "json_class")
+  expect_s3_class(mat_1, "MaterialGeneric")
+  expect_s3_class(mat_1, "json_class")
+  expect_true(has_fields(mat_1, "materialTypeIdentifier"))
+  expect_identical(mat_1[["materialTypeIdentifier"]],
+                   material[["materialTypeIdentifier"]])
 
   plate_ids <- as_plate_id(plates[1:2])
 
   mat_1 <- list_material(tok, plates[[2]])
-  expect_is(mat_1, "PlateWellMaterialMapping")
-  expect_is(mat_1, "json_vec")
-  expect_length(mat_1, 1L)
-  expect_is(mat_1[[1L]], "PlateWellMaterialMapping")
-  expect_is(mat_1[[1L]], "json_class")
+  expect_s3_class(mat_1, "PlateWellMaterialMapping")
+  expect_s3_class(mat_1, "json_class")
+  expect_true(has_fields(mat_1, "mapping"))
+  expect_length(mat_1[["mapping"]], 384L)
 
   mat_2 <- list_material(tok, plates[1:2])
-  expect_is(mat_2, "PlateWellMaterialMapping")
-  expect_is(mat_2, "json_vec")
+  expect_s3_class(mat_2, "PlateWellMaterialMapping")
+  expect_s3_class(mat_2, "json_vec")
   expect_length(mat_2, 2L)
   for (i in seq_along(mat_2)) {
-    expect_is(mat_2[[i]], "PlateWellMaterialMapping")
-    expect_is(mat_2[[i]], "json_class")
+    expect_s3_class(mat_2[[i]], "PlateWellMaterialMapping")
+    expect_s3_class(mat_2[[i]], "json_class")
+    expect_true(has_fields(mat_2[[i]], "mapping"))
+    expect_length(mat_2[[i]][["mapping"]], 384L)
   }
 
   expect_identical(list_material(tok, plate_ids[[2]]), mat_1)
@@ -141,61 +156,53 @@ test_that("materials can be listed", {
   types <- list_material_types()
 
   mat_11 <- list_material(tok, plates[[2]], types[[2]])
-  expect_is(mat_11, "PlateWellMaterialMapping")
-  expect_is(mat_11, "json_vec")
-  expect_length(mat_11, 1L)
-  expect_is(mat_11[[1L]], "PlateWellMaterialMapping")
-  expect_is(mat_11[[1L]], "json_class")
-  expect_attr(mat_11[[1L]], "mat_type")
-  expect_s3_class(attr(mat_11[[1L]], "mat_type"),
-                  "MaterialTypeIdentifierScreening")
-  expect_s3_class(attr(mat_11[[1L]], "mat_type"), "json_class")
+  expect_s3_class(mat_11, "PlateWellMaterialMapping")
+  expect_s3_class(mat_11, "json_class")
+  expect_true(has_fields(mat_11, "mapping"))
+  expect_length(mat_11[["mapping"]], 384L)
 
   mat_12 <- list_material(tok, plates[[2]], types[1:2])
-  expect_is(mat_12, "PlateWellMaterialMapping")
-  expect_is(mat_12, "json_vec")
+  expect_s3_class(mat_12, "PlateWellMaterialMapping")
+  expect_s3_class(mat_12, "json_vec")
   expect_length(mat_12, 2L)
   for (i in seq_along(mat_12)) {
-    expect_is(mat_12[[i]], "PlateWellMaterialMapping")
-    expect_is(mat_12[[i]], "json_class")
-    expect_attr(mat_12[[i]], "mat_type")
-    expect_s3_class(attr(mat_12[[i]], "mat_type"),
-                    "MaterialTypeIdentifierScreening")
-    expect_s3_class(attr(mat_12[[i]], "mat_type"), "json_class")
+    expect_s3_class(mat_12[[i]], "PlateWellMaterialMapping")
+    expect_s3_class(mat_12[[i]], "json_class")
+    expect_true(has_fields(mat_12[[i]], "mapping"))
+    expect_length(mat_12[[i]][["mapping"]], 384L)
   }
 
   mat_21 <- list_material(tok, plates[1:2], types[[2]])
-  expect_is(mat_21, "PlateWellMaterialMapping")
-  expect_is(mat_21, "json_vec")
+  expect_s3_class(mat_21, "PlateWellMaterialMapping")
+  expect_s3_class(mat_21, "json_vec")
   expect_length(mat_21, 2L)
   for (i in seq_along(mat_21)) {
-    expect_is(mat_21[[i]], "PlateWellMaterialMapping")
-    expect_is(mat_21[[i]], "json_class")
-    expect_attr(mat_21[[i]], "mat_type")
-    expect_s3_class(attr(mat_21[[i]], "mat_type"),
-                    "MaterialTypeIdentifierScreening")
-    expect_s3_class(attr(mat_21[[i]], "mat_type"), "json_class")
+    expect_s3_class(mat_21[[i]], "PlateWellMaterialMapping")
+    expect_s3_class(mat_21[[i]], "json_class")
+    expect_true(has_fields(mat_21[[i]], "mapping"))
+    expect_length(mat_21[[i]][["mapping"]], 384L)
   }
 
   mat_22 <- list_material(tok, plates[1:2], types[1:2])
-  expect_is(mat_22, "PlateWellMaterialMapping")
-  expect_is(mat_22, "json_vec")
+  expect_s3_class(mat_22, "PlateWellMaterialMapping")
+  expect_s3_class(mat_22, "json_vec")
   expect_length(mat_22, 4L)
   for (i in seq_along(mat_22)) {
-    expect_is(mat_22[[i]], "PlateWellMaterialMapping")
-    expect_is(mat_22[[i]], "json_class")
-    expect_attr(mat_22[[i]], "mat_type")
-    expect_s3_class(attr(mat_22[[i]], "mat_type"),
-                    "MaterialTypeIdentifierScreening")
-    expect_s3_class(attr(mat_22[[i]], "mat_type"), "json_class")
+    expect_s3_class(mat_22[[i]], "PlateWellMaterialMapping")
+    expect_s3_class(mat_22[[i]], "json_class")
+    expect_true(has_fields(mat_22[[i]], "mapping"))
+    expect_length(mat_22[[i]][["mapping"]], 384L)
   }
 
   mat_f_14 <- extract_well_material(mat_11, "F", 14)
-  expect_is(mat_f_14, "MaterialIdentifierScreening")
-  expect_is(mat_f_14, "json_vec")
-  expect_length(mat_f_14, 1L)
-  expect_is(mat_f_14[[1L]], "MaterialIdentifierScreening")
-  expect_is(mat_f_14[[1L]], "json_class")
+  expect_s3_class(mat_f_14, "MaterialIdentifierScreening")
+  expect_s3_class(mat_f_14, "json_class")
+  expect_identical(mat_f_14, mat_22[[i]][["mapping"]][[134L]])
+
+  mat_a_24 <- extract_well_material(mat_11, 1, 24)
+  expect_is(mat_a_24, "list")
+  expect_identical(mat_a_24, list())
+  expect_identical(mat_a_24, mat_22[[i]][["mapping"]][[24L]])
 })
 
 test_that("materials can be converted", {
@@ -204,10 +211,13 @@ test_that("materials can be converted", {
 
   scr_mat_1 <- as_screening_mat_id(gen_mat[[1]])
   expect_s3_class(scr_mat_1, "MaterialIdentifierScreening")
-  expect_s3_class(scr_mat_1, "json_vec")
-  expect_length(scr_mat_1, 1L)
-  expect_s3_class(scr_mat_1[[1L]], "MaterialIdentifierScreening")
-  expect_s3_class(scr_mat_1[[1L]], "json_class")
+  expect_s3_class(scr_mat_1, "json_class")
+  expect_true(has_fields(scr_mat_1,
+                         c("materialTypeIdentifier", "materialCode")))
+  expect_s3_class(scr_mat_1[["materialTypeIdentifier"]],
+                  "MaterialTypeIdentifierScreening")
+  expect_s3_class(scr_mat_1[["materialTypeIdentifier"]], "json_class")
+  expect_is(scr_mat_1[["materialCode"]], "integer")
 
   scr_mat_2 <- as_screening_mat_id(gen_mat)
   expect_s3_class(scr_mat_2, "MaterialIdentifierScreening")
@@ -216,6 +226,12 @@ test_that("materials can be converted", {
   for (i in seq_along(scr_mat_2)) {
     expect_s3_class(scr_mat_2[[i]], "MaterialIdentifierScreening")
     expect_s3_class(scr_mat_2[[i]], "json_class")
+    expect_true(has_fields(scr_mat_2[[i]],
+                           c("materialTypeIdentifier", "materialCode")))
+    expect_s3_class(scr_mat_2[[i]][["materialTypeIdentifier"]],
+                    "MaterialTypeIdentifierScreening")
+    expect_s3_class(scr_mat_2[[i]][["materialTypeIdentifier"]], "json_class")
+    expect_is(scr_mat_2[[i]][["materialCode"]], "integer")
   }
 
   expect_identical(scr_mat_1, as_screening_mat_id(scr_mat_1))
@@ -225,10 +241,13 @@ test_that("materials can be converted", {
 
   gen_mat_1 <- as_generic_mat_id(scr_mat[[1]])
   expect_s3_class(gen_mat_1, "MaterialIdentifierGeneric")
-  expect_s3_class(gen_mat_1, "json_vec")
-  expect_length(gen_mat_1, 1L)
-  expect_s3_class(gen_mat_1[[1L]], "MaterialIdentifierGeneric")
-  expect_s3_class(gen_mat_1[[1L]], "json_class")
+  expect_s3_class(gen_mat_1, "json_class")
+  expect_true(has_fields(gen_mat_1,
+                         c("materialTypeIdentifier", "materialCode")))
+  expect_s3_class(gen_mat_1[["materialTypeIdentifier"]],
+                  "MaterialTypeIdentifierGeneric")
+  expect_s3_class(gen_mat_1[["materialTypeIdentifier"]], "json_class")
+  expect_is(gen_mat_1[["materialCode"]], "integer")
 
   gen_mat_2 <- as_generic_mat_id(scr_mat)
   expect_s3_class(gen_mat_2, "MaterialIdentifierGeneric")
@@ -237,6 +256,12 @@ test_that("materials can be converted", {
   for (i in seq_along(gen_mat_2)) {
     expect_s3_class(gen_mat_2[[i]], "MaterialIdentifierGeneric")
     expect_s3_class(gen_mat_2[[i]], "json_class")
+    expect_true(has_fields(gen_mat_2[[i]],
+                           c("materialTypeIdentifier", "materialCode")))
+    expect_s3_class(gen_mat_2[[i]][["materialTypeIdentifier"]],
+                    "MaterialTypeIdentifierGeneric")
+    expect_s3_class(gen_mat_2[[i]][["materialTypeIdentifier"]], "json_class")
+    expect_is(gen_mat_2[[i]][["materialCode"]], "integer")
   }
 
   expect_identical(gen_mat_1, as_generic_mat_id(gen_mat_1))

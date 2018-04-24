@@ -75,12 +75,9 @@ test_that("datasets can be listed", {
 
   ds_1 <- list_datasets(tok, codes[1])
   expect_s3_class(ds_1, "DataSet")
-  expect_s3_class(ds_1, "json_vec")
-  expect_length(ds_1, 1L)
-  expect_s3_class(ds_1[[1L]], "DataSet")
-  expect_s3_class(ds_1[[1L]], "json_class")
-  expect_true(has_fields(ds_1[[1L]], "retrievedConnections"))
-  expect_identical(ds_1[[1L]][["retrievedConnections"]], list())
+  expect_s3_class(ds_1, "json_class")
+  expect_true(has_fields(ds_1, "retrievedConnections"))
+  expect_identical(ds_1[["retrievedConnections"]], list())
 
   ds_2 <- list_datasets(tok, codes[c(1, 2)])
   expect_s3_class(ds_2, "DataSet")
@@ -95,15 +92,10 @@ test_that("datasets can be listed", {
 
   ds_3 <- list_datasets(tok, codes[1], "all")
   expect_s3_class(ds_3, "DataSet")
-  expect_s3_class(ds_3, "json_vec")
-  expect_length(ds_3, 1L)
-  for (i in seq_along(ds_3)) {
-    expect_s3_class(ds_3[[i]], "DataSet")
-    expect_s3_class(ds_3[[i]], "json_class")
-    expect_true(has_fields(ds_3[[i]], "retrievedConnections"))
-    expect_identical(ds_3[[i]][["retrievedConnections"]],
-                     list("PARENTS", "CHILDREN"))
-  }
+  expect_s3_class(ds_3, "json_class")
+  expect_gte(length(ds_3), 1L)
+  expect_true(has_fields(ds_3, "retrievedConnections"))
+  expect_identical(ds_3[["retrievedConnections"]], list("PARENTS", "CHILDREN"))
 })
 
 test_that("dataset references can be listed", {
@@ -122,11 +114,20 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_1)) {
     expect_s3_class(ds_1[[i]], "PlateWellReferenceWithDatasets")
     expect_s3_class(ds_1[[i]], "json_class")
-    expect_true(has_fields(ds_1[[i]], "imageDatasetReferences"))
-    for (j in seq_along(ds_1[[i]][["imageDatasetReferences"]])) {
-      expect_s3_class(ds_1[[i]][["imageDatasetReferences"]][[j]],
-                "ImageDatasetReference")
-      expect_s3_class(ds_1[[i]][["imageDatasetReferences"]][[j]], "json_class")
+    expect_true(has_fields(ds_1[[i]], c("imageDatasetReferences",
+                                        "featureVectorDatasetReferences")))
+    expect_s3_class(ds_1[[i]][["imageDatasetReferences"]],
+                    "ImageDatasetReference")
+    expect_s3_class(ds_1[[i]][["imageDatasetReferences"]], "json_class")
+    expect_s3_class(ds_1[[i]][["featureVectorDatasetReferences"]],
+                    "FeatureVectorDatasetReference")
+    expect_s3_class(ds_1[[i]][["featureVectorDatasetReferences"]],
+                    "json_vec")
+    for (j in seq_along(ds_1[[i]][["featureVectorDatasetReferences"]])) {
+      expect_s3_class(ds_1[[i]][["featureVectorDatasetReferences"]][[j]],
+                      "FeatureVectorDatasetReference")
+      expect_s3_class(ds_1[[i]][["featureVectorDatasetReferences"]][[j]],
+                      "json_class")
     }
   }
 
@@ -137,20 +138,34 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "PlateWellReferenceWithDatasets")
     expect_s3_class(ds_2[[i]], "json_class")
-    expect_true(has_fields(ds_2[[i]], "imageDatasetReferences"))
-    for (j in seq_along(ds_2[[i]][["imageDatasetReferences"]])) {
-      expect_s3_class(ds_2[[i]][["imageDatasetReferences"]][[j]],
-                "ImageDatasetReference")
-      expect_s3_class(ds_2[[i]][["imageDatasetReferences"]][[j]], "json_class")
+    expect_true(has_fields(ds_2[[i]], c("imageDatasetReferences",
+                                        "featureVectorDatasetReferences")))
+    expect_s3_class(ds_2[[i]][["imageDatasetReferences"]],
+                    "ImageDatasetReference")
+    expect_s3_class(ds_2[[i]][["imageDatasetReferences"]], "json_class")
+    expect_s3_class(ds_2[[i]][["featureVectorDatasetReferences"]],
+                    "FeatureVectorDatasetReference")
+    expect_s3_class(ds_2[[i]][["featureVectorDatasetReferences"]],
+                    "json_vec")
+    for (j in seq_along(ds_2[[i]][["featureVectorDatasetReferences"]])) {
+      expect_s3_class(ds_2[[i]][["featureVectorDatasetReferences"]][[j]],
+                      "FeatureVectorDatasetReference")
+      expect_s3_class(ds_2[[i]][["featureVectorDatasetReferences"]][[j]],
+                      "json_class")
     }
   }
 
   ds_1 <- list_references(tok, samples[[1]])
   expect_s3_class(ds_1, "ImageDatasetReference")
-  expect_s3_class(ds_1, "json_vec")
-  expect_length(ds_1, 1L)
-  expect_s3_class(ds_1[[1L]], "ImageDatasetReference")
-  expect_s3_class(ds_1[[1L]], "json_class")
+  expect_s3_class(ds_1, "json_class")
+  expect_true(has_fields(ds_1, c("plate", "experimentIdentifier",
+                         "plateGeometry")))
+  expect_s3_class(ds_1[["plate"]], "PlateIdentifier")
+  expect_s3_class(ds_1[["plate"]], "json_class")
+  expect_s3_class(ds_1[["experimentIdentifier"]], "ExperimentIdentifier")
+  expect_s3_class(ds_1[["experimentIdentifier"]], "json_class")
+  expect_s3_class(ds_1[["plateGeometry"]], "Geometry")
+  expect_s3_class(ds_1[["plateGeometry"]], "json_class")
 
   ds_2 <- list_references(tok, samples[1:2])
   expect_s3_class(ds_2, "ImageDatasetReference")
@@ -159,14 +174,28 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "ImageDatasetReference")
     expect_s3_class(ds_2[[i]], "json_class")
+    expect_true(has_fields(ds_2, c("plate", "experimentIdentifier",
+                           "plateGeometry")))
+    expect_s3_class(ds_2[[i]][["plate"]], "PlateIdentifier")
+    expect_s3_class(ds_2[[i]][["plate"]], "json_class")
+    expect_s3_class(ds_2[[i]][["experimentIdentifier"]],
+                    "ExperimentIdentifier")
+    expect_s3_class(ds_2[[i]][["experimentIdentifier"]], "json_class")
+    expect_s3_class(ds_2[[i]][["plateGeometry"]], "Geometry")
+    expect_s3_class(ds_2[[i]][["plateGeometry"]], "json_class")
   }
 
   ds_1 <- list_references(tok, plates[[1]])
   expect_s3_class(ds_1, "ImageDatasetReference")
-  expect_s3_class(ds_1, "json_vec")
-  expect_length(ds_1, 1L)
-  expect_s3_class(ds_1[[1L]], "ImageDatasetReference")
-  expect_s3_class(ds_1[[1L]], "json_class")
+  expect_s3_class(ds_1, "json_class")
+  expect_true(has_fields(ds_1, c("plate", "experimentIdentifier",
+                         "plateGeometry")))
+  expect_s3_class(ds_1[["plate"]], "PlateIdentifier")
+  expect_s3_class(ds_1[["plate"]], "json_class")
+  expect_s3_class(ds_1[["experimentIdentifier"]], "ExperimentIdentifier")
+  expect_s3_class(ds_1[["experimentIdentifier"]], "json_class")
+  expect_s3_class(ds_1[["plateGeometry"]], "Geometry")
+  expect_s3_class(ds_1[["plateGeometry"]], "json_class")
 
   ds_2 <- list_references(tok, plates[1:2])
   expect_s3_class(ds_2, "ImageDatasetReference")
@@ -175,6 +204,15 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "ImageDatasetReference")
     expect_s3_class(ds_2[[i]], "json_class")
+    expect_true(has_fields(ds_2, c("plate", "experimentIdentifier",
+                           "plateGeometry")))
+    expect_s3_class(ds_2[[i]][["plate"]], "PlateIdentifier")
+    expect_s3_class(ds_2[[i]][["plate"]], "json_class")
+    expect_s3_class(ds_2[[i]][["experimentIdentifier"]],
+                    "ExperimentIdentifier")
+    expect_s3_class(ds_2[[i]][["experimentIdentifier"]], "json_class")
+    expect_s3_class(ds_2[[i]][["plateGeometry"]], "Geometry")
+    expect_s3_class(ds_2[[i]][["plateGeometry"]], "json_class")
   }
 
   plate_ids <- as_plate_id(plates)
@@ -203,9 +241,6 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_1)) {
     expect_s3_class(ds_1[[i]], "MicroscopyImageReference")
     expect_s3_class(ds_1[[i]], "json_class")
-    expect_attr(ds_1[[i]], "data_set")
-    expect_s3_class(attr(ds_1[[i]], "data_set"), "DatasetIdentifier")
-    expect_s3_class(attr(ds_1[[i]], "data_set"), "json_class")
   }
 
   ds_2 <- list_references(tok, dsids[1:2], channels = "DAPI")
@@ -215,9 +250,6 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "MicroscopyImageReference")
     expect_s3_class(ds_2[[i]], "json_class")
-    expect_attr(ds_2[[i]], "data_set")
-    expect_s3_class(attr(ds_2[[i]], "data_set"), "DatasetIdentifier")
-    expect_s3_class(attr(ds_2[[i]], "data_set"), "json_class")
   }
 
   ds_3 <- list_references(tok, dsids[[1]], channels = c("DAPI", "GFP"))
@@ -227,9 +259,6 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_3)) {
     expect_s3_class(ds_3[[i]], "MicroscopyImageReference")
     expect_s3_class(ds_3[[i]], "json_class")
-    expect_attr(ds_3[[i]], "data_set")
-    expect_s3_class(attr(ds_3[[i]], "data_set"), "DatasetIdentifier")
-    expect_s3_class(attr(ds_3[[i]], "data_set"), "json_class")
   }
 
   # check Dataset
@@ -252,9 +281,6 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_1)) {
     expect_s3_class(ds_1[[i]], "PlateImageReference")
     expect_s3_class(ds_1[[i]], "json_class")
-    expect_attr(ds_1[[i]], "data_set")
-    expect_s3_class(attr(ds_1[[i]], "data_set"), "DatasetIdentifier")
-    expect_s3_class(attr(ds_1[[i]], "data_set"), "json_class")
   }
 
   ds_2 <- list_references(tok, dsids[[1]], wells = well_pos, channels = "DAPI")
@@ -264,9 +290,6 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_2)) {
     expect_s3_class(ds_2[[i]], "PlateImageReference")
     expect_s3_class(ds_2[[i]], "json_class")
-    expect_attr(ds_2[[i]], "data_set")
-    expect_s3_class(attr(ds_2[[i]], "data_set"), "DatasetIdentifier")
-    expect_s3_class(attr(ds_2[[i]], "data_set"), "json_class")
   }
 
   ds_3 <- list_references(tok, dsids[[1]], wells = well_pos[[1]],
@@ -277,9 +300,6 @@ test_that("dataset references can be listed", {
   for (i in seq_along(ds_3)) {
     expect_s3_class(ds_3[[i]], "PlateImageReference")
     expect_s3_class(ds_3[[i]], "json_class")
-    expect_attr(ds_3[[i]], "data_set")
-    expect_s3_class(attr(ds_3[[i]], "data_set"), "DatasetIdentifier")
-    expect_s3_class(attr(ds_3[[i]], "data_set"), "json_class")
   }
 })
 
@@ -305,10 +325,12 @@ test_that("dataset ids can be listed", {
 
   dsid_1 <- list_dataset_ids(tok, codes[[1]])
   expect_s3_class(dsid_1, "DatasetIdentifier")
-  expect_s3_class(dsid_1, "json_vec")
-  expect_length(dsid_1, 1L)
-  expect_s3_class(dsid_1[[1L]], "DatasetIdentifier")
-  expect_s3_class(dsid_1[[1L]], "json_class")
+  expect_s3_class(dsid_1, "json_class")
+  expect_true(has_fields(dsid_1, c("datasetCode", "datastoreServerUrl",
+                         "permId")))
+  expect_is(dsid_1[["datasetCode"]]), "character")
+  expect_is(dsid_1[["datastoreServerUrl"]]), "character")
+  expect_is(dsid_1[["permId"]]), "character")
 
   dsid_2 <- list_dataset_ids(tok, codes[1:2])
   expect_s3_class(dsid_2, "DatasetIdentifier")
@@ -317,6 +339,11 @@ test_that("dataset ids can be listed", {
   for (i in seq_along(dsid_2)) {
     expect_s3_class(dsid_2[[i]], "DatasetIdentifier")
     expect_s3_class(dsid_2[[i]], "json_class")
+    expect_true(has_fields(dsid_2[[i]], c("datasetCode", "datastoreServerUrl",
+                           "permId")))
+    expect_is(dsid_2[["datasetCode"]]), "character")
+    expect_is(dsid_2[["datastoreServerUrl"]]), "character")
+    expect_is(dsid_2[["permId"]]), "character")
   }
 
   expect_identical(list_dataset_ids(tok, datasets[[1]]), dsid_1)
