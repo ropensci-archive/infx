@@ -128,10 +128,15 @@ test_that("plate metadata be listed", {
 
   meta_1 <- list_plate_metadata(tok, plate_ids[[1]])
   expect_s3_class(meta_1, "PlateMetadata")
-  expect_s3_class(meta_1, "json_vec")
-  expect_length(meta_1, 1L)
-  expect_s3_class(meta_1[[1]], "PlateMetadata")
-  expect_s3_class(meta_1[[1]], "json_class")
+  expect_s3_class(meta_1, "json_class")
+  expect_true(has_fields(meta_1, "wells"))
+  expect_length(meta_1[["wells"]], 384L)
+  expect_s3_class(meta_1[["wells"]], "WellMetadata")
+  expect_s3_class(meta_1[["wells"]], "json_vec")
+  for (i in seq_along(meta_1[["wells"]])) {
+    expect_s3_class(meta_1[["wells"]][[i]], "WellMetadata")
+    expect_s3_class(meta_1[["wells"]][[i]], "json_class")
+  }
 
   meta_2 <- list_plate_metadata(tok, plate_ids[1:2])
   expect_s3_class(meta_2, "PlateMetadata")
@@ -140,6 +145,14 @@ test_that("plate metadata be listed", {
   for (i in seq_along(meta_2)) {
     expect_s3_class(meta_2[[i]], "PlateMetadata")
     expect_s3_class(meta_2[[i]], "json_class")
+    expect_true(has_fields(meta_2[[i]], "wells"))
+    expect_length(meta_2[[i]][["wells"]], 384L)
+    expect_s3_class(meta_2[[i]][["wells"]], "WellMetadata")
+    expect_s3_class(meta_2[[i]][["wells"]], "json_vec")
+    for (j in seq_along(meta_2[[i]][["wells"]])) {
+      expect_s3_class(meta_2[[i]][["wells"]][[j]], "WellMetadata")
+      expect_s3_class(meta_2[[i]][["wells"]][[j]], "json_class")
+    }
   }
 
   expect_identical(list_plate_metadata(tok, plates[[1]]), meta_1)
@@ -150,11 +163,10 @@ test_that("plates/samples can be converted to plate ids", {
 
   plate_id <- as_plate_id(plates[[1]])
   expect_s3_class(plate_id, "PlateIdentifier")
-  expect_s3_class(plate_id, "json_vec")
-  expect_length(plate_id, 1L)
-  expect_s3_class(plate_id[[1]], "PlateIdentifier")
-  expect_s3_class(plate_id[[1]], "json_class")
-  expect_true(has_fields(plate_id[[1]], c("plateCode", "spaceCodeOrNull")))
+  expect_s3_class(plate_id, "json_class")
+  expect_true(has_fields(plate_id, c("plateCode", "spaceCodeOrNull")))
+  expect_is(plate_id[["plateCode"]], "character")
+  expect_is(plate_id[["spaceCodeOrNull"]], "character")
 
   plate_ids <- as_plate_id(plates[1:2])
   expect_s3_class(plate_ids, "PlateIdentifier")
@@ -164,15 +176,16 @@ test_that("plates/samples can be converted to plate ids", {
     expect_s3_class(plate_ids[[i]], "PlateIdentifier")
     expect_s3_class(plate_ids[[i]], "json_class")
     expect_true(has_fields(plate_ids[[i]], c("plateCode", "spaceCodeOrNull")))
+    expect_is(plate_ids[[i]][["plateCode"]], "character")
+    expect_is(plate_ids[[i]][["spaceCodeOrNull"]], "character")
   }
 
   plate_id <- as_plate_id(samples[[1]])
   expect_s3_class(plate_id, "PlateIdentifier")
-  expect_s3_class(plate_id, "json_vec")
-  expect_length(plate_id, 1L)
-  expect_s3_class(plate_id[[1]], "PlateIdentifier")
-  expect_s3_class(plate_id[[1]], "json_class")
-  expect_true(has_fields(plate_id[[1]], c("plateCode", "spaceCodeOrNull")))
+  expect_s3_class(plate_id, "json_class")
+  expect_true(has_fields(plate_id, c("plateCode", "spaceCodeOrNull")))
+  expect_is(plate_id[["plateCode"]], "character")
+  expect_is(plate_id[["spaceCodeOrNull"]], "character")
 
   plate_ids <- as_plate_id(samples[1:2])
   expect_s3_class(plate_ids, "PlateIdentifier")
@@ -182,16 +195,18 @@ test_that("plates/samples can be converted to plate ids", {
     expect_s3_class(plate_ids[[i]], "PlateIdentifier")
     expect_s3_class(plate_ids[[i]], "json_class")
     expect_true(has_fields(plate_ids[[i]], c("plateCode", "spaceCodeOrNull")))
+    expect_is(plate_ids[[i]][["plateCode"]], "character")
+    expect_is(plate_ids[[i]][["spaceCodeOrNull"]], "character")
   }
 })
 
 test_that("well position objects can be created", {
   pos_1 <- well_pos(1L, 1L)
   expect_s3_class(pos_1, "WellPosition")
-  expect_s3_class(pos_1, "json_vec")
-  expect_length(pos_1, 1L)
-  expect_s3_class(pos_1[[1]], "WellPosition")
-  expect_s3_class(pos_1[[1]], "json_class")
+  expect_s3_class(pos_1, "json_class")
+  expect_true(has_fields(pos_1, c("wellRow", "wellColumn")))
+  expect_is(pos_1[["wellRow"]], "integer")
+  expect_is(pos_1[["wellColumn"]], "integer")
 
   pos_2 <- well_pos(1L, 1L:2L)
   expect_s3_class(pos_2, "WellPosition")
@@ -200,6 +215,9 @@ test_that("well position objects can be created", {
   for (i in seq_along(pos_2)) {
     expect_s3_class(pos_2[[i]], "WellPosition")
     expect_s3_class(pos_2[[i]], "json_class")
+    expect_true(has_fields(pos_2[[i]], c("wellRow", "wellColumn")))
+    expect_is(pos_2[[i]][["wellRow"]], "integer")
+    expect_is(pos_2[[i]][["wellColumn"]], "integer")
   }
 
   pos_2 <- well_pos(2L:3L, 1L:2L)
@@ -209,14 +227,17 @@ test_that("well position objects can be created", {
   for (i in seq_along(pos_2)) {
     expect_s3_class(pos_2[[i]], "WellPosition")
     expect_s3_class(pos_2[[i]], "json_class")
+    expect_true(has_fields(pos_2[[i]], c("wellRow", "wellColumn")))
+    expect_is(pos_2[[i]][["wellRow"]], "integer")
+    expect_is(pos_2[[i]][["wellColumn"]], "integer")
   }
 
   pos_1 <- well_pos("a", 1L)
   expect_s3_class(pos_1, "WellPosition")
-  expect_s3_class(pos_1, "json_vec")
-  expect_length(pos_1, 1L)
-  expect_s3_class(pos_1[[1]], "WellPosition")
-  expect_s3_class(pos_1[[1]], "json_class")
+  expect_s3_class(pos_1, "json_class")
+  expect_true(has_fields(pos_1, c("wellRow", "wellColumn")))
+  expect_is(pos_1[["wellRow"]], "integer")
+  expect_is(pos_1[["wellColumn"]], "integer")
 
   expect_error(well_pos(c("a", "b"), 1L:3L))
   expect_error(well_pos(1L:2L, c("a", "b")))

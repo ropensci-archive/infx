@@ -393,7 +393,8 @@ well_id <- function(perm_id,
         permId = perm_id,
         plateIdentifier = plate,
         wellPosition = well_pos,
-        MoreArgs = list(class = "WellIdentifier"))
+        MoreArgs = list(class = "WellIdentifier")),
+    simplify = TRUE
   )
 }
 
@@ -406,20 +407,18 @@ as_well_id <- function(x, ...)
 #' @rdname list_plate_well
 #' @export
 #' 
-as_well_id.WellMetadata <- function(x, ...) {
-
-  x <- as_json_vec(x)
-
+as_well_id.WellMetadata <- function(x, ...)
   well_id(get_field(x, "permId"),
           get_field(x, "plateIdentifier"),
           get_field(x, "wellPosition"))
-}
 
 #' @rdname list_plate_well
 #' @export
 #' 
 as_well_id.WellIdentifier <- function(x, ...)
-  as_json_vec(x)
+  well_id(get_field(x, "permId"),
+          get_field(x, "plateIdentifier"),
+          get_field(x, "wellPosition"))
 
 #' @param row,col Character vector of plate row names or numeric vector of
 #' plate row indices and numeric vector of plate column indices, both of the
@@ -461,6 +460,7 @@ well_pos <- function(row = NULL, col = NULL, name = NULL) {
     Map(json_class,
         wellRow = row,
         wellColumn = col,
-        MoreArgs = list(class = "WellPosition"))
+        MoreArgs = list(class = "WellPosition")),
+    simplify = TRUE
   )
 }
