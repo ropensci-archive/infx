@@ -367,7 +367,7 @@ well_id <- function(perm_id,
     assert_that(is.null(well_code),
                 length(list(...)) == 0L)
 
-  plate <- as_plate_id(plate)
+  plate <- as_json_vec(as_plate_id(plate))
   well_pos <- as_json_vec(well_pos)
 
   max_len <- max(length(perm_id), length(plate), length(well_pos))
@@ -407,18 +407,26 @@ as_well_id <- function(x, ...)
 #' @rdname list_plate_well
 #' @export
 #' 
-as_well_id.WellMetadata <- function(x, ...)
+as_well_id.WellMetadata <- function(x, ...) {
+
+  x <- as_json_vec(x)
+
   well_id(get_field(x, "permId"),
           get_field(x, "plateIdentifier"),
           get_field(x, "wellPosition"))
+}
 
 #' @rdname list_plate_well
 #' @export
 #' 
-as_well_id.WellIdentifier <- function(x, ...)
+as_well_id.WellIdentifier <- function(x, ...) {
+
+  x <- as_json_vec(x)
+
   well_id(get_field(x, "permId"),
           get_field(x, "plateIdentifier"),
           get_field(x, "wellPosition"))
+}
 
 #' @param row,col Character vector of plate row names or numeric vector of
 #' plate row indices and numeric vector of plate column indices, both of the

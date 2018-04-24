@@ -152,7 +152,7 @@ list_samples.PlateMetadata <- list_samples_for_plate
 
 list_samples_for_well <- function(token, x, ...) {
 
-  x <- as_well_id(x)
+  x <- as_json_vec(as_well_id(x))
 
   params <- lapply(x, function(well) list(token, remove_null(well)))
 

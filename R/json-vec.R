@@ -242,7 +242,7 @@ has_fields.json_vec <- function(x, fields, ...)
 get_field.json_vec <- function(x, field, ...) {
   res <- lapply(x, `[[`, field)
   if (all(sapply(res, is_json_class)))
-    as_json_vec(res)
+    as_json_vec(res, simplify = TRUE)
   else
     simplify2array(res, higher = FALSE)
 }
