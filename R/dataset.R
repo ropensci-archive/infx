@@ -239,7 +239,7 @@ list_img_ds <- function(token,
 
   make_request(api_url("sas", attr(token, "host_url"), ...),
                fun,
-               list(token, as_plate_id(x)),
+               list(token, as_json_vec(as_plate_id(x))),
                ...)
 }
 

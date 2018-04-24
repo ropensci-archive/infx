@@ -162,7 +162,7 @@ list_plate_metadata <- function(token, x, ...)
 list_plate_meta <- function(token, x, ...)
   make_request(api_url("sas", attr(token, "host_url"), ...),
                "getPlateMetadataList",
-               list(token, as_plate_id(x)),
+               list(token, as_json_vec(as_plate_id(x))),
                ...)
 
 #' @rdname list_plate_well
@@ -204,7 +204,8 @@ plate_id <- function(code, space) {
     Map(json_class,
         plateCode = code,
         spaceCodeOrNull = space,
-        MoreArgs = list(class = "PlateIdentifier"))
+        MoreArgs = list(class = "PlateIdentifier")),
+    simplify = TRUE
   )
 }
 
@@ -250,7 +251,8 @@ list_wells <- function(token, x, ...)
 
 list_wells_for_plate <- function(token, x, ...) {
 
-  params <- lapply(as_plate_id(x), function(plate) list(token, plate))
+  params <- lapply(as_json_vec(as_plate_id(x)),
+                   function(plate) list(token, plate))
 
   res <- make_requests(api_url("sas", attr(token, "host_url"), ...),
                        "listPlateWells",

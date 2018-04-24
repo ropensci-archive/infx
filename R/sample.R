@@ -116,7 +116,7 @@ list_samples.Experiment <- list_samples_for_exp
 
 list_samples_for_plate <- function(token, x, ...) {
 
-  x <- as_plate_id(x)
+  x <- as_json_vec(as_plate_id(x))
 
   params <- lapply(x, function(plate) list(token, plate))
 

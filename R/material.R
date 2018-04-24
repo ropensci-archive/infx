@@ -159,7 +159,7 @@ list_material.MaterialIdentifierScreening <- function(token, x, ...)
 
 list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
 
-  x <- as_plate_id(x)
+  x <- as_json_vec(as_plate_id(x))
 
   if (!is.null(material_type)) {
     material_type <- as_json_vec(material_type)
@@ -203,7 +203,7 @@ list_material.Plate <- list_plate_mat_map
 #' @export
 #' 
 list_material.Sample <- function(token, x, material_type = NULL, ...)
-  list_plate_mat_map(token, as_plate_id(x), material_type, ...)
+  list_plate_mat_map(token, as_json_vec(as_plate_id(x)), material_type, ...)
 
 #' @rdname list_material
 #' @export
