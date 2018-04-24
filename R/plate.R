@@ -305,6 +305,7 @@ list_wells_for_mat <- function(token,
                        "listPlateWells",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,

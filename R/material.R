@@ -173,6 +173,7 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
                        "listPlateMaterialMapping",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,
@@ -371,10 +372,15 @@ extract_well_material <- function(x, row, col) {
 
   ind <- (row - 1L) * get_field(get_field(x, "plateGeometry"), "width") + col
 
-  res <- get_field(x, "mapping")[[ind]]
+  mapping <- get_field(x, "mapping")
 
-  if (length(res) > 0L)
-    as_json_vec(res[[1L]])
-  else
-    res
+  if (all(sapply(mapping, has_attr, "original_index"))) {
+    hit <- ind == sapply(mapping, attr, "original_index")
+    assert_that(sum(hit) <= 1L)
+    if (sum(hit) == 0L)
+      list()
+    else
+      mapping[[which(hit)]]
+  } else
+    mapping[[ind]]
 }

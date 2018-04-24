@@ -400,6 +400,7 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
                        "getExperimentImageMetadata",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,

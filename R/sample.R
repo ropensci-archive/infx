@@ -93,6 +93,7 @@ list_samples_for_exp <- function(token, x, ...) {
                        "listSamplesForExperiment",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,
@@ -123,6 +124,7 @@ list_samples_for_plate <- function(token, x, ...) {
                        "getPlateSample",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,
@@ -158,6 +160,7 @@ list_samples_for_well <- function(token, x, ...) {
                        "getWellSample",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,

@@ -382,6 +382,7 @@ list_img_ref.NULL <- function(token, x, wells, channels, ...) {
                        "listImageReferences",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,
@@ -410,6 +411,7 @@ list_img_ref.WellPosition <- function(token, x, wells, channels, ...) {
                        "listPlateImageReferences",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,

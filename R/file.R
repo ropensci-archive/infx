@@ -175,6 +175,7 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
                        "listFilesForDataSet",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,
@@ -241,6 +242,7 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
                        "listFilesForDataSet",
                        params,
                        ...)
+  res <- lapply(res, as_json_vec)
 
   as_json_vec(
     Map(set_attr,

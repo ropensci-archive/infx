@@ -149,15 +149,21 @@ as_json_vec.list <- function(x,
 
   list_to_json_vec <- function(y) {
     if (is.list(y)) {
-      if (!length(y))
-        return(y)
+      if (!length(y)) return(y)
       y <- japply(y, list_to_json_vec)
-      if (!is_json_class(y) && has_common_subclass(y)) {
-        new_json_vec(
-          unlist(lapply(y, function(z) if (is_json_class(z)) list(z) else z),
-                 recursive = FALSE),
-          simplify
-        )
+      if (is_json_class(y) || is_json_vec(y)) return(y)
+      empty <- !as.logical(sapply(y, length))
+      if (all(empty | sapply(y, is_json_class) | sapply(y, is_json_vec))) {
+        y <- unlist(lapply(y, function(z) if (!is_json_vec(z)) list(z) else z),
+                    recursive = FALSE)
+        if (any(empty)) {
+          y <- lapply(seq_along(y),
+                      function(i) set_attr(y[[i]], i, "original_index"))
+          y <- y[!empty]
+        }
+      }
+      if (has_common_subclass(y)) {
+        new_json_vec(y, simplify)
       } else
         y
     } else
@@ -169,10 +175,10 @@ as_json_vec.list <- function(x,
   if (!length(x))
     return(x)
 
-  if (recursive)
+  if (recursive && !is_json_vec(x))
     x <- list_to_json_vec(x)
 
-  if (force && !has_common_subclass(x))
+  if (is_json_class(x) || (force && !has_common_subclass(x)))
     x
   else
     new_json_vec(x, simplify)
