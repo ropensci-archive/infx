@@ -290,6 +290,7 @@ feat_ds_well_ref <- function(x, wells) {
                 restore_type = FALSE),
         list(wellPosition = well)
       ), class = "FeatureVectorDatasetWellReference")
-    }, x, wells)
+    }, x, wells),
+    simplify = TRUE
   )
 }

@@ -269,8 +269,7 @@ list_references.PlateMetadata <- list_img_ds
 list_references.Sample <- list_img_ds
 
 list_ref_for_material <- function(token, x, experiment = NULL, ...)
-  list_wells(token, as_screening_mat_id(x), experiment,
-             include_datasets = TRUE, ...)
+  list_wells(token, x, experiment, include_datasets = TRUE, ...)
 
 #' @rdname list_datasets
 #' 

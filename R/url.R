@@ -266,6 +266,7 @@ list_datastore_urls.character <- function(token, x, ...) {
                            "getDataStoreBaseURLs",
                            list(token, as.list(x)),
                            ...)
+      urls <- as_json_vec(urls)
 
       res <- unlist(lapply(urls, function(url) {
         codes <- as.character(get_field(url, "dataSetCodes"))

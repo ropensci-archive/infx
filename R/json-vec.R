@@ -149,17 +149,16 @@ as_json_vec.list <- function(x,
 
   list_to_json_vec <- function(y) {
     if (is.list(y)) {
-      if (!length(y)) return(y)
+      empty <- !as.logical(sapply(y, length))
+      if (!length(y) || all(empty)) return(y)
       y <- japply(y, list_to_json_vec)
       if (is_json_class(y) || is_json_vec(y)) return(y)
-      empty <- !as.logical(sapply(y, length))
       if (all(empty | sapply(y, is_json_class) | sapply(y, is_json_vec))) {
         y <- unlist(lapply(y, function(z) if (!is_json_vec(z)) list(z) else z),
                     recursive = FALSE)
         if (any(empty)) {
-          y <- lapply(seq_along(y),
+          y <- lapply(seq_along(y)[!empty],
                       function(i) set_attr(y[[i]], i, "original_index"))
-          y <- y[!empty]
         }
       }
       if (has_common_subclass(y)) {

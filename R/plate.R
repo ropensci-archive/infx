@@ -283,7 +283,7 @@ list_wells_for_mat <- function(token,
                                include_datasets = FALSE,
                                ...) {
 
-  x <- as_screening_mat_id(x)
+  x <- as_json_vec(as_screening_mat_id(x))
 
   if (is.null(experiment)) {
 

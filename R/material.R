@@ -227,12 +227,13 @@ material_id <- function(code,
                   generic = "MaterialIdentifierGeneric",
                   screening = "MaterialIdentifierScreening")
 
-  res <- Map(json_class,
-             materialTypeIdentifier = mat_type,
-             materialCode = code,
-             class = rep(class, length(code)))
-
-  as_json_vec(res)
+  as_json_vec(
+    Map(json_class,
+        materialTypeIdentifier = mat_type,
+        materialCode = code,
+        class = rep(class, length(code))),
+    simplify = TRUE
+  )
 }
 
 #' @param types Select one or several material types for which to return the
@@ -270,25 +271,27 @@ list_material_types <- function(mode = c("screening", "generic"),
                   generic = "MaterialTypeIdentifierGeneric",
                   screening = "MaterialTypeIdentifierScreening")
 
-  res <- Map(json_class,
-             materialTypeCode = toupper(types),
-             class = rep(class, length(types)),
-             USE.NAMES = FALSE)
-
-  as_json_vec(res)
+  as_json_vec(
+    Map(json_class,
+        materialTypeCode = toupper(types),
+        class = rep(class, length(types)),
+        USE.NAMES = FALSE),
+    simplify = TRUE
+  )
 }
 
 as_mat_id <- function(x, mode) {
 
-  res <- lapply(as_json_vec(x), function(y)
-    material_id(
-      code = get_field(y, "materialCode"),
-      type = get_field(get_field(y, "materialTypeIdentifier"),
-                       "materialTypeCode"),
-      mode = mode
-    ))
+  x <- as_json_vec(x)
 
-  as_json_vec(do.call(c, res))
+  as_json_vec(
+    Map(material_id,
+        code = get_field(x, "materialCode"),
+        type = get_field(get_field(x, "materialTypeIdentifier"),
+                         "materialTypeCode"),
+        MoreArgs = list(mode = mode)),
+    simplify = TRUE
+  )
 }
 
 as_screening <- function(x, ...)
@@ -322,7 +325,7 @@ as_screening_mat_id.MaterialIdentifierGeneric <- as_screening
 #' @export
 #' 
 as_screening_mat_id.MaterialIdentifierScreening <- function(x, ...)
-  as_json_vec(x)
+  as_json_vec(x, simplify = TRUE)
 
 #' @rdname list_material
 #' @export
@@ -344,7 +347,7 @@ as_generic_mat_id.MaterialScreening <- as_generic
 #' @export
 #' 
 as_generic_mat_id.MaterialIdentifierGeneric <- function(x, ...)
-  as_json_vec(x)
+  as_json_vec(x, simplify = TRUE)
 
 #' @rdname list_material
 #' @export

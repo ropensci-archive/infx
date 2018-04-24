@@ -328,9 +328,9 @@ test_that("dataset ids can be listed", {
   expect_s3_class(dsid_1, "json_class")
   expect_true(has_fields(dsid_1, c("datasetCode", "datastoreServerUrl",
                          "permId")))
-  expect_is(dsid_1[["datasetCode"]]), "character")
-  expect_is(dsid_1[["datastoreServerUrl"]]), "character")
-  expect_is(dsid_1[["permId"]]), "character")
+  expect_is(dsid_1[["datasetCode"]], "character")
+  expect_is(dsid_1[["datastoreServerUrl"]], "character")
+  expect_is(dsid_1[["permId"]], "character")
 
   dsid_2 <- list_dataset_ids(tok, codes[1:2])
   expect_s3_class(dsid_2, "DatasetIdentifier")
@@ -341,9 +341,9 @@ test_that("dataset ids can be listed", {
     expect_s3_class(dsid_2[[i]], "json_class")
     expect_true(has_fields(dsid_2[[i]], c("datasetCode", "datastoreServerUrl",
                            "permId")))
-    expect_is(dsid_2[["datasetCode"]]), "character")
-    expect_is(dsid_2[["datastoreServerUrl"]]), "character")
-    expect_is(dsid_2[["permId"]]), "character")
+    expect_is(dsid_2[[i]][["datasetCode"]], "character")
+    expect_is(dsid_2[[i]][["datastoreServerUrl"]], "character")
+    expect_is(dsid_2[[i]][["permId"]], "character")
   }
 
   expect_identical(list_dataset_ids(tok, datasets[[1]]), dsid_1)
