@@ -220,10 +220,10 @@ is.json_vec <- is_json_vec
 #' 
 has_common_subclass <- function(x) {
 
-  if (is_json_class(x))
-    TRUE
-  else if (!is.list(x))
+  if (!is.list(x) || !length(x))
     FALSE
+  else if (is_json_class(x))
+    TRUE
   else if (all(sapply(x, is_json_class) | sapply(x, is_json_vec)))
     isTRUE(length(unique(lapply(x, get_subclass))) == 1L)
   else
