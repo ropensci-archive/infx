@@ -248,14 +248,11 @@ samples <- search_openbis(token, adeno_au_samp,
 raw_ref <- list_references(token, samples[[2L]])
 
 img_meta <- list_image_metadata(token, raw_ref)
-print(img_meta[[1L]])
+print(img_meta)
 
 well_raw <- list_references(token, raw_ref,
-                            wells = json_class(wellRow = 1L,
-                                               wellColumn = 2L,
-                                               class = "WellPosition"),
-                            channel = get_field(img_meta,
-                                                "channelCodes")[[1L]])
+                            wells = well_pos(name = "A2"),
+                            channel = img_meta[["channelCodes"]][[1L]])
 
 print(well_raw, depth = 2L, length = 15L)
 
@@ -277,9 +274,7 @@ segm_ref <- list_references(token, samples[[2L]],
 list_image_metadata(token, segm_ref)
 
 well_segm <- list_references(token, segm_ref,
-                             wells = json_class(wellRow = 1L,
-                                                wellColumn = 2L,
-                                                class = "WellPosition"),
+                             wells = well_pos(name = "A2"),
                              channel = "CELLS__CY5_")
 
 segm_img <- fetch_images(token, well_segm[[2L]],
@@ -306,8 +301,8 @@ print(list_features(token, feat_ref[[1L]]), length = 10L)
 
 cell_count <- fetch_features(token, feat_ref[[1L]], "COUNT_CELLS")
 
-print(cell_count[[1L]])
-print(cell_count[[1L]][["featureVectors"]], depth = 2L, length = 10L)
+print(cell_count)
+print(cell_count[["featureVectors"]], depth = 2L, length = 10L)
 ```
 
 Whenever feature data for an entire plate is fetched it might be more efficient to simply download the associated data set file, especially if several of the contained features are of interest. Such files are `.csv` formatted tables with columns corresponding to features and rows to wells. A convenient aspect of feature data is however that it can be queried per well. Passing the `FeatureVectorDatasetReference` object to `list_references()` alongside a set of `WellPosition` objects will return `FeatureVectorDatasetWellReference` objects which can be used to retrieve subsetted feature information using `fetch_features()`.
@@ -315,11 +310,11 @@ Whenever feature data for an entire plate is fetched it might be more efficient 
 For illustration purposes, a heatmap of per-well cell counts, drawn with `ggplot::ggplot()`, is shown below. This is akin to the plate heatmaps that are shown in the openBIS web GUI.
 
 ```{r heatmap, echo = FALSE, fig.align = "center"}
-wells <- get_field(cell_count[[1L]][["featureVectors"]], "wellPosition")
+wells <- get_field(cell_count[["featureVectors"]], "wellPosition")
 heatmap <- tibble(
   WellRow = as.factor(LETTERS[get_field(wells, "wellRow")]),
   WellCol = as.factor(as.integer(get_field(wells, "wellColumn"))),
-  CellCount = as.integer(get_field(cell_count[[1L]][["featureVectors"]],
+  CellCount = as.integer(get_field(cell_count[["featureVectors"]],
                                    "values"))
 )
 

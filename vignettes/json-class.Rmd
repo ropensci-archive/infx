@@ -126,7 +126,7 @@ Now that class information of objects fetched from openBIS is available in R, th
 
 There is an issue with this approach though: listing for example datasets associated with multiple experiments. A straightforward approach could be simply iterating over the list of experiments and for each one, issuing a separate request to openBIS. A more efficient way of doing this would be to query openBIS with a single list of several experiment objects. This, however defeats S3 method dispatch, as the object on which dispatch occurs is no longer `experiment` but `list` (containing several `experiment`s). To work around this, `json_vec` objects are used.
 
-The `json_vec` class wraps around a list of `json_class` and it serves to bring the common sub-class of all child objects to the surface for using method dispatch on. Instantiation of `json_vec` objects is possible in several ways: using the `json_vec()` constructor, by coercing a list structure with `as_json_vec()` or by combining several `json_class` objects using `base::c()`. The reverse action can be performed, using `base::as.list()`. 
+The `json_vec` class wraps around a list of `json_class` and it serves to bring the common sub-class of all child objects to the surface for using method dispatch on. Instantiation of `json_vec` objects is possible in several ways: using the `json_vec()` constructor, by coercing a list structure with `as_json_vec()` or by combining several `json_class` objects using `base::c()`. The reverse action can be performed, using `base::as.list()`. The `json_vec` constructor, as well as functions for coercing to `json_vec` accept a `simplify` argument. When set to `TRUE` (default is `FALSE`), `json_vec` objects of length 1 are simplified to `json_class` objects. 
 
 ```{r json-vec}
 a <- json_class("a", class = "foo")
@@ -140,6 +140,8 @@ identical(foo_vec, as_json_vec(list(a, b)))
 identical(foo_vec, c(a, b))
 
 identical(as.list(foo_vec), list(a, b))
+
+identical(a, as_json_vec(list(a), simplify = TRUE))
 ```
 
 Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and it alias `is.json_vec()`), which can be used to check whether

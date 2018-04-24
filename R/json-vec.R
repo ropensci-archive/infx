@@ -152,7 +152,7 @@ as_json_vec.list <- function(x,
       empty <- !as.logical(sapply(y, length))
       if (!length(y) || all(empty)) return(y)
       y <- japply(y, list_to_json_vec)
-      if (is_json_class(y) || is_json_vec(y)) return(y)
+      if (is_json_class(y) || is_json_vec(y)) return(y)
       if (all(empty | sapply(y, is_json_class) | sapply(y, is_json_vec))) {
         y <- unlist(lapply(y, function(z) if (!is_json_vec(z)) list(z) else z),
                     recursive = FALSE)
