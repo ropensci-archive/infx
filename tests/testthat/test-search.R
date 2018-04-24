@@ -10,11 +10,8 @@ test_that("search for datasets", {
   ds_1 <- search_openbis(tok, sc)
 
   expect_s3_class(ds_1, "DataSet")
-  expect_s3_class(ds_1, "json_vec")
-  expect_length(ds_1, 1L)
-  expect_s3_class(ds_1[[1]], "DataSet")
-  expect_s3_class(ds_1[[1]], "json_class")
-  expect_identical(get_field(ds_1[[1]], "code"), perm_id)
+  expect_s3_class(ds_1, "json_class")
+  expect_identical(get_field(ds_1, "code"), perm_id)
 
   date <- as.Date("2011-11-15")
   sc <- search_criteria(time_attribute_clause(value = date))
@@ -44,11 +41,8 @@ test_that("search for datasets", {
   ds_1 <- search_openbis(tok, sc)
 
   expect_s3_class(ds_1, "DataSet")
-  expect_s3_class(ds_1, "json_vec")
-  expect_length(ds_1, 1L)
-  expect_s3_class(ds_1[[1]], "DataSet")
-  expect_s3_class(ds_1[[1]], "json_class")
-  expect_identical(ds_1[[1]][["properties"]][["IBRAIN2.DATASET.ID"]], ds_id)
+  expect_s3_class(ds_1, "json_class")
+  expect_identical(ds_1[["properties"]][["IBRAIN2.DATASET.ID"]], ds_id)
 
   sc <- search_criteria(any_property_clause(ds_id))
 
@@ -68,11 +62,8 @@ test_that("search for datasets", {
   ds_1 <- search_openbis(tok, sc)
 
   expect_s3_class(ds_1, "DataSet")
-  expect_s3_class(ds_1, "json_vec")
-  expect_length(ds_1, 1L)
-  expect_s3_class(ds_1[[1]], "DataSet")
-  expect_s3_class(ds_1[[1]], "json_class")
-  expect_identical(get_field(ds_1[[1]], "code"), perm_id)
+  expect_s3_class(ds_1, "json_class")
+  expect_identical(get_field(ds_1, "code"), perm_id)
 })
 
 test_that("search for samples", {
@@ -84,21 +75,15 @@ test_that("search for samples", {
 
   samp_1 <- search_openbis(tok, sc, "sample")
   expect_s3_class(samp_1, "Sample")
-  expect_s3_class(samp_1, "json_vec")
-  expect_length(samp_1, 1L)
-  expect_s3_class(samp_1[[1]], "Sample")
-  expect_s3_class(samp_1[[1]], "json_class")
-  expect_identical(get_field(samp_1[[1]], "permId"), perm_id)
-  expect_false("PARENTS" %in% samp_1[[1]][["retrievedFetchOptions"]])
+  expect_s3_class(samp_1, "json_class")
+  expect_identical(get_field(samp_1, "permId"), perm_id)
+  expect_false("PARENTS" %in% samp_1[["retrievedFetchOptions"]])
 
   samp_1 <- search_openbis(tok, sc, "sample", "parents")
   expect_s3_class(samp_1, "Sample")
-  expect_s3_class(samp_1, "json_vec")
-  expect_length(samp_1, 1L)
-  expect_s3_class(samp_1[[1]], "Sample")
-  expect_s3_class(samp_1[[1]], "json_class")
-  expect_identical(get_field(samp_1[[1]], "permId"), perm_id)
-  expect_true("PARENTS" %in% samp_1[[1]][["retrievedFetchOptions"]])
+  expect_s3_class(samp_1, "json_class")
+  expect_identical(get_field(samp_1, "permId"), perm_id)
+  expect_true("PARENTS" %in% samp_1[["retrievedFetchOptions"]])
 })
 
 test_that("search with sub-criteria", {
@@ -133,11 +118,8 @@ test_that("search for material", {
   mat_1 <- search_openbis(tok,
     search_criteria(property_clause("GENE_SYMBOL", "MTOR")), "material")
   expect_s3_class(mat_1, "MaterialGeneric")
-  expect_s3_class(mat_1, "json_vec")
-  expect_equal(length(mat_1), 1L)
-  expect_s3_class(mat_1[[1]], "MaterialGeneric")
-  expect_s3_class(mat_1[[1]], "json_class")
-  expect_identical(mat_1[[1]][["properties"]][["GENE_SYMBOL"]], "MTOR")
+  expect_s3_class(mat_1, "json_class")
+  expect_identical(mat_1[["properties"]][["GENE_SYMBOL"]], "MTOR")
 
   expect_identical(
     search_openbis(tok, search_criteria(attribute_clause(value = "2475")),

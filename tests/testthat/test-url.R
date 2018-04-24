@@ -6,10 +6,11 @@ test_that("data store servers can be listed", {
 
   dss <- list_datastores(tok)
   expect_s3_class(dss, "DataStore")
-  expect_s3_class(dss, "json_vec")
-  expect_identical(get_subclass(dss), "DataStore")
-  expect_length(dss, 1L)
-  expect_true(has_subclass(dss, "DataStore"))
+  expect_s3_class(dss, "json_class")
+  expect_true(has_fields(dss, c("code", "downloadUrl", "hostUrl")))
+  expect_is(dss[["code"]], "character")
+  expect_is(dss[["downloadUrl"]], "character")
+  expect_is(dss[["hostUrl"]], "character")
 })
 
 test_that("data store urls can be listed", {
