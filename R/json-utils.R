@@ -337,6 +337,17 @@ style <- function(fancy = TRUE) {
   }
 }
 
+#' Apply a function to json vec/class objects
+#' 
+#' This wrapper around [base::lapply] restores `json_vec` and `json_class`
+#' information which is lost due to [base::as.list] being applied to the
+#' first argument in [base::lapply].
+#' 
+#' @param x Object to which the function is iteratively applied.
+#' @param ... All further arguments are passed to [base::lapply].
+#' 
+#' @noRd
+#' 
 japply <- function(x, ...) {
   attribs <- attributes(x)
   res <- if (is_json_class(x))

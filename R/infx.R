@@ -333,6 +333,17 @@
 #' @import assertthat
 NULL
 
+#' Set object attribute
+#' 
+#' Inspired by [stats::setNames], this function assigns an attribute to an
+#' object and returns the object.
+#' 
+#' @param object Object to which the attribute is assigned.
+#' @param attribute The attribute itself.
+#' @param attr_name Attribute name.
+#' 
+#' @noRd
+#' 
 set_attr <- function(object, attribute, attr_name) {
   assert_that(is.string(attr_name))
   attr(object, attr_name) <- attribute
