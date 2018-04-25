@@ -151,7 +151,7 @@
 #'     ),
 #'     target_object = "sample"
 #'   )
-#'   length(all)
+#'   length(as_json_vec(all))
 #' 
 #'   # now only include ADENO-DU-K1 plate samples registered after Feb 1st 2013
 #'   some <- search_openbis(
@@ -163,7 +163,7 @@
 #'     ),
 #'     target_object = "sample"
 #'   )
-#'   length(some)
+#'   length(as_json_vec(some))
 #' 
 #'   logout_openbis(tok)
 #' }

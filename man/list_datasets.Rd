@@ -247,14 +247,12 @@ option is not exposed to the user.
   # corresponding to the associated raw imaging dataset is listed
   raw_ref <- list_references(tok, samp)
   # available imaging channels are
-  get_field(raw_ref[[1L]], "properties")[["IMAGE.CHANNEL.LIST"]]
+  get_field(raw_ref, "properties")[["IMAGE.CHANNEL.LIST"]]
 
   # a more specific image reference object can be retrieved by passing a
   # well specification to list_references()
   well_ref <- list_references(tok, raw_ref,
-                              wells = json_class(wellRow = 1L,
-                                                 wellColumn = 2L,
-                                                 class = "WellPosition"),
+                              wells = well_pos(name = "A2"),
                               channel = "DAPI")
   # a reference to 9 images is returned, as there are 3 x 3 imaging tiles
   # per well

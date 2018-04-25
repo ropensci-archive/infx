@@ -200,7 +200,7 @@ deserialization.
 
   # the returned image dataset reference can be used to list image meta data
   img_meta <- list_image_metadata(tok, ds_ref)
-  channels <- img_meta[[1L]][["channelCodes"]]
+  channels <- img_meta[["channelCodes"]]
 
   imgs <- fetch_images(tok, ds_ref,
                        channels = channels[[1L]],
@@ -208,7 +208,7 @@ deserialization.
                        image_size = json_class(width = 300, height = 300,
                                                class = "ImageSize"))
   # this yields 9 images, one per tile
-  length(imgs[[1L]]) == img_meta[[1L]][["numberOfTiles"]]
+  length(imgs[[1L]]) == img_meta[["numberOfTiles"]]
   # and each image is scaled to fit within 300 x 300 pixels
   magick::image_info(imgs[[1L]][[1L]])
 

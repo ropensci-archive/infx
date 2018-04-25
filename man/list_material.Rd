@@ -177,25 +177,28 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
 
   # list all material types
   types <- list_material_types()
-  types[[2L]]
+  print(types)
 
   # list all gene targets on plate KB2-03-1I
   mat_map <- list_material(tok, samp, types[[2L]])
-  print(mat_map[[1L]], depth = 5, length = 20L)
-  # there are width x height entries arranged in a linear, row-major fashion
-  length(mat_map[[1L]][["mapping"]])
+  print(mat_map, depth = 5, length = 20L)
+  # there are maximally width x height entries arranged in a linear,
+  # row-major fashion; missing entries are omitted, but original indices
+  # are accessible as original_index attributes
+  length(mat_map[["mapping"]])
+  attr(mat_map[["mapping"]][[42L]], "original_index")
   # well A24 does not have a gene target as it is a MOCK control well
   extract_well_material(mat_map, "A", 24)
   # well A22 however has a gene target
   a_22 <- extract_well_material(mat_map, "A", 22)
-  print(a_22[[1L]], depth = 2L)
+  print(a_22, depth = 2L)
 
   # search for a material with material code 3480
   igf1r <- search_openbis(tok,
                           search_criteria(attribute_clause("code", 3480)),
                           target_object = "material")
 
-  identical(as_screening_mat_id(igf1r), a_22)
+  all.equal(as_screening_mat_id(igf1r), a_22, check.attributes = FALSE)
   identical(igf1r, list_material(tok, a_22))
   identical(igf1r, 
             search_openbis(tok,
@@ -209,7 +212,7 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
                         search_criteria(
                           attribute_clause(
                             "code",
-                            samp[[1L]][["experimentIdentifierOrNull"]]
+                            samp[["experimentIdentifierOrNull"]]
                           )
                         ),
                         target_object = "experiment")

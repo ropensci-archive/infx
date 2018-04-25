@@ -86,8 +86,8 @@
 #' 
 #'   # for a plate, fetch meta data objects
 #'   meta <- list_plate_metadata(tok, plates[[1L]])
-#'   print(meta[[1L]], depth = 2L, length = 15L)
-#'   print(meta[[1L]][["wells"]][[1L]], depth = 2L)
+#'   print(meta, depth = 2L, length = 15L)
+#'   print(meta[["wells"]][[1L]], depth = 2L)
 #' 
 #'   # search for a sample object corresponding to plate BB01-1I
 #'   samp <- search_openbis(tok,
@@ -99,8 +99,8 @@
 #' 
 #'   # list all wells for this sample
 #'   wells <- list_wells(tok, samp)
-#'   identical(as_well_id(meta[[1L]][["wells"]][[1L]]),
-#'             wells[1L])
+#'   identical(as_well_id(meta[["wells"]][[1L]]),
+#'             wells[[1L]])
 #' 
 #'   # search for the material corresponding to MTOR
 #'   mat <- search_openbis(tok,
@@ -259,7 +259,7 @@ list_wells_for_plate <- function(token, x, ...) {
                        params,
                        ...)
 
-  as_json_vec(res, simplify = TRUE)
+  as_json_vec(remove_null(res), simplify = TRUE)
 }
 
 #' @rdname list_plate_well

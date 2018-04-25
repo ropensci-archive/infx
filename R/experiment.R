@@ -52,7 +52,7 @@
 #'                                                      "identifier"))
 #'                         ),
 #'                         target_object = "experiment")
-#'   identical(exps[1L], exp)
+#'   identical(exps[[1L]], exp)
 #' 
 #'   logout_openbis(tok)
 #' }
