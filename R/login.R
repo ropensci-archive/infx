@@ -60,6 +60,8 @@ login_openbis <- function(user,
 
   dots <- list(...)
 
+  assert_that(is.string(user), is.string(pwd))
+
   token <- unlist(make_request(api_url("gis", host_url, ...),
                                "tryToAuthenticateForAllServices",
                                list(user, pwd),
