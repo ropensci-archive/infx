@@ -229,7 +229,7 @@ search_criteria <- function(...,
 
   clauses <- list(...)
 
-  assert_that(all(sapply(clauses, is_clause)))
+  assert_that(all(vapply(clauses, is_clause, logical(1L))))
 
   operator <- switch(operator,
                      all = "match_all",
@@ -387,7 +387,7 @@ list_property_types <- function(token, with_relations = FALSE, ...) {
                       list(token, with_relations),
                       ...)
 
-  classes <- sapply(res, get_subclass)
+  classes <- vapply(res, get_subclass, character(1L))
 
   lapply(split(res, classes), as_json_vec)
 }

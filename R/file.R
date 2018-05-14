@@ -180,7 +180,7 @@ list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(x, sapply(res, length)),
+        rep(x, vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "data_set")),
     simplify = TRUE
   )
@@ -247,7 +247,7 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(dataset_code(x), sapply(res, length)),
+        rep(dataset_code(x), vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "data_set")),
     simplify = TRUE
   )
@@ -392,7 +392,12 @@ fetch_ds_files.NULL <- function(token,
     files <- files[grepl(file_regex, get_field(files, "pathInDataSet"))]
   }
 
-  fetch_files(token, sapply(files, attr, "data_set"), files, ...)
+  fetch_files(
+    token,
+    vapply(files, attr, character(1L), "data_set"),
+    files,
+    ...
+  )
 }
 
 fetch_ds_files.character <- function(token,
@@ -472,8 +477,8 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
   x <- as_json_vec(x)
 
   if (is.null(data_sets)) {
-    assert_that(all(sapply(x, has_attr, "data_set")))
-    data_sets <- sapply(x, attr, "data_set")
+    assert_that(all(vapply(x, has_attr, logical(1L), "data_set")))
+    data_sets <- vapply(x, attr, character(1L), "data_set")
   }
 
   assert_that(is.character(data_sets),

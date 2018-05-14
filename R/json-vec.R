@@ -149,11 +149,15 @@ as_json_vec.list <- function(x,
 
   list_to_json_vec <- function(y) {
     if (is.list(y)) {
-      empty <- !as.logical(sapply(y, length))
+      empty <- !as.logical(vapply(y, length, integer(1L)))
       if (!length(y) || all(empty)) return(y)
       y <- japply(y, list_to_json_vec)
       if (is_json_class(y) || is_json_vec(y)) return(y)
-      if (all(empty | sapply(y, is_json_class) | sapply(y, is_json_vec))) {
+
+      if (all(empty |
+              vapply(y, is_json_class, logical(1L)) |
+              vapply(y, is_json_vec, logical(1L)))) {
+
         y <- unlist(lapply(y, function(z) if (!is_json_vec(z)) list(z) else z),
                     recursive = FALSE)
         if (any(empty)) {
@@ -169,7 +173,7 @@ as_json_vec.list <- function(x,
       y
   }
 
-  x <- x[as.logical(sapply(x, length))]
+  x <- x[as.logical(vapply(x, length, integer(1L)))]
 
   if (!length(x))
     return(x)
@@ -203,7 +207,7 @@ is_json_vec <- function(x) {
   isTRUE(inherits(x, "json_vec") &&
          utils::tail(class(x), 1) == "json_vec" &&
          length(class(x)) > 1L &&
-         all(sapply(x, is_json_class)) &&
+         all(vapply(x, is_json_class, logical(1L))) &&
          has_common_subclass(x) &&
          all(setdiff(class(x), "json_vec") ==
              unlist(unique(lapply(x, get_subclass)))))
@@ -223,7 +227,8 @@ has_common_subclass <- function(x) {
     FALSE
   else if (is_json_class(x))
     TRUE
-  else if (all(sapply(x, is_json_class) | sapply(x, is_json_vec)))
+  else if (all(vapply(x, is_json_class, logical(1L)) |
+               vapply(x, is_json_vec, logical(1L))))
     isTRUE(length(unique(lapply(x, get_subclass))) == 1L)
   else
     FALSE
@@ -233,14 +238,14 @@ has_common_subclass <- function(x) {
 #' @export
 #' 
 has_fields.json_vec <- function(x, fields, ...)
-  all(sapply(x, has_fields, fields))
+  all(vapply(x, has_fields, fields, logical(1L)))
 
 #' @rdname json_utils
 #' @export
 #' 
 get_field.json_vec <- function(x, field, ...) {
   res <- lapply(x, `[[`, field)
-  if (all(sapply(res, is_json_class)))
+  if (all(vapply(res, is_json_class, logical(1L))))
     as_json_vec(res, simplify = TRUE)
   else
     simplify2array(res, higher = FALSE)

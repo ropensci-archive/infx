@@ -165,7 +165,7 @@ make_requests <- function(urls,
   }
 
   assert_that(is.list(params),
-              all(sapply(params, is.list)),
+              all(vapply(params, is.list, logical(1L))),
               is.character(urls),
               is.character(methods))
 
@@ -276,7 +276,7 @@ do_requests_serial <- function(urls,
     }
   }
 
-  assert_that(is.character(urls) || all(sapply(urls, is.call)),
+  assert_that(is.character(urls) || all(vapply(urls, is.call, logical(1L))),
               is.vector(bodies),
               length(urls) == length(bodies),
               is.count(n_try),
@@ -345,7 +345,7 @@ do_requests_parallel <- function(urls,
     )
   }
 
-  assert_that(is.character(urls) || all(sapply(urls, is.call)),
+  assert_that(is.character(urls) || all(vapply(urls, is.call, logical(1L))),
               is.vector(bodies),
               length(urls) == length(bodies),
               is.count(n_con),
@@ -367,7 +367,7 @@ do_requests_parallel <- function(urls,
   errors <- vector("list", length(urls))
 
   pool <- curl::new_pool(total_con = n_con, host_con = n_con)
-  sapply(seq_len(n_con), add_request, n_try)
+  lapply(seq_len(n_con), add_request, n_try)
   curl::multi_run(pool = pool)
 
   res
@@ -453,7 +453,7 @@ unlist_objects <- function(x) {
     if (is.list(obj)) {
       if (is_json_class(obj))
         objects <<- c(objects, list(obj))
-      sapply(obj, gather_objs)
+      lapply(obj, gather_objs)
     }
     invisible(NULL)
   }
@@ -468,9 +468,9 @@ unlist_objects <- function(x) {
 get_object_spec <- function(x) {
 
   assert_that(is.list(x),
-              all(sapply(x, is_json_class)))
+              all(vapply(x, is_json_class, logical(1L))))
 
-  all_classes <- unique(sapply(x, get_subclass))
+  all_classes <- unique(vapply(x, get_subclass, logical(1L)))
   obj_spec <- stats::setNames(vector(mode = "list",
                                      length = length(all_classes)),
                               all_classes)

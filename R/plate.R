@@ -312,7 +312,7 @@ list_wells_for_mat <- function(token,
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(x, sapply(res, length)),
+        rep(x, vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "mat_type")),
     simplify = TRUE
   )
@@ -362,7 +362,9 @@ well_id <- function(perm_id,
     if (is.null(well_code))
       well_pos <- well_pos(...)
     else
-      well_pos <- well_pos(name = sapply(strsplit(well_code, ":"), `[`, 2L))
+      well_pos <- well_pos(
+        name = vapply(strsplit(well_code, ":"), `[`, character(1L), 2L)
+      )
   } else
     assert_that(is.null(well_code),
                 length(list(...)) == 0L)

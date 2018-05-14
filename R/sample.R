@@ -98,7 +98,7 @@ list_samples_for_exp <- function(token, x, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(as_experiment_id(x), sapply(res, length)),
+        rep(as_experiment_id(x), vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "exp_id")),
     simplify = TRUE
   )
@@ -129,7 +129,7 @@ list_samples_for_plate <- function(token, x, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(x, sapply(res, length)),
+        rep(x, vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "plate_id")),
     simplify = TRUE
   )
@@ -165,7 +165,7 @@ list_samples_for_well <- function(token, x, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(x, sapply(res, length)),
+        rep(x, vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "well_id")),
     simplify = TRUE
   )

@@ -254,8 +254,11 @@ fetch_images.MicroscopyImageReference <- function(token,
                                                   ...) {
   x <- as_json_vec(x)
 
-  drop <- duplicated(as.data.frame(t(sapply(x, `[`, c("datasetCode",
-                                                      "channel")))))
+  drop <- duplicated(
+    as.data.frame(
+      t(vapply(x, `[`, character(2L), c("datasetCode", "channel")))
+    )
+  )
   x <- x[!drop]
 
   channels <- get_field(x, "channel")
@@ -333,10 +336,14 @@ fetch_images.PlateImageReference <- function(token,
       if (is_json_class(format))
         format <- list(format)
 
-      assert_that(all(sapply(format, function(form) {
-        any(sapply(format_criteria,
-                   function(crit) has_subclass(form, crit)))
-      })))
+      assert_that(all(vapply(
+        format,
+        function(form)
+          any(vapply(format_criteria,
+                     function(crit) has_subclass(form, crit),
+                     logical(1L))),
+        logical(1L)
+      )))
 
       agruments <- list(sessionToken = token, imageReferences = x,
                         criteria = format)
@@ -405,7 +412,7 @@ list_image_metadata.ExperimentIdentifier <- function(token, x, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(x, sapply(res, length)),
+        rep(x, vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "exp_id")),
     simplify = TRUE
   )

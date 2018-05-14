@@ -227,7 +227,7 @@ print_json_class <- function(x,
       nme[names(x) == ""] <- ""
     }
 
-    if (!is_json_class(x) && !any(sapply(x, is.list))) {
+    if (!is_json_class(x) && !any(vapply(x, is.list, logical(1L)))) {
 
       layout$val(paste0("[", paste0(nme, x, collapse = ", "), "]"))
 
@@ -237,8 +237,11 @@ print_json_class <- function(x,
 
       if (cur_depth <= max_depth) {
 
-        if (any(sapply(x, is.null) | sapply(x, length) == 0L))
-          x[sapply(x, is.null) | sapply(x, length) == 0L] <- ""
+        check_zero <- vapply(x, is.null, logical(1L)) |
+          vapply(x, length, integer(1L)) == 0L
+
+        if (any(check_zero))
+          x[check_zero] <- ""
 
         rest <- Map(indent,
                     mapply(print_json_class, x, nme == "",
@@ -246,8 +249,9 @@ print_json_class <- function(x,
                                            max_depth = max_depth,
                                            layout = layout), SIMPLIFY = FALSE),
                     layout$key(nme),
-                    sapply(nchar(nme),
-                           function(n) paste(rep(" ", n), collapse = "")))
+                    vapply(nchar(nme),
+                           function(n) paste(rep(" ", n), collapse = ""),
+                           character(1L)))
       } else
         rest <- "..."
 

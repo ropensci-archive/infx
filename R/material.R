@@ -181,7 +181,7 @@ list_plate_mat_map <- function(token, x, material_type = NULL, ...) {
   as_json_vec(
     Map(set_attr,
         unlist(res, recursive = FALSE),
-        rep(material_type, sapply(res, length)),
+        rep(material_type, vapply(res, length, integer(1L))),
         MoreArgs = list(attr_name = "mat_type")),
     simplify = TRUE
   )
@@ -380,8 +380,8 @@ extract_well_material <- function(x, row, col) {
 
   mapping <- get_field(x, "mapping")
 
-  if (all(sapply(mapping, has_attr, "original_index"))) {
-    hit <- ind == sapply(mapping, attr, "original_index")
+  if (all(vapply(mapping, has_attr, logical(1L), "original_index"))) {
+    hit <- ind == vapply(mapping, attr, integer(1L), "original_index")
     assert_that(sum(hit) <= 1L)
     if (sum(hit) == 0L)
       list()

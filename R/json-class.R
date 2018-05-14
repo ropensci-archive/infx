@@ -238,7 +238,7 @@ check_json_class <- function(x, recursive = TRUE) {
     res <- TRUE
 
   if (length(x) > 1 && res && recursive)
-    all(sapply(x, check_json_class, recursive))
+    all(vapply(x, check_json_class, logical(1L), recursive))
   else
     res
 }

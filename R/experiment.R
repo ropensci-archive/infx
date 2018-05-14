@@ -150,9 +150,9 @@ as_experiment_id.Experiment <- function(x, ...) {
   as_json_vec(
     Map(json_class,
         permId = get_field(x, "permId"),
-        spaceCode = sapply(codes, `[`, 1L),
-        projectCode = sapply(codes, `[`, 2L),
-        experimentCode = sapply(codes, `[`, 3L),
+        spaceCode = vapply(codes, `[`, 1L, character(1L)),
+        projectCode = vapply(codes, `[`, 2L, character(1L)),
+        experimentCode = vapply(codes, `[`, 3L, character(1L)),
         MoreArgs = list(class = "ExperimentIdentifier"))
   )
 }
