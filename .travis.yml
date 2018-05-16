@@ -10,6 +10,10 @@ r:
   - oldrel
   - release
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libmagick++-dev
+  
 r_packages:
   - covr
   - rvest
