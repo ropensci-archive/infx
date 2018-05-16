@@ -22,7 +22,7 @@ after_success:
   - travis_wait 60 test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'covr::codecov(quiet = FALSE)'
 
 before_deploy:
-  - test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'devtools::install_github("nbenn/infx")'
+  - test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'devtools::install()'
   - test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'pkgdown::build_site()'
 
 deploy:
