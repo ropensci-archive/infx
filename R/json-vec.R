@@ -238,7 +238,7 @@ has_common_subclass <- function(x) {
 #' @export
 #' 
 has_fields.json_vec <- function(x, fields, ...)
-  all(vapply(x, has_fields, fields, logical(1L)))
+  all(vapply(x, has_fields, logical(1L), fields))
 
 #' @rdname json_utils
 #' @export

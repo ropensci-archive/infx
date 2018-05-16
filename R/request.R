@@ -470,7 +470,7 @@ get_object_spec <- function(x) {
   assert_that(is.list(x),
               all(vapply(x, is_json_class, logical(1L))))
 
-  all_classes <- unique(vapply(x, get_subclass, logical(1L)))
+  all_classes <- unique(vapply(x, get_subclass, character(1L)))
   obj_spec <- stats::setNames(vector(mode = "list",
                                      length = length(all_classes)),
                               all_classes)

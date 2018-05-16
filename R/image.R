@@ -256,7 +256,7 @@ fetch_images.MicroscopyImageReference <- function(token,
 
   drop <- duplicated(
     as.data.frame(
-      t(vapply(x, `[`, character(2L), c("datasetCode", "channel")))
+      t(vapply(x, `[`, vector("list", 2L), c("datasetCode", "channel")))
     )
   )
   x <- x[!drop]

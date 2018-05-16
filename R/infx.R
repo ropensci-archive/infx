@@ -330,7 +330,7 @@
 #' @docType package
 #' @name infx
 #' 
-#' @importFrom assertthat assert_that is.string is.count
+#' @importFrom assertthat assert_that is.string is.count has_attr
 NULL
 
 #' Set object attribute

@@ -5,8 +5,8 @@
 #' `ExperimentIdentifier`. The fields that make up an `ExperimentIdentifier`
 #' object are a subset of those required for an `Experiment` object. Therefore
 #' an experiment can be turned into an experiment id object without an API
-#' call, using the function `as_experiment_id()`. The reverse can be achieved by
-#' calling `list_experiments()` on experiment id objects. In general,
+#' call, using the function `as_experiment_id()`. The reverse can be achieved
+#' by calling `list_experiments()` on experiment id objects. In general,
 #' experiments and experiment id objects can be listed using
 #' `list_experiments()` and `list_experiment_ids()`.
 #' 
@@ -150,9 +150,9 @@ as_experiment_id.Experiment <- function(x, ...) {
   as_json_vec(
     Map(json_class,
         permId = get_field(x, "permId"),
-        spaceCode = vapply(codes, `[`, 1L, character(1L)),
-        projectCode = vapply(codes, `[`, 2L, character(1L)),
-        experimentCode = vapply(codes, `[`, 3L, character(1L)),
+        spaceCode = vapply(codes, `[`, character(1L), 1L),
+        projectCode = vapply(codes, `[`, character(1L), 2L),
+        experimentCode = vapply(codes, `[`, character(1L), 3L),
         MoreArgs = list(class = "ExperimentIdentifier"))
   )
 }

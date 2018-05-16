@@ -48,8 +48,8 @@ Experiments can be represented by two object classes: \code{Experiment} and
 \code{ExperimentIdentifier}. The fields that make up an \code{ExperimentIdentifier}
 object are a subset of those required for an \code{Experiment} object. Therefore
 an experiment can be turned into an experiment id object without an API
-call, using the function \code{as_experiment_id()}. The reverse can be achieved by
-calling \code{list_experiments()} on experiment id objects. In general,
+call, using the function \code{as_experiment_id()}. The reverse can be achieved
+by calling \code{list_experiments()} on experiment id objects. In general,
 experiments and experiment id objects can be listed using
 \code{list_experiments()} and \code{list_experiment_ids()}.
 }
