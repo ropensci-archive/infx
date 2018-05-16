@@ -157,6 +157,9 @@ test_that("plate metadata be listed", {
 
   expect_identical(list_plate_metadata(tok, plates[[1]]), meta_1)
   expect_identical(list_plate_metadata(tok, plates[1:2]), meta_2)
+
+  expect_identical(as_well_id(meta_1[["wells"]][[1L]]), wells[[1L]])
+  expect_identical(as_well_id(meta_1[["wells"]][1:2]), wells[1:2])
 })
 
 test_that("plates/samples can be converted to plate ids", {
@@ -241,4 +244,56 @@ test_that("well position objects can be created", {
 
   expect_error(well_pos(c("a", "b"), 1L:3L))
   expect_error(well_pos(1L:2L, c("a", "b")))
+
+  pos_2 <- well_pos(name = c("A1", "B12"))
+  expect_s3_class(pos_2, "WellPosition")
+  expect_s3_class(pos_2, "json_vec")
+  expect_length(pos_2, 2L)
+  for (i in seq_along(pos_2)) {
+    expect_s3_class(pos_2[[i]], "WellPosition")
+    expect_s3_class(pos_2[[i]], "json_class")
+    expect_true(has_fields(pos_2[[i]], c("wellRow", "wellColumn")))
+    expect_is(pos_2[[i]][["wellRow"]], "integer")
+    expect_is(pos_2[[i]][["wellColumn"]], "integer")
+  }
+})
+
+test_that("well id objects can be created", {
+  well_ids <- wells[1:2]
+
+  pos_1 <- well_id(well_ids[[1L]][["permId"]],
+                   well_ids[[1L]][["plateIdentifier"]],
+                   well_ids[[1L]][["wellPosition"]])
+
+  expect_identical(pos_1, well_ids[[1L]])
+
+  pos_2 <- well_id(get_field(well_ids, "permId"),
+                   get_field(well_ids, "plateIdentifier"),
+                   get_field(well_ids, "wellPosition"))
+
+  expect_identical(pos_2, well_ids)
+
+  pos_1 <- well_id(well_ids[[1L]][["permId"]],
+                   well_ids[[1L]][["plateIdentifier"]],
+                   well_code = "BB01-1I:A1")
+
+  expect_identical(pos_1, well_ids[[1L]])
+
+  pos_2 <- well_id(get_field(well_ids, "permId"),
+                   well_ids[[1L]][["plateIdentifier"]],
+                   well_code = c("BB01-1I:A1", "BB01-1I:A2"))
+
+  expect_identical(pos_2, well_ids)
+
+  pos_1 <- well_id(well_ids[[1L]][["permId"]],
+                   well_ids[[1L]][["plateIdentifier"]],
+                   name = "A1")
+
+  expect_identical(pos_1, well_ids[[1L]])
+
+  pos_2 <- well_id(get_field(well_ids, "permId"),
+                   well_ids[[1L]][["plateIdentifier"]],
+                   name = c("A1", "A2"))
+
+  expect_identical(pos_2, well_ids)
 })

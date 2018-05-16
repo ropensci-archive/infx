@@ -157,13 +157,6 @@ make_requests <- function(urls,
                           finally = process_json,
                           ...) {
 
-  check_rep <- function(vec, len) {
-    if (length(vec) == 1L)
-      vec <- rep(vec, len)
-    assert_that(length(vec) == len || length(vec) == 1L)
-    vec
-  }
-
   assert_that(is.list(params),
               all(vapply(params, is.list, logical(1L))),
               is.character(urls),

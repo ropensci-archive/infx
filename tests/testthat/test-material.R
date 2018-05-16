@@ -98,16 +98,16 @@ test_that("materials can be listed", {
 
   check_skip()
 
-  materials <- material_id(c(2475L, 3832L), mode = "generic")
+  mat_gen <- material_id(c(2475L, 3832L), mode = "generic")
 
-  mat_1 <- list_material(tok, materials[[1]])
+  mat_1 <- list_material(tok, mat_gen[[1]])
   expect_s3_class(mat_1, "MaterialGeneric")
   expect_s3_class(mat_1, "json_class")
   expect_true(has_fields(mat_1, "materialTypeIdentifier"))
   expect_identical(mat_1[["materialTypeIdentifier"]],
-                   materials[[1]][["materialTypeIdentifier"]])
+                   mat_gen[[1]][["materialTypeIdentifier"]])
 
-  mat_2 <- list_material(tok, materials)
+  mat_2 <- list_material(tok, mat_gen)
   expect_s3_class(mat_2, "MaterialGeneric")
   expect_s3_class(mat_2, "json_vec")
   expect_length(mat_2, 2L)
@@ -116,8 +116,13 @@ test_that("materials can be listed", {
     expect_s3_class(mat_2[[i]], "json_class")
     expect_true(has_fields(mat_2[[i]], "materialTypeIdentifier"))
     expect_identical(mat_2[[i]][["materialTypeIdentifier"]],
-                     materials[[i]][["materialTypeIdentifier"]])
+                     mat_gen[[i]][["materialTypeIdentifier"]])
   }
+
+  mat_screen <- material_id(c(2475L, 3832L), mode = "screening")
+
+  expect_identical(list_material(tok, mat_screen[[1]]), mat_1)
+  expect_identical(list_material(tok, mat_screen), mat_2)
 
   material <- material_id("AMBION_S602", type = "sirna", mode = "generic")
 
@@ -127,8 +132,6 @@ test_that("materials can be listed", {
   expect_true(has_fields(mat_1, "materialTypeIdentifier"))
   expect_identical(mat_1[["materialTypeIdentifier"]],
                    material[["materialTypeIdentifier"]])
-
-  plate_ids <- as_plate_id(plates[1:2])
 
   mat_1 <- list_material(tok, plates[[2]])
   expect_s3_class(mat_1, "PlateWellMaterialMapping")
@@ -149,8 +152,14 @@ test_that("materials can be listed", {
       expect_identical(mat_2[[i]][["mapping"]][[j]], list())
   }
 
+  plate_ids <- as_plate_id(plates[1:2])
+  plate_samp <- list_samples(tok, plates[1:2])
+
   expect_identical(list_material(tok, plate_ids[[2]]), mat_1)
   expect_identical(list_material(tok, plate_ids[1:2]), mat_2)
+
+  expect_identical(list_material(tok, plate_samp[[2]]), mat_1)
+  expect_identical(list_material(tok, plate_samp[1:2]), mat_2)
 
   expect_identical(list_material(tok, plate_meta[[2]]), mat_1)
   expect_identical(list_material(tok, plate_meta[1:2]), mat_2)

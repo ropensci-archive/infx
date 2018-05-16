@@ -209,6 +209,10 @@ test_that("openbis api urls and docs links can be generated", {
   expect_length(link, 1L)
   expect_match(link, "^\\\\href\\{.+\\}\\{.+\\:foo}$")
   expect_identical(link, docs_link("gis", method_name = "foo"))
+
+
+  expect_identical(api_url(full_url = "foobar"), "foobar")
+  expect_error(api_url(full_url = c("foo", "bar")))
 })
 
 test_that("non-infectx openbis instances can be accessed", {
