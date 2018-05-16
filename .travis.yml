@@ -26,10 +26,19 @@ before_deploy:
   - test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'pkgdown::build_site()'
 
 deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  on:
-    branch: master
-    condition: $TRAVIS_R_VERSION_STRING = "release"
-  local_dir: docs
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    on:
+      branch: master
+      condition: $TRAVIS_R_VERSION_STRING = "release"
+    local_dir: docs
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file_glob: true
+    file: infx_*.tar.gz
+    skip_cleanup: true
+    on:
+      tags: true
+      condition: $TRAVIS_R_VERSION_STRING = "release"
+
