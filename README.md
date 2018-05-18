@@ -11,11 +11,17 @@ Access to [InfectX](http://www.infectx.ch)/[TargetInfectX](https://www.targetinf
 Installation
 ------------
 
-You can install [infx](https://nbenn.github.io/infx) from Github with:
+You can install the development version of [infx](https://nbenn.github.io/infx) from Github by running:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("nbenn/infx", build_vignettes = TRUE)
+source("https://install-github.me/nbenn/infx")
+```
+
+Alternatively, if you have the `remotes` package available and are interested in the latest release, you can run
+
+``` r
+# install.packages("remotes")
+remotes::install_github("nbenn/infx@*release")
 ```
 
 InfectX
