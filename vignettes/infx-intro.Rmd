@@ -35,7 +35,7 @@ An organizational entity central to the openBIS storage logic is an **experiment
 Experiments are grouped into **projects** (one per pathogen in the case of InfectX), which in turn are grouped into **spaces** (an unimportant hierarchical level for InfectX). Projects can be listed using `list_projects()` and experiments with `list_experiments()`.
 
 ```{r exp-proj}
-token <- login_openbis("rdgr2014", "IXPubReview")
+token <- login_openbis()
 
 projects <- list_projects(token)
 

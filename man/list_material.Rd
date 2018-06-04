@@ -165,7 +165,7 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
 
 \examples{
 \donttest{
-  tok <- login_openbis("rdgr2014", "IXPubReview")
+  tok <- login_openbis()
 
   # search for a sample object corresponding to plate KB2-03-1I
   samp <- search_openbis(tok,

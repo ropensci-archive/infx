@@ -97,7 +97,7 @@
 #' 
 #' @examples
 #' \donttest{
-#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#'   tok <- login_openbis()
 #' 
 #'   # search for a cell profiler feature data set from plate KB2-03-1I
 #'   search <- search_criteria(

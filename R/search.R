@@ -104,7 +104,7 @@
 #' 
 #' @examples
 #' \donttest{
-#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#'   tok <- login_openbis()
 #'   
 #'   # search for an experiment, e.g. ADENO-AU-K1
 #'   exp <- search_openbis(tok,

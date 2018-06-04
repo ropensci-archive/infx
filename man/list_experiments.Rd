@@ -93,7 +93,7 @@ the search for experiments.
 
 \examples{
 \donttest{
-  tok <- login_openbis("rdgr2014", "IXPubReview")
+  tok <- login_openbis()
 
   # list all available projects to limit the search for experiments
   proj <- list_projects(tok)

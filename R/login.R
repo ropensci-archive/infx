@@ -21,7 +21,7 @@
 #' @examples
 #' \donttest{
 #'   # create a login token
-#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#'   tok <- login_openbis()
 #'   # check token
 #'   is_token_valid(tok)
 #' 
@@ -33,8 +33,8 @@
 #' 
 #' @export
 #' 
-login_openbis <- function(user,
-                          pwd,
+login_openbis <- function(user = "rdgr2014",
+                          pwd = "IXPubReview",
                           host_url = "https://infectx.biozentrum.unibas.ch",
                           auto_disconnect = TRUE,
                           ...) {

@@ -75,7 +75,7 @@
 #' 
 #' @examples
 #' \donttest{
-#'   tok <- login_openbis("rdgr2014", "IXPubReview")
+#'   tok <- login_openbis()
 #' 
 #'   # the function list_projects() is implemented as follows
 #'   projects <- make_request(api_url(api_endpoint = "gis"),

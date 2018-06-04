@@ -39,8 +39,7 @@ Only a brief introduction on how to work with openBIS is given here. For more in
 For every API call, a valid login token is required. Tokens can be created using [`login_openbis()`](https://nbenn.github.io/infx/reference/login.html) and tested for validity with [`is_token_valid()`](https://nbenn.github.io/infx/reference/login.html).
 
 ``` r
-tok <- login_openbis(user = "rdgr2014",
-                     pwd = "IXPubReview")
+tok <- login_openbis()
 
 is_token_valid(tok)
 #> [1] TRUE

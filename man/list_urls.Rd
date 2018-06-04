@@ -150,7 +150,7 @@ to \code{list_datastores()}.
 
 \examples{
 \donttest{
-  tok <- login_openbis("rdgr2014", "IXPubReview")
+  tok <- login_openbis()
   
   # data store server information
   list_datastores(tok)

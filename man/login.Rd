@@ -6,8 +6,9 @@
 \alias{is_token_valid}
 \title{Create and destroy a login token}
 \usage{
-login_openbis(user, pwd, host_url = "https://infectx.biozentrum.unibas.ch",
-  auto_disconnect = TRUE, ...)
+login_openbis(user = "rdgr2014", pwd = "IXPubReview",
+  host_url = "https://infectx.biozentrum.unibas.ch", auto_disconnect = TRUE,
+  ...)
 
 logout_openbis(token, ...)
 
@@ -52,7 +53,7 @@ token can be manually destroyed by calling \code{logout_openbis()} on the token.
 \examples{
 \donttest{
   # create a login token
-  tok <- login_openbis("rdgr2014", "IXPubReview")
+  tok <- login_openbis()
   # check token
   is_token_valid(tok)
 

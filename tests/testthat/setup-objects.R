@@ -1,4 +1,6 @@
 
+tok <- login_openbis()
+
 projects <- list_projects(tok)
 
 exp_ids <- list_experiment_ids(tok)

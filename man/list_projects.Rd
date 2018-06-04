@@ -28,7 +28,7 @@ the current user can be listed by calling the function \code{list_projects()}.
 
 \examples{
 \donttest{
-  tok <- login_openbis("rdgr2014", "IXPubReview")
+  tok <- login_openbis()
 
   proj <- list_projects(tok)
   length(proj)
