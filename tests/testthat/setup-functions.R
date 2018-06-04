@@ -13,3 +13,18 @@ check_skip <- function() {
 
   return(invisible(TRUE))
 }
+
+expect_attr <- function(object, attr) {
+
+  act <- quasi_label(rlang::enquo(object))
+
+  act$attrs <- names(attributes(object))
+
+  expect(
+    attr %in% act$attrs,
+    sprintf("%s is not among attributes of %s: %s.",
+            attr, act$lab, paste(act$attrs, collapse = ", "))
+  )
+
+  invisible(act$val)
+}
