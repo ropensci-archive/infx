@@ -7,7 +7,7 @@ test_that("openbis login is possible", {
   expect_is(token, "character")
   expect_is(attr(token, "finaliser"), "environment")
   expect_is(attr(token, "host_url"), "character")
-  expect_match(token, paste0("^", cred$username))
+  expect_match(token, "^rdgr2014")
   expect_true(is_token_valid(token))
   expect_null(logout_openbis(token))
   expect_false(is_token_valid(token))
