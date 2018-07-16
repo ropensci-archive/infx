@@ -7,3 +7,5 @@
 ^.*\.sublime-(project|workspace)$
 ^_pkgdown\.yml$
 ^appveyor\.yml$
+^CONDUCT\.md$
+^CONTRIBUTING\.md$
