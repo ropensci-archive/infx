@@ -9,3 +9,4 @@
 ^appveyor\.yml$
 ^CONDUCT\.md$
 ^CONTRIBUTING\.md$
+^codemeta\.json$
