@@ -19,6 +19,8 @@ Description: The Open Source Biology Information System (openBIS) is a general
     data and quality control data.
 URL: https://nbenn.github.io/infx,
 BugReports: https://github.com/nbenn/infx/issues
+SystemRequirements:
+    ImageMagick++: ImageMagick-c++-devel (rpm) or libmagick++-dev (deb)
 Depends:
     R (>= 3.1.0)
 Imports:
