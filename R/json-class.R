@@ -2,7 +2,7 @@
 #' Create and validate JSON class objects
 #'
 #' To communicate object type information via JSON to the Jackson-powered
-#' openBis interface, the `@type` field is used. Data received from openBis is
+#' openBIS interface, the `@type` field is used. Data received from openBIS is
 #' recursively stripped of `@type` fields and the type information is saved as
 #' class attribute. Such objects also have the class `json_class` added. The
 #' function `as_json_class()` (or its alias `as.json_class()`) powers this

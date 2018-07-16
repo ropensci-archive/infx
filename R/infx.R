@@ -8,7 +8,7 @@
 #' [TargetInfectX](https://www.targetinfectx.ch) high throughput screening
 #' projects, any openBIS instance that supports v1 of the JSON-RPC API can be
 #' accessed. Some parts of the API, geared more towards data curation are
-#' currently not supported. For more infomartion on what API functions are
+#' currently not supported. For more information on what API functions are
 #' available, have a look at the
 #' [openBIS API vignette](../doc/openbis-api.html). The basic infrastructure
 #' for creating and executing a request, as well as processing the response, is

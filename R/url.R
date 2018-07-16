@@ -341,7 +341,7 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' constructed by pasting `host_url` and one of the hard-coded API endpoints
 #' together, this can be passed as `full_url`, which will simply be returned.
 #' 
-#' @param api_endpoint Abreviated name of the API section (e.g. `gis` for
+#' @param api_endpoint Abbreviated name of the API section (e.g. `gis` for
 #' IGeneralInformationService).
 #' @param host_url Host url.
 #' @param full_url Instead of constructing the API endpoint url, a string can

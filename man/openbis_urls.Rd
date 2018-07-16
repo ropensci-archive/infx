@@ -12,7 +12,7 @@ docs_link(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas",
   "dsrs"), method_name = NULL, version = "13.04.0")
 }
 \arguments{
-\item{api_endpoint}{Abreviated name of the API section (e.g. \code{gis} for
+\item{api_endpoint}{Abbreviated name of the API section (e.g. \code{gis} for
 IGeneralInformationService).}
 
 \item{host_url}{Host url.}

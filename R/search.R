@@ -9,7 +9,7 @@
 #' data sets can be directly retrieved by constructing a search query with
 #' `search_criteria()` and executing the search by calling `search_openbis()`.
 #'
-#' Searching openBis can be done by creating a `SearchCriteria` object and
+#' Searching openBIS can be done by creating a `SearchCriteria` object and
 #' passing that to `search_openbis()`, alongside specifying what type of
 #' object is being searched for. In case of `Sample`s being searched for,
 #' a further argument, `fetch_options`, can be specified for controlling the
@@ -41,7 +41,7 @@
 #'   * `sample_child`
 #'   * `sample_parent`
 #' 
-#' `SearchCriteria` objects, used for searching openBis, consist of one or
+#' `SearchCriteria` objects, used for searching openBIS, consist of one or
 #' several match clauses. A match clause, broadly speaking, consist of a
 #' desired value, a field to which this value is compared to and a comparison
 #' operator (e.g. equality). Match clauses can be constructed using any of
@@ -71,7 +71,7 @@
 #' In order to determine the possible values that can be supplied to
 #' `property_clause()` as `property_code`s, `list_property_types()` can be
 #' called. This function returns all property types available throughout the
-#' queried openBis instance. As objects of several types
+#' queried openBIS instance. As objects of several types
 #' (`ControlledVocabularyPropertyType` and `PropertyType`) are returned as
 #' property types by the API, the resulting object is a list with each entry
 #' corresponding to a type and holding a set of object of the respective type.

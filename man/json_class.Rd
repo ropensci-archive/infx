@@ -61,7 +61,7 @@ the list structure into the \code{@type} field.}
 }
 \description{
 To communicate object type information via JSON to the Jackson-powered
-openBis interface, the \code{@type} field is used. Data received from openBis is
+openBIS interface, the \code{@type} field is used. Data received from openBIS is
 recursively stripped of \code{@type} fields and the type information is saved as
 class attribute. Such objects also have the class \code{json_class} added. The
 function \code{as_json_class()} (or its alias \code{as.json_class()}) powers this

@@ -79,7 +79,7 @@ data sets can be directly retrieved by constructing a search query with
 \code{search_criteria()} and executing the search by calling \code{search_openbis()}.
 }
 \details{
-Searching openBis can be done by creating a \code{SearchCriteria} object and
+Searching openBIS can be done by creating a \code{SearchCriteria} object and
 passing that to \code{search_openbis()}, alongside specifying what type of
 object is being searched for. In case of \code{Sample}s being searched for,
 a further argument, \code{fetch_options}, can be specified for controlling the
@@ -115,7 +115,7 @@ the sub criterion is applied to. Possibilities are
 \item \code{sample_parent}
 }
 
-\code{SearchCriteria} objects, used for searching openBis, consist of one or
+\code{SearchCriteria} objects, used for searching openBIS, consist of one or
 several match clauses. A match clause, broadly speaking, consist of a
 desired value, a field to which this value is compared to and a comparison
 operator (e.g. equality). Match clauses can be constructed using any of
@@ -151,7 +151,7 @@ have a fixed set of attributes against which the match is performed:
 In order to determine the possible values that can be supplied to
 \code{property_clause()} as \code{property_code}s, \code{list_property_types()} can be
 called. This function returns all property types available throughout the
-queried openBis instance. As objects of several types
+queried openBIS instance. As objects of several types
 (\code{ControlledVocabularyPropertyType} and \code{PropertyType}) are returned as
 property types by the API, the resulting object is a list with each entry
 corresponding to a type and holding a set of object of the respective type.

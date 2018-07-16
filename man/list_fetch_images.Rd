@@ -146,7 +146,7 @@ with length corresponding to the number of API calls that were necessary.
 \section{TODO 1}{
  For dispatch on \code{PlateImageReference} objects, currently
 the only options controlling the returned images are an argument for image
-size and a flag for forcing the returned format to png. OpenBis also
+size and a flag for forcing the returned format to png. OpenBIS also
 supports  pre-defined image transformations to be applied to the images
 before they are sent to the requesting party. These transformations can be
 requested by a code (options are listed in \code{ImageRepresentationFormat}

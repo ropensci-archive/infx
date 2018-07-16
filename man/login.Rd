@@ -15,7 +15,7 @@ logout_openbis(token, ...)
 is_token_valid(token, ...)
 }
 \arguments{
-\item{user, pwd}{Login credentials for an openBis instance.}
+\item{user, pwd}{Login credentials for an openBIS instance.}
 
 \item{host_url}{Host url.}
 
@@ -27,7 +27,7 @@ connection upon garbage collection of the token.}
 \item{token}{Login token as created by \code{login_openbis()}.}
 }
 \description{
-Login tokens for openBis API calls can be created using \code{login_openbis()}.
+Login tokens for openBIS API calls can be created using \code{login_openbis()}.
 If the \code{auto_disconnect} option is enabled, the user is automatically
 logged out using \code{logout_openbis()} upon garbage collection of the token.
 The validity of a token can be checked using \code{is_token_valid()} and a login

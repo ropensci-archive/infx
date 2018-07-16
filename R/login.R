@@ -1,13 +1,13 @@
 
 #' Create and destroy a login token
 #'
-#' Login tokens for openBis API calls can be created using `login_openbis()`.
+#' Login tokens for openBIS API calls can be created using `login_openbis()`.
 #' If the `auto_disconnect` option is enabled, the user is automatically
 #' logged out using `logout_openbis()` upon garbage collection of the token.
 #' The validity of a token can be checked using `is_token_valid()` and a login
 #' token can be manually destroyed by calling `logout_openbis()` on the token.
 #' 
-#' @param user,pwd Login credentials for an openBis instance.
+#' @param user,pwd Login credentials for an openBIS instance.
 #' @param host_url Host url.
 #' @param auto_disconnect Logical switch for automatically closing the
 #' connection upon garbage collection of the token.
