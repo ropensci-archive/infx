@@ -75,13 +75,14 @@ json_class <- resolve_references(json_class)
 str(json_class)
 ```
 
-In case the user wants to create `json_class` object, the constructor `json_class()` is available. It can be used as follows, e.g. for the re-creation of the above `json_class` object
+In case the user wants to create a `json_class` object, the constructor `json_class()` is available. It can be used as follows, e.g. for the re-creation of the above `json_class` object.
 
 ```{r construct}
-construct <- json_class(a = json_class(b = "c", class = "foo"),
-                        d = json_class(e = "f", class = "bar"),
-                        class = "foobar")
-identical(construct, json_class)
+construct <- json_class(row = "A", col = 1L,
+                        plate = json_class(barcode = "abcd-123",
+                                           class = "PlateIdentifier"),
+                        class = "WellIdentifier")
+identical(construct, json_class[[1L]])
 ```
 
 The effect of `as_json_class()` can be reversed by `rm_json_class()` or `as_list()` (as well as its alias `as.list()`). The two functions differ in default behavior however. Where `rm_json_class()` removes S3 classes and writes class information into the respective `@type` fields, `as_list()`, by default simple returns its input. This somewhat odd choice is owed to the circumstance that iterating though a `json_class` object with `lapply()` or `sapply()` calls `as.list()` on its first argument.
@@ -111,7 +112,9 @@ has_subclass(test, "foobar")
 get_subclass(test)
 ```
 
-The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are `width`, `length` and a logical flag `fancy` for enabling fancy printing (console output is colored and UTF box characters are used for creating a tree structure instead of ASCI characters).
+In the above example, `is_json_class(test$d)` returns `FALSE` because it is an object that is not composed as a list with attributes, but as a vector with attributes. This is also the reason why the recursive execution of `is_json_class()` to all contained objects that inherit from `json_class` in `check_json_class(test)` returns `FALSE`.
+
+The two base R generic functions `print()` and `c()` have `json_class`-specific methods implemented. Combining several `json_class` object, using `c()` will yield a `json_vec` object, which is described in the following section. Printing is recursive and recursion depth can be controlled using the argument `depth`. Further printing options are `width`, `length` and a logical flag `fancy` for enabling fancy printing (console output is colored and UTF box characters are used for creating a tree structure instead of ASCII characters).
 
 ```{r base-generics}
 json_class[[1]]
@@ -144,7 +147,7 @@ identical(as.list(foo_vec), list(a, b))
 identical(a, as_json_vec(list(a), simplify = TRUE))
 ```
 
-Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and it alias `is.json_vec()`), which can be used to check whether
+Utility functions available for `json_vec` objects include `has_common_subclass()` and `get_subclass()` to check whether all entries in a list are `json_class` objects with the same sub-class and to extract the common sub-class, as well as `is_json_vec()` (and its alias `is.json_vec()`), which can be used to check whether
 
   * all child elements are of the same sub-class
   * all child elements are properly formed `json_class` objects
