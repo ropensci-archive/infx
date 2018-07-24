@@ -27,17 +27,17 @@ knitr::opts_chunk$set(
 
 With discovery of the RNA interference (RNAi) pathway and subsequent work on design, synthesis and delivery of short-interfering RNA molecules (siRNAs), an effective tool was developed for functional genomics. Using such technology, in conjunction with advancements in lab automation, large-scale loss-of-function studies have become experimentally tractable. Fluorescence microscopy imaging is often used as experimental readout, where cellular structures are stained using several fluorophores, yielding large numbers of multi-channel images under varying genetic knockdown conditions. Image processing is typically used to deal with technical artifacts, followed by feature extraction and downstream analysis of the resulting data.
 
-Such experimental set ups can easily generate considerable amounts of data which typically are ingested by specialized data management platforms, such as the Open Biology Information System (OpenBIS). Screening data collected by [InfectX](http://www.infectx.ch) and [TargetInfectX](https://www.targetinfectx.ch) can be accessed using the presented R client while a browser-based view of the data is available form [here](http://www.infectx.ch/databrowser).
+Such experimental set ups can easily generate considerable amounts of data which typically are ingested by specialized data management platforms, such as the Open Biology Information System (openBIS). Screening data collected by [InfectX](http://www.infectx.ch) and [TargetInfectX](https://www.targetinfectx.ch) can be accessed using the presented R client while a browser-based view of the data is available from the [InfectX data browser](http://www.infectx.ch/databrowser).
 
 ## Installation
 
-You can install the development version of [infx](https://nbenn.github.io/infx) from Github by running
+You can install the development version of [infx](https://nbenn.github.io/infx) from GitHub by running
 
 ```{r gh-dev, eval = FALSE}
 source("https://install-github.me/nbenn/infx")
 ```
 
-Alternatively, if you have the `remotes` package available and are interested in the latest release, you can install from Github using `install_github()` as
+Alternatively, if you have the `remotes` package available and are interested in the latest release, you can install from GitHub using `install_github()` as
 
 ```{r gh-rel, eval = FALSE}
 # install.packages("remotes")
@@ -46,7 +46,9 @@ remotes::install_github("nbenn/infx@*release")
 
 ## InfectX
 
-[InfectX](http://www.infectx.ch) and its successor project [TargetInfectX](https://www.targetinfectx.ch) are large-scale high throughput screening experiments focused on the human infectome of a set of viral and bacterial pathogens. In order to identify host-provided components involved in pathogen entry and host colonization, several RNAi screens were carried out on HeLa cells, using siRNA libraries from vendors including Dharmacon, Quiagen and Ambion. Of the many performed screens, currently the data of kinome-wide screens for five bacterial pathogens (*Bartonella henselae*, *Brucella abortus*, *Listeria monocytogenes*, *Salmonella* typhimurium, and *Shigella flexneri*) and three viruses (Adenovirus, Rhinovirus, and *Vaccinia virus*) is publicly available^[[*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)]. Additionally, several genome-wide screens will follow suit in the coming months.
+[InfectX](http://www.infectx.ch) and its successor project [TargetInfectX](https://www.targetinfectx.ch) are large-scale high throughput screening experiments focused on the human infectome of a set of viral and bacterial pathogens. In order to identify host-provided components involved in pathogen entry and host colonization, several RNAi screens were carried out on HeLa cells, using siRNA libraries from vendors including Dharmacon, Quiagen and Ambion. Of the many performed screens, currently the data of kinome-wide screens for five bacterial pathogens (*Bartonella henselae*, *Brucella abortus*, *Listeria monocytogenes*, *Salmonella* typhimurium, and *Shigella flexneri*) and three viruses (Adenovirus, Rhinovirus, and *Vaccinia virus*) is publicly available[^1]. Additionally, several genome-wide screens will follow suit in the coming months.
+
+[^1]: [*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)
 
 All collected data, including raw imaging data, [CellProfiler](http://cellprofiler.org) derived feature data and infection scoring at single cell resolution, alongside extensive metadata, is hosted by the laboratory information management system [openBIS](https://openbis.elnlims.ch). This R package provides access to the openBIS [JSON-RPC API](https://wiki-bsse.ethz.ch/display/openBISDoc1304/openBIS+JSON+API), enabling listing of data organization objects, searching for and downloading of data sets.
 
