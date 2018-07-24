@@ -16,7 +16,7 @@
 #' @rdname login
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
 #' 
 #' @examples
 #' \donttest{
@@ -83,7 +83,7 @@ login_openbis <- function(user = "rdgr2014",
 #' @param token Login token as created by `login_openbis()`.
 #' @rdname login
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "logout")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "logout")}
 #' @export
 #' 
 logout_openbis <- function(token, ...)
@@ -95,7 +95,7 @@ logout_openbis <- function(token, ...)
 
 #' @rdname login
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "isSessionActive")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "isSessionActive")}
 #' @export
 #' 
 is_token_valid <- function(token, ...)

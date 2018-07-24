@@ -97,10 +97,10 @@
 #' may be `eq` (==), `lte` (<=) or `gte` (>=).
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "searchForDataSets")}
-#' * \Sexpr{infx::docs_link("gis", "searchForExperiments")}
-#' * \Sexpr{infx::docs_link("gis", "searchForMaterials")}
-#' * \Sexpr{infx::docs_link("gis", "searchForSamples")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForDataSets")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForExperiments")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForMaterials")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForSamples")}
 #' 
 #' @examples
 #' \donttest{

@@ -64,10 +64,10 @@ of objects is passed to \code{list_samples()}.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listSamplesForExperiment")}
-\item \Sexpr{infx::docs_link("sas", "getPlateSample")}
-\item \Sexpr{infx::docs_link("sas", "getWellSample")}
-\item \Sexpr{infx::docs_link("gis", "listSampleTypes")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listSamplesForExperiment")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "getPlateSample")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "getWellSample")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listSampleTypes")}
 }
 }
 

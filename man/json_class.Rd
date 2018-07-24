@@ -31,8 +31,8 @@ as.json_class(x, ...)
 
 rm_json_class(x, recursive = TRUE, restore_type = TRUE)
 
-\method{as.list}{json_class}(x, keep_asis = TRUE, recursive = !keep_asis,
-  restore_type = !keep_asis, ...)
+\method{as.list}{json_class}(x, keep_asis = TRUE,
+  recursive = !keep_asis, restore_type = !keep_asis, ...)
 
 is_json_class(x)
 

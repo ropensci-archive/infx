@@ -59,9 +59,9 @@
 #' [make_requests()].
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("sas", "listPlates")}
-#' * \Sexpr{infx::docs_link("sas", "listPlateWells")}
-#' * \Sexpr{infx::docs_link("sas", "getPlateMetadataList")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "listPlates")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "listPlateWells")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "getPlateMetadataList")}
 #' 
 #' @rdname list_plate_well
 #' 

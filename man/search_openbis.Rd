@@ -12,8 +12,8 @@
 \alias{list_property_types}
 \title{Assemble and execute openBIS search queries}
 \usage{
-search_openbis(token, criteria, target_object = c("data_set", "experiment",
-  "material", "sample"), fetch_options = NULL, ...)
+search_openbis(token, criteria, target_object = c("data_set",
+  "experiment", "material", "sample"), fetch_options = NULL, ...)
 
 search_criteria(..., operator = "all", sub_criteria = NULL)
 
@@ -170,10 +170,10 @@ instead of \code{equals}).
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "searchForDataSets")}
-\item \Sexpr{infx::docs_link("gis", "searchForExperiments")}
-\item \Sexpr{infx::docs_link("gis", "searchForMaterials")}
-\item \Sexpr{infx::docs_link("gis", "searchForSamples")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "searchForDataSets")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "searchForExperiments")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "searchForMaterials")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "searchForSamples")}
 }
 }
 

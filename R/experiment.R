@@ -64,7 +64,7 @@ list_experiments <- function(token, x, ...)
 
 #' @rdname list_experiments
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listExperiments")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listExperiments")}
 #' @export
 #' 
 list_experiments.ExperimentIdentifier <- function(token, x, ...)
@@ -80,8 +80,9 @@ list_experiments.ExperimentIdentifier <- function(token, x, ...)
 #' nonzero number of dataset or sample. Default behavior is no requirement.
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listExperimentsHavingDataSets")}
-#' * \Sexpr{infx::docs_link("gis", "listExperimentsHavingSamples")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis",
+#'                      "listExperimentsHavingDataSets")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listExperimentsHavingSamples")}
 #' 
 #' @export
 #' 
@@ -114,7 +115,7 @@ list_experiments.Project <- function(token,
 
 #' @rdname list_experiments
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("sas", "listExperiments")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "listExperiments")}
 #' @export
 #' 
 list_experiment_ids <- function(token, ...)
@@ -125,7 +126,7 @@ list_experiment_ids <- function(token, ...)
 
 #' @rdname list_experiments
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listExperimentTypes")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listExperimentTypes")}
 #' @export
 #' 
 list_experiment_types <- function(token, ...)

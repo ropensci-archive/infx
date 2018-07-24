@@ -73,8 +73,8 @@
 #' [make_requests()].
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "getMaterialByCodes")}
-#' * \Sexpr{infx::docs_link("sas", "listPlateMaterialMapping")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "getMaterialByCodes")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "listPlateMaterialMapping")}
 #' 
 #' @examples
 #' \donttest{

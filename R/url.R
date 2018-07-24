@@ -45,9 +45,10 @@
 #' @rdname list_urls
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrg", "getDownloadUrlForFileForDataSet")}
-#' * \Sexpr{infx::docs_link("dsrg",
-#'                          "getDownloadUrlForFileForDataSetWithTimeout")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrg",
+#'                      "getDownloadUrlForFileForDataSet")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrg",
+#'                      "getDownloadUrlForFileForDataSetWithTimeout")}
 #' 
 #' @examples
 #' \donttest{
@@ -217,7 +218,7 @@ list_download_urls.DataSetFileDTO <- function(token, x, timeout = NA, ...) {
 
 #' @rdname list_urls
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listDataStores")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listDataStores")}
 #' @export
 #' 
 list_datastores <- function(token, ...)
@@ -228,9 +229,10 @@ list_datastores <- function(token, ...)
 
 #' @rdname list_urls
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "getDefaultPutDataStoreBaseURL")}
-#' * \Sexpr{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
-#' * \Sexpr{infx::docs_link("gis", "getDataStoreBaseURLs")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis",
+#'                      "getDefaultPutDataStoreBaseURL")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "getDataStoreBaseURLs")}
 #' @export
 #' 
 list_datastore_urls <- function(token, x = NULL, ...)
@@ -329,13 +331,13 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' openBIS API endpoints and `docs_link()` generates latex links to
 #' documentation pages. Both functions support the following endpoints which
 #' are abbreviated as
-#'   * `gis`: \Sexpr{infx::docs_link("gis")}
-#'   * `gics`: \Sexpr{infx::docs_link("gics")}
-#'   * `qas`: \Sexpr{infx::docs_link("qas")}
-#'   * `wis`: \Sexpr{infx::docs_link("wis")}
-#'   * `dsrg`: \Sexpr{infx::docs_link("dsrg")}
-#'   * `sas`: \Sexpr{infx::docs_link("sas")}
-#'   * `dsrs`: \Sexpr{infx::docs_link("dsrs")}
+#'   * `gis`: \Sexpr[results=rd]{infx::docs_link("gis")}
+#'   * `gics`: \Sexpr[results=rd]{infx::docs_link("gics")}
+#'   * `qas`: \Sexpr[results=rd]{infx::docs_link("qas")}
+#'   * `wis`: \Sexpr[results=rd]{infx::docs_link("wis")}
+#'   * `dsrg`: \Sexpr[results=rd]{infx::docs_link("dsrg")}
+#'   * `sas`: \Sexpr[results=rd]{infx::docs_link("sas")}
+#'   * `dsrs`: \Sexpr[results=rd]{infx::docs_link("dsrs")}
 #' 
 #' If for some reason an url is desired from `api_url()` that cannot be
 #' constructed by pasting `host_url` and one of the hard-coded API endpoints

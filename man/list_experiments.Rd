@@ -71,23 +71,24 @@ the search for experiments.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listExperiments")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listExperiments")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listExperimentsHavingDataSets")}
-\item \Sexpr{infx::docs_link("gis", "listExperimentsHavingSamples")}
+\item \Sexpr[results=rd]{infx::docs_link("gis",
+"listExperimentsHavingDataSets")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listExperimentsHavingSamples")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("sas", "listExperiments")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "listExperiments")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listExperimentTypes")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listExperimentTypes")}
 }
 }
 

@@ -92,7 +92,7 @@
 #' }
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs", "listAvailableFeatures")}
 #' @export
 #' 
 list_features <- function(token, x, ...)
@@ -128,7 +128,7 @@ list_features.FeatureVectorDatasetWellReference <- list_feats
 
 #' @rdname list_fetch_features
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
 #' @export
 #' 
 list_feature_codes <- function(token, x, ...)
@@ -178,7 +178,7 @@ fetch_features <- function(token, x, feature_codes = NA, ...)
 
 #' @rdname list_fetch_features
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "loadFeatures")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs", "loadFeatures")}
 #' @export
 #' 
 fetch_features.FeatureVectorDatasetReference <- function(token,
@@ -208,7 +208,8 @@ fetch_features.FeatureVectorDatasetReference <- function(token,
 
 #' @rdname list_fetch_features
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "loadFeaturesForDatasetWellReferences")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs",
+#'                      "loadFeaturesForDatasetWellReferences")}
 #' @export
 #' 
 fetch_features.FeatureVectorDatasetWellReference <- function(

@@ -28,10 +28,10 @@
 #' [make_requests()].
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listSamplesForExperiment")}
-#' * \Sexpr{infx::docs_link("sas", "getPlateSample")}
-#' * \Sexpr{infx::docs_link("sas", "getWellSample")}
-#' * \Sexpr{infx::docs_link("gis", "listSampleTypes")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listSamplesForExperiment")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "getPlateSample")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "getWellSample")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listSampleTypes")}
 #' 
 #' @examples
 #' \donttest{

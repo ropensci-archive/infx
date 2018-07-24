@@ -22,7 +22,7 @@ the current user can be listed by calling the function \code{list_projects()}.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listProjects")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listProjects")}
 }
 }
 

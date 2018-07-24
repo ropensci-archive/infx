@@ -147,7 +147,7 @@ list_files <- function(token, x, ...)
 #' recursively.
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrg", "listFilesForDataSet")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrg", "listFilesForDataSet")}
 #' 
 #' @export
 #' 

@@ -56,12 +56,14 @@ list_references(token, x, ...)
 \method{list_references}{PlateMetadata}(token, x, type = c("raw",
   "segmentation", "feature"), ...)
 
-\method{list_references}{Sample}(token, x, type = c("raw", "segmentation",
-  "feature"), ...)
+\method{list_references}{Sample}(token, x, type = c("raw",
+  "segmentation", "feature"), ...)
 
-\method{list_references}{MaterialGeneric}(token, x, experiment = NULL, ...)
+\method{list_references}{MaterialGeneric}(token, x, experiment = NULL,
+  ...)
 
-\method{list_references}{MaterialScreening}(token, x, experiment = NULL, ...)
+\method{list_references}{MaterialScreening}(token, x, experiment = NULL,
+  ...)
 
 \method{list_references}{MaterialIdentifierGeneric}(token, x,
   experiment = NULL, ...)
@@ -69,13 +71,13 @@ list_references(token, x, ...)
 \method{list_references}{MaterialIdentifierScreening}(token, x,
   experiment = NULL, ...)
 
-\method{list_references}{DatasetIdentifier}(token, x, wells = NULL, channels,
-  ...)
+\method{list_references}{DatasetIdentifier}(token, x, wells = NULL,
+  channels, ...)
 
 \method{list_references}{DataSet}(token, x, wells = NULL, channels, ...)
 
-\method{list_references}{DatasetReference}(token, x, wells = NULL, channels,
-  ...)
+\method{list_references}{DatasetReference}(token, x, wells = NULL,
+  channels, ...)
 
 \method{list_references}{FeatureVectorDatasetReference}(token, x,
   wells = NULL, channels, ...)
@@ -86,8 +88,8 @@ list_references(token, x, ...)
 \method{list_references}{ImageDatasetReference}(token, x, wells = NULL,
   channels, ...)
 
-\method{list_references}{MicroscopyImageReference}(token, x, wells = NULL,
-  channels, ...)
+\method{list_references}{MicroscopyImageReference}(token, x,
+  wells = NULL, channels, ...)
 
 \method{list_references}{PlateImageReference}(token, x, wells = NULL,
   channels, ...)
@@ -181,41 +183,42 @@ option is not exposed to the user.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listDataSetsForSample")}
-\item \Sexpr{infx::docs_link("gis", "listDataSets")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listDataSetsForSample")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listDataSets")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listDataSetsForExperiments")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listDataSetsForExperiments")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "getDataSetMetaData")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "getDataSetMetaData")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("sas", "getDatasetIdentifiers")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "getDatasetIdentifiers")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("sas", "listRawImageDatasets")}
-\item \Sexpr{infx::docs_link("sas", "listSegmentationImageDatasets")}
-\item \Sexpr{infx::docs_link("sas", "listFeatureVectorDatasets")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "listRawImageDatasets")}
+\item \Sexpr[results=rd]{infx::docs_link("sas",
+"listSegmentationImageDatasets")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "listFeatureVectorDatasets")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "listImageReferences")}
-\item \Sexpr{infx::docs_link("dsrs", "listPlateImageReferences")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "listImageReferences")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "listPlateImageReferences")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listDataSetTypes")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listDataSetTypes")}
 }
 }
 

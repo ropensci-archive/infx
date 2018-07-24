@@ -94,8 +94,8 @@
 #' deserialization.
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "loadImagesBase64")}
-#' * \Sexpr{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs", "loadImagesBase64")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
 #' 
 #' @rdname list_fetch_images
 #' 
@@ -269,7 +269,8 @@ fetch_images.MicroscopyImageReference <- function(token,
 
 #' @rdname list_fetch_images
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("dsrs", "loadPhysicalThumbnailsBase64")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs",
+#'                      "loadPhysicalThumbnailsBase64")}
 #' @export
 #' 
 fetch_images.PlateImageReference <- function(token,
@@ -393,9 +394,10 @@ list_image_metadata <- function(token, x, ...)
 #' @rdname list_fetch_images
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("sas", "getExperimentImageMetadata")}
-#' * \Sexpr{infx::docs_link("dsrs", "listImageMetadata")}
-#' * \Sexpr{infx::docs_link("dsrs", "listAvailableImageRepresentationFormats")}
+#' * \Sexpr[results=rd]{infx::docs_link("sas", "getExperimentImageMetadata")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs", "listImageMetadata")}
+#' * \Sexpr[results=rd]{infx::docs_link("dsrs",
+#'                      "listAvailableImageRepresentationFormats")}
 #' 
 #' @export
 #' 

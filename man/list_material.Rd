@@ -29,9 +29,11 @@ list_material(token, x, ...)
 
 \method{list_material}{MaterialIdentifierScreening}(token, x, ...)
 
-\method{list_material}{PlateIdentifier}(token, x, material_type = NULL, ...)
+\method{list_material}{PlateIdentifier}(token, x, material_type = NULL,
+  ...)
 
-\method{list_material}{PlateMetadata}(token, x, material_type = NULL, ...)
+\method{list_material}{PlateMetadata}(token, x, material_type = NULL,
+  ...)
 
 \method{list_material}{Plate}(token, x, material_type = NULL, ...)
 
@@ -158,8 +160,8 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "getMaterialByCodes")}
-\item \Sexpr{infx::docs_link("sas", "listPlateMaterialMapping")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "getMaterialByCodes")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "listPlateMaterialMapping")}
 }
 }
 

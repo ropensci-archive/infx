@@ -30,21 +30,23 @@
 \usage{
 list_files(token, x, ...)
 
-\method{list_files}{character}(token, x, path = "", recursive = TRUE, ...)
+\method{list_files}{character}(token, x, path = "", recursive = TRUE,
+  ...)
 
-\method{list_files}{DataSet}(token, x, path = "", recursive = TRUE, ...)
+\method{list_files}{DataSet}(token, x, path = "", recursive = TRUE,
+  ...)
 
 \method{list_files}{DatasetIdentifier}(token, x, path = "",
   recursive = TRUE, ...)
 
-\method{list_files}{DatasetReference}(token, x, path = "", recursive = TRUE,
-  ...)
+\method{list_files}{DatasetReference}(token, x, path = "",
+  recursive = TRUE, ...)
 
 \method{list_files}{FeatureVectorDatasetReference}(token, x, path = "",
   recursive = TRUE, ...)
 
-\method{list_files}{FeatureVectorDatasetWellReference}(token, x, path = "",
-  recursive = TRUE, ...)
+\method{list_files}{FeatureVectorDatasetWellReference}(token, x,
+  path = "", recursive = TRUE, ...)
 
 \method{list_files}{ImageDatasetReference}(token, x, path = "",
   recursive = TRUE, ...)
@@ -62,8 +64,8 @@ fetch_files(token, x, ...)
 \method{fetch_files}{character}(token, x, files = NULL, n_con = 5L,
   reader = identity, ...)
 
-\method{fetch_files}{NULL}(token, x, files, n_con = 5L, reader = identity,
-  ...)
+\method{fetch_files}{NULL}(token, x, files, n_con = 5L,
+  reader = identity, ...)
 
 \method{fetch_files}{DataSet}(token, x, ...)
 
@@ -209,7 +211,7 @@ of a plate.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrg", "listFilesForDataSet")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrg", "listFilesForDataSet")}
 }
 }
 

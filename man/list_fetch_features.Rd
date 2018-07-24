@@ -14,8 +14,8 @@
 \usage{
 list_features(token, x, ...)
 
-\method{list_features}{FeatureVectorDatasetReference}(token, x, wells = NULL,
-  ...)
+\method{list_features}{FeatureVectorDatasetReference}(token, x,
+  wells = NULL, ...)
 
 \method{list_features}{FeatureVectorDatasetWellReference}(token, x, ...)
 
@@ -24,7 +24,8 @@ list_feature_codes(token, x, ...)
 \method{list_feature_codes}{FeatureVectorDatasetReference}(token, x,
   wells = NULL, ...)
 
-\method{list_feature_codes}{FeatureVectorDatasetWellReference}(token, x, ...)
+\method{list_feature_codes}{FeatureVectorDatasetWellReference}(token, x,
+  ...)
 
 fetch_features(token, x, feature_codes = NA, ...)
 
@@ -96,22 +97,23 @@ one for each well.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "listAvailableFeatures")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "listAvailableFeatures")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "listAvailableFeatureCodes")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "loadFeatures")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "loadFeatures")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "loadFeaturesForDatasetWellReferences")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs",
+"loadFeaturesForDatasetWellReferences")}
 }
 }
 
@@ -148,7 +150,7 @@ behaves this way is currently unclear.
   feat_info <- feat_info[c(2L, 6L)]
 
   # for a feature data set, a set of feature codes and a set of wells,
-  # retrieve the corresponding feature data
+  #<c2><a0>retrieve the corresponding feature data
   feats <- fetch_features(tok, feat_ref,
                           feature_codes = get_field(feat_info, "code"),
                           wells = well_pos(1:6, 3:8))

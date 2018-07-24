@@ -12,7 +12,7 @@
 #' @param ... Further arguments will be passed to [make_requests()].
 #' 
 #' @section openBIS:
-#' * \Sexpr{infx::docs_link("gis", "listProjects")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis", "listProjects")}
 #' 
 #' @examples
 #' \donttest{

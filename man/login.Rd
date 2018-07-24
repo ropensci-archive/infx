@@ -7,8 +7,8 @@
 \title{Create and destroy a login token}
 \usage{
 login_openbis(user = "rdgr2014", pwd = "IXPubReview",
-  host_url = "https://infectx.biozentrum.unibas.ch", auto_disconnect = TRUE,
-  ...)
+  host_url = "https://infectx.biozentrum.unibas.ch",
+  auto_disconnect = TRUE, ...)
 
 logout_openbis(token, ...)
 
@@ -36,17 +36,17 @@ token can be manually destroyed by calling \code{logout_openbis()} on the token.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "logout")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "logout")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "isSessionActive")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "isSessionActive")}
 }
 }
 

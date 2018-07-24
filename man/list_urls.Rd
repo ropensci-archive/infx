@@ -32,17 +32,17 @@ list_download_urls(token, x, ...)
 
 \method{list_download_urls}{DataSet}(token, x, path, timeout = NA, ...)
 
-\method{list_download_urls}{DatasetIdentifier}(token, x, path, timeout = NA,
-  ...)
+\method{list_download_urls}{DatasetIdentifier}(token, x, path,
+  timeout = NA, ...)
 
-\method{list_download_urls}{DatasetReference}(token, x, path, timeout = NA,
-  ...)
+\method{list_download_urls}{DatasetReference}(token, x, path,
+  timeout = NA, ...)
 
 \method{list_download_urls}{FeatureVectorDatasetReference}(token, x, path,
   timeout = NA, ...)
 
-\method{list_download_urls}{FeatureVectorDatasetWellReference}(token, x, path,
-  timeout = NA, ...)
+\method{list_download_urls}{FeatureVectorDatasetWellReference}(token, x,
+  path, timeout = NA, ...)
 
 \method{list_download_urls}{ImageDatasetReference}(token, x, path,
   timeout = NA, ...)
@@ -50,8 +50,8 @@ list_download_urls(token, x, ...)
 \method{list_download_urls}{MicroscopyImageReference}(token, x, path,
   timeout = NA, ...)
 
-\method{list_download_urls}{PlateImageReference}(token, x, path, timeout = NA,
-  ...)
+\method{list_download_urls}{PlateImageReference}(token, x, path,
+  timeout = NA, ...)
 
 \method{list_download_urls}{DataSetFileDTO}(token, x, timeout = NA, ...)
 
@@ -71,7 +71,8 @@ list_datastore_urls(token, x = NULL, ...)
 
 \method{list_datastore_urls}{FeatureVectorDatasetReference}(token, x, ...)
 
-\method{list_datastore_urls}{FeatureVectorDatasetWellReference}(token, x, ...)
+\method{list_datastore_urls}{FeatureVectorDatasetWellReference}(token, x,
+  ...)
 
 \method{list_datastore_urls}{ImageDatasetReference}(token, x, ...)
 
@@ -130,21 +131,23 @@ to \code{list_datastores()}.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrg", "getDownloadUrlForFileForDataSet")}
-\item \Sexpr{infx::docs_link("dsrg",
+\item \Sexpr[results=rd]{infx::docs_link("dsrg",
+"getDownloadUrlForFileForDataSet")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrg",
 "getDownloadUrlForFileForDataSetWithTimeout")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "listDataStores")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "listDataStores")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("gis", "getDefaultPutDataStoreBaseURL")}
-\item \Sexpr{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
-\item \Sexpr{infx::docs_link("gis", "getDataStoreBaseURLs")}
+\item \Sexpr[results=rd]{infx::docs_link("gis",
+"getDefaultPutDataStoreBaseURL")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "tryGetDataStoreBaseURL")}
+\item \Sexpr[results=rd]{infx::docs_link("gis", "getDataStoreBaseURLs")}
 }
 }
 

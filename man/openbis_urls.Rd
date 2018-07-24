@@ -5,8 +5,9 @@
 \alias{docs_link}
 \title{OpenBIS urls}
 \usage{
-api_url(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas", "dsrs"),
-  host_url = "https://infectx.biozentrum.unibas.ch", full_url = NULL, ...)
+api_url(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas",
+  "dsrs"), host_url = "https://infectx.biozentrum.unibas.ch",
+  full_url = NULL, ...)
 
 docs_link(api_endpoint = c("gis", "gics", "qas", "wis", "dsrg", "sas",
   "dsrs"), method_name = NULL, version = "13.04.0")
@@ -32,13 +33,13 @@ openBIS API endpoints and \code{docs_link()} generates latex links to
 documentation pages. Both functions support the following endpoints which
 are abbreviated as
 \itemize{
-\item \code{gis}: \Sexpr{infx::docs_link("gis")}
-\item \code{gics}: \Sexpr{infx::docs_link("gics")}
-\item \code{qas}: \Sexpr{infx::docs_link("qas")}
-\item \code{wis}: \Sexpr{infx::docs_link("wis")}
-\item \code{dsrg}: \Sexpr{infx::docs_link("dsrg")}
-\item \code{sas}: \Sexpr{infx::docs_link("sas")}
-\item \code{dsrs}: \Sexpr{infx::docs_link("dsrs")}
+\item \code{gis}: \Sexpr[results=rd]{infx::docs_link("gis")}
+\item \code{gics}: \Sexpr[results=rd]{infx::docs_link("gics")}
+\item \code{qas}: \Sexpr[results=rd]{infx::docs_link("qas")}
+\item \code{wis}: \Sexpr[results=rd]{infx::docs_link("wis")}
+\item \code{dsrg}: \Sexpr[results=rd]{infx::docs_link("dsrg")}
+\item \code{sas}: \Sexpr[results=rd]{infx::docs_link("sas")}
+\item \code{dsrs}: \Sexpr[results=rd]{infx::docs_link("dsrs")}
 }
 }
 \details{

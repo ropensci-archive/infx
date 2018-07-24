@@ -69,14 +69,14 @@ list_wells(token, x, ...)
 \method{list_wells}{MaterialScreening}(token, x, experiment = NULL,
   include_datasets = FALSE, ...)
 
-\method{list_wells}{MaterialIdentifierScreening}(token, x, experiment = NULL,
-  include_datasets = FALSE, ...)
+\method{list_wells}{MaterialIdentifierScreening}(token, x,
+  experiment = NULL, include_datasets = FALSE, ...)
 
 \method{list_wells}{MaterialGeneric}(token, x, experiment = NULL,
   include_datasets = FALSE, ...)
 
-\method{list_wells}{MaterialIdentifierGeneric}(token, x, experiment = NULL,
-  include_datasets = FALSE, ...)
+\method{list_wells}{MaterialIdentifierGeneric}(token, x,
+  experiment = NULL, include_datasets = FALSE, ...)
 
 well_id(perm_id, plate, well_pos = NULL, well_code = NULL, ...)
 
@@ -176,9 +176,9 @@ of a well within a plate. Such objects can be created using the constructor
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("sas", "listPlates")}
-\item \Sexpr{infx::docs_link("sas", "listPlateWells")}
-\item \Sexpr{infx::docs_link("sas", "getPlateMetadataList")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "listPlates")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "listPlateWells")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "getPlateMetadataList")}
 }
 }
 

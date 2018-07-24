@@ -40,11 +40,11 @@ list_image_metadata(token, x, ...)
 
 \method{list_image_metadata}{Experiment}(token, x, ...)
 
-\method{list_image_metadata}{DatasetIdentifier}(token, x, type = c("metadata",
-  "format"), ...)
+\method{list_image_metadata}{DatasetIdentifier}(token, x,
+  type = c("metadata", "format"), ...)
 
-\method{list_image_metadata}{DatasetReference}(token, x, type = c("metadata",
-  "format"), ...)
+\method{list_image_metadata}{DatasetReference}(token, x,
+  type = c("metadata", "format"), ...)
 
 \method{list_image_metadata}{ImageDatasetReference}(token, x,
   type = c("metadata", "format"), ...)
@@ -167,20 +167,22 @@ deserialization.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "loadImagesBase64")}
-\item \Sexpr{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "loadImagesBase64")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("dsrs", "loadPhysicalThumbnailsBase64")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs",
+"loadPhysicalThumbnailsBase64")}
 }
 
 
 \itemize{
-\item \Sexpr{infx::docs_link("sas", "getExperimentImageMetadata")}
-\item \Sexpr{infx::docs_link("dsrs", "listImageMetadata")}
-\item \Sexpr{infx::docs_link("dsrs", "listAvailableImageRepresentationFormats")}
+\item \Sexpr[results=rd]{infx::docs_link("sas", "getExperimentImageMetadata")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs", "listImageMetadata")}
+\item \Sexpr[results=rd]{infx::docs_link("dsrs",
+"listAvailableImageRepresentationFormats")}
 }
 }
 
