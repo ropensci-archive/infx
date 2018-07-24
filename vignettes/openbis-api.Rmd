@@ -33,23 +33,28 @@ get_openbis_items <- function(x) {
   if (sum(sections) == 1L) {
     obis <- x[[which(sections)]][[2L]]
     is_itemize <- tools:::RdTags(obis) == "\\itemize"
-    res <- unlist(obis[is_itemize])
-    res[!res %in% c("\n", " ")]
+    unlist(
+      lapply(obis[is_itemize], function(y) {
+        url_hits <- tools:::RdTags(y) == "\\href"
+        if (any(url_hits))
+          lapply(y[url_hits], sapply, as.character)
+        else
+          NULL
+      }),
+      recursive = FALSE
+    )
   } else if (sum(sections) > 1L)
     stop("expecting one or zero openbis sections")
   else
-    NA
+    NULL
 }
 
 pkg <- "infx"
 rd_db <- tools:::fetchRdDB(file.path(find.package(pkg), "help", pkg))
-api_calls <- Filter(Negate(is.na), unlist(lapply(rd_db, get_openbis_items)))
+api_calls <- unlist(lapply(rd_db, get_openbis_items), recursive = FALSE)
 
-urls <- gsub("^\\\\href\\{", "",
-             sapply(strsplit(api_calls, "\\}\\{"), `[`, 1L))
-
-api_calls <- gsub("\\}$", "", sapply(strsplit(api_calls, "\\}\\{"), `[`, 2L))
-api_calls <- strsplit(api_calls, ":")
+urls <- sapply(api_calls, `[[`, 1L)
+api_calls <- strsplit(sapply(api_calls, `[[`, 2L), ":")
 ```
 
 ```{r api-info, include = FALSE}
