@@ -63,7 +63,7 @@
 #' object and will return the selected `MaterialIdentifierScreening` object.
 #' 
 #' @inheritParams logout_openbis
-#' @param x A (vector of) MaterialIdentifier object(s).
+#' @param x A (vector of) `MaterialIdentifier` object(s).
 #' @param code The material code for which an id object is created.
 #' @param type The material type (possible values depend on mode).
 #' @param mode Switch between generic and screening material id objects.

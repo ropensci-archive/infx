@@ -54,7 +54,7 @@ cannot be converted.}
 In order to allow method dispatch on a set of \code{json_class} objects without
 resorting to iterating over the individual set members, vectors of
 \code{json_class} objects are wrapped by a \code{json_vec} class. Iterating over
-objects is is some cases inefficient because the openBIS API can for some
+objects is in some cases inefficient because the openBIS API can for some
 functions accept lists of objects. Assembling multiple \code{json_class} objects
 as a list in R however breaks method dispatch, as the type of this object
 is \code{list} instead of the desired \code{json_class} sub-class. A \code{json_vec} object

@@ -47,14 +47,14 @@
 #' they will be [base::rep()]'ed to the required length. Care has to be taken
 #' that the list passed as `params` has the correct degree of nesting. As
 #' `make_requests()` iterates over the topmost list level, a single request
-#' should be wrapped in a list such that the topmost list level is on length
-#' 1. The function `make_request()` is a wrapper around `make_requests()` that
-#' does exactly this.
+#' should be wrapped in a list such that the topmost list level is of unit
+#' length. The function `make_request()` is a wrapper around `make_requests()`
+#' that does exactly this.
 #' 
 #' As part of the `process_json()` function, which is the default value passed
 #' as `finally` argument in `make_requests()`, `@type` fields are converted
-#' to`json_class` attributes, using [as_json_class()]. Additionally, `@id`
-#' fields, which may be referenced if an objects is used multiple times, are
+#' to `json_class` attributes, using [as_json_class()]. Additionally, `@id`
+#' fields, which may be referenced if an object is used multiple times, are
 #' recursively resolved using [resolve_references()] such that each object is
 #' self-contained.
 #' 
@@ -84,8 +84,9 @@
 #'                            "listProjects",
 #'                            list(tok))
 #'   print(projects[[1L]])
-#'   # or using make_request(), the params argument has to be a list per
-#'   # request and the first entry of the returned list has to be selected
+#'   # alternatively, using make_requests(), the params argument has to be a
+#'   # list per request and the first entry of the returned list has to be
+#'   # selected
 #'   proj <- make_requests(api_url(api_endpoint = "gis"),
 #'                         "listProjects",
 #'                         list(list(tok)))
@@ -142,7 +143,7 @@
 #'                             create_handle = post_handle,
 #'                             finally = process_json)
 #' 
-#'   # httbin returns POST data, therefore
+#'   # httpbin returns POST data, therefore
 #'   identical(data, req[[1L]])
 #' 
 #'   logout_openbis(tok)

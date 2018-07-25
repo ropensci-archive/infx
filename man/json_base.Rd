@@ -97,11 +97,12 @@ objects as well. Repeating a \code{json_vec} object using \code{\link[base:rep]{
 in a \code{json_vec} object of the same sub-type.
 
 Printing of both \code{json_class} and \code{json_vec} objects is inspired by the
-\code{ast} printing function of Hadley's \code{lobstr} package and borrows code from
-\href{https://git.io/vFMA5}{there} Printing style can either be fancy (colors,
-UTF box characters. etc.) or simple (controlled by the \code{fancy} flag) and
-several options are available for setting the max printing with/length, as
-well as a max recursion depth for nested \code{json_class} objects.
+\code{ast} printing function of Hadley's
+\href{https://git.io/vFMA5}{lobstr package} and borrows code from there.
+Printing style can either be fancy (colors, UTF box characters. etc.) or
+simple (controlled by the \code{fancy} flag) and several options are available
+for setting the max printing width/length, as well as a max recursion depth
+for nested \code{json_class} objects.
 }
 \examples{
 obj_c <- json_class(a = json_class(b = "c", class = "foo"),

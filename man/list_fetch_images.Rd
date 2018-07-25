@@ -96,14 +96,14 @@ function can be dispatched on objects referencing or identifying data sets
 associated with image data.
 }
 \details{
-Data set level image meta data can be listed by passing a objects, which
+Data set level image meta data can be listed by passing objects, which
 implement the \code{IDatasetIdentifier} interface and are connected to image
 data sets (this rules out feature data set references and leaves
 \code{DatasetIdentifier}, \code{DatasetReference}, \code{ImageDatasetReference},
 \code{MicroscopyImageReference} and \code{PlateImageReference} objects). Two
 different types of meta data objects are returned, depending on the \code{type}
 argument: if it is set to \code{metadata} (default), objects of type
-\code{ImageDatasetMetadata} and it it is set to \code{format}, objects of type
+\code{ImageDatasetMetadata} and if it is set to \code{format}, objects of type
 \code{DatasetImageRepresentationFormats} are returned. For experiment-level
 image meta data, \code{ExperimentImageMetadata} objects are returned.
 

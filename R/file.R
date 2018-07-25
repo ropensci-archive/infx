@@ -48,7 +48,7 @@
 #' 
 #' The internal generic function `fetch_ds_files()` can be dispatched on
 #' several objects again. When no files are specified (`NULL` is passed as
-#' `files` argument to `fetch_files()`), All available files for the given
+#' `files` argument to `fetch_files()`), all available files for the given
 #' data sets are queried. This list can be filtered using the `file_regex()`
 #' argument which can be a single regular expression and is applied to file
 #' paths. File paths can be specified as character vector, `FileInfoDssDTO` or
@@ -60,7 +60,7 @@
 #' objects or a character vector, this sanity check is not possible. 
 #' 
 #' Files can only be retrieved after previously having created a corresponding
-#' download url using [list_download_urls()]. As file urls in openBIS have a
+#' download url using [list_download_urls()], as file urls in openBIS have a
 #' limited lifetime and therefore must be used shortly after being created. A
 #' list of `call` objects (see [base::call()]) is created and passed to either
 #' [do_requests_serial()] or [do_requests_parallel()]. Whether file fetching

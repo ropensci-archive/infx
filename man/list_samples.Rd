@@ -41,10 +41,10 @@ list_sample_types(token, ...)
 }
 \description{
 In openBIS, samples can be seen as a generalization of plates and wells (
-see \code{\link[=list_plates]{list_plates()}} and \code{\link[=list_wells]{list_wells()}}. In fact, for the HTS focused openBIS
-instance of InfectX, wells and plates represent the only types of samples
-available. Samples can either be retrieved using \code{\link[=search_openbis]{search_openbis()}} and
-setting the argument \code{target_object} to \code{sample} or listed by calling
+see \code{\link[=list_plates]{list_plates()}} and \code{\link[=list_wells]{list_wells()}}). In fact, for the HTS focused
+openBIS instance of InfectX, wells and plates represent the only types of
+samples available. Samples can either be retrieved using \code{\link[=search_openbis]{search_openbis()}}
+and setting the argument \code{target_object} to \code{sample} or listed by calling
 \code{list_samples()}. Furthermore, all available sample types can be listed
 using \code{list_sample_types()}.
 }
@@ -54,12 +54,12 @@ using \code{list_sample_types()}.
 plate samples are returned, on objects representing plates (\code{Plate},
 \code{PlateIdentifier} and \code{PlateMetadata}) or on objects representing wells
 (\code{WellIdentifier} and \code{WellMetadata}). For plates, the corresponding plate
-samples and for and wells, the corresponding well samples are returned. It
-is therefore not possible to list all well samples for a plate. This could
+samples and for wells, the corresponding well samples are returned. It is
+therefore not possible to list all well samples for a plate. This could
 however be achieved by listing all wells of a plate using \code{\link[=list_wells]{list_wells()}}
 and calling \code{list_samples()} on the returned set of \code{WellIdentifier}
-objects. A separate API call is required for each object is a \code{json_vec}
-of objects is passed to \code{list_samples()}.
+objects. A separate API call is required for each \code{json_class} object
+contained in the \code{json_vec} passed to \code{list_samples()} as \code{x} argument.
 }
 \section{openBIS}{
 

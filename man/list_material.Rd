@@ -68,7 +68,7 @@ extract_well_material(x, row, col)
 \arguments{
 \item{token}{Login token as created by \code{login_openbis()}.}
 
-\item{x}{A (vector of) MaterialIdentifier object(s).}
+\item{x}{A (vector of) \code{MaterialIdentifier} object(s).}
 
 \item{...}{Generic compatibility. Extra arguments will be passed to
 \code{\link[=make_requests]{make_requests()}}.}

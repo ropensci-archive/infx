@@ -125,9 +125,9 @@ All available datasets for the specified experiment(s), sample(s) or
 dataset code(s) are retrieved as \code{DataSet} objects by
 \code{list_datasets()}. Each dataset has a type and all realized type
 identifiers can be listed using \code{list_dataset_types()}. A more compact
-object type, uniquely identifying a \code{DataSet}, is a that of a
+object type, uniquely identifying a \code{DataSet}, is that of a
 \code{DatasetIdentifier}. Given either a set of \code{DataSet} objects or a character
-vector holding (a) dataset code(s), \code{list_dataset_id()} fetched the
+vector holding (a) dataset code(s), \code{list_dataset_id()} fetches the
 corresponding \code{DatasetIdentifier} objects. Behavior of the function
 \code{list_references()}, in particular the returned object type, depends on
 input types. For more information, please refer to the details section.
@@ -149,8 +149,8 @@ Several classes in addition to \code{DatasetIdentifier} implement the
 \item \code{PlateImageReference}
 }
 
-Any of these object types may returned by \code{list_references()}, depending on
-argument types. If the s3 generic function \code{list_references()} is
+Any of these object types may be returned by \code{list_references()}, depending
+on argument types. If the s3 generic function \code{list_references()} is
 dispatched on plate objects (\code{Plate}, \code{PlateIdentifier} or \code{PlateMetadata}
 or \code{Sample} objects, representing plates), \code{ImageDatasetReference} objects
 are returned (except if the type argument is set to \code{feature}, in which

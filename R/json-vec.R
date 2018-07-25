@@ -4,7 +4,7 @@
 #' In order to allow method dispatch on a set of `json_class` objects without
 #' resorting to iterating over the individual set members, vectors of
 #' `json_class` objects are wrapped by a `json_vec` class. Iterating over
-#' objects is is some cases inefficient because the openBIS API can for some
+#' objects is in some cases inefficient because the openBIS API can for some
 #' functions accept lists of objects. Assembling multiple `json_class` objects
 #' as a list in R however breaks method dispatch, as the type of this object
 #' is `list` instead of the desired `json_class` sub-class. A `json_vec` object

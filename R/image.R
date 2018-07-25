@@ -10,14 +10,14 @@
 #' function can be dispatched on objects referencing or identifying data sets
 #' associated with image data.
 #' 
-#' Data set level image meta data can be listed by passing a objects, which
+#' Data set level image meta data can be listed by passing objects, which
 #' implement the `IDatasetIdentifier` interface and are connected to image
 #' data sets (this rules out feature data set references and leaves
 #' `DatasetIdentifier`, `DatasetReference`, `ImageDatasetReference`,
 #' `MicroscopyImageReference` and `PlateImageReference` objects). Two
 #' different types of meta data objects are returned, depending on the `type`
 #' argument: if it is set to `metadata` (default), objects of type
-#' `ImageDatasetMetadata` and it it is set to `format`, objects of type
+#' `ImageDatasetMetadata` and if it is set to `format`, objects of type
 #' `DatasetImageRepresentationFormats` are returned. For experiment-level
 #' image meta data, `ExperimentImageMetadata` objects are returned.
 #'

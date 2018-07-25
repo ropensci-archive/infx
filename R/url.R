@@ -28,7 +28,7 @@
 #' `DatasetIdentifier`, `DatasetReference`, `FeatureVectorDatasetReference`,
 #' `FeatureVectorDatasetWellReference`, `ImageDatasetReference`,
 #' `MicroscopyImageReference` and `PlateImageReference` objects. Dispatch on
-#' `NULL` requests the default data store server url. Data store sever url
+#' `NULL` requests the default data store server url. Datastore sever url
 #' related functionality is uninteresting for the InfectX set-up, as only a
 #' single data store server exists, the url of which can be retrieved by a call
 #' to `list_datastores()`.
@@ -91,7 +91,7 @@
 #' 
 #'   # let timeout expire
 #'   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
-#'   Sys.sleep(3L)
+#'   Sys.sleep(4L)
 #'   tmp <- read_mat_files(url(file_url[[1L]]))
 #' 
 #'   logout_openbis(tok)

@@ -5,9 +5,9 @@
 #' dataset code(s) are retrieved as `DataSet` objects by
 #' `list_datasets()`. Each dataset has a type and all realized type
 #' identifiers can be listed using `list_dataset_types()`. A more compact
-#' object type, uniquely identifying a `DataSet`, is a that of a
+#' object type, uniquely identifying a `DataSet`, is that of a
 #' `DatasetIdentifier`. Given either a set of `DataSet` objects or a character
-#' vector holding (a) dataset code(s), `list_dataset_id()` fetched the
+#' vector holding (a) dataset code(s), `list_dataset_id()` fetches the
 #' corresponding `DatasetIdentifier` objects. Behavior of the function
 #' `list_references()`, in particular the returned object type, depends on
 #' input types. For more information, please refer to the details section.
@@ -26,8 +26,8 @@
 #'   * `MicroscopyImageReference`
 #'   * `PlateImageReference`
 #' 
-#' Any of these object types may returned by `list_references()`, depending on
-#' argument types. If the s3 generic function `list_references()` is
+#' Any of these object types may be returned by `list_references()`, depending
+#' on argument types. If the s3 generic function `list_references()` is
 #' dispatched on plate objects (`Plate`, `PlateIdentifier` or `PlateMetadata`
 #' or `Sample` objects, representing plates), `ImageDatasetReference` objects
 #' are returned (except if the type argument is set to `feature`, in which

@@ -123,7 +123,7 @@ dispatch is possible on, in addition to character vector, \code{DataSet},
 \code{DatasetIdentifier}, \code{DatasetReference}, \code{FeatureVectorDatasetReference},
 \code{FeatureVectorDatasetWellReference}, \code{ImageDatasetReference},
 \code{MicroscopyImageReference} and \code{PlateImageReference} objects. Dispatch on
-\code{NULL} requests the default data store server url. Data store sever url
+\code{NULL} requests the default data store server url. Datastore sever url
 related functionality is uninteresting for the InfectX set-up, as only a
 single data store server exists, the url of which can be retrieved by a call
 to \code{list_datastores()}.
@@ -190,7 +190,7 @@ to \code{list_datastores()}.
 
   # let timeout expire
   file_url <- list_download_urls(tok, ds, file_path, timeout = 2L)
-  Sys.sleep(3L)
+  Sys.sleep(4L)
   tmp <- read_mat_files(url(file_url[[1L]]))
 
   logout_openbis(tok)

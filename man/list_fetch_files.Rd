@@ -168,7 +168,7 @@ are passed to \code{fetch_files()} as \code{x} argument, an optional argument
 
 The internal generic function \code{fetch_ds_files()} can be dispatched on
 several objects again. When no files are specified (\code{NULL} is passed as
-\code{files} argument to \code{fetch_files()}), All available files for the given
+\code{files} argument to \code{fetch_files()}), all available files for the given
 data sets are queried. This list can be filtered using the \code{file_regex()}
 argument which can be a single regular expression and is applied to file
 paths. File paths can be specified as character vector, \code{FileInfoDssDTO} or
@@ -180,7 +180,7 @@ these objects contain file sizes. If dispatch occurs on \code{DataSetFileDTO}
 objects or a character vector, this sanity check is not possible.
 
 Files can only be retrieved after previously having created a corresponding
-download url using \code{\link[=list_download_urls]{list_download_urls()}}. As file urls in openBIS have a
+download url using \code{\link[=list_download_urls]{list_download_urls()}}, as file urls in openBIS have a
 limited lifetime and therefore must be used shortly after being created. A
 list of \code{call} objects (see \code{\link[base:call]{base::call()}}) is created and passed to either
 \code{\link[=do_requests_serial]{do_requests_serial()}} or \code{\link[=do_requests_parallel]{do_requests_parallel()}}. Whether file fetching

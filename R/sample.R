@@ -2,10 +2,10 @@
 #' List samples and sample types
 #' 
 #' In openBIS, samples can be seen as a generalization of plates and wells (
-#' see [list_plates()] and [list_wells()]. In fact, for the HTS focused openBIS
-#' instance of InfectX, wells and plates represent the only types of samples
-#' available. Samples can either be retrieved using [search_openbis()] and
-#' setting the argument `target_object` to `sample` or listed by calling
+#' see [list_plates()] and [list_wells()]). In fact, for the HTS focused
+#' openBIS instance of InfectX, wells and plates represent the only types of
+#' samples available. Samples can either be retrieved using [search_openbis()]
+#' and setting the argument `target_object` to `sample` or listed by calling
 #' `list_samples()`. Furthermore, all available sample types can be listed
 #' using `list_sample_types()`.
 #' 
@@ -14,12 +14,12 @@
 #' plate samples are returned, on objects representing plates (`Plate`,
 #' `PlateIdentifier` and `PlateMetadata`) or on objects representing wells
 #' (`WellIdentifier` and `WellMetadata`). For plates, the corresponding plate
-#' samples and for and wells, the corresponding well samples are returned. It
-#' is therefore not possible to list all well samples for a plate. This could
+#' samples and for wells, the corresponding well samples are returned. It is
+#' therefore not possible to list all well samples for a plate. This could
 #' however be achieved by listing all wells of a plate using [list_wells()]
 #' and calling `list_samples()` on the returned set of `WellIdentifier`
-#' objects. A separate API call is required for each object is a `json_vec`
-#' of objects is passed to `list_samples()`.
+#' objects. A separate API call is required for each `json_class` object
+#' contained in the `json_vec` passed to `list_samples()` as `x` argument.
 #'
 #' @inheritParams logout_openbis
 #' @param x Object to limit the number of returned samples, e.g. a set of

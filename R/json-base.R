@@ -34,11 +34,12 @@
 #' in a `json_vec` object of the same sub-type.
 #'
 #' Printing of both `json_class` and `json_vec` objects is inspired by the
-#' `ast` printing function of Hadley's `lobstr` package and borrows code from
-#' [there](https://git.io/vFMA5) Printing style can either be fancy (colors,
-#' UTF box characters. etc.) or simple (controlled by the `fancy` flag) and
-#' several options are available for setting the max printing with/length, as
-#' well as a max recursion depth for nested `json_class` objects.
+#' `ast` printing function of Hadley's
+#' [`lobstr` package](https://git.io/vFMA5) and borrows code from there.
+#' Printing style can either be fancy (colors, UTF box characters. etc.) or
+#' simple (controlled by the `fancy` flag) and several options are available
+#' for setting the max printing width/length, as well as a max recursion depth
+#' for nested `json_class` objects.
 #' 
 #' @param x Object to print/combine/subset, etc.
 #' @param depth The maximum recursion depth for printing.

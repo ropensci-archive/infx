@@ -115,16 +115,14 @@ turn are passed to \code{do_requests_*()}. The objects passed as \code{methods} 
 they will be \code{\link[base:rep]{base::rep()}}'ed to the required length. Care has to be taken
 that the list passed as \code{params} has the correct degree of nesting. As
 \code{make_requests()} iterates over the topmost list level, a single request
-should be wrapped in a list such that the topmost list level is on length
-\enumerate{
-\item The function \code{make_request()} is a wrapper around \code{make_requests()} that
-does exactly this.
-}
+should be wrapped in a list such that the topmost list level is of unit
+length. The function \code{make_request()} is a wrapper around \code{make_requests()}
+that does exactly this.
 
 As part of the \code{process_json()} function, which is the default value passed
 as \code{finally} argument in \code{make_requests()}, \code{@type} fields are converted
-to\code{json_class} attributes, using \code{\link[=as_json_class]{as_json_class()}}. Additionally, \code{@id}
-fields, which may be referenced if an objects is used multiple times, are
+to \code{json_class} attributes, using \code{\link[=as_json_class]{as_json_class()}}. Additionally, \code{@id}
+fields, which may be referenced if an object is used multiple times, are
 recursively resolved using \code{\link[=resolve_references]{resolve_references()}} such that each object is
 self-contained.
 }
@@ -137,8 +135,9 @@ self-contained.
                            "listProjects",
                            list(tok))
   print(projects[[1L]])
-  # or using make_request(), the params argument has to be a list per
-  # request and the first entry of the returned list has to be selected
+  # alternatively, using make_requests(), the params argument has to be a
+  # list per request and the first entry of the returned list has to be
+  # selected
   proj <- make_requests(api_url(api_endpoint = "gis"),
                         "listProjects",
                         list(list(tok)))
@@ -195,7 +194,7 @@ self-contained.
                             create_handle = post_handle,
                             finally = process_json)
 
-  # httbin returns POST data, therefore
+  # httpbin returns POST data, therefore
   identical(data, req[[1L]])
 
   logout_openbis(tok)

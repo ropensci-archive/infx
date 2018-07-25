@@ -41,8 +41,8 @@
 #'   * `sample_child`
 #'   * `sample_parent`
 #' 
-#' `SearchCriteria` objects, used for searching openBIS, consist of one or
-#' several match clauses. A match clause, broadly speaking, consist of a
+#' `SearchCriteria` objects, used for searching openBIS, contain one or
+#' several match clauses. A match clause, broadly speaking, consists of a
 #' desired value, a field to which this value is compared to and a comparison
 #' operator (e.g. equality). Match clauses can be constructed using any of
 #' `attribute_clause()`, `time_attribute_clause()`, `property_clause()`,
@@ -74,7 +74,7 @@
 #' queried openBIS instance. As objects of several types
 #' (`ControlledVocabularyPropertyType` and `PropertyType`) are returned as
 #' property types by the API, the resulting object is a list with each entry
-#' corresponding to a type and holding a set of object of the respective type.
+#' corresponding to a type and holding a set of objects of the respective type.
 #' 
 #' The comparison operator (default is equality) can be any of the following
 #'   * `equals`
@@ -126,7 +126,7 @@
 #'                            ),
 #'                            target_object = "experiment"))
 #' 
-#'   # of using the perm_id attribute
+#'   # or using the perm_id attribute
 #'   identical(exp,
 #'             search_openbis(tok,
 #'                            search_criteria(

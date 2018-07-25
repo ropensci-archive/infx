@@ -115,8 +115,8 @@ the sub criterion is applied to. Possibilities are
 \item \code{sample_parent}
 }
 
-\code{SearchCriteria} objects, used for searching openBIS, consist of one or
-several match clauses. A match clause, broadly speaking, consist of a
+\code{SearchCriteria} objects, used for searching openBIS, contain one or
+several match clauses. A match clause, broadly speaking, consists of a
 desired value, a field to which this value is compared to and a comparison
 operator (e.g. equality). Match clauses can be constructed using any of
 \code{attribute_clause()}, \code{time_attribute_clause()}, \code{property_clause()},
@@ -154,7 +154,7 @@ called. This function returns all property types available throughout the
 queried openBIS instance. As objects of several types
 (\code{ControlledVocabularyPropertyType} and \code{PropertyType}) are returned as
 property types by the API, the resulting object is a list with each entry
-corresponding to a type and holding a set of object of the respective type.
+corresponding to a type and holding a set of objects of the respective type.
 
 The comparison operator (default is equality) can be any of the following
 \itemize{
@@ -199,7 +199,7 @@ instead of \code{equals}).
                            ),
                            target_object = "experiment"))
 
-  # of using the perm_id attribute
+  # or using the perm_id attribute
   identical(exp,
             search_openbis(tok,
                            search_criteria(
