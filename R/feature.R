@@ -163,7 +163,7 @@ list_feature_codes.FeatureVectorDatasetWellReference <- list_feat_codes
 #' @param feature_codes A character vector of feature codes or NA (all
 #' available feature codes).
 #' 
-#' @section TODO: Even though there exists a constructor for
+#' @section Implementation note: Even though there exists a constructor for
 #' `FeatureVectorDatasetWellReference` objects, which takes two arguments, one
 #' for the corresponding `FeatureVectorDatasetReference` object and one for
 #' a `WellPosition` objects, this does not work. Furthermore, class information

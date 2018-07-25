@@ -76,22 +76,22 @@
 #' Cannot be combined with non-default `image_size`, `force_png` and `format`
 #' arguments.
 #' 
-#' @section TODO 1: For dispatch on `PlateImageReference` objects, currently
-#' the only options controlling the returned images are an argument for image
-#' size and a flag for forcing the returned format to png. OpenBIS also
-#' supports  pre-defined image transformations to be applied to the images
-#' before they are sent to the requesting party. These transformations can be
-#' requested by a code (options are listed in `ImageRepresentationFormat`
-#' objects or in `ImageChannel` objects attached to `ImageDatasetMetadata`
-#' objects). However, as no such transformations appear to be defined, this is
-#' currently not implemented.
-#' 
-#' @section TODO 2: When filtering `ImageRepresentationFormat` objects
-#' associated with a data set, only `SizeCriterion` objects can be used. The
-#' remaining criteria (`ColorDepthCriterion`, `FileTypeCriterion` and
-#' `OriginalCriterion`) are currently disabled as they extend the abstract
-#' class `AbstractFormatSelectionCriterion`, which causes an issue with JSON
-#' deserialization.
+#' @section Implementation notes:
+#' * For dispatch on `PlateImageReference` objects, currently the only options
+#'   controlling the returned images are an argument for image size and a flag
+#'   for forcing the returned format to png. OpenBIS also supports 
+#'   pre-defined image transformations to be applied to the images before they
+#'   are sent to the requesting party. These transformations can be requested
+#'   by a code (options are listed in `ImageRepresentationFormat` objects or
+#'   in `ImageChannel` objects attached to `ImageDatasetMetadata` objects).
+#'   However, as no such transformations appear to be defined, this is
+#'   currently not implemented.
+#' * When filtering `ImageRepresentationFormat` objects associated with a data
+#'   set, only `SizeCriterion` objects can be used. The remaining criteria
+#'   (`ColorDepthCriterion`, `FileTypeCriterion` and `OriginalCriterion`) are
+#'   currently disabled as they extend the abstract class
+#'   `AbstractFormatSelectionCriterion`, which causes an issue with JSON
+#'   deserialization.
 #' 
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("dsrs", "loadImagesBase64")}

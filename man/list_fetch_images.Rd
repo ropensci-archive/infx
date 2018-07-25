@@ -143,25 +143,25 @@ on which they were retrieved, including data set object, well positions
 (where applicable) and channel (where applicable). This results in a list
 with length corresponding to the number of API calls that were necessary.
 }
-\section{TODO 1}{
- For dispatch on \code{PlateImageReference} objects, currently
-the only options controlling the returned images are an argument for image
-size and a flag for forcing the returned format to png. OpenBIS also
-supports  pre-defined image transformations to be applied to the images
-before they are sent to the requesting party. These transformations can be
-requested by a code (options are listed in \code{ImageRepresentationFormat}
-objects or in \code{ImageChannel} objects attached to \code{ImageDatasetMetadata}
-objects). However, as no such transformations appear to be defined, this is
-currently not implemented.
-}
+\section{Implementation notes}{
 
-\section{TODO 2}{
- When filtering \code{ImageRepresentationFormat} objects
-associated with a data set, only \code{SizeCriterion} objects can be used. The
-remaining criteria (\code{ColorDepthCriterion}, \code{FileTypeCriterion} and
-\code{OriginalCriterion}) are currently disabled as they extend the abstract
-class \code{AbstractFormatSelectionCriterion}, which causes an issue with JSON
+\itemize{
+\item For dispatch on \code{PlateImageReference} objects, currently the only options
+controlling the returned images are an argument for image size and a flag
+for forcing the returned format to png. OpenBIS also supports
+pre-defined image transformations to be applied to the images before they
+are sent to the requesting party. These transformations can be requested
+by a code (options are listed in \code{ImageRepresentationFormat} objects or
+in \code{ImageChannel} objects attached to \code{ImageDatasetMetadata} objects).
+However, as no such transformations appear to be defined, this is
+currently not implemented.
+\item When filtering \code{ImageRepresentationFormat} objects associated with a data
+set, only \code{SizeCriterion} objects can be used. The remaining criteria
+(\code{ColorDepthCriterion}, \code{FileTypeCriterion} and \code{OriginalCriterion}) are
+currently disabled as they extend the abstract class
+\code{AbstractFormatSelectionCriterion}, which causes an issue with JSON
 deserialization.
+}
 }
 
 \section{openBIS}{

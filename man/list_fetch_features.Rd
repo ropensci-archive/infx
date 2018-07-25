@@ -117,7 +117,7 @@ one for each well.
 }
 }
 
-\section{TODO}{
+\section{Implementation note}{
  Even though there exists a constructor for
 \code{FeatureVectorDatasetWellReference} objects, which takes two arguments, one
 for the corresponding \code{FeatureVectorDatasetReference} object and one for

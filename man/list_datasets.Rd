@@ -165,10 +165,10 @@ reference objects, the resulting object type depends on whether a (set of)
 default value (NULL), a set of \code{MicroscopyImageReference} objects is
 returned, while \code{PlateImageReference} objects are returned otherwise.
 }
-\section{TODO}{
- The API function \code{listDataSetsForSample()} has a parameter
-\code{areOnlyDirectlyConnectedIncluded}, which is currently fixed to \code{TRUE}. The
-documentation contains the following explanation:
+\section{Implementation note}{
+ The API function \code{listDataSetsForSample()}
+has a parameter \code{areOnlyDirectlyConnectedIncluded}, which is currently
+fixed to \code{TRUE}. The  documentation contains the following explanation:
 
 If true, only datasets that are directly connected to the sample are
 included, otherwise datasets of child samples are included as well.

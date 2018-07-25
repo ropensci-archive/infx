@@ -47,12 +47,12 @@
 #' @param ... Generic compatibility. Extra arguments will be passed to
 #' [make_requests()].
 #' 
-#' @section TODO: The API function `listDataSetsForSample()` has a parameter
-#' `areOnlyDirectlyConnectedIncluded`, which is currently fixed to `TRUE`. The
-#' documentation contains the following explanation:
+#' @section Implementation note: The API function `listDataSetsForSample()`
+#' has a parameter `areOnlyDirectlyConnectedIncluded`, which is currently
+#' fixed to `TRUE`. The  documentation contains the following explanation:
 #' 
 #' > If true, only datasets that are directly connected to the sample are
-#' > included, otherwise datasets of child samples are included as well.
+#' included, otherwise datasets of child samples are included as well.
 #' 
 #' This does however not seem to correspond to including child datasets in the
 #' API call to `listDataSets()` via its `connectionsToGet` argument. As long
