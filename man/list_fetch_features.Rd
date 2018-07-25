@@ -168,3 +168,9 @@ behaves this way is currently unclear.
 }
 
 }
+\seealso{
+Other resource listing/downloading functions: \code{\link{fetch_images}},
+  \code{\link{list_download_urls}},
+  \code{\link{list_files}}
+}
+\concept{resource listing/downloading functions}

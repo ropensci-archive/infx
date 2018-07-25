@@ -72,6 +72,8 @@
 #' @param ... Generic compatibility. Extra arguments will be passed to
 #' [make_requests()].
 #' 
+#' @family object listing functions
+#' 
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "getMaterialByCodes")}
 #' * \Sexpr[results=rd]{infx::docs_link("sas", "listPlateMaterialMapping")}

@@ -39,6 +39,8 @@
 #' 
 #' @rdname json_vec
 #' 
+#' @family json object handling functions
+#' 
 #' @examples
 #' a <- json_class(field = "a", class = "foo")
 #' b <- json_class(field = "b", class = "foo")

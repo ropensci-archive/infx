@@ -120,3 +120,9 @@ the search for experiments.
 }
 
 }
+\seealso{
+Other object listing functions: \code{\link{list_datasets}},
+  \code{\link{list_material}}, \code{\link{list_plates}},
+  \code{\link{list_projects}}, \code{\link{list_samples}}
+}
+\concept{object listing functions}

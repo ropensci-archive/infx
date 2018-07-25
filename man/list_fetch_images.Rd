@@ -230,3 +230,8 @@ deserialization.
 }
 
 }
+\seealso{
+Other resource listing/downloading functions: \code{\link{list_download_urls}},
+  \code{\link{list_features}}, \code{\link{list_files}}
+}
+\concept{resource listing/downloading functions}

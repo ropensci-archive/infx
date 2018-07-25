@@ -15,8 +15,11 @@
 #' 
 #' @rdname login
 #' 
+#' @family utility functions
+#' 
 #' @section openBIS:
-#' * \Sexpr[results=rd]{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
+#' * \Sexpr[results=rd]{infx::docs_link("gis",
+#'                      "tryToAuthenticateForAllServices")}
 #' 
 #' @examples
 #' \donttest{

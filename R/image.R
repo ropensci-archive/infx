@@ -93,6 +93,8 @@
 #'   `AbstractFormatSelectionCriterion`, which causes an issue with JSON
 #'   deserialization.
 #' 
+#' @family resource listing/downloading functions
+#' 
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("dsrs", "loadImagesBase64")}
 #' * \Sexpr[results=rd]{infx::docs_link("dsrs", "loadThumbnailImagesBase64")}

@@ -38,3 +38,10 @@ the current user can be listed by calling the function \code{list_projects()}.
 }
 
 }
+\seealso{
+Other object listing functions: \code{\link{list_datasets}},
+  \code{\link{list_experiments}},
+  \code{\link{list_material}}, \code{\link{list_plates}},
+  \code{\link{list_samples}}
+}
+\concept{object listing functions}

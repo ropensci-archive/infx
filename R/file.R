@@ -95,6 +95,8 @@
 #' 
 #' @rdname list_fetch_files
 #' 
+#' @family resource listing/downloading functions
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

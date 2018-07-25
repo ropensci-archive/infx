@@ -244,3 +244,4 @@ instead of \code{equals}).
 }
 
 }
+\concept{object searching functions}

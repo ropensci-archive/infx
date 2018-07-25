@@ -196,3 +196,8 @@ to \code{list_datastores()}.
   logout_openbis(tok)
 }
 }
+\seealso{
+Other resource listing/downloading functions: \code{\link{fetch_images}},
+  \code{\link{list_features}}, \code{\link{list_files}}
+}
+\concept{resource listing/downloading functions}

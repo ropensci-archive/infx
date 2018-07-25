@@ -96,6 +96,8 @@
 #' constructors, the comparison mode can be passed as `mode` argument, which
 #' may be `eq` (==), `lte` (<=) or `gte` (>=).
 #' 
+#' @family object searching functions
+#' 
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForDataSets")}
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForExperiments")}

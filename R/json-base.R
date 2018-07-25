@@ -49,6 +49,8 @@
 #' @param ... Generic compatibility.
 #' 
 #' @rdname json_base
+#' 
+#' @family json object handling functions
 #'  
 #' @examples
 #' obj_c <- json_class(a = json_class(b = "c", class = "foo"),

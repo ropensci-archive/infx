@@ -126,3 +126,8 @@ is_json_vec(list(a, b))
 is_json_vec(ab)
 
 }
+\seealso{
+Other json object handling functions: \code{\link{has_fields.json_class}},
+  \code{\link{json_class}}, \code{\link{print.json_class}}
+}
+\concept{json object handling functions}

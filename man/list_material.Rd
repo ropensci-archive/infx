@@ -230,3 +230,10 @@ object and will return the selected \code{MaterialIdentifierScreening} object.
 }
 
 }
+\seealso{
+Other object listing functions: \code{\link{list_datasets}},
+  \code{\link{list_experiments}},
+  \code{\link{list_plates}}, \code{\link{list_projects}},
+  \code{\link{list_samples}}
+}
+\concept{object listing functions}

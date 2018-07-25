@@ -202,3 +202,8 @@ self-contained.
 }
 
 }
+\seealso{
+Other utility functions: \code{\link{api_url}},
+  \code{\link{login_openbis}}
+}
+\concept{utility functions}

@@ -50,6 +50,8 @@
 #' @param ... Generic compatibility.
 #' 
 #' @rdname json_class
+#' 
+#' @family json object handling functions
 #'  
 #' @examples
 #' lst <- list(`@type` = "foobar",

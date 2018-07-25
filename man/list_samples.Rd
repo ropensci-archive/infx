@@ -119,3 +119,10 @@ of objects is passed to \code{list_samples()}.
 }
 
 }
+\seealso{
+Other object listing functions: \code{\link{list_datasets}},
+  \code{\link{list_experiments}},
+  \code{\link{list_material}}, \code{\link{list_plates}},
+  \code{\link{list_projects}}
+}
+\concept{object listing functions}

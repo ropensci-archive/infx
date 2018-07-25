@@ -235,3 +235,10 @@ of a well within a plate. Such objects can be created using the constructor
 }
 
 }
+\seealso{
+Other object listing functions: \code{\link{list_datasets}},
+  \code{\link{list_experiments}},
+  \code{\link{list_material}}, \code{\link{list_projects}},
+  \code{\link{list_samples}}
+}
+\concept{object listing functions}

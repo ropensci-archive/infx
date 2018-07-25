@@ -30,6 +30,8 @@
 #' @param ... Generic compatibility. Extra arguments will be passed to
 #' [make_requests()].
 #' 
+#' @family object listing functions
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

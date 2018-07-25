@@ -151,3 +151,8 @@ obj_cgi[1L:2L] <- obj_cg
 identical(obj_cgi, c(obj_c, obj_i, obj_i))
 
 }
+\seealso{
+Other json object handling functions: \code{\link{has_fields.json_class}},
+  \code{\link{json_class}}, \code{\link{json_vec}}
+}
+\concept{json object handling functions}

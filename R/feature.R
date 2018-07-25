@@ -49,6 +49,8 @@
 #' @param ... Generic compatibility. Extra arguments will be passed to
 #' [make_request()].
 #' 
+#' @family resource listing/downloading functions
+#' 
 #' @rdname list_fetch_features
 #' 
 #' @examples

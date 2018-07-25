@@ -139,3 +139,8 @@ as.list(cls, keep_asis = FALSE, recursive = FALSE)
 as.list(cls, keep_asis = FALSE, recursive = FALSE, restore_type = FALSE)
 
 }
+\seealso{
+Other json object handling functions: \code{\link{has_fields.json_class}},
+  \code{\link{json_vec}}, \code{\link{print.json_class}}
+}
+\concept{json object handling functions}

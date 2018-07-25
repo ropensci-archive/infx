@@ -60,6 +60,8 @@
 #' differs from setting `areOnlyDirectlyConnectedIncluded` to `FALSE`, this
 #' option is not exposed to the user.
 #' 
+#' @family object listing functions
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

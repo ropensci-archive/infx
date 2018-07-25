@@ -256,3 +256,9 @@ of a plate.
 }
 
 }
+\seealso{
+Other resource listing/downloading functions: \code{\link{fetch_images}},
+  \code{\link{list_download_urls}},
+  \code{\link{list_features}}
+}
+\concept{resource listing/downloading functions}

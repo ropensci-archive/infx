@@ -36,7 +36,8 @@ token can be manually destroyed by calling \code{logout_openbis()} on the token.
 \section{openBIS}{
 
 \itemize{
-\item \Sexpr[results=rd]{infx::docs_link("gis", "tryToAuthenticateForAllServices")}
+\item \Sexpr[results=rd]{infx::docs_link("gis",
+"tryToAuthenticateForAllServices")}
 }
 
 
@@ -64,3 +65,8 @@ token can be manually destroyed by calling \code{logout_openbis()} on the token.
 }
 
 }
+\seealso{
+Other utility functions: \code{\link{api_url}},
+  \code{\link{make_requests}}
+}
+\concept{utility functions}

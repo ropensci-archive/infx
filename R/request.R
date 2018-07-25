@@ -73,6 +73,8 @@
 #' 
 #' @rdname request
 #' 
+#' @family utility functions
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

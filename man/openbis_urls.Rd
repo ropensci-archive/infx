@@ -67,3 +67,8 @@ docs_link("sas")
 docs_link("sas", version = "16.05.6")
 
 }
+\seealso{
+Other utility functions: \code{\link{login_openbis}},
+  \code{\link{make_requests}}
+}
+\concept{utility functions}

@@ -153,3 +153,8 @@ print(tmp, 2)
 print(remove_null(tmp), 2)
 
 }
+\seealso{
+Other json object handling functions: \code{\link{json_class}},
+  \code{\link{json_vec}}, \code{\link{print.json_class}}
+}
+\concept{json object handling functions}

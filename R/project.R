@@ -11,6 +11,8 @@
 #' @inheritParams logout_openbis
 #' @param ... Further arguments will be passed to [make_requests()].
 #' 
+#' @family object listing functions
+#' 
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "listProjects")}
 #' 

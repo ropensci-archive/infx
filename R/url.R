@@ -44,6 +44,8 @@
 #' 
 #' @rdname list_urls
 #' 
+#' @family resource listing/downloading functions
+#' 
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("dsrg",
 #'                      "getDownloadUrlForFileForDataSet")}
@@ -351,6 +353,8 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' @param ... Further arguments are ignored.
 #' 
 #' @rdname openbis_urls
+#' 
+#' @family utility functions
 #' 
 #' @examples
 #' # default endpoint is the GeneralInformationService interface
