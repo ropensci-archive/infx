@@ -6,23 +6,28 @@
 \alias{infx-package}
 \title{API access to the InfectX data repository}
 \description{
-The JSON-RPC based \href{https://openbis.elnlims.ch}{openBIS} API can be
-conveniently queried form R using functionality provided with this package.
-While focused on retrieval of data from the
-\href{http://www.infectx.ch}{InfectX} and
-\href{https://www.targetinfectx.ch}{TargetInfectX} high throughput screening
-projects, any openBIS instance that supports v1 of the JSON-RPC API can be
-accessed. Some parts of the API, geared more towards data curation are
-currently not supported. For more information on what API functions are
-available, have a look at the
+The \href{https://openbis.elnlims.ch}{openBIS} data repository hosted by
+\href{http://www.infectx.ch}{InfectX} contains high throughput screening data
+from several large-scale gene knockdown experiments. The screens currently
+publicly available are RNA interference based, use kinome-wide libraries
+from multiple vendors and were carried out on HeLa cells, in presence of
+several viral and bacterial pathogens. Further genome-wide screens have been
+carried out and their public release is forthcoming. For more information,
+please refer to the \href{https://nbenn.github.io/infx/}{README} or the
+\href{../doc/infx-intro.html}{Introduction vignette}.
+}
+\details{
+The provided functionality is not restricted to InfectX data, but applies
+to the v1 JSON-RPC based openBIS API in general. Some parts of the API,
+geared more towards data curation are currently not supported. For more
+information on what API functions are available, have a look at the
 \href{../doc/openbis-api.html}{openBIS API vignette}. The basic infrastructure
 for creating and executing a request, as well as processing the response, is
 exposed and missing functionality can easily be added.
-}
-\details{
+
 Type information of JSON objects returned from the API is preserved as S3
 class attribute and all JSON list structures additionally inherit from the
-S3 class \code{json_class}. As such, a \code{foobar} object retrieved form openBIS,
+S3 class \code{json_class}. As such, a \code{foobar} object retrieved from openBIS,
 will have two class attributes: \code{foobar} and \code{json_class}. Sets of
 \code{json_class} objects that are of the same sub-type can be represented as
 \code{json_vec} objects of that sub-type. Several data set objects therefore are

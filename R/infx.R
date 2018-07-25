@@ -1,22 +1,27 @@
 
 #' API access to the InfectX data repository
 #' 
-#' The JSON-RPC based [openBIS](https://openbis.elnlims.ch) API can be
-#' conveniently queried form R using functionality provided with this package.
-#' While focused on retrieval of data from the
-#' [InfectX](http://www.infectx.ch) and
-#' [TargetInfectX](https://www.targetinfectx.ch) high throughput screening
-#' projects, any openBIS instance that supports v1 of the JSON-RPC API can be
-#' accessed. Some parts of the API, geared more towards data curation are
-#' currently not supported. For more information on what API functions are
-#' available, have a look at the
+#' The [openBIS](https://openbis.elnlims.ch) data repository hosted by
+#' [InfectX](http://www.infectx.ch) contains high throughput screening data
+#' from several large-scale gene knockdown experiments. The screens currently
+#' publicly available are RNA interference based, use kinome-wide libraries
+#' from multiple vendors and were carried out on HeLa cells, in presence of
+#' several viral and bacterial pathogens. Further genome-wide screens have been
+#' carried out and their public release is forthcoming. For more information,
+#' please refer to the [README](https://nbenn.github.io/infx/) or the
+#' [Introduction vignette](../doc/infx-intro.html).
+#' 
+#' The provided functionality is not restricted to InfectX data, but applies
+#' to the v1 JSON-RPC based openBIS API in general. Some parts of the API,
+#' geared more towards data curation are currently not supported. For more
+#' information on what API functions are available, have a look at the
 #' [openBIS API vignette](../doc/openbis-api.html). The basic infrastructure
 #' for creating and executing a request, as well as processing the response, is
 #' exposed and missing functionality can easily be added.
 #'
 #' Type information of JSON objects returned from the API is preserved as S3
 #' class attribute and all JSON list structures additionally inherit from the
-#' S3 class `json_class`. As such, a `foobar` object retrieved form openBIS,
+#' S3 class `json_class`. As such, a `foobar` object retrieved from openBIS,
 #' will have two class attributes: `foobar` and `json_class`. Sets of
 #' `json_class` objects that are of the same sub-type can be represented as
 #' `json_vec` objects of that sub-type. Several data set objects therefore are
