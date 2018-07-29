@@ -227,7 +227,7 @@
   ],
   "releaseNotes": "https://github.com/nbenn/infx/blob/master/NEWS.md",
   "readme": "https://github.com/nbenn/infx/blob/master/README.md",
-  "fileSize": "172.392KB",
+  "fileSize": "173.509KB",
   "contIntegration": [
     "https://travis-ci.org/nbenn/infx",
     "https://ci.appveyor.com/project/nbenn/infx",
