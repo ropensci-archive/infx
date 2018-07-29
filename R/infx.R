@@ -20,13 +20,14 @@
 #' exposed and missing functionality can easily be added.
 #'
 #' Type information of JSON objects returned from the API is preserved as S3
-#' class attribute and all JSON list structures additionally inherit from the
+#' class attribute and all retrieved JSON objects additionally inherit from the
 #' S3 class `json_class`. As such, a `foobar` object retrieved from openBIS,
 #' will have two class attributes: `foobar` and `json_class`. Sets of
 #' `json_class` objects that are of the same sub-type can be represented as
-#' `json_vec` objects of that sub-type. Several data set objects therefore are
-#' assembled as list structure with S3 classes `foobar` and `json_vec`, where
-#' every entry in turn is an S3 object with types `foobar` and `json_class`.
+#' `json_vec` objects of that sub-type. Several `foobar` objects therefore can
+#' be combined into a list structure with S3 classes `foobar` and `json_vec`,
+#' where every entry in turn is an S3 object with types `foobar` and
+#' `json_class`.
 #' 
 #' ```
 #' examp <- json_vec(

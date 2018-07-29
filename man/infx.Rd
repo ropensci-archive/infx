@@ -26,13 +26,14 @@ for creating and executing a request, as well as processing the response, is
 exposed and missing functionality can easily be added.
 
 Type information of JSON objects returned from the API is preserved as S3
-class attribute and all JSON list structures additionally inherit from the
+class attribute and all retrieved JSON objects additionally inherit from the
 S3 class \code{json_class}. As such, a \code{foobar} object retrieved from openBIS,
 will have two class attributes: \code{foobar} and \code{json_class}. Sets of
 \code{json_class} objects that are of the same sub-type can be represented as
-\code{json_vec} objects of that sub-type. Several data set objects therefore are
-assembled as list structure with S3 classes \code{foobar} and \code{json_vec}, where
-every entry in turn is an S3 object with types \code{foobar} and \code{json_class}.\preformatted{examp <- json_vec(
+\code{json_vec} objects of that sub-type. Several \code{foobar} objects therefore can
+be combined into a list structure with S3 classes \code{foobar} and \code{json_vec},
+where every entry in turn is an S3 object with types \code{foobar} and
+\code{json_class}.\preformatted{examp <- json_vec(
   json_class(a = "foo", class = "foobar"),
   json_class(a = "bar", class = "foobar")
 )
