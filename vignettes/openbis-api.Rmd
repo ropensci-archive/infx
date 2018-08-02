@@ -168,11 +168,15 @@ projects <- make_request(api_url(api_endpoint = "gis"),
                          method = "listProjects",
                          params = list(token))
 print(projects, length = 10L)
+
+logout_openbis(token)
 ```
 
 To illustrate the used of `make_requests()`, the API method [`getDownloadUrlForFileForDataSet`](https://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/generic/shared/api/v1/IDssServiceRpcGeneric.html#getDownloadUrlForFileForDataSet%28java.lang.String,%20java.lang.String,%20java.lang.String%29) is implemented. This function generates a download URL for a file in a data set and requires a separate API call for each combination of data set and file path. In order to carry out several of these requests asynchronously, a list has to be passed as `params` argument such that each entry contains a list holding a login token, a dataset code and a file path.
 
 ```{r multi-rpc}
+token <- login_openbis()
+
 dataset_codes <- c("20120629093035782-603380", "20121011143734361-1359915")
 file_path <- c("original/aThresholdedInfectionScoring_bBB01-1I.csv")
 
