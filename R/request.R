@@ -377,8 +377,14 @@ do_requests_parallel <- function(urls,
   res
 }
 
-create_default_handle <- function(...)
-  curl::new_handle()
+create_default_handle <- function(...) {
+
+  handle <- curl::new_handle()
+
+  curl::handle_setheaders(handle,
+    "User-Agent" = paste(.packageName, getNamespaceVersion(.packageName))
+  )
+}
 
 check_default_result <- function(resp, ...) {
 
@@ -396,7 +402,10 @@ create_request_handle <- function(body) {
                              postfieldsize = length(body_raw),
                              postfields = body_raw)
 
-  curl::handle_setheaders(handle, "Content-Type" = "application/json")
+  curl::handle_setheaders(handle,
+    "User-Agent" = paste(.packageName, getNamespaceVersion(.packageName)),
+    "Content-Type" = "application/json"
+  )
 }
 
 check_request_result <- function(resp, body) {
