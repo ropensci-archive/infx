@@ -90,6 +90,18 @@ plate row.}
 
 \item{col}{A single integer specifying a plate column.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), is
+returned. For \code{list_material()} and \code{extract_well_material()}, the
+additional class attribute \code{MaterialGeneric} is added and the utility
+functions \code{as_generic_mat_id()} and \code{as_screening_mat_id()} return
+\code{MaterialIdentifierGeneric} and \code{MaterialIdentifierScreening} objects,
+respectively, while \code{material_id()} can return either, depending on the
+\code{mode} argument. Finally, \code{list_material_types()} returns
+\code{MaterialTypeIdentifierGeneric} or \code{MaterialTypeIdentifierScreening}, again
+depending on the \code{mode} argument.
+}
 \description{
 Materials in openBIS can represent a variety of objects. For the InfectX
 HTS setup, this is mainly limited to either compounds such as oligos or

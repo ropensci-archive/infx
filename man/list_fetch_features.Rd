@@ -49,6 +49,13 @@ feature data.}
 \item{feature_codes}{A character vector of feature codes or NA (all
 available feature codes).}
 }
+\value{
+\code{list_feature_codes()} returns a character vector of feature codes,
+while \code{list_features()} and \code{fetch_features()} return either \code{\link{json_class}}
+(single object) or a \code{\link{json_vec}} (multiple objects), dependent on the
+number of resulting objects. The sub-type is \code{FeatureInformation} for
+\code{list_features()} and \code{FeatureVectorDataset} for \code{fetch_features()}.
+}
 \description{
 In openBIS, features are datasets that are treated differently from
 generic datasets. Briefly put, tabular datasets where columns correspond
@@ -73,7 +80,7 @@ feature. If for different datasets different sets of features are available,
 \code{list_features()} provides the union of the features of all datasets.
 
 Similarly, \code{list_feature_codes()} provides the list of all available
-features as character vector or feature codes. As for \code{list_features()},
+features as character vector of feature codes. As for \code{list_features()},
 either plate-level or well-level feature dataset reference may be passed
 and if a \code{wells} argument is supplied together with a plate-level
 reference, the corresponding well-level references are constructed using
@@ -150,7 +157,7 @@ behaves this way is currently unclear.
   feat_info <- feat_info[c(2L, 6L)]
 
   # for a feature data set, a set of feature codes and a set of wells,
-  #<c2><a0>retrieve the corresponding feature data
+  # retrieve the corresponding feature data
   feats <- fetch_features(tok, feat_ref,
                           feature_codes = get_field(feat_info, "code"),
                           wells = well_pos(1:6, 3:8))

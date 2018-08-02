@@ -11,6 +11,11 @@ list_projects(token, ...)
 
 \item{...}{Further arguments will be passed to \code{\link[=make_requests]{make_requests()}}.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), of
+sub-type \code{Project} is returned.
+}
 \description{
 A project forms one of the most basic entities in the organizational
 hierarchy of openBIS. Each project consists of one or several experiments

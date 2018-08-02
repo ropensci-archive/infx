@@ -23,7 +23,7 @@
 #' `list_features()` provides the union of the features of all datasets.
 #' 
 #' Similarly, `list_feature_codes()` provides the list of all available
-#' features as character vector or feature codes. As for `list_features()`,
+#' features as character vector of feature codes. As for `list_features()`,
 #' either plate-level or well-level feature dataset reference may be passed
 #' and if a `wells` argument is supplied together with a plate-level
 #' reference, the corresponding well-level references are constructed using
@@ -53,6 +53,12 @@
 #' 
 #' @rdname list_fetch_features
 #' 
+#' @return `list_feature_codes()` returns a character vector of feature codes,
+#' while `list_features()` and `fetch_features()` return either [`json_class`]
+#' (single object) or a [`json_vec`] (multiple objects), dependent on the
+#' number of resulting objects. The sub-type is `FeatureInformation` for
+#' `list_features()` and `FeatureVectorDataset` for `fetch_features()`.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()
@@ -76,7 +82,7 @@
 #'   feat_info <- feat_info[c(2L, 6L)]
 #' 
 #'   # for a feature data set, a set of feature codes and a set of wells,
-#'   # retrieve the corresponding feature data
+#'   # retrieve the corresponding feature data
 #'   feats <- fetch_features(tok, feat_ref,
 #'                           feature_codes = get_field(feat_info, "code"),
 #'                           wells = well_pos(1:6, 3:8))

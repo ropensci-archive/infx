@@ -21,6 +21,10 @@
 #' * \Sexpr[results=rd]{infx::docs_link("gis",
 #'                      "tryToAuthenticateForAllServices")}
 #' 
+#' @return A login token as returned by `login_openbis()` is a character vector
+#' and `logout_openbis()` returns `NULL` invisibly while `is_token_valid()`
+#' returns a logical flag.
+#' 
 #' @examples
 #' \donttest{
 #'   # create a login token

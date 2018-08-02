@@ -26,6 +26,11 @@ connection upon garbage collection of the token.}
 
 \item{token}{Login token as created by \code{login_openbis()}.}
 }
+\value{
+A login token as returned by \code{login_openbis()} is a character vector
+and \code{logout_openbis()} returns \code{NULL} invisibly while \code{is_token_valid()}
+returns a logical flag.
+}
 \description{
 Login tokens for openBIS API calls can be created using \code{login_openbis()}.
 If the \code{auto_disconnect} option is enabled, the user is automatically

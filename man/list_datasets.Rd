@@ -120,6 +120,11 @@ listing to.}
 \item{channels}{A character vector with imaging channel names to limit the
 dataset listing to.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), is
+returned. For the specific sub-class, refer to the \emph{Details} section.
+}
 \description{
 All available datasets for the specified experiment(s), sample(s) or
 dataset code(s) are retrieved as \code{DataSet} objects by
@@ -149,13 +154,13 @@ Several classes in addition to \code{DatasetIdentifier} implement the
 \item \code{PlateImageReference}
 }
 
-Any of these object types may be returned by \code{list_references()}, depending
-on argument types. If the s3 generic function \code{list_references()} is
-dispatched on plate objects (\code{Plate}, \code{PlateIdentifier} or \code{PlateMetadata}
-or \code{Sample} objects, representing plates), \code{ImageDatasetReference} objects
-are returned (except if the type argument is set to \code{feature}, in which
-case, \code{FeatureVectorDatasetReference} object(s) are returned). Similarly,
-if \code{MaterialIdentifierScreening} objects are used as input,
+The return type of \code{list_references()} depends on dispatch object type and
+in some cases on additional arguments. If the s3 generic function
+\code{list_references()} is dispatched on plate objects (\code{Plate},
+\code{PlateIdentifier} or \code{PlateMetadata} or \code{Sample} objects, representing
+plates), \code{ImageDatasetReference} objects are returned (except if the type
+argument is set to \code{feature}, in which case, if
+\code{MaterialIdentifierScreening} objects are used as input,
 \code{PlateWellReferenceWithDatasets} objects are returned, which each contain
 \code{ImageDatasetReference} and \code{FeatureVectorDatasetReference} objects.
 

@@ -75,6 +75,14 @@
 #' 
 #' @family utility functions
 #' 
+#' @return The return type of `make_request()`/`make_requests()` and
+#' `do_requests_serial()`/`do_requests_parallel()` depends on the callback
+#' functions passed as `check` and `finally` arguments. At default,
+#' `make_request()`/`make_requests()` return either a [`json_class`] (single
+#' object) or a [`json_vec`] (multiple objects), dependent on the number of
+#' resulting objects, while `do_requests_serial()`/`do_requests_parallel()`
+#' return a list of raw vectors, one per request.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

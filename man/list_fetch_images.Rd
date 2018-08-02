@@ -85,6 +85,13 @@ arguments.}
 
 \item{type}{Switch to specify the type of meta data objects to be returned.}
 }
+\value{
+For \code{list_image_metadata()}, either a \code{\link{json_class}} (single
+object) or a \code{\link{json_vec}} (multiple objects), is returned. For the specific
+sub-class, refer to the \emph{Details} section. Image data retrieved with
+\code{fetch_images()} is read by \code{\link[magick:image_read]{magick::image_read()}} and returned as
+(possibly nested) \code{list} of \code{magick-image} objects.
+}
 \description{
 Experiment level image meta data can be listed by passing experiment
 representing objects (\code{Experiment} or \code{ExperimentIdentifier}) to

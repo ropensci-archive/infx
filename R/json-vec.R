@@ -41,6 +41,10 @@
 #' 
 #' @family json object handling functions
 #' 
+#' @return Multiple [`json_class`] objects of the same sub-type can be
+#' represented as S3 objects with type `json_vec` and the common sub-type as
+#' second class attribute. 
+#' 
 #' @examples
 #' a <- json_class(field = "a", class = "foo")
 #' b <- json_class(field = "b", class = "foo")

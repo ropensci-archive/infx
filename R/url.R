@@ -52,6 +52,11 @@
 #' * \Sexpr[results=rd]{infx::docs_link("dsrg",
 #'                      "getDownloadUrlForFileForDataSetWithTimeout")}
 #' 
+#' @return Both `list_download_urls()` and `list_datastore_urls()` return
+#' character vectors while `list_datastores()` returns either a [`json_class`]
+#' (single object) or a [`json_vec`] (multiple objects), dependent on the
+#' number of resulting objects, with sub-type `DataStore`.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()
@@ -355,6 +360,8 @@ list_datastore_urls.PlateImageReference <- list_ds_urls
 #' @rdname openbis_urls
 #' 
 #' @family utility functions
+#' 
+#' @return A character vector of length 1.
 #' 
 #' @examples
 #' # default endpoint is the GeneralInformationService interface

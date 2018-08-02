@@ -65,6 +65,11 @@ extract.}
 \item{class}{Character vector of nonzero length, holding the class names
 to test for.}
 }
+\value{
+Depending on whether a single or a set of multiple objects is
+represented, the S3 classes \code{\link{json_class}} or \code{\link{json_vec}} are applied
+respectively.
+}
 \description{
 Several utility functions for working with \code{json_class} and \code{json_vec}
 objects are provided. This includes \code{has_fields()} for checking whether

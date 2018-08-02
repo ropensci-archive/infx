@@ -39,6 +39,13 @@ list_sample_types(token, ...)
 \item{...}{Generic compatibility. Extra arguments will be passed to
 \code{\link[=make_requests]{make_requests()}}.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), is
+returned. Sample objects as returned by \code{list_samples()} additionally
+inherit from the \code{Sample} class and sample type objects returned by
+\code{list_sample_types()} inherit from \code{SampleType}.
+}
 \description{
 In openBIS, samples can be seen as a generalization of plates and wells (
 see \code{\link[=list_plates]{list_plates()}} and \code{\link[=list_wells]{list_wells()}}). In fact, for the HTS focused

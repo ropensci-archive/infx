@@ -27,6 +27,9 @@ be passed which will be returned again.}
 
 \item{version}{OpenBIS version number.}
 }
+\value{
+A character vector of length 1.
+}
 \description{
 The helper function \code{api_url()} is used to create urls to InfectX
 openBIS API endpoints and \code{docs_link()} generates latex links to

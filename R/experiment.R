@@ -32,6 +32,11 @@
 #' 
 #' @family object listing functions
 #' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), is
+#' returned. Experiments are represented by `Experiment`, experiment ids by
+#' `ExperimentIdentifier` and experiment types by `ExperimentType` objects.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

@@ -26,13 +26,13 @@
 #'   * `MicroscopyImageReference`
 #'   * `PlateImageReference`
 #' 
-#' Any of these object types may be returned by `list_references()`, depending
-#' on argument types. If the s3 generic function `list_references()` is
-#' dispatched on plate objects (`Plate`, `PlateIdentifier` or `PlateMetadata`
-#' or `Sample` objects, representing plates), `ImageDatasetReference` objects
-#' are returned (except if the type argument is set to `feature`, in which
-#' case, `FeatureVectorDatasetReference` object(s) are returned). Similarly,
-#' if `MaterialIdentifierScreening` objects are used as input,
+#' The return type of `list_references()` depends on dispatch object type and
+#' in some cases on additional arguments. If the s3 generic function
+#' `list_references()` is dispatched on plate objects (`Plate`,
+#' `PlateIdentifier` or `PlateMetadata` or `Sample` objects, representing
+#' plates), `ImageDatasetReference` objects are returned (except if the type
+#' argument is set to `feature`, in which case, if
+#' `MaterialIdentifierScreening` objects are used as input,
 #' `PlateWellReferenceWithDatasets` objects are returned, which each contain
 #' `ImageDatasetReference` and `FeatureVectorDatasetReference` objects.
 #' 
@@ -61,6 +61,10 @@
 #' option is not exposed to the user.
 #' 
 #' @family object listing functions
+#' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), is
+#' returned. For the specific sub-class, refer to the *Details* section.
 #' 
 #' @examples
 #' \donttest{

@@ -104,6 +104,21 @@
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForMaterials")}
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "searchForSamples")}
 #' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), is
+#' returned. The object specific sub-class for objects returned by
+#' `search_openbis()` depends on the target object type specified by the
+#' `target_object` argument. The remaining functions are used for constructing
+#' search queries and instantiate the required objects: `search_criteria()`
+#' returns a `SearchCriteria` and `search_sub_criteria()` a `SearchSubCriteria`
+#' object, while `property_clause()` returns a `PropertyMatchClause`,
+#' `any_property_clause()` an `AnyPropertyMatchClause`, `any_field_clause()`
+#' an `AnyFieldMatchClause`, `attribute_clause()` an `AttributeMatchClause` and
+#' `time_attribute_clause()` a `TimeAttributeMatchClause` object. Finally,
+#' `list_property_types()` returns a list with two slots, one holding a
+#' `json_vec` of sub-type `ControlledVocabularyPropertyType` and the other
+#' holding a `json_vec` of sub-type `PropertyType`.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

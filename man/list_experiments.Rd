@@ -43,6 +43,12 @@ as_experiment_id(x, ...)
 \item{require}{A switch to require the resulting experiments to contain a
 nonzero number of dataset or sample. Default behavior is no requirement.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), is
+returned. Experiments are represented by \code{Experiment}, experiment ids by
+\code{ExperimentIdentifier} and experiment types by \code{ExperimentType} objects.
+}
 \description{
 Experiments can be represented by two object classes: \code{Experiment} and
 \code{ExperimentIdentifier}. The fields that make up an \code{ExperimentIdentifier}

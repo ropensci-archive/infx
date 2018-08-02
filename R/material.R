@@ -78,6 +78,17 @@
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "getMaterialByCodes")}
 #' * \Sexpr[results=rd]{infx::docs_link("sas", "listPlateMaterialMapping")}
 #' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), is
+#' returned. For `list_material()` and `extract_well_material()`, the
+#' additional class attribute `MaterialGeneric` is added and the utility
+#' functions `as_generic_mat_id()` and `as_screening_mat_id()` return
+#' `MaterialIdentifierGeneric` and `MaterialIdentifierScreening` objects,
+#' respectively, while `material_id()` can return either, depending on the
+#' `mode` argument. Finally, `list_material_types()` returns
+#' `MaterialTypeIdentifierGeneric` or `MaterialTypeIdentifierScreening`, again
+#' depending on the `mode` argument.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

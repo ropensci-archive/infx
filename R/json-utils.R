@@ -43,7 +43,11 @@
 #' @rdname json_utils
 #' 
 #' @family json object handling functions
-#'  
+#' 
+#' @return Depending on whether a single or a set of multiple objects is
+#' represented, the S3 classes [`json_class`] or [`json_vec`] are applied
+#' respectively.
+#' 
 #' @examples
 #' obj_1 <- json_class(a = 1, b = 2, class = "foo")
 #' obj_2 <- json_class(a = 2, b = 4, class = "foo")

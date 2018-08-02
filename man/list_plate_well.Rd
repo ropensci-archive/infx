@@ -119,6 +119,16 @@ same length or of length 1.}
 \item{name}{Character vector of well name, where each entry is of the form
 A1, A2, etc.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), is
+returned. For \code{list_plates()}, the additional class attribute \code{Plate} is
+added, while \code{list_plate_metadata()} returns \code{PlateMetadata} and
+\code{plate_id()}/\code{as_plate_id()} yield \code{PlateIdentifier} objects. For
+individual wells, \code{list_wells()}, \code{well_id()} and \code{as_well_id()} all return
+objects with sub-type \code{WellIdentifier}. Finally, \code{WellPosition} objects are
+created by \code{well_pos()}.
+}
 \description{
 Plates and wells are special cases of \code{Sample} objects and play an
 important organizational role when openBIS is used in HTS experiments. All

@@ -59,6 +59,11 @@ object, whether to preserve the subclass attribute as \code{@type} filed.}
 is returned as-is, if \code{FALSE}, class attributes may be dropped/written to
 the list structure into the \code{@type} field.}
 }
+\value{
+JSON objects are represented as S3 classes with two class
+attributes: \code{json_class} and an object specific class name (typically to
+mirror the openBIS class).
+}
 \description{
 To communicate object type information via JSON to the Jackson-powered
 openBIS interface, the \code{@type} field is used. Data received from openBIS is

@@ -119,6 +119,13 @@ to contain a \code{data_set} attribute.}
 
 \item{data}{The data to be read.}
 }
+\value{
+\code{list_files()} either returns a \code{\link{json_class}} or a \code{\link{json_vec}}
+object of subtype \code{FileInfoDssDTO}, depending on whether a single or a set
+of objects is retrieved. For \code{fetch_files()}, the return type depends on the
+callback function passed as \code{reader} argument. At default, a \code{list} is
+returned with an entry per file, holding a \code{raw} vector of the file data.
+}
 \description{
 A dataset in openBIS represents a collection of files. The function
 \code{list_files()} lists files associated with one or more datasets by

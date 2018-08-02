@@ -62,6 +62,11 @@ characters for printing.}
 \code{\link[base:[<-]{base::[<-()}} and
 \code{\link[base:[[<-]{base::[[<-()}}.}
 }
+\value{
+Depending on whether a single or a set of multiple objects is
+represented, the S3 classes \code{\link{json_class}} or \code{\link{json_vec}} are applied
+respectively.
+}
 \description{
 Available base generic functions for objects that inherit \code{json_class} are
 \code{\link[base:print]{base::print()}}, \code{\link[base:[]{base::[()}}, \code{\link[base:c]{base::c()}} and

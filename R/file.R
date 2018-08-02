@@ -97,6 +97,12 @@
 #' 
 #' @family resource listing/downloading functions
 #' 
+#' @return `list_files()` either returns a [`json_class`] or a [`json_vec`]
+#' object of subtype `FileInfoDssDTO`, depending on whether a single or a set
+#' of objects is retrieved. For `fetch_files()`, the return type depends on the
+#' callback function passed as `reader` argument. At default, a `list` is
+#' returned with an entry per file, holding a `raw` vector of the file data.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()
@@ -419,7 +425,7 @@ fetch_ds_files.character <- function(token,
   file_sizes <- as.list(rep(NA, length(url_calls)))
 
   res <- if (length(url_calls) > 1L && n_con > 1L)
-    do_requests_parallel(url_calls, file_sizes, n_con, 
+    do_requests_parallel(url_calls, file_sizes, n_con,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          finally = reader,

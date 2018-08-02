@@ -67,6 +67,15 @@
 #' 
 #' @rdname list_plate_well
 #' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), is
+#' returned. For `list_plates()`, the additional class attribute `Plate` is
+#' added, while `list_plate_metadata()` returns `PlateMetadata` and
+#' `plate_id()`/`as_plate_id()` yield `PlateIdentifier` objects. For
+#' individual wells, `list_wells()`, `well_id()` and `as_well_id()` all return
+#' objects with sub-type `WellIdentifier`. Finally, `WellPosition` objects are
+#' created by `well_pos()`.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

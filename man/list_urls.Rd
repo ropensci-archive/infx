@@ -94,6 +94,12 @@ codes, or a set of \code{DataSet}s or \code{DatasetIdentifier}s.}
 \item{timeout}{Time-span (in seconds) for which the file download link
 should be valid.}
 }
+\value{
+Both \code{list_download_urls()} and \code{list_datastore_urls()} return
+character vectors while \code{list_datastores()} returns either a \code{\link{json_class}}
+(single object) or a \code{\link{json_vec}} (multiple objects), dependent on the
+number of resulting objects, with sub-type \code{DataStore}.
+}
 \description{
 In order to download files from openBIS, download urls have to be generated
 first, which can be done by calling \code{list_download_urls()}. This function

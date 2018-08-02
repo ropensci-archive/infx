@@ -35,6 +35,12 @@
 #' * \Sexpr[results=rd]{infx::docs_link("sas", "getWellSample")}
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "listSampleTypes")}
 #' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), is
+#' returned. Sample objects as returned by `list_samples()` additionally
+#' inherit from the `Sample` class and sample type objects returned by
+#' `list_sample_types()` inherit from `SampleType`.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

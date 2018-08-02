@@ -101,6 +101,12 @@
 #' 
 #' @rdname list_fetch_images
 #' 
+#' @return For `list_image_metadata()`, either a [`json_class`] (single
+#' object) or a [`json_vec`] (multiple objects), is returned. For the specific
+#' sub-class, refer to the *Details* section. Image data retrieved with
+#' `fetch_images()` is read by [magick::image_read()] and returned as
+#' (possibly nested) `list` of `magick-image` objects.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

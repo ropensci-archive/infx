@@ -52,7 +52,11 @@
 #' @rdname json_class
 #' 
 #' @family json object handling functions
-#'  
+#' 
+#' @return JSON objects are represented as S3 classes with two class
+#' attributes: `json_class` and an object specific class name (typically to
+#' mirror the openBIS class).
+#' 
 #' @examples
 #' lst <- list(`@type` = "foobar",
 #'             a = list(`@type` = "foo", b = "c"),

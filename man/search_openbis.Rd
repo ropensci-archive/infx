@@ -69,6 +69,22 @@ examples include "+1", "-5", "0", etc.}
 \item{with_relations}{Logical switch indicating whether relations should
 be returned as well.}
 }
+\value{
+Depending on the number of resulting objects, either a
+\code{\link{json_class}} (single object) or a \code{\link{json_vec}} (multiple objects), is
+returned. The object specific sub-class for objects returned by
+\code{search_openbis()} depends on the target object type specified by the
+\code{target_object} argument. The remaining functions are used for constructing
+search queries and instantiate the required objects: \code{search_criteria()}
+returns a \code{SearchCriteria} and \code{search_sub_criteria()} a \code{SearchSubCriteria}
+object, while \code{property_clause()} returns a \code{PropertyMatchClause},
+\code{any_property_clause()} an \code{AnyPropertyMatchClause}, \code{any_field_clause()}
+an \code{AnyFieldMatchClause}, \code{attribute_clause()} an \code{AttributeMatchClause} and
+\code{time_attribute_clause()} a \code{TimeAttributeMatchClause} object. Finally,
+\code{list_property_types()} returns a list with two slots, one holding a
+\code{json_vec} of sub-type \code{ControlledVocabularyPropertyType} and the other
+holding a \code{json_vec} of sub-type \code{PropertyType}.
+}
 \description{
 Searching in openBIS presents a powerful alternative to iterative listing
 and selecting of objects. As an example, in order to find image data sets

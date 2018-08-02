@@ -50,6 +50,11 @@ has_common_subclass(x)
 \item{force}{Suppress error when casting an object to \code{json_vec} that
 cannot be converted.}
 }
+\value{
+Multiple \code{\link{json_class}} objects of the same sub-type can be
+represented as S3 objects with type \code{json_vec} and the common sub-type as
+second class attribute.
+}
 \description{
 In order to allow method dispatch on a set of \code{json_class} objects without
 resorting to iterating over the individual set members, vectors of

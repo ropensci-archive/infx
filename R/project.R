@@ -16,6 +16,10 @@
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("gis", "listProjects")}
 #' 
+#' @return Depending on the number of resulting objects, either a
+#' [`json_class`] (single object) or a [`json_vec`] (multiple objects), of
+#' sub-type `Project` is returned.
+#' 
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()

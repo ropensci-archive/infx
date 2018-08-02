@@ -67,6 +67,15 @@ which case the request is retried or a list with an entry named \code{result}.}
 \item{x}{A (possibly nested) list structure for which all \code{@type} fields
 are turned into class attributes and \code{@id} fields are recursively removed.}
 }
+\value{
+The return type of \code{make_request()}/\code{make_requests()} and
+\code{do_requests_serial()}/\code{do_requests_parallel()} depends on the callback
+functions passed as \code{check} and \code{finally} arguments. At default,
+\code{make_request()}/\code{make_requests()} return either a \code{\link{json_class}} (single
+object) or a \code{\link{json_vec}} (multiple objects), dependent on the number of
+resulting objects, while \code{do_requests_serial()}/\code{do_requests_parallel()}
+return a list of raw vectors, one per request.
+}
 \description{
 The functions powering all HTTP requests to openBIS are
 \code{do_requests_serial()} for sequential calls and \code{do_requests_parallel()}
