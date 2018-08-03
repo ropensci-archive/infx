@@ -13,7 +13,7 @@ publicly available are RNA interference based, use kinome-wide libraries
 from multiple vendors and were carried out on HeLa cells, in presence of
 several viral and bacterial pathogens. Further genome-wide screens have been
 carried out and their public release is forthcoming. For more information,
-please refer to the \href{https://nbenn.github.io/infx/}{README} or the
+please refer to the \href{https://ropensci.github.io/infx/}{README} or the
 \href{../doc/infx-intro.html}{Introduction vignette}.
 }
 \details{
