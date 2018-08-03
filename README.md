@@ -1,10 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- build with rmarkdown::render("README.Rmd") -->
-[infx](https://nbenn.github.io/infx)
-====================================
+[infx](https://ropensci.github.io/infx)
+=======================================
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Travis-CI Build Status](https://travis-ci.org/nbenn/infx.svg?branch=master)](https://travis-ci.org/nbenn/infx) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/nbenn/infx?branch=master&svg=true)](https://ci.appveyor.com/project/nbenn/infx) [![Coverage status](https://codecov.io/gh/nbenn/infx/branch/master/graph/badge.svg)](https://codecov.io/github/nbenn/infx?branch=master) [![rOpenSci status](https://badges.ropensci.org/218_status.svg)](https://github.com/ropensci/onboarding/issues/218)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Travis-CI Build Status](https://travis-ci.org/ropensci/infx.svg?branch=master)](https://travis-ci.org/ropensci/infx) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/ropensci/infx?branch=master&svg=true)](https://ci.appveyor.com/project/ropensci/infx) [![Coverage status](https://codecov.io/gh/ropensci/infx/branch/master/graph/badge.svg)](https://codecov.io/github/ropensci/infx?branch=master) [![rOpenSci status](https://badges.ropensci.org/218_status.svg)](https://github.com/ropensci/onboarding/issues/218)
 
 With discovery of the RNA interference (RNAi) pathway and subsequent work on design, synthesis and delivery of short-interfering RNA molecules (siRNAs), an effective tool was developed for functional genomics. Using such technology, in conjunction with advancements in lab automation, large-scale loss-of-function studies have become experimentally tractable. Fluorescence microscopy imaging is often used as experimental readout, where cellular structures are stained using several fluorophores, yielding large numbers of multi-channel images under varying genetic knockdown conditions. Image processing is typically used to deal with technical artifacts, followed by feature extraction and downstream analysis of the resulting data.
 
@@ -13,17 +13,17 @@ Such experimental set ups can easily generate considerable amounts of data which
 Installation
 ------------
 
-You can install the development version of [infx](https://nbenn.github.io/infx) from GitHub by running
+You can install the development version of [infx](https://ropensci.github.io/infx) from GitHub by running
 
 ``` r
-source("https://install-github.me/nbenn/infx")
+source("https://install-github.me/ropensci/infx")
 ```
 
 Alternatively, if you have the `remotes` package available and are interested in the latest release, you can install from GitHub using `install_github()` as
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("nbenn/infx@*release")
+remotes::install_github("ropensci/infx@*release")
 ```
 
 InfectX
@@ -36,9 +36,9 @@ All collected data, including raw imaging data, [CellProfiler](http://cellprofil
 OpenBIS
 -------
 
-Only a brief introduction on how to work with openBIS is given here. For more in-depth information on how data is organized in openBIS and how it can be accessed using this package, please refer to the vignette ["Introduction to infx"](https://nbenn.github.io/infx/articles/infx-intro.html). For an extensive look at what parts of the API are currently implemented and how to extend the package to support further functionality, have a look at the vignettes ["OpenBIS API coverage"](https://nbenn.github.io/infx/articles/openbis-api.html) and ["JSON object handling"](https://nbenn.github.io/infx/articles/json-class.html). Documentation of exported functions is available from within the R help system or from [here](https://nbenn.github.io/infx/reference/index.html).
+Only a brief introduction on how to work with openBIS is given here. For more in-depth information on how data is organized in openBIS and how it can be accessed using this package, please refer to the vignette ["Introduction to infx"](https://ropensci.github.io/infx/articles/infx-intro.html). For an extensive look at what parts of the API are currently implemented and how to extend the package to support further functionality, have a look at the vignettes ["OpenBIS API coverage"](https://ropensci.github.io/infx/articles/openbis-api.html) and ["JSON object handling"](https://ropensci.github.io/infx/articles/json-class.html). Documentation of exported functions is available from within the R help system or from [here](https://ropensci.github.io/infx/reference/index.html).
 
-For every API call, a valid login token is required. Tokens can be created using [`login_openbis()`](https://nbenn.github.io/infx/reference/login.html) and tested for validity with [`is_token_valid()`](https://nbenn.github.io/infx/reference/login.html).
+For every API call, a valid login token is required. Tokens can be created using [`login_openbis()`](https://ropensci.github.io/infx/reference/login.html) and tested for validity with [`is_token_valid()`](https://ropensci.github.io/infx/reference/login.html).
 
 ``` r
 tok <- login_openbis()
@@ -47,7 +47,7 @@ is_token_valid(tok)
 #> [1] TRUE
 ```
 
-Using the valid login token, openBIS can now be queried, for example for a list of all projects that are available to the given user, using [`list_projects()`](https://nbenn.github.io/infx/reference/list_projects.html).
+Using the valid login token, openBIS can now be queried, for example for a list of all projects that are available to the given user, using [`list_projects()`](https://ropensci.github.io/infx/reference/list_projects.html).
 
 ``` r
 projects <- list_projects(tok)
@@ -64,7 +64,7 @@ print(projects, length = 10L)
 #> ...
 ```
 
-Finally, the login token should be destroyed, using [`logout_openbis()`](https://nbenn.github.io/infx/reference/login.html).
+Finally, the login token should be destroyed, using [`logout_openbis()`](https://ropensci.github.io/infx/reference/login.html).
 
 ``` r
 logout_openbis(tok)
@@ -72,7 +72,7 @@ is_token_valid(tok)
 #> [1] FALSE
 ```
 
-While this client has been thoroughly tested with the openBIS instance hosted by InfectX and certain aspects are geared towards high content screening application of openBIS, it is in no way limited to usage with InfectX data. The function [`login_openbis()`](https://nbenn.github.io/infx/reference/login.html) accepts a `host_url` argument which is stored as `host_url` attribute with the created login token. Any method that issues an API call subsequently uses the login token's `host_url` attribute in order to construct the API endpoint url. As a small example for this functionality, the demo openBIS instance, maintained by the openBIS development team, is queried for available projects.
+While this client has been thoroughly tested with the openBIS instance hosted by InfectX and certain aspects are geared towards high content screening application of openBIS, it is in no way limited to usage with InfectX data. The function [`login_openbis()`](https://ropensci.github.io/infx/reference/login.html) accepts a `host_url` argument which is stored as `host_url` attribute with the created login token. Any method that issues an API call subsequently uses the login token's `host_url` attribute in order to construct the API endpoint url. As a small example for this functionality, the demo openBIS instance, maintained by the openBIS development team, is queried for available projects.
 
 ``` r
 tok <- login_openbis(user = "test_observer",
@@ -99,5 +99,7 @@ Acknowledgments
 ---------------
 
 This work is partially funded by [SystemsX.ch](http://www.systemsx.ch), the Swiss Initiative for Systems Biology via grants 51RT-0\_126008 and 51RTP0\_151029 for the Research and Technology Development (RTD) projects [InfectX](https://infectx.ch) and [TargetInfectX](https://www.targetinfectx.ch) respectively. Further funding is provided by the [Seminar for Statistics](https://www.math.ethz.ch/sfs) at ETH Zurich.
+
+[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
 
 [1] [*BMC Genomics* 2014 **15**:1162](https://doi.org/10.1186/1471-2164-15-1162)
