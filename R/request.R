@@ -416,9 +416,14 @@ check_request_result <- function(resp, body) {
 
   } else {
 
-    resp <- jsonlite::fromJSON(rawToChar(resp$content),
-                               simplifyVector = FALSE)
-    if (resp$id != body$id) {
+    resp <- tryCatch(
+      jsonlite::fromJSON(rawToChar(resp$content), simplifyVector = FALSE),
+      error = function(e) simpleError(conditionMessage(e))
+    )
+
+    if (inherits(resp, "simpleError")) {
+      resp
+    } else if (resp$id != body$id) {
 
       simpleError(paste0("request id (", body$id, ") does no match with ",
                          "response id (", resp$id, ")"))
