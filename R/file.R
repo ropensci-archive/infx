@@ -507,7 +507,7 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
   file_sizes <- get_field(x, "fileSize")
 
   res <- if (length(url_calls) > 1L && n_con > 1L)
-    do_requests_parallel(url_calls, file_sizes, n_con, 
+    do_requests_parallel(url_calls, file_sizes, n_con,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          finally = reader,
@@ -532,6 +532,11 @@ create_file_handle <- function(size) {
 }
 
 check_file_result <- function(resp, size) {
+
+  if (!is.na(size)) {
+    assert_that(as.integer(size) == size)
+    size <- as.integer(size)
+  }
 
   if (resp$status_code != 200) {
 
