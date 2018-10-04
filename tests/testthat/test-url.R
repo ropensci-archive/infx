@@ -221,7 +221,7 @@ test_that("non-infectx openbis instances can be accessed", {
 
   token <- login_openbis("test_observer", "test_observer",
                          auto_disconnect = FALSE,
-                         host_url = "https://openbis.elnlims.ch")
+                         host_url = "https://openbis-eln-lims.ethz.ch")
   proj <- list_projects(token)
 
   expect_s3_class(proj, "Project")

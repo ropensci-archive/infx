@@ -6,7 +6,7 @@
 \alias{infx-package}
 \title{API access to the InfectX data repository}
 \description{
-The \href{https://openbis.elnlims.ch}{openBIS} data repository hosted by
+The \href{https://labnotebook.ch}{openBIS} data repository hosted by
 \href{http://www.infectx.ch}{InfectX} contains high throughput screening data
 from several large-scale gene knockdown experiments. The screens currently
 publicly available are RNA interference based, use kinome-wide libraries
@@ -112,11 +112,11 @@ methods can be used for accessing other openBIS instances as well.
 Functions that issue API calls can all accept a \code{host_url} argument which
 is forwarded to \code{\link[=api_url]{api_url()}} in \code{\link[=make_requests]{make_requests()}} in order to create API
 endpoint urls. Another publicly available openBIS instance is the
-\href{https://openbis.elnlims.ch/openbis}{demo} offered by the openBIS
+\href{https://openbis-eln-lims.ethz.ch/openbis/}{demo} offered by the openBIS
 development team. It can be accessed with both user name and password
 \code{test_observer} both via a browser or by passing
-\code{https://openbis.elnlims.ch} as \code{host_url} to methods which initiate API
-calls.
+\code{https://openbis-eln-lims.ethz.ch} as \code{host_url} to methods which
+initiate API calls.
 
 After being assembled by \code{\link[=make_requests]{make_requests()}}, requests are executed by
 \code{\link[=do_requests_serial]{do_requests_serial()}} or \code{\link[=do_requests_parallel]{do_requests_parallel()}}, depending on whether

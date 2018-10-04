@@ -23,7 +23,7 @@ test_that("openbis login is possible", {
 
   token <- login_openbis("test_observer", "test_observer",
                          auto_disconnect = FALSE,
-                         host_url = "https://openbis.elnlims.ch")
+                         host_url = "https://openbis-eln-lims.ethz.ch")
 
   expect_is(token, "character")
   expect_length(token, 1L)

@@ -198,7 +198,7 @@ Any arguments passed as `...` to `make_requests()` will be forwarded to `api_url
 
 ```{r third-party, fig.align = "center"}
 token <- login_openbis("test_observer", "test_observer",
-                       host_url = "https://openbis.elnlims.ch")
+                       host_url = "https://openbis-eln-lims.ethz.ch")
 
 gel_data <- search_openbis(
   token,

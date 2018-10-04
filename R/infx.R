@@ -1,7 +1,7 @@
 
 #' API access to the InfectX data repository
 #' 
-#' The [openBIS](https://openbis.elnlims.ch) data repository hosted by
+#' The [openBIS](https://labnotebook.ch) data repository hosted by
 #' [InfectX](http://www.infectx.ch) contains high throughput screening data
 #' from several large-scale gene knockdown experiments. The screens currently
 #' publicly available are RNA interference based, use kinome-wide libraries
@@ -108,11 +108,11 @@
 #' Functions that issue API calls can all accept a `host_url` argument which
 #' is forwarded to [api_url()] in [make_requests()] in order to create API
 #' endpoint urls. Another publicly available openBIS instance is the
-#' [demo](https://openbis.elnlims.ch/openbis) offered by the openBIS
+#' [demo](https://openbis-eln-lims.ethz.ch/openbis/) offered by the openBIS
 #' development team. It can be accessed with both user name and password
 #' `test_observer` both via a browser or by passing
-#' `https://openbis.elnlims.ch` as `host_url` to methods which initiate API
-#' calls.
+#' `https://openbis-eln-lims.ethz.ch` as `host_url` to methods which
+#' initiate API calls.
 #' 
 #' After being assembled by [make_requests()], requests are executed by
 #' [do_requests_serial()] or [do_requests_parallel()], depending on whether
