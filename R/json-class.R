@@ -120,6 +120,8 @@ new_json_class <- function(x, class = NULL) {
   assert_that(is.character(class),
               length(class) == 1L)
 
+  if (!any(nzchar(names(x)))) names(x) <- NULL
+
   structure(x, class = c(class, "json_class"))
 }
 

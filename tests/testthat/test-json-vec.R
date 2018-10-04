@@ -146,6 +146,23 @@ test_that("json_vec objects can be created", {
   expect_identical(vec_cls, vec_lnu)
 })
 
+test_that("list roundtrip for json_vec", {
+  cls1 <- json_class("a", "b", class = "foo")
+  cls2 <- json_class("c", "d", class = "foo")
+  vec <- json_vec(cls1, cls2)
+
+  expect_identical(as.list(vec), list(cls1, cls2))
+
+  expect_identical(
+    as_json_class(as.list(vec, recursive = TRUE)),
+    list(cls1, cls2)
+  )
+  expect_identical(
+    as_json_vec(as_json_class(as.list(vec, recursive = TRUE))),
+    vec
+  )
+})
+
 test_that("json_vec helpers work", {
   expect_true(has_common_subclass(
     structure(list("a"), class = c("foo", "json_class"))))

@@ -29,7 +29,7 @@ as.json_vec(x, ...)
 
 \method{as_json_vec}{default}(x, force = FALSE, ...)
 
-\method{as.list}{json_vec}(x, ...)
+\method{as.list}{json_vec}(x, recursive = FALSE, ...)
 
 is_json_vec(x)
 
@@ -38,7 +38,8 @@ is.json_vec(x)
 has_common_subclass(x)
 }
 \arguments{
-\item{...}{Individual \code{json_class} objects, or generic compatibility}
+\item{...}{Individual \code{json_class} objects, or generic compatibility. Might
+be passed on to \code{as.list()} for \code{json_class} objects.}
 
 \item{x}{A single/list of \code{json_class} object(s), or other object to coerce}
 

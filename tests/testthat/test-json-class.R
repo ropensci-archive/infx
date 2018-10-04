@@ -101,6 +101,25 @@ test_that("json objects can be tested", {
 
 })
 
+test_that("list roundtrip for json_class", {
+  cls <- json_class("a", "b", class = "foo")
+  expect_identical(
+    as.list(cls, keep_asis = FALSE),
+    list(`@type` = "foo", "a", "b")
+  )
+  expect_identical(
+    as_json_class(as.list(cls, keep_asis = FALSE)),
+    cls
+  )
+  cls <- json_class("a", "b", hello = list("w", "o", "r", "l", "d"),
+                    c = json_class("d", e = "f", class = "bar"),
+                    class = "foo")
+  expect_identical(
+    as_json_class(as.list(cls, keep_asis = FALSE)),
+    cls
+  )
+})
+
 test_that("json subclass can be determined", {
   expect_error(get_subclass("a"))
   expect_error(get_subclass(list(`@type` = "foo", "a", "b")))

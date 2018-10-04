@@ -32,7 +32,8 @@
 #' returns `TRUE` if a `json_class` object is passed and `FALSE` if a non-list
 #' structure is passed.
 #' 
-#' @param ... Individual `json_class` objects, or generic compatibility
+#' @param ... Individual `json_class` objects, or generic compatibility. Might
+#' be passed on to `as.list()` for `json_class` objects.
 #' @param x A single/list of `json_class` object(s), or other object to coerce
 #' @param simplify,.simplify Logical switch indicating whether to simplify
 #' `json_vec` objects of length 1 to `json_class` objects.
@@ -201,8 +202,12 @@ as_json_vec.default <- as_json_class.default
 #' @rdname json_vec
 #' @export
 #' 
-as.list.json_vec <- function(x, ...) {
-  unclass(x)
+as.list.json_vec <- function(x, recursive = FALSE, ...) {
+  res <- unclass(x)
+  if (recursive) {
+    res <- lapply(res, as.list, recursive = TRUE, keep_asis = FALSE, ...)
+  }
+  res
 }
 
 #' @rdname json_vec
