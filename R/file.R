@@ -1,6 +1,6 @@
 
 #' List and download files
-#' 
+#'
 #' A dataset in openBIS represents a collection of files. The function
 #' `list_files()` lists files associated with one or more datasets by
 #' returning a set of `FileInfoDssDTO` objects. As this object type does not
@@ -9,14 +9,14 @@
 #' can be fetched using `fetch_files()`, which can either retrieve all
 #' associated files or use file path information, for example from
 #' `FileInfoDssDTO` objects to only download a subset of files.
-#' 
+#'
 #' Data sets for `list_files()` can be specified as character vector of
 #' dataset codes and therefore all objects for which the internal method
 #' [dataset_code()] exists can be used to select datasets. This includes data
 #' set and data set id objects as well as the various flavors of data set
 #' reference objects. In addition to these dataset-representing objects,
 #' dispatch on `DataSetFileDTO` objects is possible as well.
-#' 
+#'
 #' File listing can be limited to a certain path within the dataset and the
 #' search can be carried out recursively or non-recursively. In case a set of
 #' objects is passed, the search-tuning arguments `path` and `recursive` have
@@ -24,15 +24,15 @@
 #' on `DataSetFileDTO` objects, the `path` and `recursive` arguments are not
 #' needed, as this information is already encoded in the objects passed as `x`.
 #' A separate API call is necessary for each of the objects the dispatch
-#' occurs on. 
-#' 
+#' occurs on.
+#'
 #' The function `fetch_files()` downloads files associated with a dataset.
 #' In order to identify a file, both a data set code and a file path, relative
 #' to the data set root, are required. `fetch_files()` can be called in a
 #' variety of ways and internally uses a double dispatch mechanism, first
 #' resolving the data set codes and then calling the non-exported function
 #' `fetch_ds_files()` which dispatches on file path objects.
-#' 
+#'
 #' Data set code information can either be communicated using any of the
 #' objects understood by [dataset_code()] (including data set, data set id and
 #' data set reference objects) or directly as a character vector, passed as
@@ -45,7 +45,7 @@
 #' are passed to `fetch_files()` as `x` argument, an optional argument
 #' `data_sets` may be specified (it defaults to `NULL`) and as above,
 #' `fetch_files()` is called again with these two arguments rearranged.
-#' 
+#'
 #' The internal generic function `fetch_ds_files()` can be dispatched on
 #' several objects again. When no files are specified (`NULL` is passed as
 #' `files` argument to `fetch_files()`), all available files for the given
@@ -57,8 +57,8 @@
 #' argument to `fetch_files()`) each `FileInfoDssDTO` must contain a `data_set`
 #' attribute. Additionally, downloaded files are checked for completeness, as
 #' these objects contain file sizes. If dispatch occurs on `DataSetFileDTO`
-#' objects or a character vector, this sanity check is not possible. 
-#' 
+#' objects or a character vector, this sanity check is not possible.
+#'
 #' Files can only be retrieved after previously having created a corresponding
 #' download url using [list_download_urls()], as file urls in openBIS have a
 #' limited lifetime and therefore must be used shortly after being created. A
@@ -69,14 +69,14 @@
 #' specified as `n_try`. Finally, a function with a single argument can be
 #' passed as the argument `done`, which takes the downloaded data as input and
 #' does some processing.
-#' 
+#'
 #' A function for reading the binary data retrieved from openBIS can be
 #' supplied to `fetch_files()` as `reader` argument. Single cell feature files
 #' as produced by CellProfiler, are stored as Matlab v5.0 `.mat` files and
 #' the function `read_mat_files()` reads such files using [R.matlab::readMat()]
 #' and checks for certain expected attributes and simplifies the read
 #' structure.
-#' 
+#'
 #' The list returned by `read_mat_files()` is arranged such that each node
 #' corresponds to a single image and contains a list which is either holding a
 #' single value or a vector of values. For a plate with 16 rows, 24 columns
@@ -87,26 +87,26 @@
 #' the next three entries correspond to row 2 of well A1, images 10 through 12
 #' correspond to row 1 of well A2, etc. Well A2 is located in row 1, column 2
 #' of a plate.
-#' 
+#'
 #' @inheritParams logout_openbis
 #' @param x Object to limit search for datasets/files with.
 #' @param ... Generic compatibility. Extra arguments will be passed to
 #' [make_requests()] or [do_requests_serial()]/[do_requests_parallel()].
-#' 
+#'
 #' @rdname list_fetch_files
-#' 
+#'
 #' @family resource listing/downloading functions
-#' 
+#'
 #' @return `list_files()` either returns a [`json_class`] or a [`json_vec`]
 #' object of subtype `FileInfoDssDTO`, depending on whether a single or a set
 #' of objects is retrieved. For `fetch_files()`, the return type depends on the
 #' callback function passed as `reader` argument. At default, a `list` is
 #' returned with an entry per file, holding a `raw` vector of the file data.
-#' 
+#'
 #' @examples
 #' \donttest{
 #'   tok <- login_openbis()
-#' 
+#'
 #'   # search for a cell profiler feature data set from plate KB2-03-1I
 #'   search <- search_criteria(
 #'     attribute_clause("type", "HCS_ANALYSIS_CELL_FEATURES_CC_MAT"),
@@ -117,48 +117,48 @@
 #'     )
 #'   )
 #'   ds <- search_openbis(tok, search)
-#' 
+#'
 #'   # list all files of this data set
 #'   all_files <- list_files(tok, ds)
 #'   length(all_files)
-#' 
+#'
 #'   # select some of the files, e.g. all count features per image
 #'   some_files <- all_files[grepl("Image\\.Count_",
 #'                                 get_field(all_files, "pathInDataSet"))]
 #'   length(some_files)
-#' 
+#'
 #'   # download the selected files
 #'   data <- fetch_files(tok, some_files)
-#' 
+#'
 #'   # the same can be achieved by passing a file_regex argument to
 #'   # fetch_files(), which internally calls list_files() and filters files
 #'   identical(data, fetch_files(tok, ds, file_regex = "Image\\.Count_"))
-#' 
+#'
 #'   # all returned data is raw, the reader argument can be used to supply
 #'   # a function that processes the downloaded data
 #'   sapply(data, class)
 #'   data <- fetch_files(tok, some_files, reader = read_mat_files)
 #'   sapply(data, class)
-#' 
+#'
 #'   logout_openbis(tok)
 #' }
-#' 
+#'
 #' @export
-#' 
+#'
 list_files <- function(token, x, ...)
   UseMethod("list_files", x)
 
 #' @rdname list_fetch_files
-#' 
+#'
 #' @param path A (vector of) file path(s) to be searched within a dataset.
 #' @param recursive A (vector of) logicals, indicating whether to list files
 #' recursively.
-#' 
+#'
 #' @section openBIS:
 #' * \Sexpr[results=rd]{infx::docs_link("dsrg", "listFilesForDataSet")}
-#' 
+#'
 #' @export
-#' 
+#'
 list_files.character <- function(token, x, path = "", recursive = TRUE, ...) {
 
   check_rep <- function(vec, len) {
@@ -199,47 +199,47 @@ list_dataset_files <- function(token, x, path = "", recursive = TRUE, ...)
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.DataSet <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.DatasetIdentifier <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.DatasetReference <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.FeatureVectorDatasetReference <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.FeatureVectorDatasetWellReference <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.ImageDatasetReference <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.MicroscopyImageReference <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.PlateImageReference <- list_dataset_files
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 list_files.DataSetFileDTO <- function(token, x, ...) {
 
   x <- as_json_vec(x)
@@ -263,7 +263,7 @@ list_files.DataSetFileDTO <- function(token, x, ...) {
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files <- function(token, x, ...)
   UseMethod("fetch_files", x)
 
@@ -274,10 +274,10 @@ fetch_files <- function(token, x, ...)
 #' @param n_con The number of simultaneous connections.
 #' @param reader A function to read the downloaded data. Is forwarded as
 #' finally argument to [do_requests_serial()]/[do_requests_parallel()].
-#' 
+#'
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.character <- function(token,
                                   x,
                                   files = NULL,
@@ -309,7 +309,7 @@ fetch_files.character <- function(token,
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.NULL <- function(token,
                              x,
                              files,
@@ -328,47 +328,47 @@ fetch_ds <- function(token, x, ...)
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.DataSet <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.DatasetIdentifier <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.DatasetReference <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.FeatureVectorDatasetReference <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.FeatureVectorDatasetWellReference <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.ImageDatasetReference <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.MicroscopyImageReference <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.PlateImageReference <- fetch_ds
 
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.DataSetFileDTO <- function(token, x, ...)
   fetch_files(token, NULL, x, ...)
 
@@ -376,10 +376,10 @@ fetch_files.DataSetFileDTO <- function(token, x, ...)
 #' `dataset_code()` method) or a set of objects of the same length as `x`. If
 #' `NULL` (default), each `FileInfoDssDTO` object passed as `x` is expected
 #' to contain a `data_set` attribute.
-#' 
+#'
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 fetch_files.FileInfoDssDTO <- function(token, x, data_sets = NULL, ...)
   fetch_files(token, data_sets, x, ...)
 
@@ -422,25 +422,21 @@ fetch_ds_files.character <- function(token,
                      as.call(list(list_download_urls, token, ds, path, ...)),
                    data_sets, x)
 
-  file_sizes <- as.list(rep(NA, length(url_calls)))
+  file_info <- Map(function(ds, f) list(data_set = ds, file = f), data_sets, x)
 
-  res <- if (length(url_calls) > 1L && n_con > 1L)
-    do_requests_parallel(url_calls, file_sizes, n_con,
+  if (length(url_calls) > 1L && n_con > 1L) {
+    do_requests_parallel(url_calls, file_info, n_con,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          finally = reader,
                          ...)
-  else
-    do_requests_serial(url_calls, file_sizes,
+  } else {
+    do_requests_serial(url_calls, file_info,
                        create_handle = create_file_handle,
                        check = check_file_result,
                        finally = reader,
                        ...)
-
-  Map(function(dat, ds, f) {
-    attributes(dat) <- c(attributes(dat), list(data_set = ds, file = f))
-    dat
-  }, res, data_sets, x)
+  }
 }
 
 fetch_ds_files.DataSetFileDTO <- function(token,
@@ -454,25 +450,21 @@ fetch_ds_files.DataSetFileDTO <- function(token,
   url_calls <- lapply(x, function(y)
                            as.call(list(list_download_urls, token, y, ...)))
 
-  file_sizes <- as.list(rep(NA, length(url_calls)))
+  file_info <- lapply(x, function(f) list(file = f))
 
-  res <- if (length(url_calls) > 1L && n_con > 1L)
-    do_requests_parallel(url_calls, file_sizes, n_con, 
+  if (length(url_calls) > 1L && n_con > 1L) {
+    do_requests_parallel(url_calls, file_info, n_con,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          finally = reader,
                          ...)
-  else
-    do_requests_serial(url_calls, file_sizes,
+  } else {
+    do_requests_serial(url_calls, file_info,
                        create_handle = create_file_handle,
                        check = check_file_result,
                        finally = reader,
                        ...)
-
-  Map(function(dat, f) {
-    attributes(dat) <- c(attributes(dat), list(file = f))
-    dat
-  }, res, x)
+  }
 }
 
 fetch_ds_files.FileInfoDssDTO <- function(token,
@@ -504,60 +496,58 @@ fetch_ds_files.FileInfoDssDTO <- function(token,
                      as.call(list(list_download_urls, token, a, b, ...)),
                    data_sets, get_field(x, "pathInDataSet"))
 
-  file_sizes <- get_field(x, "fileSize")
+  file_info <- Map(function(ds, f) list(data_set = ds, file = f), data_sets, x)
 
-  res <- if (length(url_calls) > 1L && n_con > 1L)
-    do_requests_parallel(url_calls, file_sizes, n_con,
+  if (length(url_calls) > 1L && n_con > 1L) {
+    do_requests_parallel(url_calls, file_info, n_con,
                          create_handle = create_file_handle,
                          check = check_file_result,
                          finally = reader,
                          ...)
-  else
-    do_requests_serial(url_calls, file_sizes,
+  } else {
+    do_requests_serial(url_calls, file_info,
                        create_handle = create_file_handle,
                        check = check_file_result,
                        finally = reader,
                        ...)
-
-  Map(function(dat, ds, f) {
-    attributes(dat) <- c(attributes(dat), list(data_set = ds, file = f))
-    dat
-  }, res, data_sets, x)
+  }
 }
 
-create_file_handle <- function(size) {
-  if (!is.na(size))
-    assert_that(as.integer(size) == size)
+create_file_handle <- function(info) {
+  assert_that("file" %in% names(info))
+  if ("fileSize" %in% names(info[["file"]])) {
+    assert_that(
+      as.integer(info[["file"]][["fileSize"]]) == info[["file"]][["fileSize"]]
+    )
+  }
   curl::new_handle()
 }
 
-check_file_result <- function(resp, size) {
+check_file_result <- function(resp, info) {
 
-  if (!is.na(size)) {
-    assert_that(as.integer(size) == size)
-    size <- as.integer(size)
+  if ("fileSize" %in% names(info[["file"]])) {
+    size <- as.integer(info[["file"]][["fileSize"]])
+  } else {
+    size <- NA
   }
 
   if (resp$status_code != 200) {
-
     simpleError(paste0("request returned with code ", resp$status_code))
-
   } else if (!is.na(size) && length(resp$content) != size) {
-
     simpleError(paste0("download incomplete: missing ",
                        size - length(resp$content), " bytes"))
-
   } else {
-
-    resp$content
+    res <- resp$content
+    attributes(res) <- c(attributes(res), info)
+    res
   }
 }
 
 #' @param data The data to be read.
-#' 
+#'
 #' @rdname list_fetch_files
 #' @export
-#' 
+#'
 read_mat_files <- function(data) {
 
   reduce_nesting <- function(x) {
@@ -585,7 +575,9 @@ read_mat_files <- function(data) {
 
   tryCatch({
     dat <- R.matlab::readMat(data, fixNames = FALSE, drop = "singletonLists")
-    extract_data(dat[["handles"]])
+    res <- extract_data(dat[["handles"]])
+    attributes(res) <- c(attributes(res), attributes(data))
+    res
   },
   error = function(e) {
     warning("a read error occurred:\n  ", e)

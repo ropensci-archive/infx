@@ -163,7 +163,8 @@ test_that("file fetchers work", {
 
   check_skip()
 
-  dat <- do_requests_serial("https://httpbin.org/get", NA, n_try = 1L,
+  dat <- do_requests_serial("https://httpbin.org/get",
+                            list(list(file = "foo")), n_try = 1L,
                             create_handle = infx:::create_file_handle,
                             check = infx:::check_file_result,
                             finally = identity)
@@ -171,7 +172,8 @@ test_that("file fetchers work", {
   expect_length(dat, 1L)
   expect_is(dat[[1]], "raw")
 
-  dat <- do_requests_serial(rep("https://httpbin.org/get", 2), rep(NA, 2),
+  dat <- do_requests_serial(rep("https://httpbin.org/get", 2),
+                            rep(list(list(file = "foo")), 2L),
                             n_try = 1L,
                             create_handle = infx:::create_file_handle,
                             check = infx:::check_file_result,
@@ -183,7 +185,9 @@ test_that("file fetchers work", {
 
 
   expect_warning(
-    dat <- do_requests_serial("https://httpbin.org/get", 1000L, n_try = 1L,
+    dat <- do_requests_serial("https://httpbin.org/get",
+                              list(list(file = list(fileSize = 1000L))),
+                              n_try = 1L,
                               create_handle = infx:::create_file_handle,
                               check = infx:::check_file_result,
                               finally = identity),
@@ -195,7 +199,8 @@ test_that("file fetchers work", {
   expect_null(dat[[1L]])
 
   expect_warning(
-    dat <- do_requests_serial("https://httpbin.org/status/500", NA, n_try = 1L,
+    dat <- do_requests_serial("https://httpbin.org/status/500",
+                              list(list(file = "foo")), n_try = 1L,
                               create_handle = infx:::create_file_handle,
                               check = infx:::check_file_result,
                               finally = identity),
@@ -207,7 +212,9 @@ test_that("file fetchers work", {
   expect_null(dat[[1L]])
 
   expect_warning(
-    dat <- do_requests_serial(rep("https://httpbin.org/get", 2), rep(1000L, 2),
+    dat <- do_requests_serial(rep("https://httpbin.org/get", 2),
+                              rep(list(list(file = list(fileSize = 1000L))),
+                                  2L),
                               n_try = 1L,
                               create_handle = infx:::create_file_handle,
                               check = infx:::check_file_result,
@@ -222,7 +229,7 @@ test_that("file fetchers work", {
 
   expect_warning(
     dat <- do_requests_serial(rep("https://httpbin.org/status/500", 2),
-                              rep(NA, 2),
+                              list(list(file = "foo"), list(file = "bar")),
                               n_try = 1L,
                               create_handle = infx:::create_file_handle,
                               check = infx:::check_file_result,
@@ -235,7 +242,8 @@ test_that("file fetchers work", {
   for (i in seq_along(dat))
     expect_null(dat[[i]])
 
-  dat <- do_requests_parallel("https://httpbin.org/get", NA, n_try = 1L,
+  dat <- do_requests_parallel("https://httpbin.org/get",
+                              list(list(file = "foo")), n_try = 1L,
                               create_handle = infx:::create_file_handle,
                               check = infx:::check_file_result,
                               finally = identity)
@@ -243,8 +251,8 @@ test_that("file fetchers work", {
   expect_length(dat, 1L)
   expect_is(dat[[1]], "raw")
 
-  dat <- do_requests_parallel(rep("https://httpbin.org/get", 2), rep(NA, 2),
-                              n_try = 1L,
+  dat <- do_requests_parallel(rep("https://httpbin.org/get", 2),
+                              rep(list(list(file = "foo")), 2L), n_try = 1L,
                               create_handle = infx:::create_file_handle,
                               check = infx:::check_file_result,
                               finally = identity)
@@ -254,7 +262,9 @@ test_that("file fetchers work", {
     expect_is(dat[[i]], "raw")
 
   expect_warning(
-    dat <- do_requests_parallel("https://httpbin.org/get", 1000L, n_try = 1L,
+    dat <- do_requests_parallel("https://httpbin.org/get",
+                                list(list(file = list(fileSize = 1000L))),
+                                n_try = 1L,
                                 create_handle = infx:::create_file_handle,
                                 check = infx:::check_file_result,
                                 finally = identity),
@@ -266,8 +276,8 @@ test_that("file fetchers work", {
   expect_null(dat[[1L]])
 
   expect_warning(
-    dat <- do_requests_parallel("https://httpbin.org/status/500", NA,
-                                n_try = 1L,
+    dat <- do_requests_parallel("https://httpbin.org/status/500",
+                                list(list(file = "foo")), n_try = 1L,
                                 create_handle = infx:::create_file_handle,
                                 check = infx:::check_file_result,
                                 finally = identity),
@@ -280,7 +290,8 @@ test_that("file fetchers work", {
 
   expect_warning(
     dat <- do_requests_parallel(rep("https://httpbin.org/get", 2),
-                                rep(1000L, 2),
+                                rep(list(list(file = list(fileSize = 1000L))),
+                                    2L),
                                 n_try = 1L,
                                 create_handle = infx:::create_file_handle,
                                 check = infx:::check_file_result,
@@ -295,8 +306,7 @@ test_that("file fetchers work", {
 
   expect_warning(
     dat <- do_requests_parallel(rep("https://httpbin.org/status/500", 2),
-                                rep(NA, 2),
-                                n_try = 1L,
+                                rep(list(list(file = "foo")), 2L), n_try = 1L,
                                 create_handle = infx:::create_file_handle,
                                 check = infx:::check_file_result,
                                 finally = identity),
