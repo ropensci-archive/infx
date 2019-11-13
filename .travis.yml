@@ -19,31 +19,15 @@ r_packages:
   - covr
   - rvest
   - devtools
-
-r_github_packages:
-  - r-lib/pkgdown
+  - pkgdown
 
 after_success:
   - travis_wait 60 test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'covr::codecov(quiet = FALSE)'
 
-before_deploy:
-  - test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'devtools::install()'
-  - test $TRAVIS_R_VERSION_STRING = "release" && Rscript -e 'pkgdown::build_site()'
-
 deploy:
-  - provider: pages
+  - provider: script
+    script: Rscript -e 'pkgdown::deploy_site_github()'
     skip_cleanup: true
-    github_token: $GITHUB_TOKEN
     on:
       branch: master
       condition: $TRAVIS_R_VERSION_STRING = "release"
-    local_dir: docs
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    file_glob: true
-    file: infx_*.tar.gz
-    skip_cleanup: true
-    on:
-      tags: true
-      condition: $TRAVIS_R_VERSION_STRING = "release"
-
