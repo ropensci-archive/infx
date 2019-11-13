@@ -8,23 +8,25 @@
 
 <title>List and download files — list_files • infx</title>
 
-<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -33,13 +35,13 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
-<meta property="og:title" content="List and download files — list_files" />
 
+<meta property="og:title" content="List and download files — list_files" />
 <meta property="og:description" content="A dataset in openBIS represents a collection of files. The function
 list_files() lists files associated with one or more datasets by
 returning a set of FileInfoDssDTO objects. As this object type does not
@@ -52,13 +54,16 @@ FileInfoDssDTO objects to only download a subset of files." />
 
 
 
+
 <!-- mathjax -->
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -85,7 +90,7 @@ FileInfoDssDTO objects to only download a subset of files." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,12 +119,11 @@ FileInfoDssDTO objects to only download a subset of files." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
       
-      <form class="navbar-form navbar-right" role="search">
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
         <div class="form-group">
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
         </div>
@@ -130,6 +134,7 @@ FileInfoDssDTO objects to only download a subset of files." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -141,7 +146,6 @@ FileInfoDssDTO objects to only download a subset of files." />
     </div>
 
     <div class="ref-description">
-    
     <p>A dataset in openBIS represents a collection of files. The function
 <code>list_files()</code> lists files associated with one or more datasets by
 returning a set of <code>FileInfoDssDTO</code> objects. As this object type does not
@@ -150,7 +154,6 @@ as <code>data_set</code> attribute with each <code>FileInfoDssDTO</code> object.
 can be fetched using <code>fetch_files()</code>, which can either retrieve all
 associated files or use file path information, for example from
 <code>FileInfoDssDTO</code> objects to only download a subset of files.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>list_files</span>(<span class='no'>token</span>, <span class='no'>x</span>, <span class='no'>...</span>)
@@ -235,7 +238,7 @@ associated files or use file path information, for example from
 <span class='fu'>fetch_files</span>(<span class='no'>token</span>, <span class='no'>x</span>, <span class='kw'>data_sets</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
 
 <span class='fu'>read_mat_files</span>(<span class='no'>data</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -289,7 +292,7 @@ to contain a <code>data_set</code> attribute.</p></td>
       <td><p>The data to be read.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p><code>list_files()</code> either returns a <code><a href='json_class.html'>json_class</a></code> or a <code><a href='json_vec.html'>json_vec</a></code>
@@ -297,7 +300,6 @@ object of subtype <code>FileInfoDssDTO</code>, depending on whether a single or 
 of objects is retrieved. For <code>fetch_files()</code>, the return type depends on the
 callback function passed as <code>reader</code> argument. At default, a <code>list</code> is
 returned with an entry per file, holding a <code>raw</code> vector of the file data.</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Data sets for <code>list_files()</code> can be specified as character vector of
@@ -347,7 +349,7 @@ objects or a character vector, this sanity check is not possible.</p>
 <p>Files can only be retrieved after previously having created a corresponding
 download url using <code><a href='list_urls.html'>list_download_urls()</a></code>, as file urls in openBIS have a
 limited lifetime and therefore must be used shortly after being created. A
-list of <code>call</code> objects (see <code><a href='https://www.rdocumentation.org/packages/base/topics/call'>base::call()</a></code>) is created and passed to either
+list of <code>call</code> objects (see <code><a href='https://rdrr.io/r/base/call.html'>base::call()</a></code>) is created and passed to either
 <code><a href='request.html'>do_requests_serial()</a></code> or <code><a href='request.html'>do_requests_parallel()</a></code>. Whether file fetching
 is carried out in serial or parallel is controlled by the <code>n_con</code> argument.
 In case a download fails, it is retried again up to the number of times
@@ -357,7 +359,7 @@ does some processing.</p>
 <p>A function for reading the binary data retrieved from openBIS can be
 supplied to <code>fetch_files()</code> as <code>reader</code> argument. Single cell feature files
 as produced by CellProfiler, are stored as Matlab v5.0 <code>.mat</code> files and
-the function <code>read_mat_files()</code> reads such files using <code><a href='https://www.rdocumentation.org/packages/R.matlab/topics/readMat'>R.matlab::readMat()</a></code>
+the function <code>read_mat_files()</code> reads such files using <code><a href='https://rdrr.io/pkg/R.matlab/man/readMat.html'>R.matlab::readMat()</a></code>
 and checks for certain expected attributes and simplifies the read
 structure.</p>
 <p>The list returned by <code>read_mat_files()</code> is arranged such that each node
@@ -370,23 +372,23 @@ three list entries correspond to image row 1 (left to right) of well A1,
 the next three entries correspond to row 2 of well A1, images 10 through 12
 correspond to row 1 of well A2, etc. Well A2 is located in row 1, column 2
 of a plate.</p>
-    
     <h2 class="hasAnchor" id="openbis"><a class="anchor" href="#openbis"></a>openBIS</h2>
 
     
-    <ul>
+
+<ul>
 <li><p><a href='https://svnsis.ethz.ch/doc/openbis/13.04.0/ch/systemsx/cisd/openbis/dss/generic/shared/api/v1/IDssServiceRpcGeneric.html'>IDssServiceRpcGeneric:listFilesForDataSet</a></p></li>
 </ul>
-    
+
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other resource listing/downloading functions: <code><a href='list_fetch_images.html'>fetch_images</a></code>,
   <code><a href='list_urls.html'>list_download_urls</a></code>,
   <code><a href='list_fetch_features.html'>list_features</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>  <span class='no'>tok</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='login.html'>login_openbis</a></span>()
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+  <span class='no'>tok</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='login.html'>login_openbis</a></span>()
 
   <span class='co'># search for a cell profiler feature data set from plate KB2-03-1I</span>
   <span class='no'>search</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='search_openbis.html'>search_criteria</a></span>(
@@ -401,42 +403,38 @@ of a plate.</p>
 
   <span class='co'># list all files of this data set</span>
   <span class='no'>all_files</span> <span class='kw'>&lt;-</span> <span class='fu'>list_files</span>(<span class='no'>tok</span>, <span class='no'>ds</span>)
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/length'>length</a></span>(<span class='no'>all_files</span>)</div><div class='output co'>#&gt; [1] 297</div><div class='input'>
+  <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>all_files</span>)</div><div class='output co'>#&gt; [1] 297</div><div class='input'>
   <span class='co'># select some of the files, e.g. all count features per image</span>
-  <span class='no'>some_files</span> <span class='kw'>&lt;-</span> <span class='no'>all_files</span>[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/grep'>grepl</a></span>(<span class='st'>"Image\\.Count_"</span>,
+  <span class='no'>some_files</span> <span class='kw'>&lt;-</span> <span class='no'>all_files</span>[<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span>(<span class='st'>"Image\\.Count_"</span>,
                                 <span class='fu'><a href='json_utils.html'>get_field</a></span>(<span class='no'>all_files</span>, <span class='st'>"pathInDataSet"</span>))]
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/length'>length</a></span>(<span class='no'>some_files</span>)</div><div class='output co'>#&gt; [1] 4</div><div class='input'>
+  <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>some_files</span>)</div><div class='output co'>#&gt; [1] 4</div><div class='input'>
   <span class='co'># download the selected files</span>
   <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>fetch_files</span>(<span class='no'>tok</span>, <span class='no'>some_files</span>)
 
   <span class='co'># the same can be achieved by passing a file_regex argument to</span>
   <span class='co'># fetch_files(), which internally calls list_files() and filters files</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical</a></span>(<span class='no'>data</span>, <span class='fu'>fetch_files</span>(<span class='no'>tok</span>, <span class='no'>ds</span>, <span class='kw'>file_regex</span> <span class='kw'>=</span> <span class='st'>"Image\\.Count_"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+  <span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='no'>data</span>, <span class='fu'>fetch_files</span>(<span class='no'>tok</span>, <span class='no'>ds</span>, <span class='kw'>file_regex</span> <span class='kw'>=</span> <span class='st'>"Image\\.Count_"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
   <span class='co'># all returned data is raw, the reader argument can be used to supply</span>
   <span class='co'># a function that processes the downloaded data</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='no'>data</span>, <span class='no'>class</span>)</div><div class='output co'>#&gt; [1] "raw" "raw" "raw" "raw"</div><div class='input'>  <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>fetch_files</span>(<span class='no'>tok</span>, <span class='no'>some_files</span>, <span class='kw'>reader</span> <span class='kw'>=</span> <span class='no'>read_mat_files</span>)
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>sapply</a></span>(<span class='no'>data</span>, <span class='no'>class</span>)</div><div class='output co'>#&gt; [1] "list" "list" "list" "list"</div><div class='input'>
-  <span class='fu'><a href='login.html'>logout_openbis</a></span>(<span class='no'>tok</span>)</div><div class='input'>
-</div></pre>
+  <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='no'>data</span>, <span class='no'>class</span>)</div><div class='output co'>#&gt; [1] "raw" "raw" "raw" "raw"</div><div class='input'>  <span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>fetch_files</span>(<span class='no'>tok</span>, <span class='no'>some_files</span>, <span class='kw'>reader</span> <span class='kw'>=</span> <span class='no'>read_mat_files</span>)
+  <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>sapply</a></span>(<span class='no'>data</span>, <span class='no'>class</span>)</div><div class='output co'>#&gt; [1] "list" "list" "list" "list"</div><div class='input'>
+  <span class='fu'><a href='login.html'>logout_openbis</a></span>(<span class='no'>tok</span>)
+<span class='co'># }</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-
       <li><a href="#openbis">openBIS</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -444,14 +442,14 @@ of a plate.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a>.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
    </div>
 
   
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
 <script>
   docsearch({
     
@@ -469,6 +467,8 @@ of a plate.</p>
 </script>
 
 
+
   </body>
 </html>
+
 

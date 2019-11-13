@@ -8,23 +8,25 @@
 
 <title>Create and validate JSON class objects — json_class • infx</title>
 
-<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.1/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -33,13 +35,13 @@
 
 <!-- docsearch -->
 <script src="../docsearch.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
 <link href="../docsearch.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
-<meta property="og:title" content="Create and validate JSON class objects — json_class" />
 
+<meta property="og:title" content="Create and validate JSON class objects — json_class" />
 <meta property="og:description" content="To communicate object type information via JSON to the Jackson-powered
 openBIS interface, the @type field is used. Data received from openBIS is
 recursively stripped of @type fields and the type information is saved as
@@ -52,13 +54,16 @@ instantiation of json_class objects." />
 
 
 
+
 <!-- mathjax -->
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
 
 
   </head>
@@ -85,7 +90,7 @@ instantiation of json_class objects." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,12 +119,11 @@ instantiation of json_class objects." />
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
-      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
       
-      <form class="navbar-form navbar-right" role="search">
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
         <div class="form-group">
           <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
         </div>
@@ -130,6 +134,7 @@ instantiation of json_class objects." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -141,7 +146,6 @@ instantiation of json_class objects." />
     </div>
 
     <div class="ref-description">
-    
     <p>To communicate object type information via JSON to the Jackson-powered
 openBIS interface, the <code>@type</code> field is used. Data received from openBIS is
 recursively stripped of <code>@type</code> fields and the type information is saved as
@@ -150,7 +154,6 @@ function <code>as_json_class()</code> (or its alias <code>as.json_class()</code>
 recursive conversion of a list with filed <code>@type</code> into a <code>json_class</code>
 object. The constructor <code>json_class()</code> is available for non-recursive
 instantiation of <code>json_class</code> objects.</p>
-    
     </div>
 
     <pre class="usage"><span class='fu'>json_class</span>(<span class='no'>...</span>, <span class='no'>class</span>)
@@ -174,7 +177,7 @@ instantiation of <code>json_class</code> objects.</p>
 <span class='fu'>rm_json_class</span>(<span class='no'>x</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>restore_type</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
 <span class='co'># S3 method for json_class</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list</a></span>(<span class='no'>x</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+<span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span>(<span class='no'>x</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>recursive</span> <span class='kw'>=</span> !<span class='no'>keep_asis</span>, <span class='kw'>restore_type</span> <span class='kw'>=</span> !<span class='no'>keep_asis</span>, <span class='no'>...</span>)
 
 <span class='fu'>is_json_class</span>(<span class='no'>x</span>)
@@ -182,7 +185,7 @@ instantiation of <code>json_class</code> objects.</p>
 <span class='fu'>is.json_class</span>(<span class='no'>x</span>)
 
 <span class='fu'>check_json_class</span>(<span class='no'>x</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
-    
+
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
@@ -214,18 +217,17 @@ object, whether to preserve the subclass attribute as <code>@type</code> filed.<
     </tr>
     <tr>
       <th>keep_asis</th>
-      <td><p>Used in <code><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list()</a></code>, if <code>TRUE</code>, the <code>json_class</code> object
+      <td><p>Used in <code><a href='https://rdrr.io/r/base/list.html'>as.list()</a></code>, if <code>TRUE</code>, the <code>json_class</code> object
 is returned as-is, if <code>FALSE</code>, class attributes may be dropped/written to
 the list structure into the <code>@type</code> field.</p></td>
     </tr>
     </table>
-    
+
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>JSON objects are represented as S3 classes with two class
 attributes: <code>json_class</code> and an object specific class name (typically to
 mirror the openBIS class).</p>
-    
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The action of <code>as_json_class()</code> is reversed by <code>rm_json_class()</code>. This
@@ -233,9 +235,9 @@ removes both the <code>json_class</code> class attribute and the JSON class attr
 itself, which is subsequently written to a <code>@type</code> filed. This preserving
 of type information can be disabled, by setting the argument <code>restore_type</code>
 to <code>FALSE</code>. Furthermore, the action can be applied recursively with the
-argument <code>recursive</code>. The function <code><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list()</a></code> can also be used to perform
+argument <code>recursive</code>. The function <code><a href='https://rdrr.io/r/base/list.html'>as.list()</a></code> can also be used to perform
 the above actions, but with default arguments, it does nothing, as
-functions such as <code><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>base::sapply()</a></code> and <code><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>base::lapply()</a></code>, call <code><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list()</a></code>.</p>
+functions such as <code><a href='https://rdrr.io/r/base/lapply.html'>base::sapply()</a></code> and <code><a href='https://rdrr.io/r/base/lapply.html'>base::lapply()</a></code>, call <code><a href='https://rdrr.io/r/base/list.html'>as.list()</a></code>.</p>
 <p>JSON class objects have custom sub-setting and printing functions available.
 Sub-setting of JSON objects that preserve class and <code>json_class</code>
 attributes. This is useful when objects are created from openBIS results
@@ -248,47 +250,46 @@ class object, meaning that:</p><ul>
 <li><p>the last class attribute is <code>json_class</code></p></li>
 <li><p>apart from <code>json_class</code> there exists at least one more class attribute</p></li>
 </ul>
-    <p>In order to recursively test a <code>json_class</code> object for being properly
+
+<p>In order to recursively test a <code>json_class</code> object for being properly
 formed, the function <code>check_json_class()</code> can be used. This recurses through
 a list structure and whenever an object inherits from <code>json_class</code> it is
 tested with <code>is_json_class()</code>.</p>
-    
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other json object handling functions: <code><a href='json_utils.html'>has_fields.json_class</a></code>,
   <code><a href='json_vec.html'>json_vec</a></code>, <code><a href='json_base.html'>print.json_class</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>lst</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>`@type`</span> <span class='kw'>=</span> <span class='st'>"foobar"</span>,
-            <span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>`@type`</span> <span class='kw'>=</span> <span class='st'>"foo"</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"c"</span>),
-            <span class='kw'>d</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>`@type`</span> <span class='kw'>=</span> <span class='st'>"bar"</span>, <span class='kw'>e</span> <span class='kw'>=</span> <span class='st'>"f"</span>))
+    <pre class="examples"><div class='input'><span class='no'>lst</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>`@type`</span> <span class='kw'>=</span> <span class='st'>"foobar"</span>,
+            <span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>`@type`</span> <span class='kw'>=</span> <span class='st'>"foo"</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"c"</span>),
+            <span class='kw'>d</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>`@type`</span> <span class='kw'>=</span> <span class='st'>"bar"</span>, <span class='kw'>e</span> <span class='kw'>=</span> <span class='st'>"f"</span>))
 
 <span class='no'>cls</span> <span class='kw'>&lt;-</span> <span class='fu'>as_json_class</span>(<span class='no'>lst</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/print'>print</a></span>(<span class='no'>cls</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; █─foobar 
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>cls</span>, <span class='kw'>depth</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; █─foobar 
 #&gt; ├─a = █─foo 
 #&gt; │     └─b = c 
 #&gt; └─d = █─bar 
 #&gt;       └─e = f </div><div class='input'>
 <span class='fu'>is_json_class</span>(<span class='no'>cls</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='json_utils.html'>get_subclass</a></span>(<span class='no'>cls</span>)</div><div class='output co'>#&gt; [1] "foobar"</div><div class='input'>
 <span class='co'># recursive validation of json_class objects with check_json_class()</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/attr'>attr</a></span>(<span class='no'>cls</span><span class='kw'>[[</span><span class='st'>"d"</span>]], <span class='st'>"class"</span>) <span class='kw'>&lt;-</span> <span class='st'>"json_class"</span>
+<span class='fu'><a href='https://rdrr.io/r/base/attr.html'>attr</a></span>(<span class='no'>cls</span><span class='kw'>[[</span><span class='st'>"d"</span>]], <span class='st'>"class"</span>) <span class='kw'>&lt;-</span> <span class='st'>"json_class"</span>
 <span class='fu'>is_json_class</span>(<span class='no'>cls</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'>check_json_class</span>(<span class='no'>cls</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
 <span class='co'># as_json_class() is idempotent</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical</a></span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>), <span class='fu'>as_json_class</span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>)))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>), <span class='fu'>as_json_class</span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>)))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'># rm_json_class() reverses the action of as_json_class()</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical</a></span>(<span class='no'>lst</span>, <span class='fu'>rm_json_class</span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>)))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='no'>lst</span>, <span class='fu'>rm_json_class</span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>)))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'># json_class objects can be instantiated using the constructor json_class()</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical</a></span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>),
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='fu'>as_json_class</span>(<span class='no'>lst</span>),
           <span class='fu'>json_class</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'>json_class</span>(<span class='kw'>b</span> <span class='kw'>=</span> <span class='st'>"c"</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"foo"</span>),
                      <span class='kw'>d</span> <span class='kw'>=</span> <span class='fu'>json_class</span>(<span class='kw'>e</span> <span class='kw'>=</span> <span class='st'>"f"</span>, <span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"bar"</span>),
                      <span class='kw'>class</span> <span class='kw'>=</span> <span class='st'>"foobar"</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='no'>cls</span> <span class='kw'>&lt;-</span> <span class='fu'>as_json_class</span>(<span class='no'>lst</span>)
 
 <span class='co'># the default of as.list does nothing</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical</a></span>(<span class='no'>cls</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list</a></span>(<span class='no'>cls</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># this can be disabled, by setting keep_asis to FALSE</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/identical'>identical</a></span>(<span class='no'>lst</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list</a></span>(<span class='no'>cls</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># further options are disabling recursive action</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list</a></span>(<span class='no'>cls</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; $`@type`
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='no'>cls</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span>(<span class='no'>cls</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># this can be disabled, by setting keep_asis to FALSE</span>
+<span class='fu'><a href='https://rdrr.io/r/base/identical.html'>identical</a></span>(<span class='no'>lst</span>, <span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span>(<span class='no'>cls</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># further options are disabling recursive action</span>
+<span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span>(<span class='no'>cls</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; $`@type`
 #&gt; [1] "foobar"
 #&gt; 
 #&gt; $a
@@ -299,7 +300,7 @@ tested with <code>is_json_class()</code>.</p>
 #&gt; █─bar 
 #&gt; └─e = f 
 #&gt; </div><div class='input'><span class='co'># and dropping type information</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>as.list</a></span>(<span class='no'>cls</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>restore_type</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; $a
+<span class='fu'><a href='https://rdrr.io/r/base/list.html'>as.list</a></span>(<span class='no'>cls</span>, <span class='kw'>keep_asis</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>recursive</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>restore_type</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; $a
 #&gt; █─foo 
 #&gt; └─b = c 
 #&gt; 
@@ -313,18 +314,15 @@ tested with <code>is_json_class()</code>.</p>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
       <li><a href="#value">Value</a></li>
-
       <li><a href="#details">Details</a></li>
-
       <li><a href="#see-also">See also</a></li>
-      
       <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>
 </div>
+
 
       <footer>
       <div class="copyright">
@@ -332,14 +330,14 @@ tested with <code>is_json_class()</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a>.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
    </div>
 
   
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
 <script>
   docsearch({
     
@@ -357,6 +355,8 @@ tested with <code>is_json_class()</code>.</p>
 </script>
 
 
+
   </body>
 </html>
+
 
