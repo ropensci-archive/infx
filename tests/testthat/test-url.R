@@ -235,10 +235,12 @@ test_that("non-infectx openbis instances can be accessed", {
   flow <- search_openbis(
     token,
     search_criteria(
-      property_clause("name", "Flow citometry files"),
+      attribute_clause("type", "RAW_DATA"),
       sub_criteria = search_sub_criteria(
-        search_criteria(attribute_clause(value = "INDUCTION_OF_TF")),
-        type = "experiment"
+        search_criteria(
+          attribute_clause(value = "FC_LEXA-ER-B42")
+        ),
+        type = "sample"
       )
     )
   )
