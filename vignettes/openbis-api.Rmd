@@ -132,8 +132,8 @@ post_handle <- function(x)
     curl::new_handle(postfields = charToRaw(jsonlite::toJSON(x))),
     "Content-Type" = "application/json"
   )
-  
-process_json <- function(x) 
+
+process_json <- function(x)
   jsonlite::fromJSON(rawToChar(x))$json
 
 res <- do_requests_serial(urls, json,
@@ -206,7 +206,7 @@ gel_data <- search_openbis(
     attribute_clause("type", "ELN_PREVIEW"),
     sub_criteria = search_sub_criteria(
       search_criteria(
-        attribute_clause(value = "/DIANA_OTTOZ/WB_LEXA-ER-B112")
+        attribute_clause(value = "WB_LEXA-ER-B112")
       ),
       type = "sample"
     )
@@ -223,7 +223,7 @@ attributes(gel_img[[1]])
 ```
 
 `api_url()` can accept arguments `api_endpoint`, `host_url` and `full_url` and ignores any further arguments. The first argument offers a selection of hard-coded API endpoints and in combination with the second argument is used to access one of them on the specified openBIS host. In case a URL that is not supported by the `api_endpoint` selector is desired, the complete URL can
-be passed as `full_url` which will simply be returned by `api_url()`. 
+be passed as `full_url` which will simply be returned by `api_url()`.
 
 ## Summary of API methods
 

@@ -14,10 +14,10 @@
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.5.0",
+    "version": "3.6.1",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.5.0 (2018-04-23)",
+  "runtimePlatform": "R version 3.6.1 (2019-07-05)",
   "author": [
     {
       "@type": "Person",
@@ -50,15 +50,8 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "knitr",
-      "name": "knitr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=knitr"
+      "identifier": "rlang\n    knitr",
+      "name": "rlang\n    knitr"
     },
     {
       "@type": "SoftwareApplication",
@@ -227,7 +220,6 @@
   ],
   "releaseNotes": "https://github.com/ropensci/infx/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/infx/blob/master/README.md",
-  "fileSize": "174.215KB",
   "contIntegration": [
     "https://travis-ci.org/nbenn/infx",
     "https://ci.appveyor.com/project/nbenn/infx",
@@ -239,5 +231,8 @@
     "@type": "Review",
     "url": "https://github.com/ropensci/onboarding/issues/218",
     "provider": "http://ropensci.org"
-  }
+  },
+  "contributor": {},
+  "copyrightHolder": {},
+  "funder": {}
 }

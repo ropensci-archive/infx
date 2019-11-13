@@ -27,6 +27,7 @@ Encoding: UTF-8
 LazyData: true
 Suggests: 
     testthat (>= 2.0.0),
+    rlang
     knitr,
     rmarkdown,
     rvest,
@@ -34,5 +35,5 @@ Suggests:
     ggplot2,
     RColorBrewer
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
