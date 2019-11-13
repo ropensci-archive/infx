@@ -50,8 +50,27 @@
     },
     {
       "@type": "SoftwareApplication",
-      "identifier": "rlang\n    knitr",
-      "name": "rlang\n    knitr"
+      "identifier": "rlang",
+      "name": "rlang",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rlang"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
     },
     {
       "@type": "SoftwareApplication",
@@ -234,5 +253,6 @@
   },
   "contributor": {},
   "copyrightHolder": {},
-  "funder": {}
+  "funder": {},
+  "fileSize": "135.625KB"
 }

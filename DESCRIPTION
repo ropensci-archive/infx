@@ -25,9 +25,9 @@ Imports:
 License: GPL-3 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests: 
+Suggests:
     testthat (>= 2.0.0),
-    rlang
+    rlang,
     knitr,
     rmarkdown,
     rvest,
