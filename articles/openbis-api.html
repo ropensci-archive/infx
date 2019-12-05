@@ -92,7 +92,7 @@
       <h1>OpenBIS API coverage</h1>
                         <h4 class="author">Nicolas Bennett</h4>
             
-            <h4 class="date">2019-11-13</h4>
+            <h4 class="date">2019-12-05</h4>
       
       
       <div class="hidden name"><code>openbis-api.Rmd</code></div>
@@ -118,7 +118,7 @@
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="../reference/request.html">do_requests_serial</a></span>(urls, <span class="dt">finally =</span> pretty_json)</a>
 <a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co">#&gt; [[1]]</span></a>
 <a class="sourceLine" id="cb1-8" data-line-number="8"><span class="co">#&gt; {</span></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;     "origin": "104.197.122.201, 104.197.122.201"</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co">#&gt;     "origin": "104.198.131.58, 104.198.131.58"</span></a>
 <a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co">#&gt; }</span></a>
 <a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co">#&gt; </span></a></code></pre></div>
 <p>Note that a list of length 1 is returned by <code><a href="../reference/request.html">do_requests_serial()</a></code>. This is because the <code>do_requests_*()</code> functions are vectorized over requests and therefore return a list with as many entries as requests. A slightly more involved example for creating a request using <code><a href="../reference/request.html">do_requests_serial()</a></code> is as follows.</p>
@@ -189,15 +189,15 @@
 <a class="sourceLine" id="cb4-8" data-line-number="8"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(params)</a>
 <a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; List of 2</span></a>
 <a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt;  $ :List of 3</span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt;   ..$ : chr "rdgr2014-191113221704145xA9120FA7544E0A4649782C5273216ECD"</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt;   ..$ : chr "rdgr2014-191205212940923x2F7605A407EADADA68AAA3FEE78C0F75"</span></a>
 <a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt;   .. ..- attr(*, "host_url")= chr "https://infectx.biozentrum.unibas.ch"</span></a>
-<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;   .. ..- attr(*, "finaliser")=&lt;environment: 0x65780e8&gt; </span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;   .. ..- attr(*, "finaliser")=&lt;environment: 0x706cc10&gt; </span></a>
 <a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt;   ..$ : chr "20120629093035782-603380"</span></a>
 <a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt;   ..$ : chr "original/aThresholdedInfectionScoring_bBB01-1I.csv"</span></a>
 <a class="sourceLine" id="cb4-16" data-line-number="16"><span class="co">#&gt;  $ :List of 3</span></a>
-<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co">#&gt;   ..$ : chr "rdgr2014-191113221704145xA9120FA7544E0A4649782C5273216ECD"</span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co">#&gt;   ..$ : chr "rdgr2014-191205212940923x2F7605A407EADADA68AAA3FEE78C0F75"</span></a>
 <a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#&gt;   .. ..- attr(*, "host_url")= chr "https://infectx.biozentrum.unibas.ch"</span></a>
-<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="co">#&gt;   .. ..- attr(*, "finaliser")=&lt;environment: 0x65780e8&gt; </span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="co">#&gt;   .. ..- attr(*, "finaliser")=&lt;environment: 0x706cc10&gt; </span></a>
 <a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#&gt;   ..$ : chr "20121011143734361-1359915"</span></a>
 <a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co">#&gt;   ..$ : chr "original/aThresholdedInfectionScoring_bBB01-1I.csv"</span></a>
 <a class="sourceLine" id="cb4-22" data-line-number="22"></a>
@@ -206,8 +206,8 @@
 <a class="sourceLine" id="cb4-25" data-line-number="25">                               <span class="dt">params =</span> params)</a>
 <a class="sourceLine" id="cb4-26" data-line-number="26"><span class="kw"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(donwload_urls)</a>
 <a class="sourceLine" id="cb4-27" data-line-number="27"><span class="co">#&gt; List of 2</span></a>
-<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt;  $ : chr "https://infectx.biozentrum.unibas.ch/datastore_server/stream-content?streamID=191113221706865-E0B2BE7A0A3D82CC7287280E373DF7F6"</span></a>
-<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="co">#&gt;  $ : chr "https://infectx.biozentrum.unibas.ch/datastore_server/stream-content?streamID=191113221706866-03D6AE8118CDFAA866AFB0E074B03D94"</span></a>
+<a class="sourceLine" id="cb4-28" data-line-number="28"><span class="co">#&gt;  $ : chr "https://infectx.biozentrum.unibas.ch/datastore_server/stream-content?streamID=191205212943180-A62A5998123DA178C334FE6ADBC0348B"</span></a>
+<a class="sourceLine" id="cb4-29" data-line-number="29"><span class="co">#&gt;  $ : chr "https://infectx.biozentrum.unibas.ch/datastore_server/stream-content?streamID=191205212943181-6F91138025AC116F33D57DDC2F85477F"</span></a>
 <a class="sourceLine" id="cb4-30" data-line-number="30"></a>
 <a class="sourceLine" id="cb4-31" data-line-number="31"><span class="kw"><a href="../reference/login.html">logout_openbis</a></span>(token)</a></code></pre></div>
 <p>In addition to the JSON-RPC calls enabled by <code><a href="../reference/request.html">make_request()</a></code>/<code><a href="../reference/request.html">make_requests()</a></code>, the <code>do_requests_*()</code> functions are also used for (asynchronous) file downloads in <code><a href="../reference/list_fetch_files.html">fetch_files()</a></code>. Slightly different functions are used as <code>create_handle</code> and <code>check</code> arguments but apart from that the logic remains largely the same.</p>

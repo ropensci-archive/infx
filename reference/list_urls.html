@@ -341,7 +341,7 @@ to <code>list_datastores()</code>.</p>
 
   <span class='co'># generate url</span>
   <span class='fu'>list_download_urls</span>(<span class='no'>tok</span>, <span class='no'>ds</span>, <span class='no'>file_path</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt; [1] "https://infectx.biozentrum.unibas.ch/datastore_server/stream-content?streamID=191113221549537-AAB451A69118A719F32AC89AF06E81BA"
+#&gt; [1] "https://infectx.biozentrum.unibas.ch/datastore_server/stream-content?streamID=191205212826847-B0C1CC383B6A2A544A9989CD8C57C5F9"
 #&gt; attr(,"data_set")
 #&gt; [1] "20120629071528402-603231"
 #&gt; attr(,"path")
@@ -359,7 +359,7 @@ to <code>list_datastores()</code>.</p>
 #&gt; [1] "url"        "connection"
 #&gt; 
 #&gt; $conn_id
-#&gt; &lt;pointer: 0x716&gt;
+#&gt; &lt;pointer: 0x700&gt;
 #&gt; </div><div class='input'>  <span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/integer.html'>as.integer</a></span>(<span class='no'>dat</span>))</div><div class='output co'>#&gt;  int [1:3456] 330 299 278 266 215 150 348 184 147 405 ...</div><div class='input'>
   <span class='co'># set timeout to 2 sec</span>
   <span class='no'>file_url</span> <span class='kw'>&lt;-</span> <span class='fu'>list_download_urls</span>(<span class='no'>tok</span>, <span class='no'>ds</span>, <span class='no'>file_path</span>, <span class='kw'>timeout</span> <span class='kw'>=</span> <span class='fl'>2L</span>)
