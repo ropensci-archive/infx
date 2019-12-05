@@ -8,7 +8,7 @@
 #' from multiple vendors and were carried out on HeLa cells, in presence of
 #' several viral and bacterial pathogens. Further genome-wide screens have been
 #' carried out and their public release is forthcoming. For more information,
-#' please refer to the [README](https://ropensci.github.io/infx/) or the
+#' please refer to the [README](https://docs.ropensci.org/infx/) or the
 #' [Introduction vignette](../doc/infx-intro.html).
 #' 
 #' The provided functionality is not restricted to InfectX data, but applies
